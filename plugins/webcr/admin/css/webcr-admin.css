@@ -1,0 +1,26 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+ /* get rid of "content updated box" */
+ .notice-success {
+    display: none;
+ }
+
+  /* increase font size for error box - MAYBE TO BE DELETED?*/
+  .error > p {
+    font-size:20px;
+  }
+
+  /* increase font size of error box */
+  .notice > p {
+    font-size:20px;
+  }
+
+  /* show bullets in list */
+  .notice ul {
+    list-style-type: disc;
+    margin-left: 50px; 
+    font-size:16px;
+  }
