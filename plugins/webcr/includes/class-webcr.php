@@ -349,6 +349,7 @@ class Webcr {
 		//JAI - add exopite fields to scene custom content type
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_scene_fields', 1 );
 
+<<<<<<< HEAD
 			// JAI - temp function - delete
 		function wpdocs_codex_book_init() {
 			$labels = array(
@@ -398,6 +399,8 @@ class Webcr {
 		
 		add_action( 'init', 'wpdocs_codex_book_init' );
 
+=======
+>>>>>>> 68640391082ba86355e9976f2f0f29d35e21114f
 			// JAI - new function for adding scenes 
 			function custom_content_type_scene() {
 				$labels = array(
