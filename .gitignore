@@ -1,0 +1,12 @@
+### WordPress  ###
+index.php
+db.php
+debug.log
+/upgrade/
+/upgrade-temp-backup/
+/uploads/
+/themes/
+/plugins/index.php
+/plugins/debug-bar/
+/plugins/query-monitor/
+/plugins/svg-support/
