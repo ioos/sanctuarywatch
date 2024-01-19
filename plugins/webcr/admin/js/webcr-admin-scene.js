@@ -1,6 +1,6 @@
 (function( $ ) {
 	'use strict';
-    if (window.console) console.log('help');
+    if (window.console) console.log('hello');
 	/**
 	 * All of the code for your admin-facing JavaScript source
 	 * should reside in this file.
