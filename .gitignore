@@ -1,5 +1,6 @@
 ### WordPress  ###
 index.php
+.DS_Store
 db.php
 debug.log
 /upgrade/
