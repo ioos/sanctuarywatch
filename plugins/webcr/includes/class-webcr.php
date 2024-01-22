@@ -221,25 +221,6 @@ class Webcr {
 			}
 		}
 		add_action( 'admin_notices', 'webcr_admin_notice' );
-		
-
-
-
-		//JAI - functions to start and end php session - delete
-		// Interesting article on php and wordpress: https://silvermapleweb.com/using-the-php-session-in-wordpress/
-		function myStartSession() {
-			if(!session_id()) {
-				session_start();
-			}
-		}
-		
-		function myEndSession() {
-			session_destroy ();
-		}
-
-	//	add_action('init', 'myStartSession', 1);
-	//	add_action('wp_logout', 'myEndSession');
-	//	add_action('wp_login', 'myEndSession');
 
 		//JAI - function validation - likely delete this
 		function completion_validator($pid, $post) {
