@@ -7,7 +7,8 @@ debug.log
 /upgrade-temp-backup/
 /uploads/
 /themes/
-/plugins/index.php
+/plugins/.DS_Store
+/plugins/webcr/.DS_Store
 /plugins/debug-bar/
 /plugins/query-monitor/
 /plugins/svg-support/

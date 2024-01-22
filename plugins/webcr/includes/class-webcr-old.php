@@ -186,15 +186,18 @@ class Webcr {
 			// admin screen)? 3. A new post?
 			$current_screen = get_current_screen();
 			if ($current_screen->base == "post" && $current_screen->id =="scene" && !($current_screen->action =="add") ) { 
-				if( isset( $_COOKIE["scene_post_status"] ) ) {
-					$scene_post_status =  $_COOKIE["scene_post_status"];
+				$user_id = get_current_user_id();
+				$scene_post_status_cookie = $user_id. "scene_post_status";
+				if( isset( $_COOKIE[$scene_post_status_cookie] ) ) {
+					$scene_post_status =  $_COOKIE[$scene_post_status_cookie];
 					if ($scene_post_status == "post_good") {
 						echo '<div class="notice notice-info is-dismissible"><p>Scene created or updated.</p></div>';
 					} 
 					else {
 						$error_message = "<p>Error or errors in scene</p>";
-						if (isset($_COOKIE["scene_errors"])) {
-							$error_list_coded = stripslashes($_COOKIE["scene_errors"]);
+						$error_list_cookie =  $user_id . "scene_errors";
+						if (isset($_COOKIE[$error_list_cookie])) {
+							$error_list_coded = stripslashes($_COOKIE[$error_list_cookie]);
 							$error_list_array = json_decode($error_list_coded);
 							$error_array_length = count($error_list_array);
 							$error_message = $error_message . '<p><ul>';
@@ -204,18 +207,8 @@ class Webcr {
 							$error_message = $error_message . '</ul></p>';
 						}
 						echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
-
-						if (isset($_COOKIE["scene_error_all_fields"])) {
-							$scene_fields_coded = stripslashes($_COOKIE["scene_error_all_fields"]);
-							$scene_fields_array = json_decode($scene_fields_coded, true);		
-							$fg = 55;				
-						//	echo "<script>console.log(" . count($scene_fields_array) . ");</script>";
-							$_POST['scene_info_link'] = $scene_fields_array['scene_info_link'];
-						}
-
-
 					}
-					setcookie("scene_post_status", "", time() - 300, "/");
+			//	setcookie($scene_post_status_cookie, "", time() - 300, "/");
 
 				}
 			}
@@ -223,23 +216,6 @@ class Webcr {
 		add_action( 'admin_notices', 'webcr_admin_notice' );
 		
 
-
-
-		//JAI - functions to start and end php session - delete
-		// Interesting article on php and wordpress: https://silvermapleweb.com/using-the-php-session-in-wordpress/
-		function myStartSession() {
-			if(!session_id()) {
-				session_start();
-			}
-		}
-		
-		function myEndSession() {
-			session_destroy ();
-		}
-
-	//	add_action('init', 'myStartSession', 1);
-	//	add_action('wp_logout', 'myEndSession');
-	//	add_action('wp_login', 'myEndSession');
 
 		//JAI - function validation - likely delete this
 		function completion_validator($pid, $post) {
@@ -311,7 +287,7 @@ class Webcr {
 		// JAI CREATE CUSTOM CONTENT TYPES
 		$plugin_post_types = new Plugin_Name_Post_Types();
 		//JAI - add Scene custom content type
-		// $this->loader->add_action( 'init', $plugin_post_types, 'create_custom_post_type_scene', 999 );
+		$this->loader->add_action( 'init', $plugin_post_types, 'create_custom_post_type_scene', 999 );
 
 		// Jai - remove permalink field from admin screens
 		function hide_permalink() {
@@ -348,56 +324,6 @@ class Webcr {
 
 		//JAI - add exopite fields to scene custom content type
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_scene_fields', 1 );
-
-			// JAI - new function for adding scenes 
-			function custom_content_type_scene() {
-				$labels = array(
-					'name'                  => _x( 'Scenes', 'Post type general name', 'textdomain' ),
-					'singular_name'         => _x( 'Scene', 'Post type singular name', 'textdomain' ),
-					'menu_name'             => _x( 'Scenes', 'Admin Menu text', 'textdomain' ),
-					'name_admin_bar'        => _x( 'Scene', 'Add New on Toolbar', 'textdomain' ),
-					'add_new'               => __( 'Add New Scene', 'textdomain' ),
-					'add_new_item'          => __( 'Add New Scene', 'textdomain' ),
-					'new_item'              => __( 'New Scene', 'textdomain' ),
-					'edit_item'             => __( 'Edit Scene', 'textdomain' ),
-					'view_item'             => __( 'View Scene', 'textdomain' ),
-					'all_items'             => __( 'All Scenes', 'textdomain' ),
-					'search_items'          => __( 'Search Scenes', 'textdomain' ),
-					'parent_item_colon'     => __( 'Parent Scenes:', 'textdomain' ),
-					'not_found'             => __( 'No Scenes found.', 'textdomain' ),
-					'not_found_in_trash'    => __( 'No Scenes found in Trash.', 'textdomain' ),
-					'featured_image'        => _x( 'Scene Cover Image', 'Overrides the “Featured Image” phrase for this post type. Added in 4.3', 'textdomain' ),
-					'set_featured_image'    => _x( 'Set cover image', 'Overrides the “Set featured image” phrase for this post type. Added in 4.3', 'textdomain' ),
-					'remove_featured_image' => _x( 'Remove cover image', 'Overrides the “Remove featured image” phrase for this post type. Added in 4.3', 'textdomain' ),
-					'use_featured_image'    => _x( 'Use as cover image', 'Overrides the “Use as featured image” phrase for this post type. Added in 4.3', 'textdomain' ),
-					'archives'              => _x( 'Scene archives', 'The post type archive label used in nav menus. Default “Post Archives”. Added in 4.4', 'textdomain' ),
-					'insert_into_item'      => _x( 'Insert into Scene', 'Overrides the “Insert into post”/”Insert into page” phrase (used when inserting media into a post). Added in 4.4', 'textdomain' ),
-					'uploaded_to_this_item' => _x( 'Uploaded to this Scene', 'Overrides the “Uploaded to this post”/”Uploaded to this page” phrase (used when viewing media attached to a post). Added in 4.4', 'textdomain' ),
-					'filter_items_list'     => _x( 'Filter Scenes list', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'textdomain' ),
-					'items_list_navigation' => _x( 'Scenes list navigation', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'textdomain' ),
-					'items_list'            => _x( 'Scenes list', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'textdomain' ),
-				);
-			
-				$args = array(
-					'labels'             => $labels,
-					'public'             => true,
-					'publicly_queryable' => true,
-					'show_ui'            => true,
-					'show_in_menu'       => true,
-					'query_var'          => true,
-					'rewrite'            => array( 'slug' => 'scenes' ),
-					'capability_type'    => 'post',
-					'menu_icon'          => 'dashicons-tag',
-					'has_archive'        => true,
-					'hierarchical'       => false,
-					'menu_position'      => null,
-					'supports'           => array( 'title', 'revisions' ),
-				);
-			
-				register_post_type( 'scene', $args );
-			}
-			
-			add_action( 'init', 'custom_content_type_scene' );
 
 	}
 
