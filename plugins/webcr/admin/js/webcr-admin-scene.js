@@ -5,7 +5,20 @@
 	let consoleMessage = "not on scene edit page";
 	if (OnSceneEditPage === 1 && SceneError === "post_error") {
 		const SceneFields = JSON.parse(getCookie("scene_error_all_fields"));	
-		console.log(SceneFields["scene_info_photo_link"]);	
+		//console.log(document.getElementsByName("scene_tagline")[0].value);
+		const SceneFieldNames =["scene_location", "scene_infographic", "scene_tagline", "scene_info_link", "scene_info_photo_link"];
+
+		for (const Field of SceneFieldNames){
+			document.getElementsByName(Field)[0].value = SceneFields[Field];
+		}
+	//	$scene_fields['scene_location'] = $_POST['scene_location'];
+    //    $scene_fields['scene_infographic'] = $_POST['scene_infographic'];
+    //    $scene_fields['scene_tagline'] = $_POST['scene_tagline'];
+    //    $scene_fields['scene_info_link'] = $_POST['scene_info_link'];
+    //    $scene_fields['scene_info_photo_link'] = $_POST['scene_info_photo_link'];
+
+
+	//	console.log(SceneFields["scene_info_photo_link"]);	
 		consoleMessage = "on scene edit page";
 	}
     console.log(consoleMessage);
