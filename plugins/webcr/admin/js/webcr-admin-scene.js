@@ -1,6 +1,34 @@
 (function( $ ) {
 	'use strict';
-    if (window.console) console.log('hello');
+	const OnSceneEditPage = document.getElementsByName("scene_tagline").length; //determining if we are on a page where we are editing a scene
+	const SceneError = getCookie("scene_post_status");
+	let consoleMessage = "not on scene edit page";
+	if (OnSceneEditPage === 1 && SceneError === "post_error") {
+		const SceneFields = JSON.parse(getCookie("scene_error_all_fields"));	
+		console.log(SceneFields["scene_info_photo_link"]);	
+		consoleMessage = "on scene edit page";
+	}
+    console.log(consoleMessage);
+//	console.log(document.cookie);
+//	console.log(getCookie("scene_post_status"));
+
+	function getCookie(cookieName) {
+		let cookies = document.cookie;
+		let cookieArray = cookies.split("; ");
+	 
+		for (let i = 0; i < cookieArray.length; i++) {
+		   let cookie = cookieArray[i];
+		   let [name, value] = cookie.split("=");
+		  
+		   if (name === cookieName) {
+			  return decodeURIComponent(value);
+		   }
+		}
+		
+		return null;
+	 }
+
+
 	/**
 	 * All of the code for your admin-facing JavaScript source
 	 * should reside in this file.
