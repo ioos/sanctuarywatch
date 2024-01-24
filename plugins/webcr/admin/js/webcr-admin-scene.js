@@ -4,10 +4,10 @@
 	const SceneError = getCookie("scene_post_status");
 	let consoleMessage = "not on scene edit page";
 	if (OnSceneEditPage === 1 && SceneError === "post_error") {
-		const SceneFields = JSON.parse(getCookie("scene_error_all_fields"));	
+		let SceneFields = JSON.parse(getCookie("scene_error_all_fields"));	
 		//console.log(document.getElementsByName("scene_tagline")[0].value);
 		const SceneFieldNames =["scene_location", "scene_infographic", "scene_tagline", "scene_info_link", "scene_info_photo_link"];
-
+		SceneFields["scene_tagline"] = SceneFields["scene_tagline"].replace("\\'","\'");
 		for (const Field of SceneFieldNames){
 			document.getElementsByName(Field)[0].value = SceneFields[Field];
 		}

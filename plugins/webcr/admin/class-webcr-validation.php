@@ -29,7 +29,7 @@ class webcr_validation {
         if (!$scene_info_link_value == "") { 
             if ( $this -> url_check($scene_info_link_value) == FALSE ) {
                 $save_scene_fields = FALSE;
-                array_push($scene_errors, "Error in Info URL field.");
+                array_push($scene_errors, "The URL for Scene Info Link is not valid");
             } 
         }
 
@@ -37,7 +37,7 @@ class webcr_validation {
         if (!$scene_info_photo_link_value == "") { 
             if ( $this -> url_check($scene_info_photo_link_value) == FALSE ) {
                 $save_scene_fields = FALSE;
-                array_push($scene_errors, "Error in Photo URL field.");
+                array_push($scene_errors, "The URL for Scene Info Photo Link is not valid");
             } 
         }
 
