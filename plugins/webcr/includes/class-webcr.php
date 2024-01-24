@@ -330,6 +330,10 @@ class Webcr {
 		//JAI - add exopite fields to scene custom content type
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_scene_fields', 1 );
 
+		//JAI - change admin columns for scene custom content type
+	//	add_filter( 'manage_scene_posts_columns', 'scene_filter_posts_columns' );
+		$this->loader->add_filter( 'scene_filter_posts_columns', $plugin_admin, 'manage_scene_posts_columns', 1 );		
+
 			// JAI - new function for adding scenes 
 			function custom_content_type_scene() {
 				$labels = array(

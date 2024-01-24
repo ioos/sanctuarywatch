@@ -134,37 +134,9 @@ class Webcr_Admin {
         echo '<link rel="shortcut icon" href="' . $favicon_url . '" />';
    }
 
-    public function get_all_emails() {
-
-        $all_users = get_users();
-
-        $user_email_list = array();
-
-        foreach ($all_users as $user) {
-            $user_email_list[esc_html($user->user_email)] = esc_html($user->display_name);
-        }
-
-        return $user_email_list;
-
-    }
-
-    public function test_sanitize_callback( $val ) {
-        return str_replace ( 'a', 'b', $val );
-    }
-
-    // JAI - new santization function
-    public function wrapper_sanitize_url($val) {
-        return sanitize_url( $val, array( 'https' ) );
-    }
-
-
     // JAI - create scene entry fields
     public function create_scene_fields() {
 
-        /*
-         * To add a metabox.
-         * This normally go to your functions.php or another hook
-         */
         $config_metabox = array(
 
             /*
@@ -211,7 +183,6 @@ class Webcr_Admin {
                     'type'  => 'image',
                     'title' => 'Scene Infographic',
                     'description' => 'Infographic description'
-  //                  'sanitize'    => array( $this, 'test_sanitize_callback' ),
                 ),
                 array(
                     'id'          => 'scene_tagline',
@@ -226,7 +197,6 @@ class Webcr_Admin {
                     'title'       => 'Scene Info Link',
                     'class'       => 'text-class',
                     'description' => 'Add description',
- //                   'sanitize'    => array( $this, 'wrapper_sanitize_url' )
                 ),
 
                 array(
@@ -235,7 +205,6 @@ class Webcr_Admin {
                     'title'       => 'Scene Info Photo Link',
                     'class'       => 'text-class',
                     'description' => 'Add description',
-  //                  'sanitize'    => array( $this, 'wrapper_sanitize_url' )
                 ),
             )
         );
@@ -246,6 +215,14 @@ class Webcr_Admin {
         $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
 
     }
+
+    // JAI - change admin columns for scene custom content type
+
+    function scene_filter_posts_columns( $columns ) {
+      $columns['scene_location'] = __( 'Location' );
+      return $columns;
+    }
+//    add_filter( 'manage_scene_posts_columns', 'scene_filter_posts_columns' );
 
     /**
      * Add new image size for admin thumbnail.
