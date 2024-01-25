@@ -222,73 +222,6 @@ class Webcr {
 		}
 		add_action( 'admin_notices', 'webcr_admin_notice' );
 
-		//JAI - function validation - likely delete this
-		function completion_validator($pid, $post) {
-			// don't do on autosave or when new posts are first created
-			if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || $post->post_status == 'auto-draft' ) return $pid;
-			// abort if not my custom type
-			if ( $post->post_type != 'scene' ) return $pid;
-		
-			$post_content = wp_unslash(!empty($_REQUEST['content']) ? $_REQUEST['content'] : $post_data['content']);
-
-			// init completion marker (add more as needed)
-			$meta_missing = false;
-		
-			// retrieve meta to be validated
-			$tempo = $_POST['scene_tagline'];
-			$mymeta = get_post_meta( $pid, 'scene_tagline', true );
-			error_log($mymeta);
-			$post_url = add_query_arg( array('post' => $pid, 'action' => 'edit'), admin_url( 'post.php' ) );
-			error_log($post_url);
-			// just checking it's not empty - you could do other tests...
-			if ( $mymeta == "horse5" ) {
-				error_log("FLAG");
-				$meta_missing = true;
-			}
-		
-			// on attempting to publish - check for completion and intervene if necessary
-			if ( ( isset( $_POST['publish'] ) || isset( $_POST['save'] ) ) && $_POST['post_status'] == 'publish' ) {
-				//  don't allow publishing while any of these are incomplete
-				if ( $meta_missing ) {
-					global $wpdb;
-					$wpdb->update( $wpdb->posts, array( 'post_status' => 'pending' ), array( 'ID' => $pid ) );
-					// filter the query URL to change the published message
-				//	add_filter( 'redirect_post_location', create_function( '$location','return add_query_arg("message", "4", $location);' ) );
-				}
-			}
-
-		}
-	//	add_action('save_post', 'completion_validator', 20, 2);
-
-	function to_err_is_human( $post_id ) {
-
-	//	$tempo = $_POST['scene_tagline'];
-	//	if ($tempo=="horse2") { 
-			$post_url = add_query_arg( array('post' => $post_id, 'action' => 'edit'), admin_url( 'post.php' ) );
-		//	add_filter("redirect_post_location", $post_url, $post_id);
-//		 add_filter("redirect_post_location", "my_redirect_post_location_filter", 99);
-
-	//	}
-	}
-	add_action( 'save_post', 'to_err_is_human' );
-
-	function my_redirect_post_location_filter($location) {
-		remove_filter('redirect_post_location', __FUNCTION__, 99);
-		$location = add_query_arg('message', 99, $location);
-		error_log($location);
-		return $location;
-   }
-
-	function save_my_fields($pid, $post) {
-		// don't do on autosave or when new posts are first created
-		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || $post->post_status == 'auto-draft' ) return $pid;
-		// abort if not my custom type
-		if ( $post->post_type != 'mycustomtype' ) return $pid;
-	
-		// save post_meta with contents of custom field
-		update_post_meta($pid, 'mymetafield', $_POST['mymetafield']);
-	}
-
 		// JAI CREATE CUSTOM CONTENT TYPES
 		$plugin_post_types = new Plugin_Name_Post_Types();
 		//JAI - add Scene custom content type
@@ -330,9 +263,27 @@ class Webcr {
 		//JAI - add exopite fields to scene custom content type
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_scene_fields', 1 );
 
-		//JAI - change admin columns for scene custom content type
-	//	add_filter( 'manage_scene_posts_columns', 'scene_filter_posts_columns' );
-		$this->loader->add_filter( 'scene_filter_posts_columns', $plugin_admin, 'manage_scene_posts_columns', 1 );		
+		//JAI - change admin columns for scene custom content type	
+			// https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
+
+		function change_scene_columns( $columns ) {
+			$columns['scene_location'] = 'scene_location';
+			return $columns;
+		}
+
+		add_filter( 'manage_scene_posts_columns', 'change_scene_columns' );
+
+		function custom_scene_column( $column, $post_id ) {  
+		// scene location column
+		//if ( $column === 'scene_location' ) {
+			echo "dfg"; // get_post_meta( $post_id, 'scene_location', true );
+	//	}
+		
+		}
+		add_action( 'manage_scene_custom_column', 'custom_scene_column') ; //, 10, 2);
+		
+
+
 
 			// JAI - new function for adding scenes 
 			function custom_content_type_scene() {
