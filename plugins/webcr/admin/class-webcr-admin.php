@@ -216,14 +216,6 @@ class Webcr_Admin {
 
     }
 
-    // JAI - change admin columns for scene custom content type
-
-    function scene_filter_posts_columns( $columns ) {
-      $columns['scene_location'] = __( 'Location' );
-      return $columns;
-    }
-//    add_filter( 'manage_scene_posts_columns', 'scene_filter_posts_columns' );
-
     /**
      * Add new image size for admin thumbnail.
      *

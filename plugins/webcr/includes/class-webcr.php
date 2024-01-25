@@ -267,7 +267,7 @@ class Webcr {
 			// https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
 
 		function change_scene_columns( $columns ) {
-			$columns['scene_location'] = 'scene_location';
+			$columns['scene_location'] = 'Location';
 			return $columns;
 		}
 
@@ -275,12 +275,12 @@ class Webcr {
 
 		function custom_scene_column( $column, $post_id ) {  
 		// scene location column
-		//if ( $column === 'scene_location' ) {
-			echo "dfg"; // get_post_meta( $post_id, 'scene_location', true );
-	//	}
+		if ( $column === 'scene_location' ) {
+			echo get_post_meta( $post_id, 'scene_location', true );
+		}
 		
 		}
-		add_action( 'manage_scene_custom_column', 'custom_scene_column') ; //, 10, 2);
+		add_action( 'manage_scene_posts_custom_column', 'custom_scene_column', 10, 2);
 		
 
 
