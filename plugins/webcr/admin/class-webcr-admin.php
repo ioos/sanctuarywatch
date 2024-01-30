@@ -206,6 +206,18 @@ class Webcr_Admin {
                     'class'       => 'text-class',
                     'description' => 'Add description',
                 ),
+
+                array(
+                    'id'          => 'scene_preview',
+                    'type'        => 'button',
+                    'title'       => 'Preview Scene',
+                    'options'     => array(
+                        'href'  => '#',
+                        'target' => '_self',
+                        'value' => 'Preview',
+                        'btn-class' => 'exopite-sof-btn'
+                    ),
+                ),
             )
         );
 

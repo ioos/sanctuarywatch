@@ -284,7 +284,10 @@ class Webcr {
 			}
 
 			if ( $column === 'scene_infographic' ) {
-				echo get_post_meta( $post_id, 'scene_infographic', true ); //get_the_post_thumbnail( $post_id, array( 80, 80 ) );
+					$scene_infographic = get_post_meta($post_id, 'scene_infographic', true);
+					if (!empty($scene_infographic)) {
+							echo '<img src="' . esc_url($scene_infographic) . '" style="max-width:100px; max-height:100px;" /><br>';
+					}
 			}
 
 			if ($column == 'scene_tagline'){
@@ -309,9 +312,6 @@ class Webcr {
 
 		}
 		add_action( 'manage_scene_posts_custom_column', 'custom_scene_column', 10, 2);
-		
-
-
 
 			// JAI - new function for adding scenes 
 			function custom_content_type_scene() {
