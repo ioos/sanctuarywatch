@@ -268,17 +268,45 @@ class Webcr {
 
 		function change_scene_columns( $columns ) {
 			$columns['scene_location'] = 'Location';
+			$columns['scene_infographic'] = 'Infographic';		
+			$columns['scene_tagline'] = 'Tagline';			
+			$columns['scene_info_link'] = 'Info Link';		
+			$columns['scene_info_photo_link'] = 'Photo Link';		
 			return $columns;
 		}
 
 		add_filter( 'manage_scene_posts_columns', 'change_scene_columns' );
 
 		function custom_scene_column( $column, $post_id ) {  
-		// scene location column
-		if ( $column === 'scene_location' ) {
-			echo get_post_meta( $post_id, 'scene_location', true );
-		}
-		
+			// scene location column
+			if ( $column === 'scene_location' ) {
+				echo get_post_meta( $post_id, 'scene_location', true ); 
+			}
+
+			if ( $column === 'scene_infographic' ) {
+				echo get_post_meta( $post_id, 'scene_infographic', true ); //get_the_post_thumbnail( $post_id, array( 80, 80 ) );
+			}
+
+			if ($column == 'scene_tagline'){
+				echo get_post_meta( $post_id, 'scene_tagline', true );
+			}
+
+			if ($column == 'scene_info_photo_link'){
+				$photo_link_value = get_post_meta( $post_id, 'scene_info_photo_link', true );
+				echo $photo_link_value;
+			//	if ($photo_link_value != NULL){
+			//		echo '<span class="dashicons dashicons-yes"></span>'; // get_post_meta( $post_id, 'scene_tagline', true );
+			//	}
+			}
+
+			if ($column == 'scene_info_link'){
+				$link_value = get_post_meta( $post_id, 'scene_info_link', true );
+			//	echo $photo_link_value;
+				if ($link_value != NULL){
+					echo '<span class="dashicons dashicons-yes"></span>'; // get_post_meta( $post_id, 'scene_tagline', true );
+				}
+			}
+
 		}
 		add_action( 'manage_scene_posts_custom_column', 'custom_scene_column', 10, 2);
 		

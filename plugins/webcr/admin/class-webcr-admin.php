@@ -159,7 +159,7 @@ class Webcr_Admin {
         $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
         $locations=[];
         foreach ( $locations_array as $locations_row ){
-            array_push($locations, $locations_row -> name );    
+            $locations[$locations_row -> name] = $locations_row -> name;
         }
 
         $fields[] = array(
