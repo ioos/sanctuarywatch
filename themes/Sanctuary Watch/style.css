@@ -1,4 +1,15 @@
-/**
-* Theme Name: Sanctuary Watch
-* Template: developry-lite
+/*
+Theme Name: Sanctuary Watch
+Template: developry-lite
 */
+
+#top-bar {
+    background-color: white;
+    text-align: center;
+    padding: 5px;
+}
+
+#top-bar img {
+    max-width: 100%;
+    height: auto;
+}
