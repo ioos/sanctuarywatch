@@ -222,6 +222,16 @@ class Webcr {
 		}
 		add_action( 'admin_notices', 'webcr_admin_notice' );
 
+		//JAI - adjust length of output in columns for scene admin table
+		function scene_output_length () {
+			echo '<select name="field_length" id="field_length">
+			  <option selected value="large">Full values</option>
+			  <option value="medium">Medium values</option>
+			  <option value="small">Short values</option>
+			</select>';
+		}
+		add_action('restrict_manage_posts', 'scene_output_length');
+
 		// JAI CREATE CUSTOM CONTENT TYPES
 		$plugin_post_types = new Plugin_Name_Post_Types();
 		//JAI - add Scene custom content type
