@@ -96,7 +96,7 @@ class Webcr_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/webcr-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/webcr-admin.js', array( 'jquery' ), false);
 		wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array( 'jquery' ), $this->version, array('strategy'  => 'async') );
 	}
 
@@ -205,6 +205,16 @@ class Webcr_Admin {
                     'title'       => 'Scene Info Photo Link',
                     'class'       => 'text-class',
                     'description' => 'Add description',
+                ),
+                array(
+                    'id'      => 'scene_order',
+                    'type'    => 'number',
+                    'title'   => 'Scene Order',
+                    'description' => 'Add description',
+                    'default' => '1',                                     // optional
+                    'min'     => '1',                                      // optional
+                    'max'     => '10',                                     // optional
+                    'step'    => '1',                                      // optional
                 ),
 
                 array(

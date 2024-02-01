@@ -281,7 +281,8 @@ class Webcr {
 			$columns['scene_infographic'] = 'Infographic';		
 			$columns['scene_tagline'] = 'Tagline';			
 			$columns['scene_info_link'] = 'Info Link';		
-			$columns['scene_info_photo_link'] = 'Photo Link';		
+			$columns['scene_info_photo_link'] = 'Photo Link';
+			$columns['scene_order'] = 'Order';					
 			return $columns;
 		}
 
@@ -289,6 +290,8 @@ class Webcr {
 
 		function custom_scene_column( $column, $post_id ) {  
 			// scene location column
+	
+		$field_length = $_POST['field_length'];
 			if ( $column === 'scene_location' ) {
 				echo get_post_meta( $post_id, 'scene_location', true ); 
 			}
@@ -319,9 +322,13 @@ class Webcr {
 					echo '<span class="dashicons dashicons-yes"></span>'; // get_post_meta( $post_id, 'scene_tagline', true );
 				}
 			}
+			if ( $column === 'scene_order' ) {
+				echo get_post_meta( $post_id, 'scene_order', true ); 
+			}
 
 		}
 		add_action( 'manage_scene_posts_custom_column', 'custom_scene_column', 10, 2);
+
 
 			// JAI - new function for adding scenes 
 			function custom_content_type_scene() {
