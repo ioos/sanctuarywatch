@@ -224,11 +224,12 @@ class Webcr {
 
 		//JAI - adjust length of output in columns for scene admin table
 		function scene_output_length () {
-			echo '<select name="field_length" id="field_length">
+		
+			echo '<form method="post" action="demo_request.php"><select name="field_length" id="field_length" data-post_id="23">
 			  <option selected value="large">Full values</option>
 			  <option value="medium">Medium values</option>
 			  <option value="small">Short values</option>
-			</select>';
+			</select></form>';
 		}
 		add_action('restrict_manage_posts', 'scene_output_length');
 
@@ -290,8 +291,19 @@ class Webcr {
 
 		function custom_scene_column( $column, $post_id ) {  
 			// scene location column
-	
-		$field_length = $_POST['field_length'];
+	?>
+	<script type="text/javascript"> 
+		if (typeof fieldLength === 'undefined'){
+			let fieldLength = document.getElementsByName("field_length")[0].value;
+    		console.log(fieldLength); 
+			document.cookie = "fieldLength=" + fieldLength + "; expires=" + new Date(new Date().getTime() + 10 * 1000).toUTCString();
+		}
+	</script> 
+	<?php
+		$OutputLength = stripslashes($_COOKIE["fieldLength"]);
+	//		$name1 = $_REQUEST["post_id"];
+			echo "<script>console.log('Debug Objects: " . $OutputLength . "' );</script>";
+//		$field_length = $_POST['field_length'];
 			if ( $column === 'scene_location' ) {
 				echo get_post_meta( $post_id, 'scene_location', true ); 
 			}
