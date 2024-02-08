@@ -1,13 +1,14 @@
 ### WordPress  ###
-.DS_Store
+**/*.DS_Store
 db.php
 debug.log
 /upgrade/
 /upgrade-temp-backup/
 /uploads/
 /themes/
-/plugins/.DS_Store
-/plugins/webcr/.DS_Store
 /plugins/debug-bar/
 /plugins/query-monitor/
 /plugins/svg-support/
+/plugins/.DS_Store
+/plugins/webcr/.DS_Store
+/plugins/webcr/admin/.DS_Store
