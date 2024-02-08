@@ -223,38 +223,58 @@ class Webcr {
 		add_action( 'admin_notices', 'webcr_admin_notice' );
 
 		//JAI - adjust length of output in columns for scene admin table
-		function scene_output_length () {
-		
-			$fieldOptions = array(
-				array("", "large", "Full values"),
-				array("", "medium", "Medium values"),
-				array("", "small", "Short values")
-			);
+		function scene_filter_dropdowns () {
+			$screen = get_current_screen();
+			if ( $screen->id == 'edit-scene' ){
+				$fieldOptions = array(
+					array("", "large", "Full values"),
+					array("", "medium", "Medium values"),
+					array("", "small", "Short values")
+				);
 
-			if (isset($_GET["field_length"])) {
-				$field_length = $_GET["field_length"];
-				switch ($field_length){
-					case "large":
-						$fieldOptions[0][0] = "selected ";
-						break;
-					case "medium":
-						$fieldOptions[1][0] = "selected ";
-						break;
-					case "small":
-						$fieldOptions[2][0] = "selected ";
-						break;
+				if (isset($_GET["field_length"])) {
+					$field_length = $_GET["field_length"];
+					switch ($field_length){
+						case "large":
+							$fieldOptions[0][0] = "selected ";
+							break;
+						case "medium":
+							$fieldOptions[1][0] = "selected ";
+							break;
+						case "small":
+							$fieldOptions[2][0] = "selected ";
+							break;
+					}
 				}
-			}
 
-			$field_length_dropdown = '<select name="field_length" id="field_length">';
-			for ($i=0; $i <3; $i++){
-				$field_length_dropdown .= '<option ' . $fieldOptions[$i][0] .  'value="' . $fieldOptions[$i][1] .'">' . $fieldOptions[$i][2] . '</option>';
-			}
-			$field_length_dropdown .= '</select>';
+				$field_length_dropdown = '<select name="field_length" id="field_length">';
+				for ($i=0; $i <3; $i++){
+					$field_length_dropdown .= '<option ' . $fieldOptions[$i][0] .  'value="' . $fieldOptions[$i][1] .'">' . $fieldOptions[$i][2] . '</option>';
+				}
+				$field_length_dropdown .= '</select>';
 
-			echo $field_length_dropdown;
+				echo $field_length_dropdown;
+				
+				// Second filter
+				$locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
+				$locations = array("All Locations");
+				foreach ( $locations_array as $locations_row ){
+					array_push($locations, $locations_row -> name); 
+				}
+
+				$location_dropdown = '<select name="scene_location" id="scene_location">';
+				$location_count = count($locations);
+				for ($i=0; $i < $location_count; $i++){
+	//				$location_dropdown .= '<option value="' . $i .'">' . $i . '</option>';
+					$location_dropdown .= '<option value="' . str_replace(" ", "_", $locations[$i]) .'">' . $locations[$i] . '</option>';
+				}
+				$location_dropdown .= '</select>';
+				echo $location_dropdown;
+				// https://pressidium.com/blog/wordpress-admin-tables-add-custom-filters/
+			}
 		}
-		add_action('restrict_manage_posts', 'scene_output_length');
+
+		add_action('restrict_manage_posts', 'scene_filter_dropdowns');
 
 		// JAI CREATE CUSTOM CONTENT TYPES
 		$plugin_post_types = new Plugin_Name_Post_Types();

@@ -176,6 +176,7 @@ class Webcr_Admin {
                     'default_option' => 'Scene Location',
                     'description' => 'Scene Location',
                      'default'     => ' ',
+                     'class'      => 'chosen', 
                 ),
 
                 array(
@@ -202,7 +203,7 @@ class Webcr_Admin {
                 array(
                     'id'          => 'scene_info_photo_link',
                     'type'        => 'text',
-                    'title'       => 'Scene Info Photo Link',
+                    'title'       => 'Scene Photo Link',
                     'class'       => 'text-class',
                     'description' => 'Add description',
                 ),
