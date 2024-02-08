@@ -257,15 +257,27 @@ class Webcr {
 				
 				// Second filter
 				$locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
-				$locations = array("All Locations");
+				$locations = array(array("All Locations", ""));
 				foreach ( $locations_array as $locations_row ){
-					array_push($locations, $locations_row -> name); 
+					array_push($locations, array($locations_row -> name,"")); 
+				}
+
+
+				$scene_location_rows = 0;
+				foreach($locations as $locations=>$inner_array){
+					$scene_location_rows = $scene_location_rows+1;
+				}
+
+				if (isset($_GET["scene_location"])) { 
+					$scene_location = $_GET["scene_location"];
+					//STOPPED HERE 
+
 				}
 
 				$location_dropdown = '<select name="scene_location" id="scene_location">';
-				$location_count = count($locations);
-				for ($i=0; $i < $location_count; $i++){
-	//				$location_dropdown .= '<option value="' . $i .'">' . $i . '</option>';
+			//	$location_count = count($locations);
+				for ($i=0; $i < $scene_location_rows; $i++){
+					//				$location_dropdown .= '<option value="' . $i .'">' . $i . '</option>';
 					$location_dropdown .= '<option value="' . str_replace(" ", "_", $locations[$i]) .'">' . $locations[$i] . '</option>';
 				}
 				$location_dropdown .= '</select>';
@@ -275,6 +287,28 @@ class Webcr {
 		}
 
 		add_action('restrict_manage_posts', 'scene_filter_dropdowns');
+
+		function scene_location_filter_results($query){
+			if ( isset($_GET['post_type']) ) {
+				$post_type = $_GET['post_type'];
+				if ($post_type = "scene"){
+					if(isset($_GET['scene_location'])){
+						$scene_location = str_replace("_", " ", $_GET['scene_location']);
+						if($scene_location != "All Locations"){
+							$meta_query = array( 'relation' => 'OR' );
+
+							array_push( $meta_query, array(
+								'key' => "scene_location",
+								'value' => $scene_location,
+								'compare' => 'LIKE'
+							));
+							$query->set( 'meta_query', $meta_query );
+						}
+					}
+				}
+			}
+		}
+		add_action('pre_get_posts','scene_location_filter_results');
 
 		// JAI CREATE CUSTOM CONTENT TYPES
 		$plugin_post_types = new Plugin_Name_Post_Types();
@@ -424,56 +458,55 @@ class Webcr {
 		}
 		add_action( 'manage_scene_posts_custom_column', 'custom_scene_column', 10, 2);
 
-
-			// JAI - new function for adding scenes 
-			function custom_content_type_scene() {
-				$labels = array(
-					'name'                  => _x( 'Scenes', 'Post type general name', 'textdomain' ),
-					'singular_name'         => _x( 'Scene', 'Post type singular name', 'textdomain' ),
-					'menu_name'             => _x( 'Scenes', 'Admin Menu text', 'textdomain' ),
-					'name_admin_bar'        => _x( 'Scene', 'Add New on Toolbar', 'textdomain' ),
-					'add_new'               => __( 'Add New Scene', 'textdomain' ),
-					'add_new_item'          => __( 'Add New Scene', 'textdomain' ),
-					'new_item'              => __( 'New Scene', 'textdomain' ),
-					'edit_item'             => __( 'Edit Scene', 'textdomain' ),
-					'view_item'             => __( 'View Scene', 'textdomain' ),
-					'all_items'             => __( 'All Scenes', 'textdomain' ),
-					'search_items'          => __( 'Search Scenes', 'textdomain' ),
-					'parent_item_colon'     => __( 'Parent Scenes:', 'textdomain' ),
-					'not_found'             => __( 'No Scenes found.', 'textdomain' ),
-					'not_found_in_trash'    => __( 'No Scenes found in Trash.', 'textdomain' ),
-					'featured_image'        => _x( 'Scene Cover Image', 'Overrides the “Featured Image” phrase for this post type. Added in 4.3', 'textdomain' ),
-					'set_featured_image'    => _x( 'Set cover image', 'Overrides the “Set featured image” phrase for this post type. Added in 4.3', 'textdomain' ),
-					'remove_featured_image' => _x( 'Remove cover image', 'Overrides the “Remove featured image” phrase for this post type. Added in 4.3', 'textdomain' ),
-					'use_featured_image'    => _x( 'Use as cover image', 'Overrides the “Use as featured image” phrase for this post type. Added in 4.3', 'textdomain' ),
-					'archives'              => _x( 'Scene archives', 'The post type archive label used in nav menus. Default “Post Archives”. Added in 4.4', 'textdomain' ),
-					'insert_into_item'      => _x( 'Insert into Scene', 'Overrides the “Insert into post”/”Insert into page” phrase (used when inserting media into a post). Added in 4.4', 'textdomain' ),
-					'uploaded_to_this_item' => _x( 'Uploaded to this Scene', 'Overrides the “Uploaded to this post”/”Uploaded to this page” phrase (used when viewing media attached to a post). Added in 4.4', 'textdomain' ),
-					'filter_items_list'     => _x( 'Filter Scenes list', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'textdomain' ),
-					'items_list_navigation' => _x( 'Scenes list navigation', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'textdomain' ),
-					'items_list'            => _x( 'Scenes list', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'textdomain' ),
-				);
-			
-				$args = array(
-					'labels'             => $labels,
-					'public'             => true,
-					'publicly_queryable' => true,
-					'show_ui'            => true,
-					'show_in_menu'       => true,
-					'query_var'          => true,
-					'rewrite'            => array( 'slug' => 'scenes' ),
-					'capability_type'    => 'post',
-					'menu_icon'          => 'dashicons-tag',
-					'has_archive'        => true,
-					'hierarchical'       => false,
-					'menu_position'      => null,
-					'supports'           => array( 'title', 'revisions' ),
-				);
-			
-				register_post_type( 'scene', $args );
-			}
-			
-			add_action( 'init', 'custom_content_type_scene' );
+		// JAI - new function for adding scenes 
+		function custom_content_type_scene() {
+			$labels = array(
+				'name'                  => _x( 'Scenes', 'Post type general name', 'textdomain' ),
+				'singular_name'         => _x( 'Scene', 'Post type singular name', 'textdomain' ),
+				'menu_name'             => _x( 'Scenes', 'Admin Menu text', 'textdomain' ),
+				'name_admin_bar'        => _x( 'Scene', 'Add New on Toolbar', 'textdomain' ),
+				'add_new'               => __( 'Add New Scene', 'textdomain' ),
+				'add_new_item'          => __( 'Add New Scene', 'textdomain' ),
+				'new_item'              => __( 'New Scene', 'textdomain' ),
+				'edit_item'             => __( 'Edit Scene', 'textdomain' ),
+				'view_item'             => __( 'View Scene', 'textdomain' ),
+				'all_items'             => __( 'All Scenes', 'textdomain' ),
+				'search_items'          => __( 'Search Scenes', 'textdomain' ),
+				'parent_item_colon'     => __( 'Parent Scenes:', 'textdomain' ),
+				'not_found'             => __( 'No Scenes found.', 'textdomain' ),
+				'not_found_in_trash'    => __( 'No Scenes found in Trash.', 'textdomain' ),
+				'featured_image'        => _x( 'Scene Cover Image', 'Overrides the “Featured Image” phrase for this post type. Added in 4.3', 'textdomain' ),
+				'set_featured_image'    => _x( 'Set cover image', 'Overrides the “Set featured image” phrase for this post type. Added in 4.3', 'textdomain' ),
+				'remove_featured_image' => _x( 'Remove cover image', 'Overrides the “Remove featured image” phrase for this post type. Added in 4.3', 'textdomain' ),
+				'use_featured_image'    => _x( 'Use as cover image', 'Overrides the “Use as featured image” phrase for this post type. Added in 4.3', 'textdomain' ),
+				'archives'              => _x( 'Scene archives', 'The post type archive label used in nav menus. Default “Post Archives”. Added in 4.4', 'textdomain' ),
+				'insert_into_item'      => _x( 'Insert into Scene', 'Overrides the “Insert into post”/”Insert into page” phrase (used when inserting media into a post). Added in 4.4', 'textdomain' ),
+				'uploaded_to_this_item' => _x( 'Uploaded to this Scene', 'Overrides the “Uploaded to this post”/”Uploaded to this page” phrase (used when viewing media attached to a post). Added in 4.4', 'textdomain' ),
+				'filter_items_list'     => _x( 'Filter Scenes list', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'textdomain' ),
+				'items_list_navigation' => _x( 'Scenes list navigation', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'textdomain' ),
+				'items_list'            => _x( 'Scenes list', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'textdomain' ),
+			);
+		
+			$args = array(
+				'labels'             => $labels,
+				'public'             => true,
+				'publicly_queryable' => true,
+				'show_ui'            => true,
+				'show_in_menu'       => true,
+				'query_var'          => true,
+				'rewrite'            => array( 'slug' => 'scenes' ),
+				'capability_type'    => 'post',
+				'menu_icon'          => 'dashicons-tag',
+				'has_archive'        => true,
+				'hierarchical'       => false,
+				'menu_position'      => null,
+				'supports'           => array( 'title', 'revisions' ),
+			);
+		
+			register_post_type( 'scene', $args );
+		}
+		
+		add_action( 'init', 'custom_content_type_scene' );
 
 	}
 
