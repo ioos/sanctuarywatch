@@ -225,11 +225,34 @@ class Webcr {
 		//JAI - adjust length of output in columns for scene admin table
 		function scene_output_length () {
 		
-			echo '<form method="post" action="demo_request.php"><select name="field_length" id="field_length" data-post_id="23">
-			  <option selected value="large">Full values</option>
-			  <option value="medium">Medium values</option>
-			  <option value="small">Short values</option>
-			</select></form>';
+			$fieldOptions = array(
+				array("", "large", "Full values"),
+				array("", "medium", "Medium values"),
+				array("", "small", "Short values")
+			);
+
+			if (isset($_GET["field_length"])) {
+				$field_length = $_GET["field_length"];
+				switch ($field_length){
+					case "large":
+						$fieldOptions[0][0] = "selected ";
+						break;
+					case "medium":
+						$fieldOptions[1][0] = "selected ";
+						break;
+					case "small":
+						$fieldOptions[2][0] = "selected ";
+						break;
+				}
+			}
+
+			$field_length_dropdown = '<select name="field_length" id="field_length">';
+			for ($i=0; $i <3; $i++){
+				$field_length_dropdown .= '<option ' . $fieldOptions[$i][0] .  'value="' . $fieldOptions[$i][1] .'">' . $fieldOptions[$i][2] . '</option>';
+			}
+			$field_length_dropdown .= '</select>';
+
+			echo $field_length_dropdown;
 		}
 		add_action('restrict_manage_posts', 'scene_output_length');
 
@@ -289,21 +312,30 @@ class Webcr {
 
 		add_filter( 'manage_scene_posts_columns', 'change_scene_columns' );
 
+		//JAI - function for shortening string without chopping words
+		function tokenTruncate($string, $your_desired_width) {
+			$parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
+			$parts_count = count($parts);
+		  
+			$length = 0;
+			//$last_part = 0;
+			for ($last_part = 0; $last_part < $parts_count; ++$last_part) {
+			  $length += strlen($parts[$last_part]);
+			  if ($length > $your_desired_width) { break; }
+			}
+		  
+			return implode(array_slice($parts, 0, $last_part));
+		  }
+
 		function custom_scene_column( $column, $post_id ) {  
 			// scene location column
-	?>
-	<script type="text/javascript"> 
-		if (typeof fieldLength === 'undefined'){
-			let fieldLength = document.getElementsByName("field_length")[0].value;
-    		console.log(fieldLength); 
-			document.cookie = "fieldLength=" + fieldLength + "; expires=" + new Date(new Date().getTime() + 10 * 1000).toUTCString();
-		}
-	</script> 
-	<?php
-		$OutputLength = stripslashes($_COOKIE["fieldLength"]);
-	//		$name1 = $_REQUEST["post_id"];
-			echo "<script>console.log('Debug Objects: " . $OutputLength . "' );</script>";
-//		$field_length = $_POST['field_length'];
+
+			if (isset($_GET["field_length"])) {
+				$field_length = $_GET["field_length"];
+			} else {
+				$field_length = "large";
+			}
+
 			if ( $column === 'scene_location' ) {
 				echo get_post_meta( $post_id, 'scene_location', true ); 
 			}
@@ -316,22 +348,53 @@ class Webcr {
 			}
 
 			if ($column == 'scene_tagline'){
-				echo get_post_meta( $post_id, 'scene_tagline', true );
+				$scene_tagline = get_post_meta( $post_id, 'scene_tagline', true );
+				switch ($field_length){
+					case "large":
+						echo $scene_tagline;
+						break;
+					case "medium":
+						echo tokenTruncate($scene_tagline, 75);
+						break;
+					case "small":
+						if ($scene_tagline != NULL){
+							echo '<span class="dashicons dashicons-yes"></span>';
+						}
+						break;
+				}
 			}
 
 			if ($column == 'scene_info_photo_link'){
 				$photo_link_value = get_post_meta( $post_id, 'scene_info_photo_link', true );
-				echo $photo_link_value;
-			//	if ($photo_link_value != NULL){
-			//		echo '<span class="dashicons dashicons-yes"></span>'; // get_post_meta( $post_id, 'scene_tagline', true );
-			//	}
+				switch ($field_length){
+					case "large":
+						echo $photo_link_value;
+						break;
+					case "medium":
+						echo substr($photo_link_value, 0, 40);
+						break;
+					case "small":
+						if ($photo_link_value != NULL){
+							echo '<span class="dashicons dashicons-yes"></span>';
+						}
+						break;
+				}
 			}
 
 			if ($column == 'scene_info_link'){
 				$link_value = get_post_meta( $post_id, 'scene_info_link', true );
-			//	echo $photo_link_value;
-				if ($link_value != NULL){
-					echo '<span class="dashicons dashicons-yes"></span>'; // get_post_meta( $post_id, 'scene_tagline', true );
+				switch ($field_length){
+					case "large":
+						echo $link_value;
+						break;
+					case "medium":
+						echo substr($link_value, 0, 40);
+						break;
+					case "small":
+						if ($link_value != NULL){
+							echo '<span class="dashicons dashicons-yes"></span>';
+						}
+						break;
 				}
 			}
 			if ( $column === 'scene_order' ) {
