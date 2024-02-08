@@ -312,7 +312,7 @@ class Webcr {
 
 		add_filter( 'manage_scene_posts_columns', 'change_scene_columns' );
 
-		//JAI - function for shortening string without chopping words
+		//JAI - function for shortening string without chopping words midword
 		function tokenTruncate($string, $your_desired_width) {
 			$parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
 			$parts_count = count($parts);
