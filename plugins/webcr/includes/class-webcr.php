@@ -177,6 +177,26 @@ class Webcr {
 		$this->loader->add_filter( 'login_title', $plugin_admin, 'custom_login_title' );
 		$this->loader->add_filter( 'login_title', $plugin_admin, 'custom_login_title' );
 
+		//Jai - remove comments from dashboard sidebar
+		function remove_comments(){
+			global $wp_admin_bar;
+			$wp_admin_bar->remove_menu('comments');
+		}
+		add_action( 'wp_before_admin_bar_render', 'remove_comments' );
+
+		//Jai - remove comments from dashboard sidebar
+		function remove_comments_menu() {
+			remove_menu_page('edit-comments.php');
+		}
+		add_action('admin_menu', 'remove_comments_menu');
+
+			//JAI - remove unwanted dashboard widgets
+		function wpdocs_remove_dashboard_widgets(){
+		   remove_meta_box('dashboard_quick_press', 'dashboard', 'side');
+		   remove_meta_box('dashboard_primary', 'dashboard', 'side');
+		}
+		add_action('wp_dashboard_setup', 'wpdocs_remove_dashboard_widgets');
+
 		// JAI - add warning
 		// JAI URL for warning messages https://www.wpbeginner.com/wp-tutorials/how-to-add-admin-notices-in-wordpress/
 		// five classes: notice-warning, notice-error, notice-info, notice-success, plus is-dismissable
@@ -222,7 +242,7 @@ class Webcr {
 		}
 		add_action( 'admin_notices', 'webcr_admin_notice' );
 
-		//JAI - adjust length of output in columns for scene admin table
+		//JAI - add two filter dropdowns for scene admin table
 		function scene_filter_dropdowns () {
 			$screen = get_current_screen();
 			if ( $screen->id == 'edit-scene' ){
@@ -255,31 +275,30 @@ class Webcr {
 
 				echo $field_length_dropdown;
 				
-				// Second filter
 				$locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
 				$locations = array(array("All Locations", ""));
 				foreach ( $locations_array as $locations_row ){
 					array_push($locations, array($locations_row -> name,"")); 
 				}
 
-
-				$scene_location_rows = 0;
-				foreach($locations as $locations=>$inner_array){
-					$scene_location_rows = $scene_location_rows+1;
-				}
-
 				if (isset($_GET["scene_location"])) { 
-					$scene_location = $_GET["scene_location"];
-					//STOPPED HERE 
-
+					$scene_location = str_replace("_", " ", $_GET["scene_location"]);
+					$i = 0;
+					foreach ($locations as $location_row) {
+						if ($location_row[0] == $scene_location) {
+							$locations[$i][1] = "selected ";
+							break;
+						}
+						$i++;
+					}
 				}
 
 				$location_dropdown = '<select name="scene_location" id="scene_location">';
-			//	$location_count = count($locations);
-				for ($i=0; $i < $scene_location_rows; $i++){
-					//				$location_dropdown .= '<option value="' . $i .'">' . $i . '</option>';
-					$location_dropdown .= '<option value="' . str_replace(" ", "_", $locations[$i]) .'">' . $locations[$i] . '</option>';
+				foreach ($locations as $location_row) {
+					$location_dropdown .= '<option ' . $location_row[1] . 'value="' . $location_row[0] .'">' . $location_row[0]  . '</option>';
 				}
+			
+
 				$location_dropdown .= '</select>';
 				echo $location_dropdown;
 				// https://pressidium.com/blog/wordpress-admin-tables-add-custom-filters/
@@ -355,12 +374,19 @@ class Webcr {
 			// https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
 
 		function change_scene_columns( $columns ) {
-			$columns['scene_location'] = 'Location';
-			$columns['scene_infographic'] = 'Infographic';		
-			$columns['scene_tagline'] = 'Tagline';			
-			$columns['scene_info_link'] = 'Info Link';		
-			$columns['scene_info_photo_link'] = 'Photo Link';
-			$columns['scene_order'] = 'Order';					
+
+			$columns = array (
+				//'cb' => $columns['cb'],
+				'title' => 'Title',
+				'scene_location' => 'Location',
+				'scene_infographic' => 'Infographic',		
+				'scene_tagline' => 'Tagline',			
+				'scene_info_link' => 'Info Link',		
+				'scene_info_photo_link' => 'Photo Link',
+				'scene_order' => 'Order',	
+				'status' => 'Status',
+			);
+			
 			return $columns;
 		}
 
@@ -455,8 +481,71 @@ class Webcr {
 				echo get_post_meta( $post_id, 'scene_order', true ); 
 			}
 
+			if ($column === "status"){
+				date_default_timezone_set('America/Los_Angeles'); // Change 'America/New_York' to your local timezone
+				$last_modified_time = get_post_modified_time('g:i A', false, $post_id, true);
+				$last_modified_date = get_post_modified_time('F j, Y', false, $post_id, true);
+				$last_modified_user_id = get_post_field('post_author', $post_id);
+				$last_modified_user = get_userdata($last_modified_user_id);
+				$last_modified_name = $last_modified_user -> first_name . " " . $last_modified_user -> last_name; 
+
+				echo "Last updated at " . $last_modified_time . " Pacific Time on " . $last_modified_date . " by " . $last_modified_name;
+			}
+
 		}
 		add_action( 'manage_scene_posts_custom_column', 'custom_scene_column', 10, 2);
+
+		//JAI - make Location a sortable field
+		function custom_column_sortable($columns) {
+			$columns['scene_location'] = 'scene_location';
+			return $columns;
+		}
+		add_filter('manage_edit-scene_sortable_columns', 'custom_column_sortable');
+
+		// Apply sorting
+		function custom_column_orderby($query) {
+			if (!is_admin() || !$query->is_main_query()) {
+				return;
+			}
+
+			if ($query->get('orderby') == 'scene_location') {
+				$query->set('meta_key', 'scene_location');
+				$query->set('orderby', 'meta_value');
+			}
+		}
+		add_action('pre_get_posts', 'custom_column_orderby');
+
+		//JAI - Remove "All dates" filter from admin screen
+		add_filter('months_dropdown_results', '__return_empty_array');
+
+		//JAI - remove bulk actions from scene
+		function remove_bulk_actions_scene($actions) {
+			global $post_type;
+		
+			if ($post_type === 'scene') {
+				unset($actions['bulk-edit']);
+				unset($actions['edit']);
+				unset($actions['trash']);
+				unset($actions['spam']);
+				unset($actions['unspam']);
+				unset($actions['delete']);
+			}
+		
+			return $actions;
+		}
+		add_filter('bulk_actions-edit-scene', 'remove_bulk_actions_scene');
+
+		//Jai - remove quick edit option from scene admin
+		function scene_remove_quick_edit_link($actions, $post) {
+			global $current_screen;
+		
+			if ($current_screen->post_type === 'scene') {
+				unset($actions['inline hide-if-no-js']);
+			}
+		
+			return $actions;
+		}
+		add_filter('post_row_actions', 'scene_remove_quick_edit_link', 10, 2);
 
 		// JAI - new function for adding scenes 
 		function custom_content_type_scene() {
