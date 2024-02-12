@@ -32,7 +32,7 @@ defined( 'ABSPATH' ) || exit;
 
     <div id="top-bar">
         <a href="https://ioos.us" target="_blank">
-            <img src="<?php echo get_template_directory_uri(); ?>/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">
+			<img src="<?php echo get_stylesheet_directory_uri(); ?>/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">
         </a>
     </div>
 	 

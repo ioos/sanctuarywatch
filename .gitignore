@@ -1,5 +1,5 @@
 ### WordPress  ###
-.DS_Store
+**/*.DS_Store
 db.php
 debug.log
 /upgrade/
@@ -17,3 +17,7 @@ themes/twentytwentythree/
 themes/twentytwentytwo/
 themes/developry-lite/
 debug.log
+/plugins/.DS_Store
+/plugins/webcr/.DS_Store
+/plugins/webcr/admin/.DS_Store
+

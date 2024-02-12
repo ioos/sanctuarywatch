@@ -2,7 +2,7 @@
 	'use strict';
 	const OnSceneEditPage = document.getElementsByName("scene_tagline").length; //determining if we are on a page where we are editing a scene
 	const SceneError = getCookie("scene_post_status");
-	let consoleMessage = "not on scene edit page";
+	// let consoleMessage = "not on scene edit page";
 	if (OnSceneEditPage === 1 && SceneError === "post_error") {
 		let SceneFields = JSON.parse(getCookie("scene_error_all_fields"));	
 		//console.log(document.getElementsByName("scene_tagline")[0].value);
@@ -19,9 +19,9 @@
 
 
 	//	console.log(SceneFields["scene_info_photo_link"]);	
-		consoleMessage = "on scene edit page";
+	//	consoleMessage = "on scene edit page";
 	}
-    console.log(consoleMessage);
+    // console.log(consoleMessage);
 //	console.log(document.cookie);
 //	console.log(getCookie("scene_post_status"));
 
