@@ -288,6 +288,27 @@ class Webcr_Scene {
     }
 
     /**
+	 * Shorten string without cutting words midword.
+	 *
+     * @param string $string The string to be shortened.
+     * @param int $your_desired_width The number of characters in the shortened string.
+	 * @since    1.0.0
+	 */
+    public function stringTruncate($string, $your_desired_width) {
+        $parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
+        $parts_count = count($parts);
+        
+        $length = 0;
+        //$last_part = 0;
+        for ($last_part = 0; $last_part < $parts_count; ++$last_part) {
+            $length += strlen($parts[$last_part]);
+            if ($length > $your_desired_width) { break; }
+        }
+        
+        return implode(array_slice($parts, 0, $last_part));
+    }
+
+    /**
 	 * Make Location a sortable column in the admin screen for the Scene custom content type.
 	 *
 	 * @since    1.0.0
