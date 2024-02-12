@@ -100,147 +100,8 @@ class Webcr_Admin {
 		wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array( 'jquery' ), $this->version, array('strategy'  => 'async') );
 	}
 
-    // JAI - function to change wordpress login screen logo
-    public function webcr_login_logo() { ?>
-        <style type="text/css">
-            #login h1 a, .login h1 a {
-                background-image: url(<?php echo plugin_dir_url( __FILE__ ); ?>images/onms-logo-800.png);
-            height:150px;
-            width:150px;
-            background-size: 150px 150px;
-            background-repeat: no-repeat;
-                padding-bottom: 1px;
-            }
-        </style>
-    <?php }
-
-    //JAI - two functions to change wordpress login screen. 1) Change url associated with logo. 2) Change header text
-    public function webcr_logo_url() {
-        return home_url();
-    }
-
-    public function webcr_logo_url_title() {
-        return 'Sanctuary Watch';
-    }
-
-    // JAI - Change wordpress login screen page title
-    public function custom_login_title( $login_title ) {
-        return str_replace(array( ' &lsaquo;', ' &#8212; WordPress'), array( ' &bull;', ' Sanctuary Watch'),$login_title );
-    }
-
-    // JAI - change default favicon
-    function add_favicon() {
-        $favicon_url = plugin_dir_url( __FILE__ ) . 'images/onms-logo-80.png';
-        echo '<link rel="shortcut icon" href="' . $favicon_url . '" />';
-   }
-
-    // JAI - create scene entry fields
-    public function create_scene_fields() {
-
-        $config_metabox = array(
-
-            /*
-             * METABOX
-             */
-            'type'              => 'metabox',                       // Required, menu or metabox
-            'id'                => $this->plugin_name,              // Required, meta box id, unique, for saving meta: id[field-id]
-            'post_types'        => array( 'scene' ),                 // Post types to display meta box
-            // 'post_types'        => array( 'post', 'page' ),         // Could be multiple
-            'context'           => 'advanced',                      // 	The context within the screen where the boxes should display: 'normal', 'side', and 'advanced'.
-            'priority'          => 'default',                       // 	The priority within the context where the boxes should show ('high', 'low').
-            'title'             => 'Scene Fields',                  // The title of the metabox
-            'capability'        => 'edit_posts',                    // The capability needed to view the page
-            'tabbed'            => true,
-            // 'multilang'         => false,                        // To turn of multilang, default off except if you have qTransalte-X.
-            'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
-        );
-
-        // JAI - get list of locations
-        $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
-        $locations=[];
-        foreach ( $locations_array as $locations_row ){
-            $locations[$locations_row -> name] = $locations_row -> name;
-        }
-
-        $fields[] = array(
-            'name'   => 'basic',
-            'title'  => 'Basic',
-            'icon'   => 'dashicons-admin-generic',
-            'fields' => array(
-
-                array(
-                    'id'             => 'scene_location',
-                    'type'           => 'select',
-                    'title'          => 'Location',
-                    'options'        => $locations,
-                    'default_option' => 'Scene Location',
-                    'description' => 'Scene Location',
-                     'default'     => ' ',
-                     'class'      => 'chosen', 
-                ),
-
-                array(
-                    'id'    => 'scene_infographic',
-                    'type'  => 'image',
-                    'title' => 'Scene Infographic',
-                    'description' => 'Infographic description'
-                ),
-                array(
-                    'id'          => 'scene_tagline',
-                    'type'        => 'textarea',
-                    'title'       => 'Scene Tagline',
-                    'description' => 'Tagline description',
-                ),
-
-                array(
-                    'id'          => 'scene_info_link',
-                    'type'        => 'text',
-                    'title'       => 'Scene Info Link',
-                    'class'       => 'text-class',
-                    'description' => 'Add description',
-                ),
-
-                array(
-                    'id'          => 'scene_info_photo_link',
-                    'type'        => 'text',
-                    'title'       => 'Scene Photo Link',
-                    'class'       => 'text-class',
-                    'description' => 'Add description',
-                ),
-                array(
-                    'id'      => 'scene_order',
-                    'type'    => 'number',
-                    'title'   => 'Scene Order',
-                    'description' => 'Add description',
-                    'default' => '1',                                     // optional
-                    'min'     => '1',                                      // optional
-                    'max'     => '10',                                     // optional
-                    'step'    => '1',                                      // optional
-                ),
-
-                array(
-                    'id'          => 'scene_preview',
-                    'type'        => 'button',
-                    'title'       => 'Preview Scene',
-                    'options'     => array(
-                        'href'  => '#',
-                        'target' => '_self',
-                        'value' => 'Preview',
-                        'btn-class' => 'exopite-sof-btn'
-                    ),
-                ),
-            )
-        );
-
-        /**
-         * instantiate your admin page
-         */ 
-        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
-
-    }
-
     /**
-     * Add new image size for admin thumbnail.
+     * Add new image size for admin thumbnail. Function NOT USED as yet.
      *
      * @link https://wordpress.stackexchange.com/questions/54423/add-image-size-in-a-plugin-i-created/304941#304941
      */
@@ -248,107 +109,142 @@ class Webcr_Admin {
         add_image_size( 'new_thumbnail_size', 60, 75, true );
     }
 
-    public function add_style_to_admin_head() {
-        global $post_type;
-        if ( 'test' == $post_type ) {
-            ?>
-                <style type="text/css">
-                    .column-thumbnail {
-                        width: 80px !important;
-                    }
-                    .column-title {
-                        width: 30% !important;
-                    }
-                </style>
-            <?php
-        }
+    /**
+	 * Remove the ability to access the Comment content type from the admin bar of the dashboard.
+	 *
+	 * @since    1.0.0
+	 */
+    public function remove_comments(){
+        global $wp_admin_bar;
+        $wp_admin_bar->remove_menu('comments');
     }
 
     /**
-     * To sort, Exopite Simple Options Framework need 'options' => 'simple'.
-     * Simple options is stored az induvidual meta key, value pair, otherwise it is stored in an array.
-     *
-     *
-     * Meta key value paars need to sort as induvidual.
-     *
-     * I implemented this option because it is possible to search in serialized (array) post meta:
-     * @link https://wordpress.stackexchange.com/questions/16709/meta-query-with-meta-values-as-serialize-arrays
-     * @link https://stackoverflow.com/questions/15056407/wordpress-search-serialized-meta-data-with-custom-query
-     * @link https://www.simonbattersby.com/blog/2013/03/querying-wordpress-serialized-custom-post-data/
-     *
-     * but there is no way to sort them with wp_query or SQL.
-     * @link https://wordpress.stackexchange.com/questions/87265/order-by-meta-value-serialized-array/87268#87268
-     * "Not in any reliable way. You can certainly ORDER BY that value but the sorting will use the whole serialized string,
-     * which will give * you technically accurate results but not the results you want. You can't extract part of the string
-     * for sorting within the query itself. Even if you wrote raw SQL, which would give you access to database functions like
-     * SUBSTRING, I can't think of a dependable way to do it. You'd need a MySQL function that would unserialize the value--
-     * you'd have to write it yourself.
-     * Basically, if you need to sort on a meta_value you can't store it serialized. Sorry."
-     *
-     * It is possible to get all required posts and store them in an array and then sort them as an array,
-     * but what if you want multiple keys/value pair to be sorted?
-     *
-     * UPDATE
-     * it is maybe possible:
-     * @link http://www.russellengland.com/2012/07/how-to-unserialize-data-using-mysql.html
-     * but it is waaay more complicated and less documented as meta query sort and search.
-     * It should be not an excuse to use it, but it is not as reliable as it should be.
-     *
-     * @link https://wpquestions.com/Order_by_meta_key_where_value_is_serialized/7908
-     * "...meta info serialized is not a good idea. But you really are going to lose the ability to query your
-     * data in any efficient manner when serializing entries into the WP database.
-     *
-     * The overall performance saving and gain you think you are achieving by serialization is not going to be noticeable to
-     * any major extent. You might obtain a slightly smaller database size but the cost of SQL transactions is going to be
-     * heavy if you ever query those fields and try to compare them in any useful, meaningful manner.
-     *
-     * Instead, save serialization for data that you do not intend to query in that nature, but instead would only access in
-     * a passive fashion by the direct WP API call get_post_meta() - from that function you can unpack a serialized entry
-     * to access its array properties too."
-     */
-    public function manage_sortable_columns( $columns ) {
-
-        $columns['text_1'] = 'text_1';
-        $columns['color_2'] = 'color_2';
-        $columns['date_2'] = 'date_2';
-
-        return $columns;
-
+	 * Remove the ability to access the Comment content type from the sidebar of the dashboard.
+	 *
+	 * @since    1.0.0
+	 */
+    public function remove_comments_menu() {
+        remove_menu_page('edit-comments.php');
     }
 
-    public function manage_posts_orderby( $query ) {
-
-        if( ! is_admin() || ! $query->is_main_query() ) {
-            return;
-        }
-
-        /**
-         * meta_types:
-         * Possible values are 'NUMERIC', 'BINARY', 'CHAR', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', 'UNSIGNED'.
-         * Default value is 'CHAR'.
-         *
-         * @link https://codex.wordpress.org/Class_Reference/WP_Meta_Query
-         */
-        $columns = array(
-            'text_1'  => 'char',
-            'color_2' => 'char',
-            'date_2'  => 'date',
-        );
-
-        foreach ( $columns as $key => $type ) {
-
-            if ( $key === $query->get( 'orderby') ) {
-                $query->set( 'orderby', 'meta_value' );
-                $query->set( 'meta_key', $key );
-                $query->set( 'meta_type', $type );
-                break;
-            }
-
-        }
-
+    /**
+	 * Remove remove unwanted widgets from the WordPress dashboard.
+	 *
+	 * @since    1.0.0
+	 */
+    public function remove_dashboard_widgets(){
+        remove_meta_box('dashboard_quick_press', 'dashboard', 'side');
+        remove_meta_box('dashboard_primary', 'dashboard', 'side');
     }
-    // END ADD/REMOVE/REORDER/SORT CUSTOM POST TYPE LIST COLUMNS (test)
 
+
+
+
+
+
+
+    /**
+	 * Remove header row before fields for custom content types.
+	 *
+	 * @since    1.0.0
+	 */
+    public function remove_header_row() {
+        echo '<style>
+        .postbox-header {
+            display: none;
+            } 
+        </style>';
+    }
+
+
+
+    /**
+	 * Shorten string without cutting words midword.
+	 *
+     * @param string $string The string to be shortened.
+     * @param int $your_desired_width The number of characters in the shortened string.
+	 * @since    1.0.0
+	 */
+    public function stringTruncate($string, $your_desired_width) {
+        $parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
+        $parts_count = count($parts);
+        
+        $length = 0;
+        //$last_part = 0;
+        for ($last_part = 0; $last_part < $parts_count; ++$last_part) {
+            $length += strlen($parts[$last_part]);
+            if ($length > $your_desired_width) { break; }
+        }
+        
+        return implode(array_slice($parts, 0, $last_part));
+        }
+
+
+
+    /**
+	 * Remove WordPress version number from appearing in the lower right of admin footer.
+	 *
+	 * @since    1.0.0
+	 */
+    function wppversionremove() {
+        remove_filter( 'update_footer', 'core_update_footer' );
+    }
+
+    /**
+	 * Remove permalink from edit post admin screens.
+	 *
+	 * @since    1.0.0
+	 */
+    function hide_permalink() {
+        return '';
+    }
+
+    /**
+	 * Remove screen options metabox from edit post screens.
+	 *
+	 * @since    1.0.0
+	 */
+    function remove_screen_options() {
+        return "__return_false";
+    }
+
+    /**
+	 * Remove  "Thank you for creating with wordpress" from the lower left of the footer of admin screens.
+	 *
+	 * @since    1.0.0
+	 */
+    function remove_thank_you() {
+        return ; 
+    }
+
+    /**
+	 * Remove  "Thank you for creating with wordpress" from the lower left of the footer of admin screens.
+	 *
+	 * @since    1.0.0
+	 */
+    function remove_gutenberg() {
+        return FALSE; 
+    }
+
+    /**
+	 * Remove "All dates" filter from admin screens.
+	 *
+	 * @since    1.0.0
+	 */
+    function remove_all_dates() {
+        return array(); 
+    }
+
+    /**
+	 * Change default favicon associated with site to Sanctuary Watch logo
+	 *
+	 * @since    1.0.0
+	 */
+    function add_favicon() {
+        $favicon_url = plugin_dir_url( __FILE__ ) . 'images/onms-logo-80.png';
+        echo '<link rel="shortcut icon" href="' . $favicon_url . '" />';
+   }
 
 
 

@@ -59,7 +59,7 @@ register_activation_hook( __FILE__, 'activate_webcr' );
 register_deactivation_hook( __FILE__, 'deactivate_webcr' );
 
 /**
- * The core plugin class that is used to define internationalization,
+ * The core plugin class that is used to define
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-webcr.php';

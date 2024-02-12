@@ -1,8 +1,21 @@
 (function( $ ) {
-	'use strict';
+//	'use strict';
+
+$("div").mouseenter(function(){
+	alert("You entered p1!");
+});
+
+$(".scene_preview").click(function(){
+    $(".scene_preview").hide();
+  });
 
 
-   // if (window.console) console.log('help');
+	 $( window ).load(function() {
+		console.log("hello");
+		 });
+
+
+
 	/**
 	 * All of the code for your admin-facing JavaScript source
 	 * should reside in this file.
