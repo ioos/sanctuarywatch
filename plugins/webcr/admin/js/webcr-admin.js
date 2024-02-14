@@ -1,18 +1,18 @@
 (function( $ ) {
 //	'use strict';
 
-$("div").mouseenter(function(){
-	alert("You entered p1!");
-});
-
-$(".scene_preview").click(function(){
-    $(".scene_preview").hide();
-  });
+// adding jquery to the console
+// var script = document.createElement('script');
+// script.src='https://code.jquery.com/jquery-latest.min.js';
+// document.getElementsByTagName('head')[0].appendChild(script);
+// $('.scene_preview').click(function(){ alert("Hello"); });
 
 
-	 $( window ).load(function() {
-		console.log("hello");
-		 });
+//if (window.console) console.log('foo');
+//$( window ).load(function() {
+//	console.log("hi");
+//$('.scene_preview').click(function(){ alert("Hello"); });
+//});
 
 
 
