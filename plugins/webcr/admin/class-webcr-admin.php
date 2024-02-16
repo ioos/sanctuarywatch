@@ -82,8 +82,9 @@ class Webcr_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts($hook_suffix) {
 
+			$tempo = $hook_suffix;
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -96,8 +97,13 @@ class Webcr_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/webcr-admin.js', array( 'jquery' ), false);
-		wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array( 'jquery' ), $this->version, array('strategy'  => 'async') );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/webcr-admin.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+
+		// Load Scene-specific Javascript only when editing/creating a Scene post 
+		$current_post_type = get_post_type();
+		if ($current_post_type == "scene" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
+			wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array( 'jquery' ), $this->version, array('strategy'  => 'async') );
+		}
 	}
 
     /**

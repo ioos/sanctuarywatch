@@ -1,5 +1,40 @@
+// These functions only fire upon editing or creating a post of Scene custom content type
 (function( $ ) {
 	'use strict';
+
+	let opening_scene_info_entries = $(".range[data-depend-id='scene_info_entries']").val();
+	displaySceneInfoEntries(opening_scene_info_entries);
+
+	function displaySceneInfoEntries (entry_number){
+		for (let $i = 6; $i > entry_number; $i--){
+			let $target_text = ".text-class[data-depend-id='scene_info_link_text" + $i + "']";
+			let $target_url = ".text-class[data-depend-id='scene_info_link_url" + $i + "']";
+			$($target_text).parents().eq(6).css("display", "none");
+			$($target_text).val(function(){return  "";});
+			$($target_url).val(function(){return  "";});
+		}
+
+		for (let $i = 1; $i <= entry_number; $i++){
+			let $target = ".text-class[data-depend-id='scene_info_link_text" + $i + "']";
+			$($target).parents().eq(6).css("display", "block");
+		}
+	}
+	//alert($(".range[data-depend-id='scene_info_entries']").val());
+
+	$('.scene_preview').click(function(){ alert("Hello"); });
+	$(".range[data-depend-id='scene_info_entries']").change(function(){ 
+		let number_of_scene_info_entries = $(".range[data-depend-id='scene_info_entries']").val();
+		displaySceneInfoEntries(number_of_scene_info_entries);
+
+//		if (number_of_scene_info_entries == 0){
+//			$(".text-class[data-depend-id='scene_info_link_text1']").parents().eq(6).css("display", "none");
+//			$(".text-class[data-depend-id='scene_info_link_text1']").val(function(){return  "";});
+//			$(".text-class[data-depend-id='scene_info_link_url1']").val(function(){return  "";});
+//		} else {
+//			$(".text-class[data-depend-id='scene_info_link_text1']").parents().eq(6).css("display", "block");
+//		}
+		//alert(tempo); 
+	});
 	const OnSceneEditPage = document.getElementsByName("scene_tagline").length; //determining if we are on a page where we are editing a scene
 	const SceneError = getCookie("scene_post_status");
 	// let consoleMessage = "not on scene edit page";
