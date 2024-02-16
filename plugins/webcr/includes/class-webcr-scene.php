@@ -453,9 +453,6 @@ class Webcr_Scene {
             $locations[$locations_row -> name] = $locations_row -> name;
         }
 
-        // build AJAX link for the "on Click" event for the Scene Preview button
-        $link = admin_url('admin-ajax.php?action=scene_preview');
-
         $fields[] = array(
             'name'   => 'basic',
             'title'  => 'Basic',
@@ -490,12 +487,11 @@ class Webcr_Scene {
                     'type'    => 'range',
                     'title'   => 'Number of Scene Info Entries',
                     'description' => 'Number of Scene Info Entries description',
-                     'default' => '1',    
-                     'min'     => '0',    
-                     'max'     => '6',         
-                     'step'    => '1',             
-                ),
-//////////////                
+                    'min'     => 0,    
+                     'default' => 1,    
+                     'max'     => 6,         
+                     'step'    => 1,             
+                ),              
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_info1',
@@ -503,13 +499,13 @@ class Webcr_Scene {
                     'description' => 'Scene Info Link 1 description',
                     'fields' => array(
                         array(
-                            'id'          => 'scene_info_link_text1',
+                            'id'          => 'scene_info_text1',
                             'type'        => 'text',
                             'title'       => 'Text',
                             'class'       => 'text-class',
                         ),
                         array(
-                            'id'          => 'scene_info_link_url1',
+                            'id'          => 'scene_info_url1',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
@@ -523,13 +519,13 @@ class Webcr_Scene {
                     'description' => 'Scene Info Link 2 description',
                     'fields' => array(
                         array(
-                            'id'          => 'scene_info_link_text2',
+                            'id'          => 'scene_info_text2',
                             'type'        => 'text',
                             'title'       => 'Text',
                             'class'       => 'text-class',
                         ),
                         array(
-                            'id'          => 'scene_info_link_url2',
+                            'id'          => 'scene_info_url2',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
@@ -538,18 +534,18 @@ class Webcr_Scene {
                 ),
                 array(
                     'type' => 'fieldset',
-                    'id' => 'scene_info1',
+                    'id' => 'scene_info3',
                     'title'   => 'Scene Info Link 3',
                     'description' => 'Scene Info Link 3 description',
                     'fields' => array(
                         array(
-                            'id'          => 'scene_info_link_text3',
+                            'id'          => 'scene_info_text3',
                             'type'        => 'text',
                             'title'       => 'Text',
                             'class'       => 'text-class',
                         ),
                         array(
-                            'id'          => 'scene_info_link_url3',
+                            'id'          => 'scene_info_url3',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
@@ -563,13 +559,13 @@ class Webcr_Scene {
                     'description' => 'Scene Info Link 4 description',
                     'fields' => array(
                         array(
-                            'id'          => 'scene_info_link_text4',
+                            'id'          => 'scene_info_text4',
                             'type'        => 'text',
                             'title'       => 'Text',
                             'class'       => 'text-class',
                         ),
                         array(
-                            'id'          => 'scene_info_link_url4',
+                            'id'          => 'scene_info_url4',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
@@ -583,13 +579,13 @@ class Webcr_Scene {
                     'description' => 'Scene Info Link 5 description',
                     'fields' => array(
                         array(
-                            'id'          => 'scene_info_link_text5',
+                            'id'          => 'scene_info_text5',
                             'type'        => 'text',
                             'title'       => 'Text',
                             'class'       => 'text-class',
                         ),
                         array(
-                            'id'          => 'scene_info_link_url5',
+                            'id'          => 'scene_info_url5',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
@@ -604,21 +600,152 @@ class Webcr_Scene {
                     'description' => 'Scene Info Link 6 description',
                     'fields' => array(
                         array(
-                            'id'          => 'scene_info_link_text6',
+                            'id'          => 'scene_info_text6',
                             'type'        => 'text',
                             'title'       => 'Text',
                             'class'       => 'text-class',
                         ),
                         array(
-                            'id'          => 'scene_info_link_url6',
+                            'id'          => 'scene_info_url6',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
                     ),
                 ),
-/////////////////////
-                
+
+                array(
+                    'id'      => 'scene_photo_entries',
+                    'type'    => 'range',
+                    'title'   => 'Number of Scene Photo Entries',
+                    'description' => 'Number of Scene Photo Entries description',
+                    'min'     => 0,    
+                     'default' => 1,    
+                     'max'     => 6,         
+                     'step'    => 1,             
+                ),              
+                array(
+                    'type' => 'fieldset',
+                    'id' => 'scene_photo1',
+                    'title'   => 'Scene Photo Link 1',
+                    'description' => 'Scene Photo 1 description',
+                    'fields' => array(
+                        array(
+                            'id'          => 'scene_photo_text1',
+                            'type'        => 'text',
+                            'title'       => 'Text',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'scene_photo_url1',
+                            'type'        => 'text',
+                            'title'       => 'URL',
+                            'class'       => 'text-class',
+                        ),
+                    ),
+                ),
+                array(
+                    'type' => 'fieldset',
+                    'id' => 'scene_photo2',
+                    'title'   => 'Scene Photo Link 2',
+                    'description' => 'Scene Photo Link 2 description',
+                    'fields' => array(
+                        array(
+                            'id'          => 'scene_photo_text2',
+                            'type'        => 'text',
+                            'title'       => 'Text',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'scene_photo_url2',
+                            'type'        => 'text',
+                            'title'       => 'URL',
+                            'class'       => 'text-class',
+                        ),
+                    ),
+                ),
+                array(
+                    'type' => 'fieldset',
+                    'id' => 'scene_photo3',
+                    'title'   => 'Scene Photo Link 3',
+                    'description' => 'Scene Photo Link 3 description',
+                    'fields' => array(
+                        array(
+                            'id'          => 'scene_photo_text3',
+                            'type'        => 'text',
+                            'title'       => 'Text',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'scene_photo_url3',
+                            'type'        => 'text',
+                            'title'       => 'URL',
+                            'class'       => 'text-class',
+                        ),
+                    ),
+                ),
+                array(
+                    'type' => 'fieldset',
+                    'id' => 'scene_photo4',
+                    'title'   => 'Scene Photo Link 4',
+                    'description' => 'Scene Photo Link 4 description',
+                    'fields' => array(
+                        array(
+                            'id'          => 'scene_photo_text4',
+                            'type'        => 'text',
+                            'title'       => 'Text',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'scene_info_link_url4',
+                            'type'        => 'text',
+                            'title'       => 'URL',
+                            'class'       => 'text-class',
+                        ),
+                    ),
+                ),
+                array(
+                    'type' => 'fieldset',
+                    'id' => 'scene_photo5',
+                    'title'   => 'Scene Photo Link 5',
+                    'description' => 'Scene Photo Link 5 description',
+                    'fields' => array(
+                        array(
+                            'id'          => 'scene_photo_text5',
+                            'type'        => 'text',
+                            'title'       => 'Text',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'scene_photo_url5',
+                            'type'        => 'text',
+                            'title'       => 'URL',
+                            'class'       => 'text-class',
+                        ),
+                    ),
+                ),
+
+                array(
+                    'type' => 'fieldset',
+                    'id' => 'scene_photo6',
+                    'title'   => 'Scene Photo Link 6',
+                    'description' => 'Scene Photo Link 6 description',
+                    'fields' => array(
+                        array(
+                            'id'          => 'scene_photo_text6',
+                            'type'        => 'text',
+                            'title'       => 'Text',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'scene_photo_url6',
+                            'type'        => 'text',
+                            'title'       => 'URL',
+                            'class'       => 'text-class',
+                        ),
+                    ),
+                ),
+
                 array(
                     'id'          => 'scene_info_link',
                     'type'        => 'text',
