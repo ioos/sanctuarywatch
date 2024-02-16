@@ -1,4 +1,13 @@
 <?php
+/**
+ * Template (part) displaying common header area.
+ *
+ * @package Developry
+ * @subpackage Developry_Lite
+ * @since 1.0
+ * @version 1.0
+ */
+
 defined( 'ABSPATH' ) || exit;
 ?>
 <!doctype html>
