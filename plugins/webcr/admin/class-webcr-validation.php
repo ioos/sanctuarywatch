@@ -16,6 +16,8 @@ class webcr_validation {
         }
     }
 
+  //  function check_link_fields()
+
     public function validate_scene (){
         $save_scene_fields = true;
         $user_id = get_current_user_id();
@@ -24,6 +26,8 @@ class webcr_validation {
         setcookie("scene_errors", 0, time() - 3000, "/");
 
         $scene_errors = [];
+
+        
 
         $scene_info_link_value = $_POST['scene_info_link'];
         if (!$scene_info_link_value == "") { 
