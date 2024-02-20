@@ -42,11 +42,27 @@ class webcr_validation {
                             $save_scene_fields = FALSE;
                             array_push($scene_errors, "The URL for Scene " . ucfirst($field_type) . " Link " . $i . " is not valid");
                         } else {
-                            $url_check = get_headers($field_couplet[$field_url])[0];
+                           // $url_check = get_headers($field_couplet[$field_url])[0];
 
+                            // Set cURL options
+                            $ch = curl_init($field_couplet[$field_url]);
+                            $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the transfer as a string
+                            curl_setopt($ch, CURLOPT_NOBODY, true);  // Exclude the body from the output
+                            curl_setopt($ch, CURLOPT_HEADER, true);  // Include the header in the output
+                            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects
+                            curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  // Set User-Agent header
 
-                            //https://stackoverflow.com/questions/39113450/php-get-headers-returns-400-bad-request-and-403-forbidden-for-valid-urls
-                            if ($url_check != "HTTP/1.1 200 OK"){
+                            // Execute cURL session
+                            curl_exec($ch);
+
+                            // Get the headers
+                            $headers = curl_getinfo($ch);
+
+                            // Close cURL session
+                            curl_close($ch);
+
+                            if ($headers["http_code"] != 200){
                                 array_push($scene_warnings, "The URL for Scene " . ucfirst($field_type) . " Link " . $i . " cannot be accessed");                               
                             }
                         }
