@@ -58,8 +58,8 @@ class Webcr_Scene {
                     echo '<div class="notice notice-info is-dismissible"><p>Scene created or updated.</p></div>';
                 } 
                 else {
-                    $error_message = "<p>Error or errors in scene</p>";
                     if (isset($_COOKIE["scene_errors"])) {
+                        $error_message = "<p>Error or errors in scene</p>";
                         $error_list_coded = stripslashes($_COOKIE["scene_errors"]);
                         $error_list_array = json_decode($error_list_coded);
                         $error_array_length = count($error_list_array);
@@ -73,11 +73,28 @@ class Webcr_Scene {
 
                     if (isset($_COOKIE["scene_error_all_fields"])) {
                         $scene_fields_coded = stripslashes($_COOKIE["scene_error_all_fields"]);
-                        $scene_fields_array = json_decode($scene_fields_coded, true);		
-                        $_POST['scene_info_link'] = $scene_fields_array['scene_info_link'];
+                        $scene_fields_array = json_decode($scene_fields_coded, true);	
+                        $_POST['scene_location'] = $scene_fields_array['scene_location'];
+                        $_POST['scene_infographic'] = $scene_fields_array['scene_infographic'];
+                        $_POST['scene_tagline'] = $scene_fields_array['scene_tagline'];
+                        $_POST['scene_info_entries'] = $scene_fields_array['scene_info_entries'];
+                        $_POST['scene_photo_entries'] = $scene_fields_array['scene_photo_entries'];
+
                     }
                 }
              //   setcookie("scene_post_status", "", time() - 300, "/");
+            }
+            if (isset($_COOKIE["scene_warnings"])){
+                $warning_message = "<p>Warning or warnings in scene</p>";
+                $warning_list_coded = stripslashes($_COOKIE["scene_warnings"]);
+                $warning_list_array = json_decode($warning_list_coded);
+                $warning_array_length = count($warning_list_array);
+                $warning_message = $warning_message . '<p><ul>';
+                for ($i = 0; $i < $warning_array_length; $i++){
+                    $warning_message = $warning_message . '<li>' . $warning_list_array[$i] . '</li>';
+                }
+                $warning_message = $warning_message . '</ul></p>';
+                echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
             }
         }
     }
@@ -91,9 +108,9 @@ class Webcr_Scene {
         $screen = get_current_screen();
         if ( $screen->id == 'edit-scene' ){
             $fieldOptions = array(
-                array("", "large", "Full values"),
-                array("", "medium", "Medium values"),
-                array("", "small", "Short values")
+                array("", "large", "Full tagline"),
+                array("", "medium", "Medium tagline"),
+                array("", "small", "Short tagline")
             );
 
             if (isset($_GET["field_length"])) {
@@ -186,8 +203,8 @@ class Webcr_Scene {
             'scene_location' => 'Location',
             'scene_infographic' => 'Infographic',		
             'scene_tagline' => 'Tagline',			
-            'scene_info_link' => 'Info Link',		
-            'scene_info_photo_link' => 'Photo Link',
+            'scene_info_link' => 'Info Link Number',		
+            'scene_info_photo_link' => 'Photo Link Number',
             'scene_order' => 'Order',	
             'status' => 'Status',
         );
@@ -239,37 +256,60 @@ class Webcr_Scene {
         }
 
         if ($column == 'scene_info_photo_link'){
-            $photo_link_value = get_post_meta( $post_id, 'scene_info_photo_link', true );
-            switch ($field_length){
-                case "large":
-                    echo $photo_link_value;
-                    break;
-                case "medium":
-                    echo substr($photo_link_value, 0, 40);
-                    break;
-                case "small":
-                    if ($photo_link_value != NULL){
-                        echo '<span class="dashicons dashicons-yes"></span>';
-                    }
-                    break;
+            $url_count = 0;
+            for ($i = 1; $i < 7; $i++){
+                $search_fieldset = "scene_photo" . $i;
+                $search_field = "scene_photo_url" . $i;
+                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
+                if ($database_value != ""){
+                    $url_count++;
+                }
             }
+            echo $url_count; 
+         //   echo get_post_meta( $post_id, 'scene_photo_entries', true ); 
+ //           $photo_link_value = get_post_meta( $post_id, 'scene_info_photo_link', true );
+ //           switch ($field_length){
+   //             case "large":
+     //               echo $photo_link_value;
+    //                break;
+      //          case "medium":
+        //            echo substr($photo_link_value, 0, 40);
+          //          break;
+ //               case "small":
+   //                 if ($photo_link_value != NULL){
+     //                   echo '<span class="dashicons dashicons-yes"></span>';
+       //             }
+         //           break;
+        //    }
         }
 
         if ($column == 'scene_info_link'){
-            $link_value = get_post_meta( $post_id, 'scene_info_link', true );
-            switch ($field_length){
-                case "large":
-                    echo $link_value;
-                    break;
-                case "medium":
-                    echo substr($link_value, 0, 40);
-                    break;
-                case "small":
-                    if ($link_value != NULL){
-                        echo '<span class="dashicons dashicons-yes"></span>';
-                    }
-                    break;
+          //  echo get_post_meta( $post_id, 'scene_info_entries', true ); 
+
+            $url_count = 0;
+            for ($i = 1; $i < 7; $i++){
+                $search_fieldset = "scene_info" . $i;
+                $search_field = "scene_info_url" . $i;
+                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
+                if ($database_value != ""){
+                    $url_count++;
+                }
             }
+            echo $url_count; 
+      //      $link_value = get_post_meta( $post_id, 'scene_info_link', true );
+       //     switch ($field_length){
+       //         case "large":
+        //            echo $link_value;
+         //           break;
+         //       case "medium":
+          //          echo substr($link_value, 0, 40);
+         //           break;
+         //       case "small":
+         //           if ($link_value != NULL){
+         //               echo '<span class="dashicons dashicons-yes"></span>';
+          //          }
+          //          break;
+          //  }
         }
         if ( $column === 'scene_order' ) {
             echo get_post_meta( $post_id, 'scene_order', true ); 
@@ -697,7 +737,7 @@ class Webcr_Scene {
                             'class'       => 'text-class',
                         ),
                         array(
-                            'id'          => 'scene_info_link_url4',
+                            'id'          => 'scene_photo_link_url4',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
@@ -746,21 +786,6 @@ class Webcr_Scene {
                     ),
                 ),
 
-                array(
-                    'id'          => 'scene_info_link',
-                    'type'        => 'text',
-                    'title'       => 'Scene Info Link',
-                    'class'       => 'text-class',
-                    'description' => 'Add description',
-                ),
-
-                array(
-                    'id'          => 'scene_info_photo_link',
-                    'type'        => 'text',
-                    'title'       => 'Scene Photo Link',
-                    'class'       => 'text-class',
-                    'description' => 'Add description',
-                ),
                 array(
                     'id'      => 'scene_order',
                     'type'    => 'number',
