@@ -39,12 +39,12 @@
 	// let consoleMessage = "not on scene edit page";
 	if (OnSceneEditPage === 1 && SceneError === "post_error") {
 		let SceneFields = JSON.parse(getCookie("scene_error_all_fields"));	
-		//console.log(document.getElementsByName("scene_tagline")[0].value);
 		const SceneFieldNames =["scene_location", "scene_infographic", "scene_tagline", "scene_info_link", "scene_info_photo_link"];
 		SceneFields["scene_tagline"] = SceneFields["scene_tagline"].replace("\\'","\'");
-		console.log(SceneFields["scene_info_entries"]);
-		console.log(document.getElementsByName("scene_info_entries")[0].value);
+
+		document.getElementsByName("scene_tagline")[0].value = SceneFields["scene_tagline"];
 		document.getElementsByName("scene_info_entries")[0].value = SceneFields["scene_info_entries"];
+		document.getElementsByName("scene_infographic")[0].value = SceneFields["scene_infographic"];
 		document.getElementsByName("scene_info_entries")[0].parentElement.childNodes[1].value = SceneFields["scene_info_entries"];
 		displayEntries(SceneFields["scene_info_entries"], ".text-class[data-depend-id='scene_info_");
 		console.log(document.getElementsByName("scene_info_entries")[0].value);
