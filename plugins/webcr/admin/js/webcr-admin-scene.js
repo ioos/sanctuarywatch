@@ -45,6 +45,9 @@
 		console.log(SceneFields["scene_info_entries"]);
 		console.log(document.getElementsByName("scene_info_entries")[0].value);
 		document.getElementsByName("scene_info_entries")[0].value = SceneFields["scene_info_entries"];
+		document.getElementsByName("scene_info_entries")[0].parentElement.childNodes[1].value = SceneFields["scene_info_entries"];
+		displayEntries(SceneFields["scene_info_entries"], ".text-class[data-depend-id='scene_info_");
+		console.log(document.getElementsByName("scene_info_entries")[0].value);
 	//	for (const Field of SceneFieldNames){
 	//		document.getElementsByName(Field)[0].value = SceneFields[Field];
 //		}
