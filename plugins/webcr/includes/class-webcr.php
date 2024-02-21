@@ -189,6 +189,7 @@ class Webcr {
 		$this->loader->add_action( 'login_headerurl', $plugin_admin_logo, 'webcr_logo_url' ); //login page
 		$this->loader->add_action( 'login_headertext', $plugin_admin_logo, 'webcr_logo_url_title' ); //login page
 		$this->loader->add_filter( 'login_title', $plugin_admin_logo, 'custom_login_title' ); //login page	
+
 	}
 
 	/**

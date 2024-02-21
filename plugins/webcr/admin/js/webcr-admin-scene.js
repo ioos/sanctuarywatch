@@ -42,9 +42,12 @@
 		//console.log(document.getElementsByName("scene_tagline")[0].value);
 		const SceneFieldNames =["scene_location", "scene_infographic", "scene_tagline", "scene_info_link", "scene_info_photo_link"];
 		SceneFields["scene_tagline"] = SceneFields["scene_tagline"].replace("\\'","\'");
-		for (const Field of SceneFieldNames){
-			document.getElementsByName(Field)[0].value = SceneFields[Field];
-		}
+		console.log(SceneFields["scene_info_entries"]);
+		console.log(document.getElementsByName("scene_info_entries")[0].value);
+		document.getElementsByName("scene_info_entries")[0].value = SceneFields["scene_info_entries"];
+	//	for (const Field of SceneFieldNames){
+	//		document.getElementsByName(Field)[0].value = SceneFields[Field];
+//		}
 	//	$scene_fields['scene_location'] = $_POST['scene_location'];
     //    $scene_fields['scene_infographic'] = $_POST['scene_infographic'];
     //    $scene_fields['scene_tagline'] = $_POST['scene_tagline'];

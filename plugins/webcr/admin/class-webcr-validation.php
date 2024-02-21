@@ -16,35 +16,64 @@ class webcr_validation {
         }
     }
 
-  //  function check_link_fields()
-
     public function validate_scene (){
         $save_scene_fields = true;
-        $user_id = get_current_user_id();
 
         // Set the error list cookie expiration time to a past date in order to delete it, if it is there
         setcookie("scene_errors", 0, time() - 3000, "/");
 
         $scene_errors = [];
+        $scene_warnings = [];
+        $field_types = array("info", "photo");
 
-        
+        foreach ($field_types as $field_type){
+            for ($i = 1; $i < 7; $i++){
+                $form_fieldset = 'scene_' . $field_type .  $i;
+                $field_couplet = $_POST[$form_fieldset];
+                $field_text = "scene_" . $field_type . "_text" . $i;
+                $field_url = "scene_" . $field_type . "_url" . $i;
+                if (!$field_couplet[$field_url] == "" || !$field_couplet[$field_text] == "" ){
+                    if ($field_couplet[$field_url] == "" || $field_couplet[$field_text] == "" ){
+                        $save_scene_fields = FALSE;
+                        array_push($scene_errors,  "The URL or Text is blank for Scene " . ucfirst($field_type) . " Link " . $i);
+                    }
+                    if (!$field_couplet[$field_url] == "" ) {
+                        if ( $this -> url_check($field_couplet[$field_url]) == FALSE ) {
+                            $save_scene_fields = FALSE;
+                            array_push($scene_errors, "The URL for Scene " . ucfirst($field_type) . " Link " . $i . " is not valid");
+                        } else {
+                           // $url_check = get_headers($field_couplet[$field_url])[0];
 
-        $scene_info_link_value = $_POST['scene_info_link'];
-        if (!$scene_info_link_value == "") { 
-            if ( $this -> url_check($scene_info_link_value) == FALSE ) {
-                $save_scene_fields = FALSE;
-                array_push($scene_errors, "The URL for Scene Info Link is not valid");
-            } 
+                            // Set cURL options
+                            $ch = curl_init($field_couplet[$field_url]);
+                            $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the transfer as a string
+                            curl_setopt($ch, CURLOPT_NOBODY, true);  // Exclude the body from the output
+                            curl_setopt($ch, CURLOPT_HEADER, true);  // Include the header in the output
+                            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects
+                            curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  // Set User-Agent header
+
+                            // Execute cURL session
+                            curl_exec($ch);
+
+                            // Get the headers
+                            $headers = curl_getinfo($ch);
+
+                            // Close cURL session
+                            curl_close($ch);
+
+                            if ($headers["http_code"] != 200){
+                                array_push($scene_warnings, "The URL for Scene " . ucfirst($field_type) . " Link " . $i . " cannot be accessed");                               
+                            }
+                        }
+                    }
+                }
+            }
         }
-
-        $scene_info_photo_link_value = $_POST['scene_info_photo_link'];
-        if (!$scene_info_photo_link_value == "") { 
-            if ( $this -> url_check($scene_info_photo_link_value) == FALSE ) {
-                $save_scene_fields = FALSE;
-                array_push($scene_errors, "The URL for Scene Info Photo Link is not valid");
-            } 
+        if (!empty($scene_warnings)){
+            $warning_list_cookie_value = json_encode($scene_warnings);
+            setcookie("scene_warnings", $warning_list_cookie_value, time() + 10, "/");          
         }
-
         if ($save_scene_fields == FALSE) {
             $error_list_cookie_value = json_encode($scene_errors);
             setcookie("scene_errors", $error_list_cookie_value, time() + 10, "/");           
@@ -61,11 +90,12 @@ class webcr_validation {
         $scene_fields['scene_location'] = $_POST['scene_location'];
         $scene_fields['scene_infographic'] = $_POST['scene_infographic'];
         $scene_fields['scene_tagline'] = $_POST['scene_tagline'];
-        $scene_fields['scene_info_link'] = $_POST['scene_info_link'];
-        $scene_fields['scene_info_photo_link'] = $_POST['scene_info_photo_link'];
+        $scene_fields['scene_info_entries'] = $_POST['scene_info_entries'];
+        $scene_fields['scene_photo_entries'] = $_POST['scene_photo_entries'];
+     //   $scene_fields['scene_info_link'] = $_POST['scene_info_link'];
+     //   $scene_fields['scene_info_photo_link'] = $_POST['scene_info_photo_link'];
         $scene_fields_cookie_value = json_encode($scene_fields);
-        $user_id = get_current_user_id();
-      //  $scene_fields_cookie =  "scene_error_all_fields";
+
         setcookie("scene_error_all_fields", $scene_fields_cookie_value, time() + 10, "/"); 
     }
 
@@ -78,22 +108,5 @@ class webcr_validation {
         } 
     }
 
-    // JAI - DELETE FUNCTION
-    public function render_to_pdf() {
-        // ... whatever you need to do
-          my_trigger_notice( 1 ); // 1 here would be a key that refers to a particular message, defined elsewhere (and not shown here)
-    }
-
-     // JAI - DELETE FUNCTION   
-    function my_trigger_notice( $key = '' ) {
-        add_filter(
-            'redirect_post_location',
-            function ( $location ) use ( $key ) {
-                $key = sanitize_text_field( $key );
-    
-                return add_query_arg( array( 'notice_key' => rawurlencode( sanitize_key( $key ) ) ), $location );
-            }
-        );
-    }
 
 }
