@@ -36,18 +36,52 @@
 
 	const OnSceneEditPage = document.getElementsByName("scene_tagline").length; //determining if we are on a page where we are editing a scene
 	const SceneError = getCookie("scene_post_status");
-	// let consoleMessage = "not on scene edit page";
+
 	if (OnSceneEditPage === 1 && SceneError === "post_error") {
-		let SceneFields = JSON.parse(getCookie("scene_error_all_fields"));	
-		const SceneFieldNames =["scene_location", "scene_infographic", "scene_tagline", "scene_info_link", "scene_info_photo_link"];
+		let SceneFields = JSON.parse(getCookie("scene_error_all_fields"));
+		console.log(SceneFields);
+		SceneFields.forEach((element) => {
+			if (element === null){
+				element ="";
+			}
+		});	
+		console.log(SceneFields);
+		const SceneFieldNames =["scene_location", "scene_infographic", "scene_tagline", "scene_info_entries", "scene_photo_entries"];
 		SceneFields["scene_tagline"] = SceneFields["scene_tagline"].replace("\\'","\'");
 
-		document.getElementsByName("scene_tagline")[0].value = SceneFields["scene_tagline"];
-		document.getElementsByName("scene_info_entries")[0].value = SceneFields["scene_info_entries"];
-		document.getElementsByName("scene_infographic")[0].value = SceneFields["scene_infographic"];
+		SceneFieldNames.forEach((element) => document.getElementsByName(element)[0].value = SceneFields[element]);
+
 		document.getElementsByName("scene_info_entries")[0].parentElement.childNodes[1].value = SceneFields["scene_info_entries"];
 		displayEntries(SceneFields["scene_info_entries"], ".text-class[data-depend-id='scene_info_");
-		console.log(document.getElementsByName("scene_info_entries")[0].value);
+
+		document.getElementsByName("scene_photo_entries")[0].parentElement.childNodes[1].value = SceneFields["scene_photo_entries"];
+		displayEntries(SceneFields["scene_photo_entries"], ".text-class[data-depend-id='photo_info_");
+
+		let elementName;
+		let secondElementName;
+		const fieldClass = ["info"]//, "photo"];
+		for (let i = 1; i < 2; i++){
+			fieldClass.forEach((array_value) => {
+				elementName = "scene_" + array_value + i + "[scene_" + array_value + "_url" + i + "]";
+				secondElementName = "scene_" + array_value + "_url" + i;
+				console.log(elementName + " " + secondElementName);
+				console.log(document.getElementsByName(elementName)[0].value + " " + SceneFields[secondElementName]);
+				document.getElementsByName(elementName)[0].value = SceneFields[secondElementName];
+				elementName = "scene_" + array_value + i + "[scene_" + array_value + "_text" + i + "]";
+				secondElementName = "scene_" + array_value + "_text" + i;
+				console.log(elementName + " " + secondElementName);
+				console.log(document.getElementsByName(elementName)[0].value + " " + SceneFields[secondElementName]);
+				document.getElementsByName(elementName)[0].value = SceneFields[secondElementName];
+			});
+		}
+
+	
+
+
+	//	<input type="text" name="scene_info2[scene_info_text2]" value="" class="text-class" data-depend-id="scene_info_text2"></input>
+//<input type="text" name="scene_info2[scene_info_url2]" value="" class="text-class" data-depend-id="scene_info_url2"></input>
+
+	//	console.log(document.getElementsByName("scene_info_entries")[0].value);
 	//	for (const Field of SceneFieldNames){
 	//		document.getElementsByName(Field)[0].value = SceneFields[Field];
 //		}

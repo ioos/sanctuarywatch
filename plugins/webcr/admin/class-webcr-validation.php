@@ -42,7 +42,6 @@ class webcr_validation {
                             $save_scene_fields = FALSE;
                             array_push($scene_errors, "The URL for Scene " . ucfirst($field_type) . " Link " . $i . " is not valid");
                         } else {
-                           // $url_check = get_headers($field_couplet[$field_url])[0];
 
                             // Set cURL options
                             $ch = curl_init($field_couplet[$field_url]);
@@ -92,6 +91,14 @@ class webcr_validation {
         $scene_fields['scene_tagline'] = $_POST['scene_tagline'];
         $scene_fields['scene_info_entries'] = $_POST['scene_info_entries'];
         $scene_fields['scene_photo_entries'] = $_POST['scene_photo_entries'];
+        for ($i = 1; $i < 7; $i++){
+            $scene_fields['scene_info_url' . $i] = $_POST["scene_info" . $i]["scene_info_url" . $i];
+            $scene_fields['scene_info_text' . $i] = $_POST["scene_info" . $i]["scene_info_link" . $i];
+            $scene_fields['scene_photo_url' . $i] = $_POST["scene_info" . $i]["scene_photo_url" . $i];
+            $scene_fields['scene_photo_text' . $i] = $_POST["scene_info" . $i]["scene_photo_link" . $i];
+        }
+
+        // $_POST["scene_info1"]["scene_info_url1"]
      //   $scene_fields['scene_info_link'] = $_POST['scene_info_link'];
      //   $scene_fields['scene_info_photo_link'] = $_POST['scene_info_photo_link'];
         $scene_fields_cookie_value = json_encode($scene_fields);
