@@ -2,6 +2,8 @@
 Theme Name: Sanctuary Watch 
 */
 
+@import url('assets/bootstrap.css');
+
 #top-bar {
   background-color: white;
   text-align: center;
@@ -44,4 +46,36 @@ Theme Name: Sanctuary Watch
   padding-bottom: 20px;
   padding-left: 10%;
   padding-right: 10%;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.footer-column {
+  flex: 1;
+}
+
+.footer-column a {
+  text-decoration: none;
+  color: #55d6f8;
+}
+
+.footer h5 {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+p[itemprop="name"], p[itemprop="address"] {
+  color: white;
+}
+
+.navbar {
+  position: fixed;
+  top: 100;
+  width: 100%;
+  z-index: 1000;
 }

@@ -5,7 +5,12 @@ get_header();
 ?>
 
 <div id="body" class="body">
-</div><!-- /body -->
+    <?php 
+        for ($x = 0; $x < 100; $x++){
+            echo "<br>";
+        }
+    ?>
+</div>
 
 <?php
 get_footer();
