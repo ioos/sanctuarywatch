@@ -21,17 +21,27 @@
 		// Create a new div element
 		let newDiv = document.createElement('div');
 		newDiv.id = "preview_window";
+		newDiv.classList.add("container");
 
 		// Create an h1 element
 		let h1 = document.createElement('h1');
 		// Set the text content of the h1 element to "Hello World"
 		h1.textContent = document.getElementById("title").value
-
-		let secondRow = document.createElement("div");
-		secondRow.textContent = document.getElementsByName('scene_tagline')[0].value;
-
 		// Append the h1 element to the new div
 		newDiv.appendChild(h1);
+
+		let secondRow = document.createElement("div");
+		secondRow.classList.add("row");
+
+		let firstColumn = document.createElement("div");
+		firstColumn.classList.add("col-2");
+		firstColumn.textContent = "hello";
+		secondRow.appendChild(firstColumn);
+
+		let secondColumn = document.createElement("div");
+		secondColumn.classList.add("col-10");
+		secondColumn.textContent = document.getElementsByName('scene_tagline')[0].value;
+		secondRow.appendChild(secondColumn);
 
 		newDiv.appendChild(secondRow);
 

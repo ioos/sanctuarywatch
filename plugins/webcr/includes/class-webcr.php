@@ -147,8 +147,9 @@ class Webcr {
 
 		// Load class and functions to change overall look and function of admin screens
 		$plugin_admin = new Webcr_Admin( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );  
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' ); 
+
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles', 10 );  
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts', 10 ); 
 		$this->loader->add_action( 'login_head', $plugin_admin, 'add_favicon' ); 
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'add_favicon' ); 
 		$this->loader->add_action( 'wp_head', $plugin_admin, 'add_favicon' ); 
@@ -189,6 +190,23 @@ class Webcr {
 		$this->loader->add_action( 'login_headerurl', $plugin_admin_logo, 'webcr_logo_url' ); //login page
 		$this->loader->add_action( 'login_headertext', $plugin_admin_logo, 'webcr_logo_url_title' ); //login page
 		$this->loader->add_filter( 'login_title', $plugin_admin_logo, 'custom_login_title' ); //login page	
+
+		add_action('admin_enqueue_scripts', 'enqueue_bootstrap_admin', 5);
+
+		function enqueue_bootstrap_admin() {
+			// Enqueue Bootstrap CSS
+			wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', array(), '5.3.0');
+			
+			// Enqueue Bootstrap JavaScript
+			wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
+		}
+
+
+		add_filter('screen_options_show_screen', 'jai_no_screen_options');
+
+			 function jai_no_screen_options () {
+				return FALSE;
+			}
 
 	}
 
