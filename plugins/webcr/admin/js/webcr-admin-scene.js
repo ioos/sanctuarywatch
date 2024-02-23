@@ -2,23 +2,76 @@
 (function( $ ) {
 	'use strict';
 
+	$('.scene_preview').click(function(){ 
+
+		// Let's remove the preview window if it already exists
+		var previewWindow = document.getElementById('preview_window');
+		// If the element exists
+		if (previewWindow) {
+			// Remove the scene window
+			previewWindow.parentNode.removeChild(previewWindow);
+		}
+			
+		// Find element
+		const firstScenePreview = document.querySelector('.scene_preview');
+
+		// Find the second parent element
+		const secondParent = firstScenePreview.parentElement.parentElement;
+
+		// Create a new div element
+		let newDiv = document.createElement('div');
+		newDiv.id = "preview_window";
+
+		// Create an h1 element
+		let h1 = document.createElement('h1');
+		// Set the text content of the h1 element to "Hello World"
+		h1.textContent = document.getElementById("title").value
+
+		let secondRow = document.createElement("div");
+		secondRow.textContent = document.getElementsByName('scene_tagline')[0].value;
+
+		// Append the h1 element to the new div
+		newDiv.appendChild(h1);
+
+		newDiv.appendChild(secondRow);
+
+		// Append the new div to the second parent element
+		secondParent.appendChild(newDiv);
+
+
+	});
+
+// Run jquery from console 
+// var script = document.createElement('script');
+// script.src='https://code.jquery.com/jquery-latest.min.js';
+// document.getElementsByTagName('head')[0].appendChild(script);
+
 	let opening_scene_info_entries = $(".range[data-depend-id='scene_info_entries']").val();
 	displayEntries(opening_scene_info_entries, ".text-class[data-depend-id='scene_info_");
 	let opening_scene_photo_entries = $(".range[data-depend-id='scene_photo_entries']").val();
 	displayEntries(opening_scene_photo_entries, ".text-class[data-depend-id='scene_photo_");	
 
 	function displayEntries (entry_number, string_prefix){
-		for (let $i = 6; $i > entry_number; $i--){
-			let $target_text = string_prefix + "text" + $i + "']";
-			let $target_url = string_prefix + "url" + $i + "']";
-			$($target_text).parents().eq(6).css("display", "none");
-			$($target_text).val(function(){return  "";});
-			$($target_url).val(function(){return  "";});
+		if (string_prefix == ".text-class[data-depend-id='photo_info_"){
+			console.log("entry_number " + entry_number);
+		}
+		for (let i = 6; i > entry_number; i--){
+			let target_text = string_prefix + "text" + i + "']";
+			let target_url = string_prefix + "url" + i + "']";
+			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
+				console.log(i + " " + target_text + " " + target_url);
+			}
+			$(target_text).parents().eq(6).css("display", "none");
+			$(target_text).val(function(){return  "";});
+			$(target_url).val(function(){return  "";});
 		}
 
-		for (let $i = 1; $i <= entry_number; $i++){
-			let $target = string_prefix + "text" + $i + "']";
-			$($target).parents().eq(6).css("display", "block");
+		for (let i = 1; i <= entry_number; i++){
+			let target = string_prefix + "text" + i + "']";
+			$(target).parents().eq(6).css("display", "block");
+			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
+				console.log(i + " " + target);
+			}
 		}
 	}
 
@@ -32,20 +85,13 @@
 		displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='scene_photo_");
 	});
 
-	$('.scene_preview').click(function(){ alert("Hello"); });
 
 	const OnSceneEditPage = document.getElementsByName("scene_tagline").length; //determining if we are on a page where we are editing a scene
 	const SceneError = getCookie("scene_post_status");
 
 	if (OnSceneEditPage === 1 && SceneError === "post_error") {
 		let SceneFields = JSON.parse(getCookie("scene_error_all_fields"));
-		console.log(SceneFields);
-		SceneFields.forEach((element) => {
-			if (element === null){
-				element ="";
-			}
-		});	
-		console.log(SceneFields);
+
 		const SceneFieldNames =["scene_location", "scene_infographic", "scene_tagline", "scene_info_entries", "scene_photo_entries"];
 		SceneFields["scene_tagline"] = SceneFields["scene_tagline"].replace("\\'","\'");
 
@@ -55,49 +101,22 @@
 		displayEntries(SceneFields["scene_info_entries"], ".text-class[data-depend-id='scene_info_");
 
 		document.getElementsByName("scene_photo_entries")[0].parentElement.childNodes[1].value = SceneFields["scene_photo_entries"];
-		displayEntries(SceneFields["scene_photo_entries"], ".text-class[data-depend-id='photo_info_");
+		displayEntries(SceneFields["scene_photo_entries"], ".text-class[data-depend-id='scene_photo_");
 
 		let elementName;
 		let secondElementName;
-		const fieldClass = ["info"]//, "photo"];
-		for (let i = 1; i < 2; i++){
+		const fieldClass = ["info", "photo"];
+		for (let i = 1; i < 7; i++){
 			fieldClass.forEach((array_value) => {
 				elementName = "scene_" + array_value + i + "[scene_" + array_value + "_url" + i + "]";
 				secondElementName = "scene_" + array_value + "_url" + i;
-				console.log(elementName + " " + secondElementName);
-				console.log(document.getElementsByName(elementName)[0].value + " " + SceneFields[secondElementName]);
 				document.getElementsByName(elementName)[0].value = SceneFields[secondElementName];
 				elementName = "scene_" + array_value + i + "[scene_" + array_value + "_text" + i + "]";
 				secondElementName = "scene_" + array_value + "_text" + i;
-				console.log(elementName + " " + secondElementName);
-				console.log(document.getElementsByName(elementName)[0].value + " " + SceneFields[secondElementName]);
 				document.getElementsByName(elementName)[0].value = SceneFields[secondElementName];
 			});
 		}
-
-	
-
-
-	//	<input type="text" name="scene_info2[scene_info_text2]" value="" class="text-class" data-depend-id="scene_info_text2"></input>
-//<input type="text" name="scene_info2[scene_info_url2]" value="" class="text-class" data-depend-id="scene_info_url2"></input>
-
-	//	console.log(document.getElementsByName("scene_info_entries")[0].value);
-	//	for (const Field of SceneFieldNames){
-	//		document.getElementsByName(Field)[0].value = SceneFields[Field];
-//		}
-	//	$scene_fields['scene_location'] = $_POST['scene_location'];
-    //    $scene_fields['scene_infographic'] = $_POST['scene_infographic'];
-    //    $scene_fields['scene_tagline'] = $_POST['scene_tagline'];
-    //    $scene_fields['scene_info_link'] = $_POST['scene_info_link'];
-    //    $scene_fields['scene_info_photo_link'] = $_POST['scene_info_photo_link'];
-
-
-	//	console.log(SceneFields["scene_info_photo_link"]);	
-	//	consoleMessage = "on scene edit page";
 	}
-    // console.log(consoleMessage);
-//	console.log(document.cookie);
-//	console.log(getCookie("scene_post_status"));
 
 	function getCookie(cookieName) {
 		let cookies = document.cookie;

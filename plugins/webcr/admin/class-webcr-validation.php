@@ -93,9 +93,9 @@ class webcr_validation {
         $scene_fields['scene_photo_entries'] = $_POST['scene_photo_entries'];
         for ($i = 1; $i < 7; $i++){
             $scene_fields['scene_info_url' . $i] = $_POST["scene_info" . $i]["scene_info_url" . $i];
-            $scene_fields['scene_info_text' . $i] = $_POST["scene_info" . $i]["scene_info_link" . $i];
-            $scene_fields['scene_photo_url' . $i] = $_POST["scene_info" . $i]["scene_photo_url" . $i];
-            $scene_fields['scene_photo_text' . $i] = $_POST["scene_info" . $i]["scene_photo_link" . $i];
+            $scene_fields['scene_info_text' . $i] = $_POST["scene_info" . $i]["scene_info_text" . $i];
+            $scene_fields['scene_photo_url' . $i] = $_POST["scene_photo" . $i]["scene_photo_url" . $i];
+            $scene_fields['scene_photo_text' . $i] = $_POST["scene_photo" . $i]["scene_photo_text" . $i];
         }
 
         // $_POST["scene_info1"]["scene_info_url1"]

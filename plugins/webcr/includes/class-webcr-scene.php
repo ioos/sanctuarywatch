@@ -266,25 +266,10 @@ class Webcr_Scene {
                 }
             }
             echo $url_count; 
-         //   echo get_post_meta( $post_id, 'scene_photo_entries', true ); 
- //           $photo_link_value = get_post_meta( $post_id, 'scene_info_photo_link', true );
- //           switch ($field_length){
-   //             case "large":
-     //               echo $photo_link_value;
-    //                break;
-      //          case "medium":
-        //            echo substr($photo_link_value, 0, 40);
-          //          break;
- //               case "small":
-   //                 if ($photo_link_value != NULL){
-     //                   echo '<span class="dashicons dashicons-yes"></span>';
-       //             }
-         //           break;
-        //    }
+
         }
 
         if ($column == 'scene_info_link'){
-          //  echo get_post_meta( $post_id, 'scene_info_entries', true ); 
 
             $url_count = 0;
             for ($i = 1; $i < 7; $i++){
@@ -296,20 +281,7 @@ class Webcr_Scene {
                 }
             }
             echo $url_count; 
-      //      $link_value = get_post_meta( $post_id, 'scene_info_link', true );
-       //     switch ($field_length){
-       //         case "large":
-        //            echo $link_value;
-         //           break;
-         //       case "medium":
-          //          echo substr($link_value, 0, 40);
-         //           break;
-         //       case "small":
-         //           if ($link_value != NULL){
-         //               echo '<span class="dashicons dashicons-yes"></span>';
-          //          }
-          //          break;
-          //  }
+
         }
         if ( $column === 'scene_order' ) {
             echo get_post_meta( $post_id, 'scene_order', true ); 
@@ -737,7 +709,7 @@ class Webcr_Scene {
                             'class'       => 'text-class',
                         ),
                         array(
-                            'id'          => 'scene_photo_link_url4',
+                            'id'          => 'scene_photo_url4',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
