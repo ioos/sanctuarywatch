@@ -34,23 +34,19 @@
   }
   add_action('init', 'scene_rewrite_rules');
 
-  //changing 'scene_location' to the actual scene location
+  //changing the scene url
   function scene_post_type_permalink($post_link, $post) {
-    if(is_object($post) && $post->post_type=='scene') {
-      $postMeta = get_post_meta($post->ID);
-			$sceneLocation = $postMeta['scene_location'][0];
-      if($sceneLocation){
-        $scene_base_url = 'webcr-';
-        $sceneArr = explode(' ', strtolower($sceneLocation));
-        for($i=0; $i < count($sceneArr)-1; $i++){
-          $scene_base_url = $scene_base_url.$sceneArr[$i];
+    if (is_object($post) && $post->post_type == 'scene') {
+        $postMeta = get_post_meta($post->ID);
+        $sceneLocation = $postMeta['scene_location'][0];
+        if ($sceneLocation) {
+            $scene_base_url = 'webcr-';
+            $sceneArr = explode(' ', strtolower($sceneLocation));
+            for ($i = 0; $i < count($sceneArr) - 1; $i++) {
+                $scene_base_url = $scene_base_url . $sceneArr[$i];
+            }
+            $post_link = home_url("/$scene_base_url/{$post->post_name}/");
         }
-        if($post->post_name == 'overview'){
-          $post_link = home_url("/$scene_base_url/");
-        }else{
-          $post_link = home_url("/$scene_base_url/{$post->post_name}/");
-        }
-      }
     }
     return $post_link;
   }

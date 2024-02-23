@@ -2,7 +2,7 @@
 Theme Name: Sanctuary Watch 
 */
 
-@import url('assets/bootstrap.css');
+@import url('assets/css/bootstrap.css');
 
 #top-bar {
   background-color: white;
@@ -74,8 +74,8 @@ p[itemprop="name"], p[itemprop="address"] {
 }
 
 .navbar {
-  position: fixed;
-  top: 100;
+  position: sticky;
+  top: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 100;
 }

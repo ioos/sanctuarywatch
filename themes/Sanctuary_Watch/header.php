@@ -23,7 +23,7 @@
 
 		<div id="top-bar">
 			<a href="https://ioos.us" target="_blank">
-				<img src="<?php echo get_stylesheet_directory_uri(); ?>/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">
+				<img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">
 			</a>
 		</div>
 
@@ -34,12 +34,16 @@
 				<?php
 					$postMeta = get_post_meta(get_the_ID());
 					$sceneLocation = $postMeta['scene_location'][0];
+					$sceneArr = explode(' ', $sceneLocation);
 					if (!empty($sceneLocation)){
+						for($i = 0; $i < count($sceneArr)-1; $i++){
+							$scene_loc_webcr = $scene_loc_webcr.$sceneArr[$i].' ';
+						}
 						echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
 						echo '<p> > </p>';
 						echo '<a href="https://sanctuarywatch.ioos.us">Sanctuary Watch</a>';
 						echo '<p> > </p>';
-						echo '<a href="google.com">'. esc_html($sceneLocation) .'</a>';
+						echo '<a href="google.com">'. esc_html($scene_loc_webcr.'WebCR') .'</a>';
 					}
 				?>
 			</span>
@@ -49,11 +53,14 @@
 			<div class="container-fluid">
 					<?php
 					$scene_base_url = 'webcr-';
-					$sceneArr = explode(' ', strtolower($sceneLocation));
 					for($i=0; $i < count($sceneArr)-1; $i++){
-						$scene_base_url = $scene_base_url.$sceneArr[$i];
+						$scene_base_url = $scene_base_url.strtolower($sceneArr[$i]);
 					}
-					echo "<a class='navbar-brand' href='/$scene_base_url/'>CINMS</a>";
+					if($sceneLocation){
+						echo "<a class='navbar-brand' href='/$scene_base_url/overview/'>CINMS</a>";
+					}else {
+						echo "<a class='navbar-brand' href=''>Sanctuary Watch</a>";
+					}
 					?>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
@@ -82,7 +89,7 @@
 									$query->the_post();
 									$scene_order = get_post_meta(get_the_ID(), 'scene_order');
 									if(get_the_title() !== 'Overview'){
-										$post_titles[] = [get_the_title(), $scene_order[0]];
+										$post_titles[] = [get_the_title(), $scene_order[0], get_the_ID()];
 									}
 								}
 
@@ -99,13 +106,11 @@
 								usort($post_titles, 'customCompare');
 
 								foreach ($post_titles as $post_title){
-									$post_name = strtolower(str_replace(' ', '-', $post_title[0]));
-									echo "<li class='nav-item'><a class='nav-link' href='/$scene_base_url/$post_name/'>$post_title[0]</a></li>";
+									echo "<li class='nav-item'><a class='nav-link' href='". esc_url(get_permalink($post_title[2])) ."'>$post_title[0]</a></li>";
 								}
 
 
 							}else {
-								echo 'No Scenes Found';
 							}
 							?>
 							<li class='nav-item'>
