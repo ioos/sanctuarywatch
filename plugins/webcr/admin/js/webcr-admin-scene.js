@@ -33,13 +33,68 @@
 		let secondRow = document.createElement("div");
 		secondRow.classList.add("row");
 
-		let firstColumn = document.createElement("div");
-		firstColumn.classList.add("col-2");
-		firstColumn.textContent = "hello";
-		secondRow.appendChild(firstColumn);
+		// check to see if any photo link and info link fields are not empty
 
+		let scene_info_elements = [];
+		let scene_photo_elements = [];
+		let text_field;
+		let url_field;
+		let haveAccordions = false;
+		for (let i = 1; i < 7; i++){
+			text_field = "scene_photo" + i + "[scene_photo_text" + i + "]";
+			url_field = "scene_photo" + i + "[scene_photo_url" + i + "]";
+			if (document.getElementsByName(text_field)[0].value != "" && document.getElementsByName(url_field)[0].value != ""){
+				scene_photo_elements.push(i);
+			}
+			text_field = "scene_info" + i + "[scene_info_text" + i + "]";
+			url_field = "scene_info" + i + "[scene_info_url" + i + "]";
+			if (document.getElementsByName(text_field)[0].value != "" && document.getElementsByName(url_field)[0].value != ""){
+				scene_info_elements.push(i);
+			}
+		}
+
+		if (scene_info_elements.length > 0 || scene_photo_elements.length > 0) {
+			haveAccordions = true;
+		}
+
+		if (haveAccordions === true){
+			let firstColumn = document.createElement("div");
+			firstColumn.classList.add("col-2", "accordion");
+			//firstColumn.textContent = "hello";
+			
+			if (scene_info_elements.length > 0) {
+				let accordionInfo = document.createElement("div");
+				accordionInfo.classList.add("accordion-item");
+
+				let accordionInfoHeader = document.createElement("h2");
+				accordionInfoHeader.classList.add("accordion-header");
+
+				let accordionInfoHeaderButton = document.createElement("button");
+				accordionInfoHeaderButton.classList.add("accordion-button");
+				accordionInfoHeaderButton.setAttribute("type", "button");
+				accordionInfoHeaderButton.setAttribute("data-bs-toggle", "collapse");
+				accordionInfoHeaderButton.setAttribute("data-bs-target", "#collapseOne");
+				accordionInfoHeaderButton.setAttribute("aria-expanded", "true");
+				accordionInfoHeaderButton.setAttribute("aria-controls", "collapseOne");
+				accordionInfoHeaderButton.textContent = "Hello header";
+
+				accordionInfoHeader.appendChild(accordionInfoHeaderButton);
+				accordionInfo.appendChild(accordionInfoHeader);
+				firstColumn.appendChild(accordionInfo);
+			}
+		
+
+			secondRow.appendChild(firstColumn);
+
+
+
+		}
 		let secondColumn = document.createElement("div");
-		secondColumn.classList.add("col-10");
+		if (haveAccordions == true){
+			secondColumn.classList.add("col-10");
+		} else {
+			secondColumn.classList.add("col-12");
+		}
 		secondColumn.textContent = document.getElementsByName('scene_tagline')[0].value;
 		secondRow.appendChild(secondColumn);
 
