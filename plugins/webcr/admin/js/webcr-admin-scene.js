@@ -60,33 +60,111 @@
 		if (haveAccordions === true){
 			let firstColumn = document.createElement("div");
 			firstColumn.classList.add("col-2", "accordion");
-			//firstColumn.textContent = "hello";
+			firstColumn.id = "accordionInfo";
 			
 			if (scene_info_elements.length > 0) {
 				let accordionInfo = document.createElement("div");
 				accordionInfo.classList.add("accordion-item");
 
-				let accordionInfoHeader = document.createElement("h2");
+				let accordionInfoHeader = document.createElement("h4");
 				accordionInfoHeader.classList.add("accordion-header");
 
 				let accordionInfoHeaderButton = document.createElement("button");
 				accordionInfoHeaderButton.classList.add("accordion-button");
 				accordionInfoHeaderButton.setAttribute("type", "button");
 				accordionInfoHeaderButton.setAttribute("data-bs-toggle", "collapse");
-				accordionInfoHeaderButton.setAttribute("data-bs-target", "#collapseOne");
+				accordionInfoHeaderButton.setAttribute("data-bs-target", "#collapseInfo");
 				accordionInfoHeaderButton.setAttribute("aria-expanded", "true");
-				accordionInfoHeaderButton.setAttribute("aria-controls", "collapseOne");
-				accordionInfoHeaderButton.textContent = "Hello header";
+				accordionInfoHeaderButton.setAttribute("aria-controls", "collapseInfo");
+				accordionInfoHeaderButton.textContent = "More info";
 
 				accordionInfoHeader.appendChild(accordionInfoHeaderButton);
 				accordionInfo.appendChild(accordionInfoHeader);
+
+				let accordionSecondPart = document.createElement("div");
+				accordionSecondPart.classList.add("accordion-collapse", "collapse");
+				accordionSecondPart.setAttribute("data-bs-parent", "#accordionInfo");
+				accordionSecondPart.id = "collapseInfo";
+
+				let accordionBody = document.createElement("div");
+				accordionBody.classList.add("accordion=body");
+
+				let accordionList = document.createElement("ul");
+
+				for (let i = 0; i < scene_info_elements.length; i++){
+					let listItem = document.createElement("li");
+					let listLink = document.createElement("a");
+
+					let targetElement = scene_info_elements[i];	
+					text_field = document.getElementsByName("scene_info" + targetElement + "[scene_info_text" + targetElement + "]")[0].value;
+					url_field = document.getElementsByName("scene_info" + targetElement + "[scene_info_url" + targetElement + "]")[0].value;
+
+					listLink.setAttribute("href", url_field);
+					listLink.textContent = text_field;
+					listLink.setAttribute("target", "_blank");
+					listItem.appendChild(listLink);
+					accordionList.appendChild(listItem);
+				}
+
+				accordionBody.appendChild(accordionList); 
+				accordionSecondPart.appendChild(accordionBody);
+				accordionInfo.appendChild(accordionSecondPart);
+
 				firstColumn.appendChild(accordionInfo);
 			}
 		
+			if (scene_photo_elements.length > 0) {
+				let accordionPhoto = document.createElement("div");
+				accordionPhoto.classList.add("accordion-item");
 
+				let accordionPhotoHeader = document.createElement("h4");
+				accordionPhotoHeader.classList.add("accordion-header");
+
+				let accordionPhotoHeaderButton = document.createElement("button");
+				accordionPhotoHeaderButton.classList.add("accordion-button");
+				accordionPhotoHeaderButton.setAttribute("type", "button");
+				accordionPhotoHeaderButton.setAttribute("data-bs-toggle", "collapse");
+				accordionPhotoHeaderButton.setAttribute("data-bs-target", "#collapsePhoto");
+				accordionPhotoHeaderButton.setAttribute("aria-expanded", "true");
+				accordionPhotoHeaderButton.setAttribute("aria-controls", "collapsePhoto");
+				accordionPhotoHeaderButton.textContent = "Images";
+
+				accordionPhotoHeader.appendChild(accordionPhotoHeaderButton);
+				accordionPhoto.appendChild(accordionPhotoHeader);
+
+				let accordionSecondPart = document.createElement("div");
+				accordionSecondPart.classList.add("accordion-collapse", "collapse");
+				accordionSecondPart.setAttribute("data-bs-parent", "#accordionPhoto");
+				accordionSecondPart.id = "collapsePhoto";
+
+				let accordionBody = document.createElement("div");
+				accordionBody.classList.add("accordion=body");
+
+				let accordionList = document.createElement("ul");
+
+				for (let i = 0; i < scene_photo_elements.length; i++){
+					let listItem = document.createElement("li");
+					let listLink = document.createElement("a");
+
+					let targetElement = scene_photo_elements[i];	
+					text_field = document.getElementsByName("scene_photo" + targetElement + "[scene_photo_text" + targetElement + "]")[0].value;
+					url_field = document.getElementsByName("scene_photo" + targetElement + "[scene_photo_url" + targetElement + "]")[0].value;
+
+					listLink.setAttribute("href", url_field);
+					listLink.textContent = text_field;
+					listLink.setAttribute("target", "_blank");
+					listItem.appendChild(listLink);
+					accordionList.appendChild(listItem);
+				}
+
+				accordionBody.appendChild(accordionList); 
+				accordionSecondPart.appendChild(accordionBody);
+				accordionPhoto.appendChild(accordionSecondPart);
+
+				firstColumn.appendChild(accordionPhoto);
+			}
+			
 			secondRow.appendChild(firstColumn);
-
-
 
 		}
 		let secondColumn = document.createElement("div");
