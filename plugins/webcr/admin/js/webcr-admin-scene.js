@@ -33,13 +33,146 @@
 		let secondRow = document.createElement("div");
 		secondRow.classList.add("row");
 
-		let firstColumn = document.createElement("div");
-		firstColumn.classList.add("col-2");
-		firstColumn.textContent = "hello";
-		secondRow.appendChild(firstColumn);
+		// check to see if any photo link and info link fields are not empty
 
+		let scene_info_elements = [];
+		let scene_photo_elements = [];
+		let text_field;
+		let url_field;
+		let haveAccordions = false;
+		for (let i = 1; i < 7; i++){
+			text_field = "scene_photo" + i + "[scene_photo_text" + i + "]";
+			url_field = "scene_photo" + i + "[scene_photo_url" + i + "]";
+			if (document.getElementsByName(text_field)[0].value != "" && document.getElementsByName(url_field)[0].value != ""){
+				scene_photo_elements.push(i);
+			}
+			text_field = "scene_info" + i + "[scene_info_text" + i + "]";
+			url_field = "scene_info" + i + "[scene_info_url" + i + "]";
+			if (document.getElementsByName(text_field)[0].value != "" && document.getElementsByName(url_field)[0].value != ""){
+				scene_info_elements.push(i);
+			}
+		}
+
+		if (scene_info_elements.length > 0 || scene_photo_elements.length > 0) {
+			haveAccordions = true;
+		}
+
+		if (haveAccordions === true){
+			let firstColumn = document.createElement("div");
+			firstColumn.classList.add("col-2", "accordion");
+			firstColumn.id = "accordionInfo";
+			
+			if (scene_info_elements.length > 0) {
+				let accordionInfo = document.createElement("div");
+				accordionInfo.classList.add("accordion-item");
+
+				let accordionInfoHeader = document.createElement("h4");
+				accordionInfoHeader.classList.add("accordion-header");
+
+				let accordionInfoHeaderButton = document.createElement("button");
+				accordionInfoHeaderButton.classList.add("accordion-button");
+				accordionInfoHeaderButton.setAttribute("type", "button");
+				accordionInfoHeaderButton.setAttribute("data-bs-toggle", "collapse");
+				accordionInfoHeaderButton.setAttribute("data-bs-target", "#collapseInfo");
+				accordionInfoHeaderButton.setAttribute("aria-expanded", "true");
+				accordionInfoHeaderButton.setAttribute("aria-controls", "collapseInfo");
+				accordionInfoHeaderButton.textContent = "More info";
+
+				accordionInfoHeader.appendChild(accordionInfoHeaderButton);
+				accordionInfo.appendChild(accordionInfoHeader);
+
+				let accordionSecondPart = document.createElement("div");
+				accordionSecondPart.classList.add("accordion-collapse", "collapse");
+				accordionSecondPart.setAttribute("data-bs-parent", "#accordionInfo");
+				accordionSecondPart.id = "collapseInfo";
+
+				let accordionBody = document.createElement("div");
+				accordionBody.classList.add("accordion=body");
+
+				let accordionList = document.createElement("ul");
+
+				for (let i = 0; i < scene_info_elements.length; i++){
+					let listItem = document.createElement("li");
+					let listLink = document.createElement("a");
+
+					let targetElement = scene_info_elements[i];	
+					text_field = document.getElementsByName("scene_info" + targetElement + "[scene_info_text" + targetElement + "]")[0].value;
+					url_field = document.getElementsByName("scene_info" + targetElement + "[scene_info_url" + targetElement + "]")[0].value;
+
+					listLink.setAttribute("href", url_field);
+					listLink.textContent = text_field;
+					listLink.setAttribute("target", "_blank");
+					listItem.appendChild(listLink);
+					accordionList.appendChild(listItem);
+				}
+
+				accordionBody.appendChild(accordionList); 
+				accordionSecondPart.appendChild(accordionBody);
+				accordionInfo.appendChild(accordionSecondPart);
+
+				firstColumn.appendChild(accordionInfo);
+			}
+		
+			if (scene_photo_elements.length > 0) {
+				let accordionPhoto = document.createElement("div");
+				accordionPhoto.classList.add("accordion-item");
+
+				let accordionPhotoHeader = document.createElement("h4");
+				accordionPhotoHeader.classList.add("accordion-header");
+
+				let accordionPhotoHeaderButton = document.createElement("button");
+				accordionPhotoHeaderButton.classList.add("accordion-button");
+				accordionPhotoHeaderButton.setAttribute("type", "button");
+				accordionPhotoHeaderButton.setAttribute("data-bs-toggle", "collapse");
+				accordionPhotoHeaderButton.setAttribute("data-bs-target", "#collapsePhoto");
+				accordionPhotoHeaderButton.setAttribute("aria-expanded", "true");
+				accordionPhotoHeaderButton.setAttribute("aria-controls", "collapsePhoto");
+				accordionPhotoHeaderButton.textContent = "Images";
+
+				accordionPhotoHeader.appendChild(accordionPhotoHeaderButton);
+				accordionPhoto.appendChild(accordionPhotoHeader);
+
+				let accordionSecondPart = document.createElement("div");
+				accordionSecondPart.classList.add("accordion-collapse", "collapse");
+				accordionSecondPart.setAttribute("data-bs-parent", "#accordionPhoto");
+				accordionSecondPart.id = "collapsePhoto";
+
+				let accordionBody = document.createElement("div");
+				accordionBody.classList.add("accordion=body");
+
+				let accordionList = document.createElement("ul");
+
+				for (let i = 0; i < scene_photo_elements.length; i++){
+					let listItem = document.createElement("li");
+					let listLink = document.createElement("a");
+
+					let targetElement = scene_photo_elements[i];	
+					text_field = document.getElementsByName("scene_photo" + targetElement + "[scene_photo_text" + targetElement + "]")[0].value;
+					url_field = document.getElementsByName("scene_photo" + targetElement + "[scene_photo_url" + targetElement + "]")[0].value;
+
+					listLink.setAttribute("href", url_field);
+					listLink.textContent = text_field;
+					listLink.setAttribute("target", "_blank");
+					listItem.appendChild(listLink);
+					accordionList.appendChild(listItem);
+				}
+
+				accordionBody.appendChild(accordionList); 
+				accordionSecondPart.appendChild(accordionBody);
+				accordionPhoto.appendChild(accordionSecondPart);
+
+				firstColumn.appendChild(accordionPhoto);
+			}
+			
+			secondRow.appendChild(firstColumn);
+
+		}
 		let secondColumn = document.createElement("div");
-		secondColumn.classList.add("col-10");
+		if (haveAccordions == true){
+			secondColumn.classList.add("col-10");
+		} else {
+			secondColumn.classList.add("col-12");
+		}
 		secondColumn.textContent = document.getElementsByName('scene_tagline')[0].value;
 		secondRow.appendChild(secondColumn);
 
