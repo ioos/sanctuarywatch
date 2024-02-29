@@ -45,6 +45,8 @@ get_header();
         <div style="margin-top: 10px;margin-bottom: 10px; margin-right: 10px; flex: 1;">
             <!-- make accordion only if there is text&url pair? probably yea -->
             <!-- hardcoding individual categories, assume that only info and photos exist -->
+            <?php  //TODO NO DROPDOWNS WORKING AUGHHHHHHH
+            ?>
             <div class="accordion" id="accordionExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
