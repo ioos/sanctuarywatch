@@ -78,4 +78,9 @@ p[itemprop="name"], p[itemprop="address"] {
   top: 0;
   width: 100%;
   z-index: 100;
+  margin-bottom: 20px;
+}
+
+.navbar-emblem {
+  size: 10%;
 }

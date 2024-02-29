@@ -59,7 +59,7 @@
 					if($sceneLocation){
 						echo "<a class='navbar-brand' href='/$scene_base_url/overview/'>CINMS</a>";
 					}else {
-						echo "<a class='navbar-brand' href=''>Sanctuary Watch</a>";
+						echo '<a class="navbar-brand" href=""><img class="navbar-emblem" width="32p" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Sanctuary Watch Navbar Emblem"> Sanctuary Watch</a>';
 					}
 					?>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,9 +108,25 @@
 								foreach ($post_titles as $post_title){
 									echo "<li class='nav-item'><a class='nav-link' href='". esc_url(get_permalink($post_title[2])) ."'>$post_title[0]</a></li>";
 								}
-
-
 							}else {
+								//TODO: This block doesnt do the dropdown behavior, fix later
+								//TODO: WebCrs Dropdown, need to grab all locations and put in dropdown
+								//TEMP SOLUTION - HARDCODE LOCATION
+								//TODO: NEED TO FIND WAY TO DYNAMICALLY QUERY DATABASE FOR LOCATION
+								echo '<li class="nav-item dropdown">
+										<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">WebCRs</a>
+										<div class="dropdown-menu">
+											<a class="dropdown-item" href="/webcr-channelislands/overview/">Channel Islands</a>
+											<a class="dropdown-item" href="/webcr-floridakeys/overview/">Florida Keys</a>
+											<a class="dropdown-item" href="/webcr-olympiccoast/overview/">Olympic Coast</a>
+										</div>
+									</li>';
+								echo '<li class="nav-item dropdown">
+										<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Conservation Issues</a>
+										<div class="dropdown-menu">
+											<a class="dropdown-item" href="https://sanctsound.ioos.us">Sound</a>
+										</div>
+									</li>';
 							}
 							?>
 							<li class='nav-item'>
@@ -120,7 +136,3 @@
 					</div>
 			</div>
 		</nav>
-
-		<?php if ( empty( $theme_options['featured_image'] ) || 'show' !== $theme_options['featured_image'] ) : ?>
-			<p class="p-4"></p><!-- fixed header fix -->
-		<?php endif; ?>
