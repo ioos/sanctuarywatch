@@ -24,6 +24,17 @@ class webcr_validation {
 
         $scene_errors = [];
         $scene_warnings = [];
+
+        $scene_infographic = $_POST["scene_infographic"];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $scene_infographic);
+        finfo_close($finfo);
+        
+        // Check if the MIME type starts with "image/svg"
+        $tempo = strpos($mimeType, 'image/svg');
+        
+
+
         $field_types = array("info", "photo");
 
         foreach ($field_types as $field_type){
