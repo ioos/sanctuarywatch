@@ -26,13 +26,32 @@ class webcr_validation {
         $scene_warnings = [];
 
         $scene_infographic = $_POST["scene_infographic"];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $scene_infographic);
-        finfo_close($finfo);
+
+        if (!(is_null($scene_infographic)) && !($scene_infographic == "") ){
+            $content = file_get_contents( $scene_infographic );
+            if ($content == false) {
+                array_push($scene_errors,  "The infographic does not exist.");
+                $save_scene_fields = FALSE;
+            } else {
+                // Use finfo or getimagesize to determine the MIME type
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime_type = finfo_buffer($finfo, $content);
+                finfo_close($finfo);
+                if ($mime_type != "image/svg+xml"){
+                    array_push($scene_errors,  "The infographic is not a svg file.");
+                    $save_scene_fields = FALSE;
+                } else {
+                    // Search for the <icons> tag
+                    $iconPosition = strpos($content, 'icons');
+                    if ($iconPosition == false) {
+                        array_push($scene_errors,  "The infographic does not contain an Icons layer.");
+                        $save_scene_fields = FALSE;
+                    }
+                }
+            }
+        }
         
-        // Check if the MIME type starts with "image/svg"
-        $tempo = strpos($mimeType, 'image/svg');
-        
+
 
 
         $field_types = array("info", "photo");
