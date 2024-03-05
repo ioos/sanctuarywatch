@@ -58,7 +58,7 @@
 		parentDiv.appendChild(accordionItem);
 		
 	}
-
+	// Create scene preview from clicking on the "Scene preview button"
 	$('.scene_preview').click(function(){ 
 
 		// Let's remove the preview window if it already exists
@@ -141,6 +141,60 @@
 
 		newDiv.appendChild(secondRow);
 
+		// add row 
+		let thirdRow = document.createElement("div");
+		thirdRow.classList.add("row");
+		
+		let imageColumn = document.createElement("div");
+		imageColumn.classList.add("col-10");
+		
+		let svgPath = document.getElementsByName("scene_infographic")[0].value;
+		if (svgPath == ""){
+			imageColumn.innerText = "No image.";
+		} else {
+			let imageExtension = svgPath.split('.').pop().toLowerCase();
+			if (imageExtension != "svg"){
+				imageColumn.innerText = "Image is not a svg.";
+			} else {
+				// Fetch the SVG content
+
+				const xhr = new XMLHttpRequest();
+				// Open a synchronous GET request to fetch the SVG content
+				xhr.open('GET', svgPath, false); // false for synchronous request
+				// Send the request
+				xhr.send();
+
+				let svgContent = xhr.responseText;
+
+				if (svgContent.search("icons") == -1){
+					imageColumn.innerText = "Infographic is not property formatted.";
+				} else {
+					imageColumn.innerHTML = svgContent;
+
+					const iconsLayer = imageColumn.querySelector('svg > g[id="icons"]');
+					if (iconsLayer) {
+					  // Initialize an array to hold the sublayers
+					  const sublayers = [];
+				
+					  // Iterate over the child elements of the "icons" layer
+					  iconsLayer.childNodes.forEach(node => {
+						// Check if the node is an element and push its id to the sublayers array
+						if (node.nodeType === Node.ELEMENT_NODE) {
+						  sublayers.push(node.id);
+						}
+					  });
+				
+					  // Log or use the list of sublayers
+					  console.log('Next-level sublayers within "icons" layer:', sublayers);
+					}
+
+				}
+	
+			}
+		}
+
+		thirdRow.append(imageColumn);
+		newDiv.appendChild(thirdRow);
 		// Append the new div to the second parent element
 		secondParent.appendChild(newDiv);
 
