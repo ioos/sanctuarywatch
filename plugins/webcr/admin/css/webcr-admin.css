@@ -33,3 +33,8 @@
   body {
     background: #f0f0f1;
   }
+
+  .previewSvg {
+    max-width: 100%; /* Set SVG width to 100% of container */
+    height: auto; /* Allow height to adjust proportionally */
+  }

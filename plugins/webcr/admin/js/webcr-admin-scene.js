@@ -2,6 +2,20 @@
 (function( $ ) {
 	'use strict';
 
+    // Function to resize the SVG
+    function resizeSvg() {
+		// Get the SVG element
+		const svg = document.getElementById('previewSvg');
+  
+		// Get the parent div (with class "col-10")
+		const svgContainer = document.getElementById('previewSvgContainer');
+  
+		// Set SVG width to match the container width
+		const width = svgContainer.clientWidth;
+		svg.setAttribute('width', width);
+	  }
+  
+
 	function createAccordion(accordionType, parentDiv, listElements){
 
 		let accordionItem = document.createElement("div");
@@ -147,53 +161,88 @@
 		
 		let imageColumn = document.createElement("div");
 		imageColumn.classList.add("col-10");
+	//	imageColumn.id = "previewSvgContainer";
 		
 		let svgPath = document.getElementsByName("scene_infographic")[0].value;
 		if (svgPath == ""){
 			imageColumn.innerText = "No image.";
+			thirdRow.append(imageColumn);
 		} else {
 			let imageExtension = svgPath.split('.').pop().toLowerCase();
 			if (imageExtension != "svg"){
 				imageColumn.innerText = "Image is not a svg.";
+				thirdRow.append(imageColumn);
 			} else {
-				// Fetch the SVG content
 
-				const xhr = new XMLHttpRequest();
-				// Open a synchronous GET request to fetch the SVG content
-				xhr.open('GET', svgPath, false); // false for synchronous request
-				// Send the request
-				xhr.send();
-
-				let svgContent = xhr.responseText;
-
-				if (svgContent.search("icons") == -1){
-					imageColumn.innerText = "Infographic is not property formatted.";
-				} else {
+				// Fetch the remote SVG file
+				fetch(svgPath)
+				.then(response => response.text())
+				.then(svgContent => {
+					// Create a temporary div to hold the SVG content
+					const tempDiv = document.createElement('div');
 					imageColumn.innerHTML = svgContent;
+				//	tempDiv.id = "previewSvg";
+				//	tempDiv.setAttribute("viewBox", "0 0 100 100");
+				//	tempDiv.classList.add("previewSvg");
+				//	imageColumn.append(tempDiv);
+					imageColumn.id = "previewSvgContainer";
 
-					const iconsLayer = imageColumn.querySelector('svg > g[id="icons"]');
+					thirdRow.append(imageColumn);
+					document.getElementById("previewSvgContainer").children[0].id = "previewSvg";
+	//				document.getElementById("previewSvgContainer").children[0].setAttribute("viewBox", "0 0 100 100");
+					document.getElementById("previewSvgContainer").children[0].classList.add("previewSvg");
+					document.getElementById("previewSvgContainer").children[0].removeAttribute("height");
+					resizeSvg();
+
+
+					// Find the "icons" layer
+					let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
+
 					if (iconsLayer) {
-					  // Initialize an array to hold the sublayers
-					  const sublayers = [];
-				
-					  // Iterate over the child elements of the "icons" layer
-					  iconsLayer.childNodes.forEach(node => {
-						// Check if the node is an element and push its id to the sublayers array
-						if (node.nodeType === Node.ELEMENT_NODE) {
-						  sublayers.push(node.id);
-						}
-					  });
-				
-					  // Log or use the list of sublayers
-					  console.log('Next-level sublayers within "icons" layer:', sublayers);
-					}
 
-				}
+						// Initialize an array to hold the sublayers
+						let sublayers = [];
+
+						// Iterate over the child elements of the "icons" layer
+						iconsLayer.childNodes.forEach(node => {
+							// Check if the node is an element and push its id to the sublayers array
+							if (node.nodeType === Node.ELEMENT_NODE) {
+							sublayers.push(node.id);
+							}
+						});
+						sublayers = sublayers.sort();
+						console.log(sublayers);
+
+
+						let tocColumn = document.createElement("div");
+						tocColumn.classList.add("col-2");
+						let tocList = document.createElement("ul");
+						sublayers.forEach (listElement => {
+							let tocElement = document.createElement("li");
+							tocElement.innerText = listElement;
+							tocList.appendChild(tocElement);
+						})
+						tocColumn.append(tocList);
+						thirdRow.append(tocColumn);
+						// Log or use the list of sublayers
+						console.log('Next-level sublayers within "icons" layer:', sublayers);
+					} else {
+						imageColumn.innerText = 'No "icons" layer found in the SVG.';
+						thirdRow.append(imageColumn);
+					}
+				})
+				.catch(error => {
+					console.error('Error fetching or processing SVG:', error);
+				});
 	
 			}
 		}
 
-		thirdRow.append(imageColumn);
+
+
+
+
+
 		newDiv.appendChild(thirdRow);
 		// Append the new div to the second parent element
 		secondParent.appendChild(newDiv);
