@@ -126,8 +126,8 @@ class Webcr {
 		// The class that defines the functions used for the Scene custom content type
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-scene.php';
 
-		// The class that defines the custom post types used
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-post-types.php';
+		// The class that defines the functions used for the Modal custom content type
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-modal.php';
 
 		// The class that defines the validation methods used for the custom post types
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-validation.php';
@@ -179,6 +179,11 @@ class Webcr {
 		$this->loader->add_action( 'init', $plugin_admin_scene, 'custom_content_type_scene' ); //scene
 		$this->loader->add_filter( 'bulk_actions-edit-scene', $plugin_admin_scene, 'remove_bulk_actions_scene' ); 
 		$this->loader->add_action( 'wp_ajax_scene_preview', $plugin_admin_scene, 'scene_preview' ); //scene
+
+		// Load  class and functions associated with Modal custom content type
+		$plugin_admin_modal = new Webcr_Modal( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'init', $plugin_admin_modal, 'custom_content_type_modal' ); // scene 
+		$this->loader->add_action( 'admin_menu', $plugin_admin_modal, 'create_modal_fields', 1 );
 
 		// Load class and functions connected to custom taxonomies
 		$plugin_admin_taxonomy = new Webcr_Taxonomy( $this->get_plugin_name(), $this->get_version() );

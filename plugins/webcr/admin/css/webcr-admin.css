@@ -33,3 +33,36 @@
   body {
     background: #f0f0f1;
   }
+
+  .previewSvg {
+    max-width: 100%; /* Set SVG width to 100% of container */
+    height: auto; /* Allow height to adjust proportionally */
+  }
+
+  .sceneTagline {
+    font-style: italic;
+    font-size: larger;
+  }
+
+  .thirdPreviewRow {
+    padding-top: 10px;
+  }
+
+  .previewSceneTOC {
+    text-decoration: underline;
+    color: blue;
+    font-size:larger;
+  }
+
+  .previewAccordionElements {
+    font-size: larger;
+    padding-top: 10px;
+  }
+
+  .accordionTitle {
+    font-size:15px;
+  }
+
+  .accordionTitle:not(.collapsed){
+    background-color: white !important;
+  }

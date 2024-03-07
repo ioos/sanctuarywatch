@@ -775,7 +775,7 @@ class Webcr_Scene {
                     'title'       => 'Preview Scene',
                     'class'        => 'scene_preview',
                     'options'     => array(
-                        'href'  =>  '#',
+                        'href'  =>  '#nowhere',
                         'target' => '_self',
                         'value' => 'Preview',
                         'btn-class' => 'exopite-sof-btn'

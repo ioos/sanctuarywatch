@@ -2,22 +2,35 @@
 (function( $ ) {
 	'use strict';
 
+    // Function to resize the SVG
+    function resizeSvg() {
+		// Get the SVG element
+		const svg = document.getElementById('previewSvg');
+  
+		// Get the parent div (with class "col-10")
+		const svgContainer = document.getElementById('previewSvgContainer');
+  
+		// Set SVG width to match the container width
+		const width = svgContainer.clientWidth;
+		svg.setAttribute('width', width);
+	  }
+  
+
 	function createAccordion(accordionType, parentDiv, listElements){
 
 		let accordionItem = document.createElement("div");
 		accordionItem.classList.add("accordion-item");
 
-		let accordionFirstPart = document.createElement("h4");
+		let accordionFirstPart = document.createElement("div");
 		accordionFirstPart.classList.add("accordion-header");
 
 		let accordionHeaderButton = document.createElement("button");
-		accordionHeaderButton.classList.add("accordion-button");
+		accordionHeaderButton.classList.add("accordion-button", "accordionTitle");
 		accordionHeaderButton.setAttribute("type", "button");
 		accordionHeaderButton.setAttribute("data-bs-toggle", "collapse");
 		accordionHeaderButton.setAttribute("data-bs-target", "#collapse" + accordionType);
 		accordionHeaderButton.setAttribute("aria-expanded", "true");
 		accordionHeaderButton.setAttribute("aria-controls", "collapse" + accordionType);
-		console.log(accordionType);
 		if (accordionType == "info"){ 
 			accordionHeaderButton.textContent = "More info";
 		} else {
@@ -35,7 +48,7 @@
 		accordionBody.classList.add("accordion=body");
 
 		let accordionList = document.createElement("ul");
-
+		accordionList.classList.add("previewAccordionElements");
 		for (let i = 0; i < listElements.length; i++){
 			let listItem = document.createElement("li");
 			let listLink = document.createElement("a");
@@ -58,7 +71,7 @@
 		parentDiv.appendChild(accordionItem);
 		
 	}
-
+	// Create scene preview from clicking on the "Scene preview button"
 	$('.scene_preview').click(function(){ 
 
 		// Let's remove the preview window if it already exists
@@ -137,10 +150,99 @@
 			secondColumn.classList.add("col-12");
 		}
 		secondColumn.textContent = document.getElementsByName('scene_tagline')[0].value;
+		secondColumn.classList.add("sceneTagline");
 		secondRow.appendChild(secondColumn);
 
 		newDiv.appendChild(secondRow);
 
+		// add row 
+		let thirdRow = document.createElement("div");
+		thirdRow.classList.add("row", "thirdPreviewRow");
+		
+		let imageColumn = document.createElement("div");
+		imageColumn.classList.add("col-9");
+	//	imageColumn.id = "previewSvgContainer";
+		
+		let svgPath = document.getElementsByName("scene_infographic")[0].value;
+		if (svgPath == ""){
+			imageColumn.innerText = "No image.";
+			thirdRow.append(imageColumn);
+		} else {
+			let imageExtension = svgPath.split('.').pop().toLowerCase();
+			if (imageExtension != "svg"){
+				imageColumn.innerText = "Image is not a svg.";
+				thirdRow.append(imageColumn);
+			} else {
+
+				// Fetch the remote SVG file
+				fetch(svgPath)
+				.then(response => response.text())
+				.then(svgContent => {
+					// Create a temporary div to hold the SVG content
+					imageColumn.innerHTML = svgContent;
+					imageColumn.id = "previewSvgContainer";
+
+					thirdRow.append(imageColumn);
+					document.getElementById("previewSvgContainer").children[0].id = "previewSvg";
+
+					document.getElementById("previewSvgContainer").children[0].classList.add("previewSvg");
+					document.getElementById("previewSvgContainer").children[0].removeAttribute("height");
+					resizeSvg();
+
+					// Find the "icons" layer
+					let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
+
+					if (iconsLayer) {
+
+						// Initialize an array to hold the sublayers
+						let sublayers = [];
+
+						// Iterate over the child elements of the "icons" layer
+						iconsLayer.childNodes.forEach(node => {
+							// Check if the node is an element and push its id to the sublayers array
+							if (node.nodeType === Node.ELEMENT_NODE) {
+							sublayers.push(node.id);
+							}
+						});
+						sublayers = sublayers.sort();
+
+						let tocColumn = document.createElement("div");
+						tocColumn.classList.add("col-3", "previewSceneTOC");
+						let tocList = document.createElement("ul");
+						sublayers.forEach (listElement => {
+							let tocElement = document.createElement("li");
+							tocElement.innerText = listElement;
+							tocList.appendChild(tocElement);
+						})
+						tocColumn.append(tocList);
+						thirdRow.append(tocColumn);
+
+						//let's highlight the clickable elements of the svg
+
+						sublayers.forEach (listElement => {
+						//	document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').classList.add("highlightIcons");
+							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.stroke = "yellow";
+							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.strokeWidth = "2";
+						})
+
+					} else {
+						imageColumn.innerText = 'No "icons" layer found in the SVG.';
+						thirdRow.append(imageColumn);
+					}
+				})
+				.catch(error => {
+					console.error('Error fetching or processing SVG:', error);
+				});
+	
+			}
+		}
+
+
+
+
+
+
+		newDiv.appendChild(thirdRow);
 		// Append the new div to the second parent element
 		secondParent.appendChild(newDiv);
 
