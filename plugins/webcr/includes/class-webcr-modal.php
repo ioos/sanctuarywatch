@@ -89,4 +89,129 @@ class Webcr_Modal {
         register_post_type( 'modal', $args );
     }
 
+    /**
+	 * Create custom fields, using metaboxes, for Modal custom content type.
+	 *
+	 * @since    1.0.0
+	 */
+    public function create_modal_fields() {
+
+        $config_metabox = array(
+
+            /*
+             * METABOX
+             */
+            'type'              => 'metabox',                       // Required, menu or metabox
+            'id'                => $this->plugin_name,              // Required, meta box id, unique, for saving meta: id[field-id]
+            'post_types'        => array( 'modal' ),                 // Post types to display meta box
+            'context'           => 'advanced',                      // 	The context within the screen where the boxes should display: 'normal', 'side', and 'advanced'.
+            'priority'          => 'default',                       // 	The priority within the context where the boxes should show ('high', 'low').
+            'title'             => 'Modal Fields',                  // The title of the metabox
+            'capability'        => 'edit_posts',                    // The capability needed to view the page
+            'tabbed'            => true,
+            'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
+        );
+
+        // get list of locations, which is saved as a taxonomy
+        $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
+        $locations=[];
+        foreach ( $locations_array as $locations_row ){
+            $locations[$locations_row -> name] = $locations_row -> name;
+        }
+
+        function get_scene_posts_with_location($location_value) {
+            $args = array(
+                'post_type' => 'scene', // Custom content type name
+                'posts_per_page' => -1, // Retrieve all posts
+                'meta_query' => array(
+                    array(
+                        'key' => 'scene_location', // Custom field name
+                        'value' => $location_value,
+                        'compare' => '='
+                    )
+                )
+            );
+        
+            $query = new WP_Query($args);
+            $scene_posts = array();
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $scene_posts[] = array(
+                        'ID' => get_the_ID(),
+                        'title' => get_the_title()
+                    );
+                }
+                wp_reset_postdata();
+            }
+        
+            return $scene_posts;
+        }
+
+        $scene_posts = get_scene_posts_with_location('Channel Islands NMS');
+      //  print_r($scene_posts);
+
+        $fields[] = array(
+            'name'   => 'basic',
+            'title'  => 'Basic',
+            'icon'   => 'dashicons-admin-generic',
+            'fields' => array(
+
+                array(
+                    'id'             => 'modal_location',
+                    'type'           => 'select',
+                    'title'          => 'Location',
+                    'options'        => $locations,
+                    'default_option' => 'Modal Location',
+                    'description' => 'Modal Location description',
+                     'default'     => ' ',
+                     'class'      => 'chosen', 
+                ),
+                array(
+                    'id'             => 'modal_scene',
+                    'type'           => 'select',
+                    'title'          => 'Scene',
+                    'options'        => $locations,
+                    'default_option' => 'Modal Scene',
+                    'description' => 'Modal Scene description',
+                     'default'     => ' ',
+                     'class'      => 'chosen', 
+                ),
+
+                array(
+                    'id'      => 'modal_tab_number',
+                    'type'    => 'range',
+                    'title'   => 'Number of Modal Tabs',
+                    'description' => 'Number of Modal Tabs description',
+                    'min'     => 0,    
+                     'default' => 1,    
+                     'max'     => 6,         
+                     'step'    => 1,             
+                ),              
+
+
+
+                array(
+                    'id'          => 'modal_preview',
+                    'type'        => 'button',
+                    'title'       => 'Preview Modal',
+                    'class'        => 'modal_preview',
+                    'options'     => array(
+                        'href'  =>  '#nowhere',
+                        'target' => '_self',
+                        'value' => 'Preview',
+                        'btn-class' => 'exopite-sof-btn'
+                    ),
+                ),
+            )
+        );
+
+        // instantiate the admin page
+        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
+
+    }
+
+
+
 }

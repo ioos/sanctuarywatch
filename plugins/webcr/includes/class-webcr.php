@@ -183,6 +183,7 @@ class Webcr {
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'init', $plugin_admin_modal, 'custom_content_type_modal' ); // scene 
+		$this->loader->add_action( 'admin_menu', $plugin_admin_modal, 'create_modal_fields', 1 );
 
 		// Load class and functions connected to custom taxonomies
 		$plugin_admin_taxonomy = new Webcr_Taxonomy( $this->get_plugin_name(), $this->get_version() );
