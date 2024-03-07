@@ -31,7 +31,6 @@
 		accordionHeaderButton.setAttribute("data-bs-target", "#collapse" + accordionType);
 		accordionHeaderButton.setAttribute("aria-expanded", "true");
 		accordionHeaderButton.setAttribute("aria-controls", "collapse" + accordionType);
-		console.log(accordionType);
 		if (accordionType == "info"){ 
 			accordionHeaderButton.textContent = "More info";
 		} else {
@@ -151,13 +150,14 @@
 			secondColumn.classList.add("col-12");
 		}
 		secondColumn.textContent = document.getElementsByName('scene_tagline')[0].value;
+		secondColumn.classList.add("sceneTagline");
 		secondRow.appendChild(secondColumn);
 
 		newDiv.appendChild(secondRow);
 
 		// add row 
 		let thirdRow = document.createElement("div");
-		thirdRow.classList.add("row");
+		thirdRow.classList.add("row", "thirdPreviewRow");
 		
 		let imageColumn = document.createElement("div");
 		imageColumn.classList.add("col-10");
@@ -179,21 +179,15 @@
 				.then(response => response.text())
 				.then(svgContent => {
 					// Create a temporary div to hold the SVG content
-					const tempDiv = document.createElement('div');
 					imageColumn.innerHTML = svgContent;
-				//	tempDiv.id = "previewSvg";
-				//	tempDiv.setAttribute("viewBox", "0 0 100 100");
-				//	tempDiv.classList.add("previewSvg");
-				//	imageColumn.append(tempDiv);
 					imageColumn.id = "previewSvgContainer";
 
 					thirdRow.append(imageColumn);
 					document.getElementById("previewSvgContainer").children[0].id = "previewSvg";
-	//				document.getElementById("previewSvgContainer").children[0].setAttribute("viewBox", "0 0 100 100");
+
 					document.getElementById("previewSvgContainer").children[0].classList.add("previewSvg");
 					document.getElementById("previewSvgContainer").children[0].removeAttribute("height");
 					resizeSvg();
-
 
 					// Find the "icons" layer
 					let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
@@ -211,8 +205,6 @@
 							}
 						});
 						sublayers = sublayers.sort();
-						console.log(sublayers);
-
 
 						let tocColumn = document.createElement("div");
 						tocColumn.classList.add("col-2");
@@ -224,8 +216,15 @@
 						})
 						tocColumn.append(tocList);
 						thirdRow.append(tocColumn);
-						// Log or use the list of sublayers
-						console.log('Next-level sublayers within "icons" layer:', sublayers);
+
+						//let's highlight the clickable elements of the svg
+
+						sublayers.forEach (listElement => {
+						//	document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').classList.add("highlightIcons");
+							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.stroke = "yellow";
+							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.strokeWidth = "2";
+						})
+
 					} else {
 						imageColumn.innerText = 'No "icons" layer found in the SVG.';
 						thirdRow.append(imageColumn);
