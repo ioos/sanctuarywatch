@@ -3,7 +3,6 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 ?>
-
 <div class="container-fluid main-container">
     <?php 
         //ALL CURRENTLY ASSUME THERE IS POSTMETA AND THERE IS ALL SUFFICIENT INFORMATION
@@ -59,7 +58,7 @@ get_header();
                     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul>
-                                <?php 
+                                <?php
                                     for ($i = 0; $i < count($scene_info_arr); $i++) {
                                         echo '<li><a href="' . $scene_info_arr[$i]['scene_info_url' . ($i + 1)] . '">' . $scene_info_arr[$i]['scene_info_text' . ($i + 1)] . '</a></li>';
                                     }
@@ -77,7 +76,7 @@ get_header();
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul>
-                                <?php 
+                                <?php
                                     for ($i = 0; $i < count($scene_photo_arr); $i++) {
                                         echo '<li><a href="' . $scene_photo_arr[$i]['scene_photo_url' . ($i + 1)] . '">' . $scene_photo_arr[$i]['scene_photo_text' . ($i + 1)] . '</a></li>';
                                     }
@@ -98,7 +97,6 @@ get_header();
         }
     ?>
 </div>
-
 <?php
 get_footer();
 ?>

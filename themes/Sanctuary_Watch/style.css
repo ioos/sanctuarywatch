@@ -84,3 +84,9 @@ p[itemprop="name"], p[itemprop="address"] {
 .navbar-emblem {
   size: 10%;
 }
+.image-center{
+  text-align: center;
+}
+.nav-link:hover{
+  background-color: #002a4c;
+}

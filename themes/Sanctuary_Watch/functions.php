@@ -4,6 +4,10 @@
   } 
   add_action( 'wp_enqueue_scripts', 'files' );
 
+  function enqueue_bootstrap_scripts() {
+    wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', array('jquery'), null, array('strategy' => 'defer,'));
+  }
+  add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
 
   //attempting to rewrite scene base url
   function register_scene_post_type (){
