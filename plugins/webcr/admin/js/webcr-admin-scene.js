@@ -21,11 +21,11 @@
 		let accordionItem = document.createElement("div");
 		accordionItem.classList.add("accordion-item");
 
-		let accordionFirstPart = document.createElement("h4");
+		let accordionFirstPart = document.createElement("div");
 		accordionFirstPart.classList.add("accordion-header");
 
 		let accordionHeaderButton = document.createElement("button");
-		accordionHeaderButton.classList.add("accordion-button");
+		accordionHeaderButton.classList.add("accordion-button", "accordionTitle");
 		accordionHeaderButton.setAttribute("type", "button");
 		accordionHeaderButton.setAttribute("data-bs-toggle", "collapse");
 		accordionHeaderButton.setAttribute("data-bs-target", "#collapse" + accordionType);
@@ -48,7 +48,7 @@
 		accordionBody.classList.add("accordion=body");
 
 		let accordionList = document.createElement("ul");
-
+		accordionList.classList.add("previewAccordionElements");
 		for (let i = 0; i < listElements.length; i++){
 			let listItem = document.createElement("li");
 			let listLink = document.createElement("a");
@@ -160,7 +160,7 @@
 		thirdRow.classList.add("row", "thirdPreviewRow");
 		
 		let imageColumn = document.createElement("div");
-		imageColumn.classList.add("col-10");
+		imageColumn.classList.add("col-9");
 	//	imageColumn.id = "previewSvgContainer";
 		
 		let svgPath = document.getElementsByName("scene_infographic")[0].value;
@@ -207,7 +207,7 @@
 						sublayers = sublayers.sort();
 
 						let tocColumn = document.createElement("div");
-						tocColumn.classList.add("col-2");
+						tocColumn.classList.add("col-3", "previewSceneTOC");
 						let tocList = document.createElement("ul");
 						sublayers.forEach (listElement => {
 							let tocElement = document.createElement("li");

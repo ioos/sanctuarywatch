@@ -41,13 +41,28 @@
 
   .sceneTagline {
     font-style: italic;
-  }
-
-  .highlightIcons {
-    stroke: "yellow";
-    stroke-width: 3;
+    font-size: larger;
   }
 
   .thirdPreviewRow {
     padding-top: 10px;
+  }
+
+  .previewSceneTOC {
+    text-decoration: underline;
+    color: blue;
+    font-size:larger;
+  }
+
+  .previewAccordionElements {
+    font-size: larger;
+    padding-top: 10px;
+  }
+
+  .accordionTitle {
+    font-size:15px;
+  }
+
+  .accordionTitle:not(.collapsed){
+    background-color: white !important;
   }
