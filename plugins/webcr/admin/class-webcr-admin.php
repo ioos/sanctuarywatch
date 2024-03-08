@@ -104,6 +104,12 @@ class Webcr_Admin {
 		if ($current_post_type == "scene" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
 			wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array( 'jquery' ), $this->version, array('strategy'  => 'async') );
 		}
+
+		// Load Modal-specific Javascript only when editing/creating a Modal post 
+		$current_post_type = get_post_type();
+		if ($current_post_type == "modal" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
+			wp_enqueue_script( "webcr-admin-modal", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-modal.js', array( 'jquery' ), $this->version, array('strategy'  => 'async') );
+		}
 	}
 
     /**

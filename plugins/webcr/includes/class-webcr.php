@@ -206,6 +206,8 @@ class Webcr {
 			wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
 		}
 
+		//Disable Xlmrpc.php file
+		add_filter( 'xmlrpc_enabled', '__return_false' );
 
 		add_filter('screen_options_show_screen', 'jai_no_screen_options');
 
