@@ -63,4 +63,24 @@
     flush_rewrite_rules();
   }
   register_activation_hook(__FILE__, 'scene_rewrite_flush');
+
+  //get scene photo and info arrays
+  function get_scene_info_photo($post_id){
+    $scene_info_photo_arr = [[], []];
+    for($i = 1; $i <= 6; $i++){
+      //ASSUMING BOTH SCENE INFO AND PHOTO HAVE BOTH TEXT AND LINK
+      //instead of doing individual queries is it faster to just query once of everything then search the query for the required links
+      $scene_info = get_post_meta($post_id, "scene_info".$i);
+      $scene_photo = get_post_meta($post_id, "scene_photo".$i);
+
+      //instead of pushing to array(takes up more memory) can just create the dropdown in the if statement
+      if($scene_info[0]['scene_info_text'.$i] && $scene_info[0]['scene_info_url'.$i]){
+          array_push($scene_info_photo_arr[0], $scene_info[0]);
+      }
+      if($scene_photo[0]['scene_photo_text'.$i] && $scene_photo[0]['scene_photo_url'.$i]){
+          array_push($scene_info_photo_arr[1], $scene_photo[0]);
+      }
+    }
+    return $scene_info_photo_arr;
+  }
 ?>
