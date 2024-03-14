@@ -206,12 +206,33 @@ class Webcr {
 			wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
 		}
 
+		//Disable Xlmrpc.php file
+		add_filter( 'xmlrpc_enabled', '__return_false' );
 
 		add_filter('screen_options_show_screen', 'jai_no_screen_options');
 
 			 function jai_no_screen_options () {
 				return FALSE;
 			}
+
+			//making scene location in Scene custom content type visible to REST API
+		function register_scene_custom_fields() {
+			register_meta(
+				'post', // Object type. In this case, 'post' refers to custom post type 'Scene'
+				'scene_location', // Meta key name
+				array(
+					'show_in_rest' => true, // Make the field available in REST API
+					'single' => true, // Indicates whether the meta key has one single value
+					'type' => 'string', // Data type of the meta value
+					'description' => 'The location of the scene', // Description of the meta key
+					'sanitize_callback' => 'sanitize_text_field', // Callback function to sanitize the value
+					'auth_callback' => function () {
+						return true; // Return true to allow reading, false to disallow writing
+					}
+				)
+			);
+		}
+		add_action('init', 'register_scene_custom_fields');
 
 	}
 
