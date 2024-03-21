@@ -239,6 +239,21 @@ function get_scene_location_callback($object, $field_name, $request) {
 
 add_action('rest_api_init', 'register_scene_location_rest_field');
 
+// Add the filter to support filtering by "scene_location" in REST API queries
+function filter_scene_by_scene_location($args, $request) {
+    if (isset($request['scene_location'])) {
+        $args['meta_query'][] = array(
+            'key' => 'scene_location',
+            'value' => $request['scene_location'],
+            'compare' => 'LIKE', // Change comparison method as needed
+        );
+    }
+    return $args;
+}
+
+add_filter('rest_scene_query', 'filter_scene_by_scene_location', 10, 2);
+
+
 	}
 
 	/**

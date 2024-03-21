@@ -8,11 +8,9 @@
     // $('.scene_preview').click(function(){ alert("Hello"); });
     
     
-    //if (window.console) console.log('foo');
-    //$( window ).load(function() {
-    //	console.log("hi");
-    //$('.scene_preview').click(function(){ alert("Hello"); });
-    //});
+    document.getElementsByName("modal_location")[0].addEventListener("change", console.log("Hello"));
+
+    $('.scene_preview').click(function(){ });
     
     
     
