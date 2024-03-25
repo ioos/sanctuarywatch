@@ -1,5 +1,5 @@
 # Contributing to Sanctuary Watch
-Thanks so much for considering contributing to Sanctuary Watch! Here you'll find a series of guidelines to make your contribution process as easy and as awesome as possible! By the way, a tip of the hat to activeadmin, as our contributing guidelines from [them](https://github.com/activeadmin/activeadmin/blob/HEAD/CONTRIBUTING.md).
+Thanks so much for considering contributing to Sanctuary Watch! Here you'll find some guidelines to make your contribution process as easy and as awesome as possible! By the way, a tip of the hat to activeadmin, as our contributing guidelines come from [them](https://github.com/activeadmin/activeadmin/blob/HEAD/CONTRIBUTING.md).
 
 First off, if you haven't seen them already, please do check out our [Code of Conduct](CODE_OF_CONDUCT.md) and [Readme](readme.md).
 
