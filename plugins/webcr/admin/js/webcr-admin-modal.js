@@ -5,14 +5,34 @@
     // var script = document.createElement('script');
     // script.src='https://code.jquery.com/jquery-latest.min.js';
     // document.getElementsByTagName('head')[0].appendChild(script);
-    // $('.scene_preview').click(function(){ alert("Hello"); });
-    
-    
-    document.getElementsByName("modal_location")[0].addEventListener("change", console.log("Hello"));
+ $('.exopite-sof-fieldset').first().mouseout(function(){
+    var tempo = $('.chosen-single').first()[0].innerText;
+    console.log(tempo + " new1");
+});
+
+
+
+
+
+
+
+
+ //   var dropdown = document.querySelector('select[name="modal_location"]').nextElementSibling;
+ //   console.log(dropdown);
+    // Add event listener for the change event
+//    dropdown.addEventListener("change", function() {
+      // Code to execute when the dropdown value changes
+  //    console.log("hello");
+    //});
 
     $('.scene_preview').click(function(){ });
+
+   // document.getElementsByName("modal_location")[0].addEventListener("mouseover",() =>{ console.log("Hello");});
+
+    $('.chosen-container').change(function(){ alert("hello");});
     
-    
+    $('.chosen-container').change(function(){ alert("hello");});
+
     
         /**
          * All of the code for your admin-facing JavaScript source

@@ -66,3 +66,9 @@
   .accordionTitle:not(.collapsed){
     background-color: white !important;
   }
+
+  /* This is a hacky way of hiding the Screen Options tab in admin screens. 
+  The more recommended method of using a server-side filter to do this is not working for some reason */
+  #show-settings-link {
+    display:none;
+  }

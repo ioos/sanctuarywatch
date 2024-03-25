@@ -209,17 +209,8 @@ class Webcr {
 		//Disable Xlmrpc.php file
 		add_filter( 'xmlrpc_enabled', '__return_false' );
 
-		add_filter('screen_options_show_screen', 'jai_no_screen_options');
-
-			 function jai_no_screen_options () {
-				return FALSE;
-			}
-
-			//making scene location in Scene custom content type visible to REST API
-//		function register_scene_custom_fields() {
-
-//		}
-//		add_action('init', 'register_scene_custom_fields');
+		//Disable Screen Options in admin screens
+		add_filter('screen_options_show_screen', '__return_false');
 
 
 function register_scene_location_rest_field() {
