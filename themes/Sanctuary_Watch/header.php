@@ -28,8 +28,6 @@ defined( 'ABSPATH' ) || exit;
 </div>
 
 <div id="ioos-breadcrumb">
-	<!--First lets display the two links that will always show up-->
-
 	<span id="header-margin">
 		<?php
 			$postMeta = get_post_meta(get_the_ID());
