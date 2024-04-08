@@ -788,6 +788,21 @@ class Webcr_Scene {
         // instantiate the admin page
         $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
 
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Scene'
+            'scene_location', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The location of the scene', // Description of the meta key
+                'sanitize_callback' => 'sanitize_text_field', // Callback function to sanitize the value
+                'auth_callback' => function () {
+                    return true; // Return true to allow reading, false to disallow writing
+                }
+            )
+        );
+
     }
 
     function scene_preview() {

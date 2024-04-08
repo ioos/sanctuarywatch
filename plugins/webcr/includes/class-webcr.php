@@ -209,30 +209,40 @@ class Webcr {
 		//Disable Xlmrpc.php file
 		add_filter( 'xmlrpc_enabled', '__return_false' );
 
-		add_filter('screen_options_show_screen', 'jai_no_screen_options');
+		//Disable Screen Options in admin screens
+		add_filter('screen_options_show_screen', '__return_false');
 
-			 function jai_no_screen_options () {
-				return FALSE;
-			}
+function register_scene_location_rest_field() {
+    register_rest_field(
+        'scene', // Custom post type name
+        'scene_location', // Name of the custom field
+        array(
+            'get_callback' => 'get_scene_location_callback',
+            'schema' => null,
+        )
+    );
+}
 
-			//making scene location in Scene custom content type visible to REST API
-		function register_scene_custom_fields() {
-			register_meta(
-				'post', // Object type. In this case, 'post' refers to custom post type 'Scene'
-				'scene_location', // Meta key name
-				array(
-					'show_in_rest' => true, // Make the field available in REST API
-					'single' => true, // Indicates whether the meta key has one single value
-					'type' => 'string', // Data type of the meta value
-					'description' => 'The location of the scene', // Description of the meta key
-					'sanitize_callback' => 'sanitize_text_field', // Callback function to sanitize the value
-					'auth_callback' => function () {
-						return true; // Return true to allow reading, false to disallow writing
-					}
-				)
-			);
-		}
-		add_action('init', 'register_scene_custom_fields');
+function get_scene_location_callback($object, $field_name, $request) {
+    return get_post_meta($object['id'], $field_name, true);
+}
+
+add_action('rest_api_init', 'register_scene_location_rest_field');
+
+// Add the filter to support filtering by "scene_location" in REST API queries
+function filter_scene_by_scene_location($args, $request) {
+    if (isset($request['scene_location'])) {
+        $args['meta_query'][] = array(
+            'key' => 'scene_location',
+            'value' => $request['scene_location'],
+            'compare' => 'LIKE', // Change comparison method as needed
+        );
+    }
+    return $args;
+}
+
+add_filter('rest_scene_query', 'filter_scene_by_scene_location', 10, 2);
+
 
 	}
 
