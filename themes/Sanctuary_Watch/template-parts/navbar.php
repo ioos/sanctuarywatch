@@ -49,9 +49,9 @@ defined( 'ABSPATH' ) || exit;
                             $post_titles[] = [get_the_title(), $scene_order[0], get_the_ID()];
                         }
                     }
-
+                    //reset the post daata
                     wp_reset_postdata();
-
+                    //custom comparison and sort where the scene order value is compared first than alphabetically
                     function customCompare($a, $b) {
                         $result = $a[1] - $b[1];
                         if ($result==0) {
@@ -59,7 +59,6 @@ defined( 'ABSPATH' ) || exit;
                         }
                         return $result;
                     }
-
                     usort($post_titles, 'customCompare');
 
                     foreach ($post_titles as $post_title){

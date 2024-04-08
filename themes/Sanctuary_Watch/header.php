@@ -41,9 +41,9 @@ defined( 'ABSPATH' ) || exit;
 				}
 				echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
 				echo '<p> > </p>';
-				echo '<a href="https://sanctuarywatch.ioos.us">Sanctuary Watch</a>';
+				echo '<a href="/">Sanctuary Watch</a>';
 				echo '<p> > </p>';
-				echo '<a href="google.com">'. esc_html($scene_loc_webcr.'WebCR') .'</a>';
+				echo '<a href="/overview">'. esc_html($scene_loc_webcr.'WebCR') .'</a>';
 			}
 		?>
 	</span>
