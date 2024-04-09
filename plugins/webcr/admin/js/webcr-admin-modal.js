@@ -10,6 +10,9 @@
 //    console.log(tempo + " new1");
 //});
 
+// const protocol = window.location.protocol;
+// const host = window.location.host;
+
 // change spaces to %20
 function urlifyRecursiveFunc(str) { 
     if (str.length === 0) { 
