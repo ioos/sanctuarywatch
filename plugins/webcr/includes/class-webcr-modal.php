@@ -169,6 +169,11 @@ class Webcr_Modal {
                      'class'      => 'chosen', 
                 ),
                 array(
+                    'id'             => 'hidden_root_url',
+                    'type'           => 'hidden',
+                    'default'          => 'hidden',
+                ),
+                array(
                     'id'             => 'modal_scene',
                     'type'           => 'select',
                     'title'          => 'Scene',

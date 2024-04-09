@@ -72,3 +72,8 @@
   #show-settings-link {
     display:none;
   }
+
+    /* This is a hacky way of hiding the tag line in the custom content admin screens.  */
+  .hide-if-no-js {
+    display:none;
+  }
