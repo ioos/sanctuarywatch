@@ -10,8 +10,7 @@
 //    console.log(tempo + " new1");
 //});
 
-// const protocol = window.location.protocol;
-// const host = window.location.host;
+
 
 // change spaces to %20
 function urlifyRecursiveFunc(str) { 
@@ -26,8 +25,25 @@ function urlifyRecursiveFunc(str) {
 
 function modal_location_change(){
     const modal_location = $('.chosen').first().val();
+    if (modal_location != ""){
     const modal_location_no_space = urlifyRecursiveFunc(modal_location);
-    console.log(modal_location_no_space);
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=" + modal_location_no_space;
+    console.log(restURL);
+    fetch(restURL)
+        .then(response => response.json())
+        .then(data => {
+            // Variable to hold the JSON object
+            const jsonData = data;
+            
+            // Now you can use the jsonData variable to access the JSON object
+            console.log(jsonData.length);
+            console.log(data[0]["id"]);
+            console.log(data[0]["title"]["rendered"]);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
 }
 
 // $('.chosen').first().change(function(){console.log($('.chosen').first().val());})
