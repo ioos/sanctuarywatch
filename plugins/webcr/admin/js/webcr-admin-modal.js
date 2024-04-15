@@ -11,6 +11,12 @@
 //});
 
 
+//$('.chosen-results').eq(1)[0].innerHTML = '<li class="active-result result-selected" data-option-array-index="0">Modal Scene</li><li class="active-result" data-option-array-index="1">Channel Islands NMS</li><li class="active-result" data-option-array-index="2">Florida Keys NMS</li><li class="active-result" data-option-array-index="3">Olympic Coast NMS</li><li class="active-result" data-option-array-index="4">Tempo5</li>';
+
+
+//document.getElementsByName("modal_scene")[0].innerHTML = '<option value="">Modal Scene</option><option value="Channel Islands NMS">Channel Islands NMS</option><option value="Florida Keys NMS">Florida Keys NMS</option><option value="Olympic Coast NMS">Olympic Coast NMS</option><option value="Tempo 5">Tempo 5</option>';
+
+
 
 // change spaces to %20
 function urlifyRecursiveFunc(str) { 

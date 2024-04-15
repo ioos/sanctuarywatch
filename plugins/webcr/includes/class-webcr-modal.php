@@ -181,7 +181,7 @@ class Webcr_Modal {
                     'default_option' => 'Modal Scene',
                     'description' => 'Modal Scene description',
                      'default'     => ' ',
-                     'class'      => 'chosen', 
+                 //    'class'      => 'chosen', 
                 ),
 
                 array(
