@@ -18,30 +18,6 @@ $scene_photo_arr = $total_arr[1];
         <h1 class="title toc-ignore"><?php echo get_the_title( $post_id ) ?></h1>
     </div>
     <p></p>
-    <?php
-        //GENERATING ACCORDION SECTIONS 
-        function generateAccordionSection($title, $dataArr){
-            if(!empty($dataArr)){
-                $modTitle = str_replace(' ', '_', strtolower($title));
-                echo '<div class="accordion-item">';
-                echo '<h2 class="accordion-header">';
-                echo '<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . $modTitle . '"  aria-controls="collapse' . $modTitle . '">';
-                echo $title;
-                echo '</button>';
-                echo '</h2>';
-                echo '<div id="collapse' . $modTitle . '" class="accordion-collapse collapse" data-bs-parent="#sceneAccordions">';
-                echo '<div class="accordion-body">';
-                echo '<ul>';
-                for ($i = 0; $i < count($dataArr); $i++) {
-                    echo '<li><a href="' . $dataArr[$i][$modTitle . '_url' . ($i + 1)] . '">' . $dataArr[$i][$modTitle . '_text' . ($i + 1)] . '</a></li>';
-                }
-                echo '</ul>';
-                echo '</div>';
-                echo '</div>';
-                echo '</div>';
-            }
-        }
-    ?>
     <!-- Temporary Following bootstrap styling, will move to css file later -->
     <div style="display: flex">
         <!--accordian -->
@@ -62,11 +38,19 @@ $scene_photo_arr = $total_arr[1];
         ?>
             </div>
     </div>
+    <div class="svg">
     <?php
-        for ($x = 0; $x < 50; $x++){
-            echo "<br>";
+        $svg_url = get_post_meta($post_id, 'scene_infographic', true);
+        if (!empty($svg_url)) {
+            echo '<img src="' . esc_url($svg_url) . '" alt="Description of SVG">';
         }
+        /*
+        if (!empty($svg_url)) {
+            echo '<object type="image/svg+xml" data="' . esc_url($svg_url) . '">Your browser does not support SVGs</object>';
+        }
+        */ 
     ?>
+    </div>
 </div>
 <?php
 get_footer();
