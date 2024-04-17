@@ -119,6 +119,7 @@ class Webcr_Modal {
             $locations[$locations_row -> name] = $locations_row -> name;
         }
 
+        // DELETE THIS FUNCTION
         function get_scene_posts_with_location($location_value) {
             $args = array(
                 'post_type' => 'scene', // Custom content type name
@@ -177,10 +178,10 @@ class Webcr_Modal {
                     'id'             => 'modal_scene',
                     'type'           => 'select',
                     'title'          => 'Scene',
-                    'options'        => $locations,
-                    'default_option' => 'Modal Scene',
+                    'options'        => array (" " => "Modal Scene"), //$locations,
+                  //  'default_option' => 'Modal Scene',
                     'description' => 'Modal Scene description',
-                     'default'     => ' ',
+                   //  'default'     => ' ',
                  //    'class'      => 'chosen', 
                 ),
 
