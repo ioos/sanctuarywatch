@@ -18,11 +18,11 @@
         const elementNumber = dropdownElements.length;
         if (elementNumber > 0) {
             for (let i = 0; i <= elementNumber -1; i++){
-                optionScene.value = dropdownElements[i][0];
-                optionScene.text = dropdownElements[i][1];
-                sceneDropdown.appendChild(optionScene);
+                let option = document.createElement('option');
+                option.value = dropdownElements[i][0];
+                option.text = dropdownElements[i][1];
+                sceneDropdown.appendChild(option);
             }
-           // console.log(dropdownElements.length);
         }
     }
 
@@ -46,7 +46,6 @@ function modal_location_change(){
         const protocol = window.location.protocol;
         const host = window.location.host;
         const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=" + modal_location_no_space;
-        console.log(restURL);
         fetch(restURL)
             .then(response => response.json())
             .then(data => {
@@ -54,14 +53,12 @@ function modal_location_change(){
                 const jsonData = data;
                 
                 // Now you can use the jsonData variable to access the JSON object
-                console.log(jsonData.length);
                 let sceneArray = [];
                 let newRow;
                 jsonData.forEach(element => {
                     newRow = [element["id"], element["title"]["rendered"]];
                     sceneArray.push(newRow)
                 });
-                console.log(sceneArray);
                 modalSceneDropdown(sceneArray);
             })
             .catch(error => console.error('Error fetching data:', error));
