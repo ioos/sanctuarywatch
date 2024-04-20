@@ -8,6 +8,24 @@
     // $('.chosen').eq(1).innerHTML
 
 
+    function modalSceneDropdown (dropdownElements=[]){
+        const sceneDropdown = document.getElementsByName("modal_scene")[0];
+        sceneDropdown.innerHTML ='';
+        let optionScene = document.createElement('option');
+        optionScene.text = "Modal Scene";
+        optionScene.value = " ";
+        sceneDropdown.add(optionScene);
+        const elementNumber = dropdownElements.length;
+        if (elementNumber > 0) {
+            for (let i = 0; i <= elementNumber -1; i++){
+                optionScene.value = dropdownElements[i][0];
+                optionScene.text = dropdownElements[i][1];
+                sceneDropdown.appendChild(optionScene);
+            }
+           // console.log(dropdownElements.length);
+        }
+    }
+
 
 
 // change spaces to %20
@@ -44,6 +62,7 @@ function modal_location_change(){
                     sceneArray.push(newRow)
                 });
                 console.log(sceneArray);
+                modalSceneDropdown(sceneArray);
             })
             .catch(error => console.error('Error fetching data:', error));
     }
