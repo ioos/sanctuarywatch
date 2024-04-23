@@ -5,8 +5,6 @@
     // var script = document.createElement('script');
     // script.src='https://code.jquery.com/jquery-latest.min.js';
     // document.getElementsByTagName('head')[0].appendChild(script);
-    // $('.chosen').eq(1).innerHTML
-
 
     function modalSceneDropdown (dropdownElements=[]){
         const sceneDropdown = document.getElementsByName("modal_scene")[0];
@@ -65,9 +63,12 @@ function modal_location_change(){
     }
 }
 
-// $('.chosen').first().change(function(){console.log($('.chosen').first().val());})
-$('.chosen').first().change(modal_location_change);
+function modal_scene_change(){
+    console.log("hello");
+}
 
+$('.chosen').first().change(modal_location_change);
+$( "select[name='modal_scene']" ).change(modal_scene_change);
 
 
 
