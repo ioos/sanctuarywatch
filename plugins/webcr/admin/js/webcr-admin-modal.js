@@ -64,7 +64,24 @@ function modal_location_change(){
 }
 
 function modal_scene_change(){
-    console.log("hello");
+    const sceneID = $( "select[name='modal_scene']" ).val();
+
+    if (sceneID != " ") {
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_infographic";
+        fetch(restURL)
+            .then(response => response.json())
+            .then(data => {
+                // Variable to hold the JSON object
+                const jsonData = data;
+                
+                // Now you can use the jsonData variable to access the JSON object
+                console.log(jsonData["scene_infographic"]);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
 }
 
 $('.chosen').first().change(modal_location_change);
