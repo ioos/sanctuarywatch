@@ -237,11 +237,6 @@
 			}
 		}
 
-
-
-
-
-
 		newDiv.appendChild(thirdRow);
 		// Append the new div to the second parent element
 		secondParent.appendChild(newDiv);
