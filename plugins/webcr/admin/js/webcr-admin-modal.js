@@ -74,6 +74,13 @@ function modal_location_change(){
     }
 }
 
+// This function gets the URL of the SVG of the scene infographic
+async function getUrlSvg(targetURL){
+    const response = await fetch(targetURL);
+    const svgURL = await response.text();
+    return svgURL; 
+}
+
 function modal_scene_change(){
     const sceneID = $( "select[name='modal_scene']" ).val();
 
@@ -82,64 +89,8 @@ function modal_scene_change(){
         const host = window.location.host;
         const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_infographic";
         console.log(restURL);
-        fetch(restURL)
-    //        .then(response => response.text())
-            .then(data => {
-                // Let's remove the preview window if it already exists
-                var previewWindow = document.getElementById('preview_window');
-                // If the element exists
-                if (previewWindow) {
-                    // Remove the scene window
-                    previewWindow.parentNode.removeChild(previewWindow);
-                }
-                // Variable to hold the JSON object
-                const jsonData = data.url;
-                console.log(data.url);
-            
-                let newDiv = document.createElement("div");
-                newDiv.id = "preview_window";
-                newDiv.classList.add("container");
-                if (jsonData == ""){
-                    newDiv.innerHTML = "No infographic for scene";
-                } else {
-
-                    // Fetch the remote SVG file
-                    fetch(jsonData)
-                    .then(response => response.text())
-                    .then(svgContent => {
-                        const svgElement = new DOMParser().parseFromString(svgContent, 'image/svg+xml').documentElement;
-
-                        // Create a temporary div to hold the SVG content
-                        let thirdRow = document.createElement("div");
-                        thirdRow.classList.add("row", "thirdPreviewRow");
-                        
-                        let imageColumn = document.createElement("div");
-                        imageColumn.classList.add("col-9");
-                        imageColumn.innerHTML = svgElement;
-                        imageColumn.id = "previewSvgContainer";
-
-                        thirdRow.append(imageColumn);
-                        document.getElementById("previewSvgContainer").children[0].id = "previewSvg";
-
-                        document.getElementById("previewSvgContainer").children[0].classList.add("previewSvg");
-                        document.getElementById("previewSvgContainer").children[0].removeAttribute("height");
-                        resizeSvg();
-
-                    })
-                    .catch(error => {
-                        console.error('Error fetching or processing SVG:', error);
-                    });
-
-
-
-                    newDiv.innerHTML = "infographic";
-                }
-
-                document.getElementsByClassName("exopite-sof-field-select")[1].appendChild(newDiv);
-                // Now you can use the jsonData variable to access the JSON object
-                console.log(jsonData);
-            })
-            .catch(error => console.error('Error fetching data:', error));
+        const infographicURL =  getUrlSvg(restURL);
+        console.log(infographicURL);
     }
 
 }
