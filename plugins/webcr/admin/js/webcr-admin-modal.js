@@ -24,18 +24,23 @@
         }
     }
 
-        // Function to resize the SVG
-    function resizeSvg() {
-		// Get the SVG element
-		const svg = document.getElementById('previewSvg');
-  
-		// Get the parent div (with class "col-10")
-		const svgContainer = document.getElementById('previewSvgContainer');
-  
-		// Set SVG width to match the container width
-		const width = svgContainer.clientWidth;
-		svg.setAttribute('width', width);
-	  }
+    function modalIconsDropdown (dropdownElements=[]){
+        const iconsDropdown = document.getElementsByName("modal_icons")[0];
+        iconsDropdown.innerHTML ='';
+        let optionIcon = document.createElement('option');
+        optionIcon.text = "Modal Icons";
+        optionIcon.value = " ";
+        iconsDropdown.add(optionIcon);
+        const elementNumber = dropdownElements.length;
+        if (elementNumber > 0) {
+            for (let i = 0; i <= elementNumber -1; i++){
+                let option = document.createElement('option');
+                option.value = dropdownElements[i];
+                option.text = dropdownElements[i];
+                iconsDropdown.appendChild(option);
+            }
+        }
+    }
 
 // change spaces to %20
 function urlifyRecursiveFunc(str) { 
@@ -74,29 +79,95 @@ function modal_location_change(){
     }
 }
 
-// This function gets the URL of the SVG of the scene infographic
-async function getUrlSvg(targetURL){
-    const response = await fetch(targetURL);
-    const svgURL = await response.text();
-    return svgURL; 
-}
-
 function modal_scene_change(){
     const sceneID = $( "select[name='modal_scene']" ).val();
 
     if (sceneID != " ") {
+
+        // Let's remove the preview window if it already exists
+		const previewWindow = document.getElementById('preview_window');
+		// If the element exists
+		if (previewWindow) {
+			// Remove the scene window
+			previewWindow.parentNode.removeChild(previewWindow);
+		}
+
+		let newDiv = document.createElement('div');
+		newDiv.id = "preview_window";
+		newDiv.classList.add("container");
+        let imageRow = document.createElement("div");
+        imageRow.classList.add("row", "thirdPreviewRow");
+        let imageColumn = document.createElement("div");
+        imageColumn.classList.add("col-9");
+        imageColumn.id = "previewSvgContainer";
+
         const protocol = window.location.protocol;
         const host = window.location.host;
         const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_infographic";
-        console.log(restURL);
-        const infographicURL =  getUrlSvg(restURL);
-        console.log(infographicURL);
+        fetch(restURL)
+            .then(response => response.json())
+            .then(svgJson => {
+                svgUrl = svgJson["scene_infographic"];
+                if(svgUrl == ""){
+                    imageColumn.innerHTML = "No infographic for scene";
+                    modalIconsDropdown([]);
+                }
+                else {
+                    fetch(svgUrl)
+                        .then(response => response.text())
+                        .then(svgContent => {
+                            imageColumn.innerHTML = svgContent
+                            imageColumn.children[0].id="previewSvg";
+                            document.getElementById("previewSvg").removeAttribute("height");
+
+                            const width = imageColumn.clientWidth;
+                            document.getElementById("previewSvg").setAttribute('width', width);
+
+                            let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
+                            // Initialize an array to hold the sublayer names
+                            let sublayers = [];
+                            if (iconsLayer) {
+                                // Iterate over the child elements of the "icons" layer
+                                iconsLayer.childNodes.forEach(node => {
+                                    // Check if the node is an element and push its id to the sublayers array
+                                    if (node.nodeType === Node.ELEMENT_NODE) {
+                                    sublayers.push(node.id);
+                                    }
+                                });
+                                sublayers = sublayers.sort();
+                            }
+                            modalIconsDropdown(sublayers);
+                        })
+                }
+            })
+            .catch((err) => {console.error(err)});
+            
+            imageRow.appendChild(imageColumn);
+            newDiv.appendChild(imageRow);
+            document.getElementsByClassName("exopite-sof-field-select")[1].appendChild(newDiv);
+    }
+}
+
+function modal_icons_change() {
+    const iconValue = document.getElementsByName("modal_icons")[0].value;
+    const svg = document.getElementById("previewSvg");
+    const svgIcons = svg.getElementById("icons");
+    const svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+
+    if(svgIcons.querySelector('g[id="icon_highlight"]')){
+        svgIcons.querySelector('g[id="icon_highlight"]').remove();
     }
 
+    const svgIconHighlight = svgIconTarget.cloneNode(true);
+    svgIconHighlight.id = "icon_highlight";
+    svgIconHighlight.style.stroke = "yellow";
+    svgIconHighlight.style.strokeWidth = "6";
+    svgIcons.prepend(svgIconHighlight);
 }
 
 $('.chosen').first().change(modal_location_change);
 $( "select[name='modal_scene']" ).change(modal_scene_change);
+$( "select[name='modal_icons']" ).change(modal_icons_change);
 
 
 
