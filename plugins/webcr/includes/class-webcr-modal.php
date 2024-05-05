@@ -193,11 +193,27 @@ class Webcr_Modal {
                      'class'      => 'chosen', 
                 ),
                 array(
-                    'id'          => 'modal_window_link',
+                    'id'             => 'modal_window_type',
+                    'type'           => 'select',
+                    'title'          => 'Modal Window',
+                    'options'        => array("External", "Internal"),
+                    'description' => 'Modal Window Type description',
+                    'default'     => 'External',
+                     'class'      => 'chosen', 
+                ),
+                array(
+                    'id'          => 'modal_window_url',
                     'type'        => 'text',
-                    'title'       => 'Modal Window Link',
+                    'title'       => 'Modal Window URL',
                      'class'       => 'text-class',   
-                     'description' => 'Modal Window Link Description',  
+                     'description' => 'Modal Window URL Description',  
+                ),
+                array(
+                    'id'             => 'modal_window_scene_out',
+                    'type'           => 'select',
+                    'title'          => 'Modal Window Scene Out',
+                    'options'        => array (" " => "Modal Scene Out"), 
+                    'description' => 'Modal Window Scene Out description',
                 ),
 
                 array(

@@ -6,6 +6,37 @@
     // script.src='https://code.jquery.com/jquery-latest.min.js';
     // document.getElementsByTagName('head')[0].appendChild(script);
 
+	let opening_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
+	displayEntries(opening_scene_info_entries, ".text-class[data-depend-id='modal_info_");
+	let opening_scene_photo_entries = $(".range[data-depend-id='modal_photo_entries']").val();
+	displayEntries(opening_scene_photo_entries, ".text-class[data-depend-id='modal_photo_");	
+
+
+
+    function displayEntries (entry_number, string_prefix){
+		if (string_prefix == ".text-class[data-depend-id='photo_info_"){
+			console.log("entry_number " + entry_number);
+		}
+		for (let i = 6; i > entry_number; i--){
+			let target_text = string_prefix + "text" + i + "']";
+			let target_url = string_prefix + "url" + i + "']";
+			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
+				console.log(i + " " + target_text + " " + target_url);
+			}
+			$(target_text).parents().eq(6).css("display", "none");
+			$(target_text).val(function(){return  "";});
+			$(target_url).val(function(){return  "";});
+		}
+
+		for (let i = 1; i <= entry_number; i++){
+			let target = string_prefix + "text" + i + "']";
+			$(target).parents().eq(6).css("display", "block");
+			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
+				console.log(i + " " + target);
+			}
+		}
+	}
+
     function modalSceneDropdown (dropdownElements=[]){
         const sceneDropdown = document.getElementsByName("modal_scene")[0];
         sceneDropdown.innerHTML ='';
@@ -169,7 +200,15 @@ $('.chosen').first().change(modal_location_change);
 $( "select[name='modal_scene']" ).change(modal_scene_change);
 $( "select[name='modal_icons']" ).change(modal_icons_change);
 
+$(".range[data-depend-id='modal_info_entries']").change(function(){ 
+    let number_of_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
+    displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='modal_info_");
+});
 
+$(".range[data-depend-id='modal_photo_entries']").change(function(){ 
+    let number_of_scene_info_entries = $(".range[data-depend-id='modal_photo_entries']").val();
+    displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='modal_photo_");
+});
 
 
  //   var dropdown = document.querySelector('select[name="modal_location"]').nextElementSibling;
