@@ -5,18 +5,73 @@
     // var script = document.createElement('script');
     // script.src='https://code.jquery.com/jquery-latest.min.js';
     // document.getElementsByTagName('head')[0].appendChild(script);
-// $('.exopite-sof-fieldset').first().mouseout(function(){
-//    var tempo = $('.chosen-single').first()[0].innerText;
-//    console.log(tempo + " new1");
-//});
+
+	let opening_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
+	displayEntries(opening_scene_info_entries, ".text-class[data-depend-id='modal_info_");
+	let opening_scene_photo_entries = $(".range[data-depend-id='modal_photo_entries']").val();
+	displayEntries(opening_scene_photo_entries, ".text-class[data-depend-id='modal_photo_");	
 
 
-//$('.chosen-results').eq(1)[0].innerHTML = '<li class="active-result result-selected" data-option-array-index="0">Modal Scene</li><li class="active-result" data-option-array-index="1">Channel Islands NMS</li><li class="active-result" data-option-array-index="2">Florida Keys NMS</li><li class="active-result" data-option-array-index="3">Olympic Coast NMS</li><li class="active-result" data-option-array-index="4">Tempo5</li>';
 
+    function displayEntries (entry_number, string_prefix){
+		if (string_prefix == ".text-class[data-depend-id='photo_info_"){
+			console.log("entry_number " + entry_number);
+		}
+		for (let i = 6; i > entry_number; i--){
+			let target_text = string_prefix + "text" + i + "']";
+			let target_url = string_prefix + "url" + i + "']";
+			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
+				console.log(i + " " + target_text + " " + target_url);
+			}
+			$(target_text).parents().eq(6).css("display", "none");
+			$(target_text).val(function(){return  "";});
+			$(target_url).val(function(){return  "";});
+		}
 
-//document.getElementsByName("modal_scene")[0].innerHTML = '<option value="">Modal Scene</option><option value="Channel Islands NMS">Channel Islands NMS</option><option value="Florida Keys NMS">Florida Keys NMS</option><option value="Olympic Coast NMS">Olympic Coast NMS</option><option value="Tempo 5">Tempo 5</option>';
+		for (let i = 1; i <= entry_number; i++){
+			let target = string_prefix + "text" + i + "']";
+			$(target).parents().eq(6).css("display", "block");
+			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
+				console.log(i + " " + target);
+			}
+		}
+	}
 
+    function modalSceneDropdown (dropdownElements=[]){
+        const sceneDropdown = document.getElementsByName("modal_scene")[0];
+        sceneDropdown.innerHTML ='';
+        let optionScene = document.createElement('option');
+        optionScene.text = "Modal Scene";
+        optionScene.value = " ";
+        sceneDropdown.add(optionScene);
+        const elementNumber = dropdownElements.length;
+        if (elementNumber > 0) {
+            for (let i = 0; i <= elementNumber -1; i++){
+                let option = document.createElement('option');
+                option.value = dropdownElements[i][0];
+                option.text = dropdownElements[i][1];
+                sceneDropdown.appendChild(option);
+            }
+        }
+    }
 
+    function modalIconsDropdown (dropdownElements=[]){
+        const iconsDropdown = document.getElementsByName("modal_icons")[0];
+        iconsDropdown.innerHTML ='';
+        let optionIcon = document.createElement('option');
+        optionIcon.text = "Modal Icons";
+        optionIcon.value = " ";
+        iconsDropdown.add(optionIcon);
+        const elementNumber = dropdownElements.length;
+        if (elementNumber > 0) {
+            for (let i = 0; i <= elementNumber -1; i++){
+                let option = document.createElement('option');
+                option.value = dropdownElements[i];
+                option.text = dropdownElements[i];
+                iconsDropdown.appendChild(option);
+            }
+        }
+    }
 
 // change spaces to %20
 function urlifyRecursiveFunc(str) { 
@@ -36,32 +91,124 @@ function modal_location_change(){
         const protocol = window.location.protocol;
         const host = window.location.host;
         const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=" + modal_location_no_space;
-        console.log(restURL);
         fetch(restURL)
             .then(response => response.json())
             .then(data => {
                 // Variable to hold the JSON object
                 const jsonData = data;
-                
+
                 // Now you can use the jsonData variable to access the JSON object
-                console.log(jsonData.length);
                 let sceneArray = [];
                 let newRow;
                 jsonData.forEach(element => {
                     newRow = [element["id"], element["title"]["rendered"]];
                     sceneArray.push(newRow)
                 });
-                console.log(sceneArray);
+                modalSceneDropdown(sceneArray);
             })
             .catch(error => console.error('Error fetching data:', error));
     }
 }
 
-// $('.chosen').first().change(function(){console.log($('.chosen').first().val());})
+function modal_scene_change(){
+    const sceneID = $( "select[name='modal_scene']" ).val();
+
+    if (sceneID != " ") {
+
+        // Let's remove the preview window if it already exists
+		const previewWindow = document.getElementById('preview_window');
+		// If the element exists
+		if (previewWindow) {
+			// Remove the scene window
+			previewWindow.parentNode.removeChild(previewWindow);
+		}
+
+		let newDiv = document.createElement('div');
+		newDiv.id = "preview_window";
+		newDiv.classList.add("container");
+        let imageRow = document.createElement("div");
+        imageRow.classList.add("row", "thirdPreviewRow");
+        let imageColumn = document.createElement("div");
+        imageColumn.classList.add("col-9");
+        imageColumn.id = "previewSvgContainer";
+
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_infographic";
+        fetch(restURL)
+            .then(response => response.json())
+            .then(svgJson => {
+                svgUrl = svgJson["scene_infographic"];
+                if(svgUrl == ""){
+                    imageColumn.innerHTML = "No infographic for scene";
+                    modalIconsDropdown([]);
+                }
+                else {
+                    fetch(svgUrl)
+                        .then(response => response.text())
+                        .then(svgContent => {
+                            imageColumn.innerHTML = svgContent
+                            imageColumn.children[0].id="previewSvg";
+                            document.getElementById("previewSvg").removeAttribute("height");
+
+                            const width = imageColumn.clientWidth;
+                            document.getElementById("previewSvg").setAttribute('width', width);
+
+                            let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
+                            // Initialize an array to hold the sublayer names
+                            let sublayers = [];
+                            if (iconsLayer) {
+                                // Iterate over the child elements of the "icons" layer
+                                iconsLayer.childNodes.forEach(node => {
+                                    // Check if the node is an element and push its id to the sublayers array
+                                    if (node.nodeType === Node.ELEMENT_NODE) {
+                                    sublayers.push(node.id);
+                                    }
+                                });
+                                sublayers = sublayers.sort();
+                            }
+                            modalIconsDropdown(sublayers);
+                        })
+                }
+            })
+            .catch((err) => {console.error(err)});
+            
+            imageRow.appendChild(imageColumn);
+            newDiv.appendChild(imageRow);
+            document.getElementsByClassName("exopite-sof-field-select")[1].appendChild(newDiv);
+    }
+}
+
+function modal_icons_change() {
+    const iconValue = document.getElementsByName("modal_icons")[0].value;
+    const svg = document.getElementById("previewSvg");
+    const svgIcons = svg.getElementById("icons");
+    const svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+
+    if(svgIcons.querySelector('g[id="icon_highlight"]')){
+        svgIcons.querySelector('g[id="icon_highlight"]').remove();
+    }
+
+    const svgIconHighlight = svgIconTarget.cloneNode(true);
+    svgIconHighlight.id = "icon_highlight";
+    svgIconHighlight.style.stroke = "yellow";
+    svgIconHighlight.style.strokeWidth = "6";
+    svgIcons.prepend(svgIconHighlight);
+}
+
 $('.chosen').first().change(modal_location_change);
+$( "select[name='modal_scene']" ).change(modal_scene_change);
+$( "select[name='modal_icons']" ).change(modal_icons_change);
 
+$(".range[data-depend-id='modal_info_entries']").change(function(){ 
+    let number_of_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
+    displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='modal_info_");
+});
 
-
+$(".range[data-depend-id='modal_photo_entries']").change(function(){ 
+    let number_of_scene_info_entries = $(".range[data-depend-id='modal_photo_entries']").val();
+    displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='modal_photo_");
+});
 
 
  //   var dropdown = document.querySelector('select[name="modal_location"]').nextElementSibling;

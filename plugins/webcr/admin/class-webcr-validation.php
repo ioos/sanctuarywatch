@@ -9,11 +9,27 @@ class webcr_validation {
     //public $save_fields;
 
     public function master_validate($validate_content_type){
-        if ($validate_content_type == "scene") {
-            return $this->validate_scene();
-        } else {
-            return false;
+        switch ($validate_content_type) {
+            case "scene":
+                return $this->validate_scene();
+                break;
+            case "modal":
+                return $this->validate_modal();
+                break;
+            case "default":
+                return false;
         }
+
+   //     if ($validate_content_type == "scene") {
+   //         return $this->validate_scene();
+   //     } else {
+   //         return false;
+   //     }
+    }
+
+    public function validate_modal(){
+        $save_modal_fields = true;
+        return $save_modal_fields;
     }
 
     public function validate_scene (){

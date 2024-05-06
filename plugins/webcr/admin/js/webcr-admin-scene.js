@@ -185,7 +185,7 @@
 					thirdRow.append(imageColumn);
 					document.getElementById("previewSvgContainer").children[0].id = "previewSvg";
 
-					document.getElementById("previewSvgContainer").children[0].classList.add("previewSvg");
+					//document.getElementById("previewSvgContainer").children[0].classList.add("previewSvg");
 					document.getElementById("previewSvgContainer").children[0].removeAttribute("height");
 					resizeSvg();
 
@@ -236,11 +236,6 @@
 	
 			}
 		}
-
-
-
-
-
 
 		newDiv.appendChild(thirdRow);
 		// Append the new div to the second parent element

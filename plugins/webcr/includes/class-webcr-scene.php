@@ -802,6 +802,21 @@ class Webcr_Scene {
                 }
             )
         );
+ 
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Scene'
+            'scene_infographic', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The url of the infographic', // Description of the meta key
+                'sanitize_callback' => 'sanitize_text_field', // Callback function to sanitize the value
+                'auth_callback' => function () {
+                    return true; // Return true to allow reading, false to disallow writing
+                }
+            )
+        );
 
     }
 

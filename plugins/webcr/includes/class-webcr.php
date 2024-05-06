@@ -212,6 +212,8 @@ class Webcr {
 		//Disable Screen Options in admin screens
 		add_filter('screen_options_show_screen', '__return_false');
 
+
+// Add scene location to rest API
 function register_scene_location_rest_field() {
     register_rest_field(
         'scene', // Custom post type name
@@ -228,6 +230,24 @@ function get_scene_location_callback($object, $field_name, $request) {
 }
 
 add_action('rest_api_init', 'register_scene_location_rest_field');
+
+// Add scene infographic to rest API
+function register_scene_infographic_rest_field() {
+    register_rest_field(
+        'scene', // Custom post type name
+        'scene_infographic', // Name of the custom field
+        array(
+            'get_callback' => 'get_scene_infographic_callback',
+            'schema' => null,
+        )
+    );
+}
+
+function get_scene_infographic_callback($object, $field_name, $request) {
+    return get_post_meta($object['id'], $field_name, true);
+}
+
+add_action('rest_api_init', 'register_scene_infographic_rest_field');
 
 // Add the filter to support filtering by "scene_location" in REST API queries
 function filter_scene_by_scene_location($args, $request) {
