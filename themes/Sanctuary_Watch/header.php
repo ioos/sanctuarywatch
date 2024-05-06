@@ -1,4 +1,15 @@
 <?php
+/**
+ * Main template file that defines the HTML document structure for the theme.
+ *
+ * This file serves as the foundational HTML document setup for a WordPress theme, including all necessary
+ * meta tags for character set, viewport, and IE compatibility. It utilizes WordPress functions to manage
+ * document language attributes, header customizations, and body classes dynamically. The structure includes
+ * a top bar with a logo, breadcrumb navigation for site hierarchy, and an extensible navigation bar. 
+ * Proper security and compatibility practices are followed to ensure that the theme performs reliably across 
+ * different browsers and devices.
+ */
+
 defined( 'ABSPATH' ) || exit;
 ?>
 <!doctype html>
@@ -8,8 +19,17 @@ defined( 'ABSPATH' ) || exit;
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link rel="profile" href="http://gmpg.org/xfn/11" />
-<?php wp_head(); ?>
-<?php if ( get_header_textcolor() ) : ?>
+<?php 
+// WordPress hook for adding elements to the <head> section
+wp_head(); 
+/**
+ * Dynamically applies CSS styles to the header based on theme customization settings.
+ *
+ * This conditional style block changes the color of the header and its links based on the user's choice in
+ * the theme customizer. Utilizing `get_header_textcolor()`, it ensures that the style only applies if a color is set,
+ * enhancing the theme's flexibility and adherence to user preferences.
+ */
+if ( get_header_textcolor() ) : ?>
 <style type="text/css">
 	#header,
 	#header a { 
@@ -19,24 +39,41 @@ defined( 'ABSPATH' ) || exit;
 <?php endif; ?>
 </head>
 <body <?php echo esc_html( body_class() ); ?>>
-<?php wp_body_open(); ?>
-
+<?php 
+	// WordPress hook for doing actions right after the body tag opens 
+	wp_body_open(); 
+?>
+<!-- Top bar section containing a clickable logo that links to an external site -->
 <div id="top-bar">
 	<a href="https://ioos.us" target="_blank">
 		<img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">
 	</a>
 </div>
 
+<?php
+/**
+ * Implements breadcrumb navigation dynamically based on the current post's metadata.
+ *
+ * Breadcrumbs provide a trail for the user to follow back to the starting or entry point of the website and 
+ * are dynamically generated here based on the post's scene location metadata. It enhances user navigation and 
+ * SEO by structuring the site hierarchy.
+ */
+?>
 <div id="ioos-breadcrumb">
 	<span id="header-margin">
 		<?php
+		// Breadcrumbs are dynamically generated based on the current post's metadata to facilitate navigation and enhance SEO
+			// Fetch and store the post meta data and the scene location for the current post using its ID.
 			$postMeta = get_post_meta(get_the_ID());
 			$sceneLocation = $postMeta['scene_location'][0];
+			// Split the 'scene_location' string into an array based on spaces.
 			$sceneArr = explode(' ', $sceneLocation);
 			if (!empty($sceneLocation)){
+				// Loop through each word in the 'sceneLocation' array except the last one.
 				for($i = 0; $i < count($sceneArr)-1; $i++){
 					$scene_loc_webcr = $scene_loc_webcr.$sceneArr[$i].' ';
 				}
+				// Create the breadcrumb with the default links and the 
 				echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
 				echo '<p> > </p>';
 				echo '<a href="/">Sanctuary Watch</a>';

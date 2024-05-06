@@ -1,3 +1,14 @@
+<?php
+/**
+ * Navigation Dropdowns Template
+ *
+ * This section of the navigation bar template provides dropdown menus for quick access to various parts of the site, 
+ * specifically focusing on 'WebCRs' (Web-enabled Condition Reporting Systems) for different locations and 'Conservation Issues'.
+ * These dropdowns are designed to improve user navigation efficiency by categorizing content under common themes.
+ * This implementation is essential for a user-friendly navigation setup that allows visitors to find relevant information
+ * quickly and efficiently, categorized under intuitive groupings. 
+ */
+?>
 <!--
 TODO: WebCrs Dropdown, need to grab all locations and put in dropdown
 TEMP SOLUTION - HARDCODE LOCATION
@@ -13,6 +24,7 @@ previous links used:
 <a class="dropdown-item" href="/webcr-floridakeys/overview/">Florida Keys</a>
 <a class="dropdown-item" href="/webcr-olympiccoast/overview/">Olympic Coast</a>
 -->
+<!-- List item for the navigation menu, specifically a dropdown for WebCRs -->
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">WebCRs</a>
     <div class="dropdown-menu">
@@ -21,6 +33,7 @@ previous links used:
         <a class="dropdown-item" href="<?php echo get_permalink(82); ?>" target="_blank">Olympic Coast</a>
     </div>
 </li>
+<!-- List item for the navigation menu, specifically a dropdown for WebCRs -->
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Conservation Issues</a>
     <div class="dropdown-menu">

@@ -1,5 +1,15 @@
 <?php
   /**
+   * Theme Functionality File
+   *
+   * This file is part of a WordPress theme and is responsible for defining and handling the loading of all theme-specific
+   * scripts, styles, and custom post types. The functions are designed to enhance the theme's capabilities, ensuring
+   * proper style, script management, and custom post type functionalities. Each function is hooked to an appropriate action or filter within WordPress to ensure they execute at the right time
+   * during page load or admin panel interactions. Proper use of actions and filters follows WordPress best practices,
+   * aiming to extend the functionality of WordPress themes without modifying core files.
+   */
+
+  /**
    * Enqueues the theme's main stylesheet.
    *
    * This function utilizes `wp_enqueue_style` to register the theme's main 

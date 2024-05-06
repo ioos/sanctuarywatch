@@ -1,9 +1,30 @@
 <?php
+/**
+ * Primary Page Template for Sanctuary Watch
+ *
+ * This template is designed to display the main content area of the 'Sanctuary Watch' page within a WordPress theme.
+ * It integrates the site header and footer and provides a central container that features an image and detailed text
+ * components styled directly within the template. The key elements include:
+ *
+ * - **Header Inclusion**: Utilizes `get_header()` to embed the standard site-wide header.
+ * - **Main Content Container**: A full-width container that aligns the content at the top of the page and
+ *   includes both visual and textual elements to engage users:
+ *     - An emblem image (logo) for Sanctuary Watch is displayed alongside the site title and a descriptive tagline,
+ *       both formatted with specific styles for prominence and readability.
+ *     - A detailed description under a styled heading that introduces the WebCRs platform, explaining its purpose
+ *       and functionality in tracking ecosystem conditions through interactive tools.
+ * - **Footer Inclusion**: Implements `get_footer()` to attach the standard site-wide footer.
+ *
+ * The content is primarily focused on delivering information through a clean and interactive layout, using inline styles
+ * for specific design needs. This setup ensures that the theme maintains a coherent look while also providing specific
+ * functionality and information layout tailored to the 'Sanctuary Watch' theme.
+ */
 
 defined( 'ABSPATH' ) || exit;
 
 get_header();
 ?>
+<!-- Main container with Bootstrap styling for fluid layout -->
 <div class="container-fluid main-container" style="margin-top: 0px;">
     <div class="image-center" style="padding-bottom: 20px;">
         <span>

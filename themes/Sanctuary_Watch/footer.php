@@ -1,4 +1,14 @@
-<?php defined( 'ABSPATH' ) || exit; ?>
+<?php 
+/**
+ * Footer Template
+ *
+ * This template is designed to define the footer section of a WordPress theme. It outlines a three-column layout
+ * filled with various interactive and informative elements, including links to useful resources, social media platforms,
+ * and contact information of the organization. The footer serves as a critical component of site navigation and 
+ * visitor engagement, providing key links, social proof, and contact details.
+ */
+
+defined( 'ABSPATH' ) || exit; ?>
 
 <footer class="footer">
     <div class="footer-container">
