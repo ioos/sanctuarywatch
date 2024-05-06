@@ -11,7 +11,41 @@
 	let opening_scene_photo_entries = $(".range[data-depend-id='modal_photo_entries']").val();
 	displayEntries(opening_scene_photo_entries, ".text-class[data-depend-id='modal_photo_");	
 
+    let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
+    displayTabEntries(opening_tab_entries);
 
+    iconOut();
+
+    function modalWindow(){
+        
+    }
+
+    function iconOut(){
+        let iconOutType = document.getElementsByName("icon_out_type")[0].value;
+        if (iconOutType=="External"){
+            document.getElementsByName("icon_scene_out")[0].value = "";
+            document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
+            document.getElementsByName("icon_out_url")[0].parentElement.parentElement.style.display = "block";
+        } else {
+            document.getElementsByName("icon_out_url")[0].value = "";
+            document.getElementsByName("icon_out_url")[0].parentElement.parentElement.style.display = "none";
+            document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "block";
+        }
+    }
+
+    function displayTabEntries (entry_number){
+        let target_element = "";
+		for (let i = 6; i > entry_number; i--){
+			target_element = "modal_tab_title" + i;
+            document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "none";
+            document.getElementsByName(target_element)[0].value = "";
+		}
+
+		for (let i = 1; i <= entry_number; i++){
+			target_element = "modal_tab_title" + i;
+            document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "block";
+		}
+	}
 
     function displayEntries (entry_number, string_prefix){
 		if (string_prefix == ".text-class[data-depend-id='photo_info_"){
@@ -199,6 +233,12 @@ function modal_icons_change() {
 $('.chosen').first().change(modal_location_change);
 $( "select[name='modal_scene']" ).change(modal_scene_change);
 $( "select[name='modal_icons']" ).change(modal_icons_change);
+$( "select[name='icon_out_type']" ).change(iconOut);
+
+$(".range[data-depend-id='modal_tab_number']").change(function(){ 
+    let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
+    displayTabEntries(opening_tab_entries);
+});
 
 $(".range[data-depend-id='modal_info_entries']").change(function(){ 
     let number_of_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
