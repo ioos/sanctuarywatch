@@ -173,7 +173,7 @@ class Webcr_Modal {
                     'id'             => 'modal_scene',
                     'type'           => 'select',
                     'title'          => 'Scene',
-                    'options'        => array (" " => "Modal Scene"), 
+                    'options'        => array ("" => "Modal Scene"), 
                     'description' => 'Modal Scene description',
                 ),
                 array(
@@ -187,7 +187,7 @@ class Webcr_Modal {
                     'id'             => 'modal_window',
                     'type'           => 'select',
                     'title'          => 'Modal Window',
-                    'options'        => array("Yes", "No"),
+                    'options'        => array("Yes" => "Yes", "No" => "No"),
                     'description' => 'Modal Window description',
                     'default'     => 'Yes',
                      'class'      => 'chosen', 
@@ -211,7 +211,7 @@ class Webcr_Modal {
                     'id'             => 'icon_scene_out',
                     'type'           => 'select',
                     'title'          => 'Icon Scene Out',
-                    'options'        => array (" " => "Icon Scene Out"), 
+                    'options'        => array ("" => "Icon Scene Out"), 
                     'description' => 'Icon Scene Out description',
                 ),
 

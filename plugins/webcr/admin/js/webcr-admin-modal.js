@@ -15,9 +15,155 @@
     displayTabEntries(opening_tab_entries);
 
     iconOut();
+    modalWindow();
+
+	function createAccordion(accordionType, parentDiv, listElements){
+
+		let accordionItem = document.createElement("div");
+		accordionItem.classList.add("accordion-item");
+
+		let accordionFirstPart = document.createElement("div");
+		accordionFirstPart.classList.add("accordion-header");
+
+		let accordionHeaderButton = document.createElement("button");
+		accordionHeaderButton.classList.add("accordion-button", "accordionTitle");
+		accordionHeaderButton.setAttribute("type", "button");
+		accordionHeaderButton.setAttribute("data-bs-toggle", "collapse");
+		accordionHeaderButton.setAttribute("data-bs-target", "#collapse" + accordionType);
+		accordionHeaderButton.setAttribute("aria-expanded", "true");
+		accordionHeaderButton.setAttribute("aria-controls", "collapse" + accordionType);
+		if (accordionType == "info"){ 
+			accordionHeaderButton.textContent = "More info";
+		} else {
+			accordionHeaderButton.textContent = "Images";
+		}
+		accordionFirstPart.appendChild(accordionHeaderButton);
+		accordionItem.appendChild(accordionFirstPart);
+
+		let accordionSecondPart = document.createElement("div");
+		accordionSecondPart.classList.add("accordion-collapse", "collapse");
+		accordionSecondPart.setAttribute("data-bs-parent", "#accordion" + accordionType);
+		accordionSecondPart.id = "collapse" + accordionType;
+
+		let accordionBody = document.createElement("div");
+		accordionBody.classList.add("accordion_body");
+
+		let accordionList = document.createElement("ul");
+		accordionList.classList.add("previewAccordionElements");
+		for (let i = 0; i < listElements.length; i++){
+			let listItem = document.createElement("li");
+			let listLink = document.createElement("a");
+
+			let targetElement = listElements[i];	
+			let text_field = document.getElementsByName("modal_" + accordionType + targetElement + "[modal_" + accordionType + "_text" + targetElement + "]")[0].value;
+			let url_field = document.getElementsByName("modal_" + accordionType + targetElement + "[modal_" + accordionType + "_url" + targetElement + "]")[0].value;
+
+			listLink.setAttribute("href", url_field);
+			listLink.textContent = text_field;
+			listLink.setAttribute("target", "_blank");
+			listItem.appendChild(listLink);
+			accordionList.appendChild(listItem);
+		}
+
+		accordionBody.appendChild(accordionList); 
+		accordionSecondPart.appendChild(accordionBody);
+		accordionItem.appendChild(accordionSecondPart);
+
+		parentDiv.appendChild(accordionItem);
+		
+	}
+
+    function iconSceneOutDropdown(){
+        const modal_location = document.getElementsByName("modal_location")[0].value;
+        const iconSceneOut = document.getElementsByName("icon_scene_out")[0];
+        iconSceneOut.innerHTML ='';
+        let optionIcon = document.createElement('option');
+        optionIcon.text = "Icon Scene Out";
+        optionIcon.value = "";
+        iconSceneOut.add(optionIcon);
+
+        const modalScene = document.getElementsByName("modal_scene")[0].value;
+        if (modalScene != "") {
+            const modal_location_no_space = urlifyRecursiveFunc(modal_location);
+            const protocol = window.location.protocol;
+            const host = window.location.host;
+            const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&scene_location=" + modal_location_no_space;
+            fetch(restURL)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach( element => {
+                        if (element.id != modalScene){
+                            let option = document.createElement('option');
+                            option.value = element.id;
+                            option.text = element.title.rendered;
+                            iconSceneOut.appendChild(option);
+                        }
+                    });
+
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+//        const elementNumber = dropdownElements.length;
+//        if (elementNumber > 0) {
+//            for (let i = 0; i <= elementNumber -1; i++){
+//                let option = document.createElement('option');
+//                option.value = dropdownElements[i];
+//                option.text = dropdownElements[i];
+//                iconsDropdown.appendChild(option);
+//            }
+//        }
+
+
+
+    }
 
     function modalWindow(){
-        
+        const modalWindowOut = document.getElementsByName("modal_window")[0].value;
+        if (modalWindowOut == "Yes"){
+          //  document.getElementsByName("icon_out_type")[0].value = "External";
+            document.getElementsByName("icon_out_type")[0].parentElement.parentElement.style.display = "none";
+          //  document.getElementsByName("icon_out_url")[0].value = "";
+            document.getElementsByName("icon_out_url")[0].parentElement.parentElement.style.display = "none";
+          //  document.getElementsByName("icon_scene_out")[0].value = "";
+            document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
+            document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "block";
+            document.getElementsByName("modal_info_entries")[0].parentElement.parentElement.style.display = "block";
+            document.getElementsByName("modal_photo_entries")[0].parentElement.parentElement.style.display = "block";
+            document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "block";
+            document.getElementsByClassName("modal_preview")[0].parentElement.parentElement.style.display = "block";
+        } else {
+            // Show the Icon Out field and then run the IconOut function to see whether the "Icon Out URL" or
+            // the "Icon Scene Out" field should be shown
+            document.getElementsByName("icon_out_type")[0].parentElement.parentElement.style.display = "block";
+            iconOut();
+            // Hide the Tagline field
+            document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "none";
+
+            // Set the Modal Info entries to 0, run displayEntries to hide all of the resulting Modal Info fields 
+            // and then hide the Modal Info range 
+            document.getElementsByName("modal_info_entries")[0].value = 0;
+            document.getElementsByName("modal_info_entries")[0].nextSibling.value = 0;
+            displayEntries(0, ".text-class[data-depend-id='modal_info_");
+            document.getElementsByName("modal_info_entries")[0].parentElement.parentElement.style.display = "none";
+
+            // Set the Modal Photo entries to 0, run displayEntries to hide all of the resulting Modal Photo fields 
+            // and then hide the Modal Photo range 
+            document.getElementsByName("modal_photo_entries")[0].value = 0;
+            document.getElementsByName("modal_photo_entries")[0].nextSibling.value = 0;
+            displayEntries(0, ".text-class[data-depend-id='modal_photo_");
+            document.getElementsByName("modal_photo_entries")[0].parentElement.parentElement.style.display = "none";
+
+            // Set the Modal Tab entries to 0, run displayTabEntries to hide all of the resulting Modal Tab fields 
+            // and then hide the Modal Tab range 
+            document.getElementsByName("modal_tab_number")[0].value = 0;
+            document.getElementsByName("modal_tab_number")[0].nextSibling.value = 0;
+            displayTabEntries(0);
+            document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "none";
+
+            // Turn off the Modal preview button
+            document.getElementsByClassName("modal_preview")[0].parentElement.parentElement.style.display = "none";
+        }
     }
 
     function iconOut(){
@@ -48,15 +194,9 @@
 	}
 
     function displayEntries (entry_number, string_prefix){
-		if (string_prefix == ".text-class[data-depend-id='photo_info_"){
-			console.log("entry_number " + entry_number);
-		}
 		for (let i = 6; i > entry_number; i--){
 			let target_text = string_prefix + "text" + i + "']";
 			let target_url = string_prefix + "url" + i + "']";
-			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
-				console.log(i + " " + target_text + " " + target_url);
-			}
 			$(target_text).parents().eq(6).css("display", "none");
 			$(target_text).val(function(){return  "";});
 			$(target_url).val(function(){return  "";});
@@ -65,9 +205,6 @@
 		for (let i = 1; i <= entry_number; i++){
 			let target = string_prefix + "text" + i + "']";
 			$(target).parents().eq(6).css("display", "block");
-			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
-				console.log(i + " " + target);
-			}
 		}
 	}
 
@@ -76,7 +213,7 @@
         sceneDropdown.innerHTML ='';
         let optionScene = document.createElement('option');
         optionScene.text = "Modal Scene";
-        optionScene.value = " ";
+        optionScene.value = "";
         sceneDropdown.add(optionScene);
         const elementNumber = dropdownElements.length;
         if (elementNumber > 0) {
@@ -121,10 +258,12 @@ function urlifyRecursiveFunc(str) {
 function modal_location_change(){
     const modal_location = $('.chosen').first().val();
     if (modal_location != ""){
+        iconSceneOutDropdown();
         const modal_location_no_space = urlifyRecursiveFunc(modal_location);
         const protocol = window.location.protocol;
         const host = window.location.host;
         const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=" + modal_location_no_space;
+
         fetch(restURL)
             .then(response => response.json())
             .then(data => {
@@ -147,8 +286,8 @@ function modal_location_change(){
 function modal_scene_change(){
     const sceneID = $( "select[name='modal_scene']" ).val();
 
-    if (sceneID != " ") {
-
+    if (sceneID != "") {
+        iconSceneOutDropdown();
         // Let's remove the preview window if it already exists
 		const previewWindow = document.getElementById('preview_window');
 		// If the element exists
@@ -234,6 +373,7 @@ $('.chosen').first().change(modal_location_change);
 $( "select[name='modal_scene']" ).change(modal_scene_change);
 $( "select[name='modal_icons']" ).change(modal_icons_change);
 $( "select[name='icon_out_type']" ).change(iconOut);
+$( "select[name='modal_window']" ).change(modalWindow);
 
 $(".range[data-depend-id='modal_tab_number']").change(function(){ 
     let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
@@ -251,16 +391,143 @@ $(".range[data-depend-id='modal_photo_entries']").change(function(){
 });
 
 
- //   var dropdown = document.querySelector('select[name="modal_location"]').nextElementSibling;
- //   console.log(dropdown);
-    // Add event listener for the change event
-//    dropdown.addEventListener("change", function() {
-      // Code to execute when the dropdown value changes
-  //    console.log("hello");
-    //});
+$('.modal_preview').click(function(){ 
 
 
+    // Let's remove the preview window if it already exists
+    var previewWindow = document.getElementById('preview_window');
+    // If the element exists
+    if (previewWindow) {
+        // Remove the scene window
+        previewWindow.parentNode.removeChild(previewWindow);
+    }
+
+    // Find element
+    const firstModalPreview = document.querySelector('.modal_preview');
+
+    // Find the second parent element
+    const secondParent = firstModalPreview.parentElement.parentElement;
+
+    // Create a new div element
+    let newDiv = document.createElement('div');
+    newDiv.id = "preview_window";
+    newDiv.classList.add("container", "modal_preview");
+
+    let modalTitle = document.createElement("div");
+
+    let h4 = document.createElement('h4');
+    h4.textContent = document.getElementById("title").value
+
+    let closeButton = document.createElement('span');
+    closeButton.classList.add("close");
+    closeButton.innerHTML = "&times;";
+
+    modalTitle.appendChild(closeButton);
+    modalTitle.appendChild(h4);
+    newDiv.appendChild(modalTitle);
+
+    let secondRow = document.createElement("div");
+    secondRow.classList.add("row", "modalSecondRow");
+
+    // check to see if any photo link and info link fields are not empty
+
+    let modal_info_elements = [];
+    let modal_photo_elements = [];
+    let text_field;
+    let url_field;
+    let haveAccordions = false;
+    for (let i = 1; i < 7; i++){
+        text_field = "modal_photo" + i + "[modal_photo_text" + i + "]";
+        url_field = "modal_photo" + i + "[modal_photo_url" + i + "]";
+        if (document.getElementsByName(text_field)[0].value != "" && document.getElementsByName(url_field)[0].value != ""){
+            modal_photo_elements.push(i);
+        }
+        text_field = "modal_info" + i + "[modal_info_text" + i + "]";
+        url_field = "modal_info" + i + "[modal_info_url" + i + "]";
+        if (document.getElementsByName(text_field)[0].value != "" && document.getElementsByName(url_field)[0].value != ""){
+            modal_info_elements.push(i);
+        }
+    }
+
+    if (modal_info_elements.length > 0 || modal_photo_elements.length > 0) {
+        haveAccordions = true;
+    }
+
+    if (haveAccordions === true){
+        let firstColumn = document.createElement("div");
+        firstColumn.classList.add("col-2", "accordion");
+        firstColumn.id = "allAccordions";
+        
+        if (modal_info_elements.length > 0) {
+            createAccordion("info", firstColumn,modal_info_elements);
+        }
     
+        if (modal_photo_elements.length > 0) {
+            createAccordion("photo", firstColumn, modal_photo_elements);
+        }
+        
+        secondRow.appendChild(firstColumn);
+
+    }
+    let secondColumn = document.createElement("div");
+    if (haveAccordions == true){
+        secondColumn.classList.add("col-10");
+    } else {
+        secondColumn.classList.add("col-12");
+    }
+    secondColumn.textContent = document.getElementsByName('modal_tagline')[0].value;
+    secondColumn.classList.add("sceneTagline");
+    secondRow.appendChild(secondColumn);
+
+    newDiv.appendChild(secondRow);
+
+    const modalTabNumber = document.getElementsByName("modal_tab_number")[0].value;
+    if (modalTabNumber > 0) {
+        let thirdRow = document.createElement("div");
+        thirdRow.classList.add("row", "modalThirdRow");
+        let tabHolder = document.createElement("ul");
+        tabHolder.classList.add("nav", "nav-tabs");
+        for (let i = 1; i <= modalTabNumber; i++){
+            let optionTab = document.createElement("li");
+            optionTab.classList.add("nav-item");
+            let clickableTitle = document.createElement("a");
+            clickableTitle.classList.add("nav-link");
+            if (i==1){
+                clickableTitle.classList.add("active");
+                clickableTitle.setAttribute("aria-current", "page");
+            }
+            clickableTitle.href = "#modal" + i;
+            let visibleText = document.getElementsByName("modal_tab_title" + i)[0].value;
+            clickableTitle.textContent = visibleText;
+            optionTab.appendChild(clickableTitle);
+            tabHolder.appendChild(optionTab);
+        }
+        thirdRow.appendChild(tabHolder);
+        newDiv.appendChild(thirdRow);
+
+        let fourthRow = document.createElement("div");
+        fourthRow.classList.add("tab-content");
+        fourthRow.style.color = "white";
+        for (let i = 1; i <= modalTabNumber; i++){
+            let panelTab = document.createElement("div");
+            panelTab.id = "modal" + i;
+            panelTab.classList.add("tab-pane", "fade");
+            if (i==1) {
+                panelTab.classList.add("show", "active");
+            }
+            panelTab.textContent = i;
+            fourthRow.appendChild(panelTab);
+        }
+        newDiv.appendChild(fourthRow);
+    }
+    secondParent.appendChild(newDiv);
+
+
+
+
+});
+
+
         /**
          * All of the code for your admin-facing JavaScript source
          * should reside in this file.

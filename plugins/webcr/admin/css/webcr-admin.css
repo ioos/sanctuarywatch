@@ -61,6 +61,8 @@
 
   .accordionTitle {
     font-size:15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
 
   .accordionTitle:not(.collapsed){
@@ -76,4 +78,45 @@
     /* This is a hacky way of hiding the tag line in the custom content admin screens.  */
   .hide-if-no-js {
     display:none;
+  }
+
+  /* Formatting for modal preview */
+
+.modal_preview {
+  border-color: black;
+  border-style: solid;
+  margin-top: 10px;
+}
+
+.modal_preview h4 {
+  color: #317EAC;
+  font-weight: 500;
+  font-size: 18px;
+  padding: 15px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.modalSecondRow {
+  padding-bottom: 10px;
+}
+
+.modalThirdRow {
+  padding-left: 10px;
+}
+
+  /* Override Bootstrap tab styles */
+  .nav-tabs .nav-link.active {
+    font-weight: bold; /* Make active tab bold */
+  }
+
+  .nav-tabs .nav-link {
+    text-decoration: none; /* Remove all text decorations from tabs */
+    color: black;
   }
