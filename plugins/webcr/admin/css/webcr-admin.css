@@ -119,4 +119,5 @@
   .nav-tabs .nav-link {
     text-decoration: none; /* Remove all text decorations from tabs */
     color: black;
+    border-color: #dee2e6;
   }

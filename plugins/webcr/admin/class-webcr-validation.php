@@ -29,7 +29,101 @@ class webcr_validation {
 
     public function validate_modal(){
         $save_modal_fields = true;
+
+        // Set the error list cookie expiration time to a past date in order to delete it, if it is there
+        setcookie("modal_errors", 0, time() - 3000, "/");
+
+        $modal_errors = [];
+        $modal_warnings = [];
+        
+        $field_types = array("info", "photo");
+
+        foreach ($field_types as $field_type){
+            for ($i = 1; $i < 7; $i++){
+                $form_fieldset = 'modal_' . $field_type .  $i;
+                $field_couplet = $_POST[$form_fieldset];
+                $field_text = "modal_" . $field_type . "_text" . $i;
+                $field_url = "modal_" . $field_type . "_url" . $i;
+                if (!$field_couplet[$field_url] == "" || !$field_couplet[$field_text] == "" ){
+                    if ($field_couplet[$field_url] == "" || $field_couplet[$field_text] == "" ){
+                        $save_modal_fields = FALSE;
+                        array_push($modal_errors,  "The URL or Text is blank for Modal " . ucfirst($field_type) . " Link " . $i);
+                    }
+                    if (!$field_couplet[$field_url] == "" ) {
+                        if ( $this -> url_check($field_couplet[$field_url]) == FALSE ) {
+                            $save_modal_fields = FALSE;
+                            array_push($modal_errors, "The URL for Modal " . ucfirst($field_type) . " Link " . $i . " is not valid");
+                        } else {
+
+                            // Set cURL options
+                            $ch = curl_init($field_couplet[$field_url]);
+                            $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the transfer as a string
+                            curl_setopt($ch, CURLOPT_NOBODY, true);  // Exclude the body from the output
+                            curl_setopt($ch, CURLOPT_HEADER, true);  // Include the header in the output
+                            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects
+                            curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  // Set User-Agent header
+
+                            // Execute cURL session
+                            curl_exec($ch);
+
+                            // Get the headers
+                            $headers = curl_getinfo($ch);
+
+                            // Close cURL session
+                            curl_close($ch);
+
+                            if ($headers["http_code"] != 200){
+                                array_push($modal_warnings, "The URL for Modal " . ucfirst($field_type) . " Link " . $i . " cannot be accessed");                               
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!empty($modal_warnings)){
+            $warning_list_cookie_value = json_encode($modal_warnings);
+            setcookie("modal_warnings", $warning_list_cookie_value, time() + 10, "/");          
+        }
+        if ($save_modal_fields == FALSE) {
+            $error_list_cookie_value = json_encode($modal_errors);
+            setcookie("modal_errors", $error_list_cookie_value, time() + 10, "/");           
+            setcookie("modal_post_status", "post_error", time() + 10, "/");
+            $this->modal_fields_to_cookie();
+        } else {
+            setcookie("modal_post_status", "post_good", time() + 10, "/");
+        }
+
+
         return $save_modal_fields;
+    }
+
+    public function modal_fields_to_cookie () {
+        $modal_fields = [];
+        $modal_fields['modal_location'] = $_POST['modal_location'];
+        $modal_fields['modal_scene'] = $_POST['modal_scene'];
+        $modal_fields['modal_icons'] = $_POST['modal_icons'];
+        $modal_fields['modal_window'] = $_POST['modal_window'];
+        $modal_fields['icon_out_type'] = $_POST['icon_out_type'];
+        $modal_fields['icon_out_url'] = $_POST['icon_out_url'];        
+        $modal_fields['icon_scene_out'] = $_POST['icon_scene_out'];        
+        $modal_fields['modal_tagline'] = $_POST['modal_tagline'];        
+        $modal_fields['modal_info_entries'] = $_POST['modal_info_entries'];        
+        $modal_fields['modal_photo_entries'] = $_POST['modal_photo_entries'];        
+        $modal_fields['modal_tab_number'] = $_POST['modal_tab_number'];        
+        $modal_fields['icon_out_type'] = $_POST['icon_out_type'];
+
+
+
+        for ($i = 1; $i < 7; $i++){
+            $modal_fields['modal_info_url' . $i] = $_POST["modal_info" . $i]["modal_info_url" . $i];
+            $modal_fields['modal_info_text' . $i] = $_POST["modal_info" . $i]["modal_info_text" . $i];
+            $modal_fields['modal_photo_url' . $i] = $_POST["modal_photo" . $i]["modal_photo_url" . $i];
+            $modal_fields['modal_photo_text' . $i] = $_POST["modal_photo" . $i]["modal_photo_text" . $i];
+        }
+        $modal_fields_cookie_value = json_encode($modal_fields);
+
+        setcookie("modal_error_all_fields", $modal_fields_cookie_value, time() + 10, "/"); 
     }
 
     public function validate_scene (){
@@ -67,9 +161,6 @@ class webcr_validation {
             }
         }
         
-
-
-
         $field_types = array("info", "photo");
 
         foreach ($field_types as $field_type){
