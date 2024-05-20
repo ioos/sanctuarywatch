@@ -114,12 +114,12 @@ class webcr_validation {
         $modal_fields['icon_out_type'] = $_POST['icon_out_type'];
 
 
-
         for ($i = 1; $i < 7; $i++){
             $modal_fields['modal_info_url' . $i] = $_POST["modal_info" . $i]["modal_info_url" . $i];
             $modal_fields['modal_info_text' . $i] = $_POST["modal_info" . $i]["modal_info_text" . $i];
             $modal_fields['modal_photo_url' . $i] = $_POST["modal_photo" . $i]["modal_photo_url" . $i];
             $modal_fields['modal_photo_text' . $i] = $_POST["modal_photo" . $i]["modal_photo_text" . $i];
+            $modal_fields['modal_tab_title' . $i] = $_POST['modal_tab_title' . $i];
         }
         $modal_fields_cookie_value = json_encode($modal_fields);
 

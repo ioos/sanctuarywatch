@@ -119,39 +119,41 @@ class Webcr_Modal {
             $locations[$locations_row -> name] = $locations_row -> name;
         }
 
-        // DELETE THIS FUNCTION
-        function get_scene_posts_with_location($location_value) {
+        $scene_titles =[];
+        $scene_titles[""] = "Modal Scene";
+        if (array_key_exists("post", $_GET)) {
+            $modal_id = intval($_GET["post"]);
+            $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
+            $scene_location = get_post_meta($modal_id, "modal_location", true);
+            $scene_name = get_post_meta($scene_id, "post_title", true);
+            $scenes[$scene_id] = $scene_name;
+
             $args = array(
-                'post_type' => 'scene', // Custom content type name
-                'posts_per_page' => -1, // Retrieve all posts
+                'post_type' => 'scene',  // Your custom post type
                 'meta_query' => array(
                     array(
-                        'key' => 'scene_location', // Custom field name
-                        'value' => $location_value,
-                        'compare' => '='
+                        'key' => 'scene_location',      // The custom field key
+                        'value' => $scene_location, // The value you are searching for
+                        'compare' => '='         // Comparison operator
                     )
-                )
+                ),
+                'fields' => 'ids'            // Only return post IDs
             );
-        
+            
+            // Execute the query
             $query = new WP_Query($args);
-            $scene_posts = array();
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $scene_posts[] = array(
-                        'ID' => get_the_ID(),
-                        'title' => get_the_title()
-                    );
-                }
-                wp_reset_postdata();
-            }
-        
-            return $scene_posts;
-        }
+            
+            // Get the array of post IDs
+            $scene_post_ids = $query->posts;
 
-        $scene_posts = get_scene_posts_with_location('Channel Islands NMS');
-      //  print_r($scene_posts);
+            $scene_titles =[];
+            foreach ($scene_post_ids as $target_id){
+                $target_title = get_post_meta($target_id, "post_title", true);
+                $scene_titles[$target_id] = $target_title;
+            }
+            asort($scene_titles);
+            $tempo= 1+1;
+        }
 
         $fields[] = array(
             'name'   => 'basic',
@@ -162,10 +164,10 @@ class Webcr_Modal {
                 array(
                     'id'             => 'modal_location',
                     'type'           => 'select',
-                    'title'          => 'Location',
+                    'title'          => 'Instance',
                     'options'        => $locations,
-                    'default_option' => 'Modal Location',
-                    'description' => 'Modal Location description',
+                    'default_option' => 'Modal Instance',
+                    'description' => 'Modal Instance description',
                      'default'     => ' ',
                      'class'      => 'chosen', 
                 ),
@@ -173,7 +175,8 @@ class Webcr_Modal {
                     'id'             => 'modal_scene',
                     'type'           => 'select',
                     'title'          => 'Scene',
-                    'options'        => array ("" => "Modal Scene"), 
+                    'options'        => $scene_titles,
+//                    'options'        => array ("" => "Modal Scene", 58 => "Deep Seafloor", 45 => "Tempo 55"), 
                     'description' => 'Modal Scene description',
                 ),
                 array(

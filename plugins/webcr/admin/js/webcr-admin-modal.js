@@ -16,6 +16,8 @@
 
     iconOut();
     modalWindow();
+    modal_scene_change();
+    //modal_location_change();
 
 	function createAccordion(accordionType, parentDiv, listElements){
 
@@ -210,19 +212,24 @@
 
     function modalSceneDropdown (dropdownElements=[]){
         const sceneDropdown = document.getElementsByName("modal_scene")[0];
-        sceneDropdown.innerHTML ='';
-        let optionScene = document.createElement('option');
-        optionScene.text = "Modal Scene";
-        optionScene.value = "";
-        sceneDropdown.add(optionScene);
-        const elementNumber = dropdownElements.length;
-        if (elementNumber > 0) {
-            for (let i = 0; i <= elementNumber -1; i++){
-                let option = document.createElement('option');
-                option.value = dropdownElements[i][0];
-                option.text = dropdownElements[i][1];
-                sceneDropdown.appendChild(option);
+        console.log(sceneDropdown.value);
+        if (!(sceneDropdown.value > 0)) {
+
+            sceneDropdown.innerHTML ='';
+            let optionScene = document.createElement('option');
+            optionScene.text = "Modal Scene";
+            optionScene.value = "";
+            sceneDropdown.add(optionScene);
+            const elementNumber = dropdownElements.length;
+            if (elementNumber > 0) {
+                for (let i = 0; i <= elementNumber -1; i++){
+                    let option = document.createElement('option');
+                    option.value = dropdownElements[i][0];
+                    option.text = dropdownElements[i][1];
+                    sceneDropdown.appendChild(option);
+                }
             }
+
         }
     }
 
@@ -256,6 +263,8 @@ function urlifyRecursiveFunc(str) {
 } 
 
 function modal_location_change(){
+    console.log(document.getElementsByName("modal_scene")[0].value);
+    console.log(document.getElementsByName("modal_location")[0].value);
     const modal_location = $('.chosen').first().val();
     if (modal_location != ""){
         iconSceneOutDropdown();
@@ -308,6 +317,7 @@ function modal_scene_change(){
         const protocol = window.location.protocol;
         const host = window.location.host;
         const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_infographic";
+        console.log(restURL);
         fetch(restURL)
             .then(response => response.json())
             .then(svgJson => {
@@ -390,9 +400,7 @@ $(".range[data-depend-id='modal_photo_entries']").change(function(){
     displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='modal_photo_");
 });
 
-
 $('.modal_preview').click(function(){ 
-
 
     // Let's remove the preview window if it already exists
     var previewWindow = document.getElementById('preview_window');
