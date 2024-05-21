@@ -45,7 +45,7 @@
 		accordionSecondPart.id = "collapse" + accordionType;
 
 		let accordionBody = document.createElement("div");
-		accordionBody.classList.add("accordion=body");
+		accordionBody.classList.add("accordion_body");
 
 		let accordionList = document.createElement("ul");
 		accordionList.classList.add("previewAccordionElements");

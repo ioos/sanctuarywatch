@@ -137,7 +137,7 @@ class Webcr_Scene {
             echo $field_length_dropdown;
             
             $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
-            $locations = array(array("All Locations", ""));
+            $locations = array(array("All Instances", ""));
             foreach ( $locations_array as $locations_row ){
                 array_push($locations, array($locations_row -> name,"")); 
             }
@@ -200,7 +200,7 @@ class Webcr_Scene {
         $columns = array (
             //'cb' => $columns['cb'],
             'title' => 'Title',
-            'scene_location' => 'Location',
+            'scene_location' => 'Instance',
             'scene_infographic' => 'Infographic',		
             'scene_tagline' => 'Tagline',			
             'scene_info_link' => 'Info Link Number',		
@@ -475,10 +475,10 @@ class Webcr_Scene {
                 array(
                     'id'             => 'scene_location',
                     'type'           => 'select',
-                    'title'          => 'Location',
+                    'title'          => 'Instance',
                     'options'        => $locations,
-                    'default_option' => 'Scene Location',
-                    'description' => 'Scene Location',
+                    'default_option' => 'Scene Instance',
+                    'description' => 'Scene Instance',
                      'default'     => ' ',
                      'class'      => 'chosen', 
                 ),
