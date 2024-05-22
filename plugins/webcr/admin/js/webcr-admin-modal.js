@@ -295,7 +295,7 @@ function modal_location_change(){
 function modal_scene_change(){
     const sceneID = $( "select[name='modal_scene']" ).val();
 
-    if (sceneID != "") {
+    if (sceneID != "" && sceneID != null) {
         iconSceneOutDropdown();
         // Let's remove the preview window if it already exists
 		const previewWindow = document.getElementById('preview_window');

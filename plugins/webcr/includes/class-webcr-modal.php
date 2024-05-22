@@ -119,11 +119,15 @@ class Webcr_Modal {
             $locations[$locations_row -> name] = $locations_row -> name;
         }
 
-        $scene_titles =[];
-        $scene_titles[""] = "Modal Scene";
+        // used by both scene and icon dropdowns
         if (array_key_exists("post", $_GET)) {
             $modal_id = intval($_GET["post"]);
             $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
+        }
+
+        $scene_titles =[];
+        $scene_titles[""] = "Modal Scene";
+        if (array_key_exists("post", $_GET)) {
             $scene_location = get_post_meta($modal_id, "modal_location", true);
             $scene_name = get_post_meta($scene_id, "post_title", true);
             $scenes[$scene_id] = $scene_name;
@@ -155,6 +159,12 @@ class Webcr_Modal {
             $tempo= 1+1;
         }
 
+        $modal_icons = array(" " => "Modal Icons");
+ //       if (array_key_exists("post", $_GET)) {
+ //           $scene_infographic = get_post_meta($scene_id, "scene_infographic", true);
+ //           $tempo1 = 34;
+ //       }
+
         $fields[] = array(
             'name'   => 'basic',
             'title'  => 'Basic',
@@ -183,7 +193,7 @@ class Webcr_Modal {
                     'id'             => 'modal_icons',
                     'type'           => 'select',
                     'title'          => 'Icons',
-                    'options'        => array (" " => "Modal Icons"), 
+                    'options'        => array (" " => "Modal Icons"),// $modal_icons,
                     'description' => 'Modal Icons description',
                 ),
                 array(
