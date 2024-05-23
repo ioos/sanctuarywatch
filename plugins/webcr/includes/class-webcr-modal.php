@@ -202,6 +202,7 @@ class Webcr_Modal {
                     }
                 }
                 asort($child_ids);
+            //    $modal_icons = array();
                 foreach ($child_ids as $single_icon){
                     $modal_icons[$single_icon] = $single_icon;
                 }
@@ -237,7 +238,7 @@ class Webcr_Modal {
                     'id'             => 'modal_icons',
                     'type'           => 'select',
                     'title'          => 'Icons',
-                    'options'        => array (" " => "Modal Icons"),// $modal_icons,
+                    'options'        => $modal_icons, // array (" " => "Modal Icons")
                     'description' => 'Modal Icons description',
                 ),
                 array(

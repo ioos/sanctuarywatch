@@ -14,6 +14,19 @@
     let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
     displayTabEntries(opening_tab_entries);
 
+    // used by modal_scene_change function to determine if the page has just loaded
+    let isPageLoad = true;
+    function changePageLoad() {
+        isPageLoad = false;
+    }
+
+    // Use the window.onload event to change isPageLoad to false 3 seconds after page loads 
+    window.onload = function() {
+        setTimeout(changePageLoad, 3000);
+    };
+
+
+
     iconOut();
     modalWindow();
     modal_scene_change();
@@ -105,18 +118,6 @@
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
-
-//        const elementNumber = dropdownElements.length;
-//        if (elementNumber > 0) {
-//            for (let i = 0; i <= elementNumber -1; i++){
-//                let option = document.createElement('option');
-//                option.value = dropdownElements[i];
-//                option.text = dropdownElements[i];
-//                iconsDropdown.appendChild(option);
-//            }
-//        }
-
-
 
     }
 
@@ -337,6 +338,23 @@ function modal_scene_change(){
                             const width = imageColumn.clientWidth;
                             document.getElementById("previewSvg").setAttribute('width', width);
 
+                            if (isPageLoad == true) {
+                                const iconValue = document.getElementsByName("modal_icons")[0].value;
+
+                                if (iconValue != null && iconValue != " "){
+                                    let svgIcons = imageColumn.querySelector('g[id="icons"]');
+                                    let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+                                    const svgIconHighlight = svgIconTarget.cloneNode(true);
+                                    svgIconHighlight.id = "icon_highlight";
+                                    svgIconHighlight.style.stroke = "yellow";
+                                    svgIconHighlight.style.strokeWidth = "6";
+                                    svgIcons.prepend(svgIconHighlight);
+                                }
+                            }
+
+
+
+
                             let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
                             // Initialize an array to hold the sublayer names
                             let sublayers = [];
@@ -350,33 +368,45 @@ function modal_scene_change(){
                                 });
                                 sublayers = sublayers.sort();
                             }
-                            modalIconsDropdown(sublayers);
+                            if (isPageLoad == false) {
+                                modalIconsDropdown(sublayers);
+                            }
                         })
                 }
             })
             .catch((err) => {console.error(err)});
             
+
+
             imageRow.appendChild(imageColumn);
             newDiv.appendChild(imageRow);
             document.getElementsByClassName("exopite-sof-field-select")[1].appendChild(newDiv);
+
+
     }
 }
 
 function modal_icons_change() {
     const iconValue = document.getElementsByName("modal_icons")[0].value;
-    const svg = document.getElementById("previewSvg");
-    const svgIcons = svg.getElementById("icons");
-    const svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
 
-    if(svgIcons.querySelector('g[id="icon_highlight"]')){
-        svgIcons.querySelector('g[id="icon_highlight"]').remove();
+    if (iconValue != null && iconValue != " "){
+
+        let svg = document.getElementById("previewSvg");
+
+        let svgIcons = svg.getElementById("icons");
+
+        if(svgIcons.querySelector('g[id="icon_highlight"]')){
+            svgIcons.querySelector('g[id="icon_highlight"]').remove();
+        }
+
+        let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+
+        const svgIconHighlight = svgIconTarget.cloneNode(true);
+        svgIconHighlight.id = "icon_highlight";
+        svgIconHighlight.style.stroke = "yellow";
+        svgIconHighlight.style.strokeWidth = "6";
+        svgIcons.prepend(svgIconHighlight);
     }
-
-    const svgIconHighlight = svgIconTarget.cloneNode(true);
-    svgIconHighlight.id = "icon_highlight";
-    svgIconHighlight.style.stroke = "yellow";
-    svgIconHighlight.style.strokeWidth = "6";
-    svgIcons.prepend(svgIconHighlight);
 }
 
 $('.chosen').first().change(modal_location_change);
