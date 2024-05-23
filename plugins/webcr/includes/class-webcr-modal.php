@@ -160,10 +160,54 @@ class Webcr_Modal {
         }
 
         $modal_icons = array(" " => "Modal Icons");
- //       if (array_key_exists("post", $_GET)) {
- //           $scene_infographic = get_post_meta($scene_id, "scene_infographic", true);
- //           $tempo1 = 34;
- //       }
+        if (array_key_exists("post", $_GET)) {
+            $scene_infographic = get_post_meta($scene_id, "scene_infographic", true);
+            if ($scene_infographic == true){
+                $relative_path =  ltrim(parse_url($scene_infographic)['path'], "/");
+
+                $full_path = get_home_path() . $relative_path;
+
+                $svg_content = file_get_contents($full_path);
+
+                if ($svg_content === false) {
+                    die("Failed to load SVG file.");
+                }
+                
+                // Create a new DOMDocument instance and load the SVG content
+                $dom = new DOMDocument();
+                libxml_use_internal_errors(true); // Suppress errors related to invalid XML
+                $dom->loadXML($svg_content);
+                libxml_clear_errors();
+                
+                // Create a new DOMXPath instance
+                $xpath = new DOMXPath($dom);
+                
+                // Find the element with the ID "icons"
+                $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
+                
+                if ($icons_element === null) {
+                    die('Element with ID "icons" not found.');
+                }
+                
+                // Get all child elements of the "icons" element
+                $child_elements = $icons_element->childNodes;
+                
+                // Initialize an array to hold the IDs
+                $child_ids = array();
+                
+                // Loop through the child elements and extract their IDs
+                foreach ($child_elements as $child) {
+                    if ($child->nodeType === XML_ELEMENT_NODE && $child->hasAttribute('id')) {
+                        $child_ids[] = $child->getAttribute('id');
+                    }
+                }
+                asort($child_ids);
+                foreach ($child_ids as $single_icon){
+                    $modal_icons[$single_icon] = $single_icon;
+                }
+
+            }
+        }
 
         $fields[] = array(
             'name'   => 'basic',
