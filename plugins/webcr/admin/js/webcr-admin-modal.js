@@ -135,11 +135,7 @@
             document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "block";
             document.getElementsByClassName("modal_preview")[0].parentElement.parentElement.style.display = "block";
         } else {
-            // Show the Icon Out field and then run the IconOut function to see whether the "Icon Out URL" or
-            // the "Icon Scene Out" field should be shown
-            document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "block";
-            iconOut();
-            // Hide the Tagline field
+
             document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "none";
 
             // Set the Modal Info entries to 0, run displayEntries to hide all of the resulting Modal Info fields 
@@ -170,7 +166,6 @@
 
     function iconFunction(){
         let iconFunctionType = document.getElementsByName("icon_function")[0].value;
-
         switch (iconFunctionType){
             case "External URL":
                 document.getElementsByName("icon_scene_out")[0].value = "";
@@ -189,7 +184,7 @@
                 document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
                 break;
         }
-
+        modalWindow();
     }
 
     function displayTabEntries (entry_number){
@@ -423,7 +418,6 @@ $('.chosen').first().change(modal_location_change);
 $( "select[name='modal_scene']" ).change(modal_scene_change);
 $( "select[name='modal_icons']" ).change(modal_icons_change);
 $( "select[name='icon_function']" ).change(iconFunction);
-$( "select[name='modal_window']" ).change(modalWindow);
 
 $(".range[data-depend-id='modal_tab_number']").change(function(){ 
     let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
