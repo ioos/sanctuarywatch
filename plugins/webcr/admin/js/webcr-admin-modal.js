@@ -27,7 +27,7 @@
 
 
 
-    iconOut();
+    iconFunction();
     modalWindow();
     modal_scene_change();
     //modal_location_change();
@@ -122,13 +122,12 @@
     }
 
     function modalWindow(){
-        const modalWindowOut = document.getElementsByName("modal_window")[0].value;
-        if (modalWindowOut == "Yes"){
+        const iconFunctionValue = document.getElementsByName("icon_function")[0].value;
+        if (iconFunctionValue == "Modal"){ 
           //  document.getElementsByName("icon_out_type")[0].value = "External";
-            document.getElementsByName("icon_out_type")[0].parentElement.parentElement.style.display = "none";
-          //  document.getElementsByName("icon_out_url")[0].value = "";
-            document.getElementsByName("icon_out_url")[0].parentElement.parentElement.style.display = "none";
-          //  document.getElementsByName("icon_scene_out")[0].value = "";
+            document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
+            document.getElementsByName("icon_external_url")[0].value = "";
+            document.getElementsByName("icon_scene_out")[0].value = "";
             document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
             document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "block";
             document.getElementsByName("modal_info_entries")[0].parentElement.parentElement.style.display = "block";
@@ -138,7 +137,7 @@
         } else {
             // Show the Icon Out field and then run the IconOut function to see whether the "Icon Out URL" or
             // the "Icon Scene Out" field should be shown
-            document.getElementsByName("icon_out_type")[0].parentElement.parentElement.style.display = "block";
+            document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "block";
             iconOut();
             // Hide the Tagline field
             document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "none";
@@ -169,17 +168,28 @@
         }
     }
 
-    function iconOut(){
-        let iconOutType = document.getElementsByName("icon_out_type")[0].value;
-        if (iconOutType=="External"){
-            document.getElementsByName("icon_scene_out")[0].value = "";
-            document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
-            document.getElementsByName("icon_out_url")[0].parentElement.parentElement.style.display = "block";
-        } else {
-            document.getElementsByName("icon_out_url")[0].value = "";
-            document.getElementsByName("icon_out_url")[0].parentElement.parentElement.style.display = "none";
-            document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "block";
+    function iconFunction(){
+        let iconFunctionType = document.getElementsByName("icon_function")[0].value;
+
+        switch (iconFunctionType){
+            case "External URL":
+                document.getElementsByName("icon_scene_out")[0].value = "";
+                document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "block";
+                break;
+            case "Modal":
+                document.getElementsByName("icon_scene_out")[0].value = "";
+                document.getElementsByName("icon_external_url")[0].value = "";
+                document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
+                break;
+            case "Scene":
+                document.getElementsByName("icon_external_url")[0].value = "";
+                document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "block";
+                document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
+                break;
         }
+
     }
 
     function displayTabEntries (entry_number){
@@ -412,7 +422,7 @@ function modal_icons_change() {
 $('.chosen').first().change(modal_location_change);
 $( "select[name='modal_scene']" ).change(modal_scene_change);
 $( "select[name='modal_icons']" ).change(modal_icons_change);
-$( "select[name='icon_out_type']" ).change(iconOut);
+$( "select[name='icon_function']" ).change(iconFunction);
 $( "select[name='modal_window']" ).change(modalWindow);
 
 $(".range[data-depend-id='modal_tab_number']").change(function(){ 
