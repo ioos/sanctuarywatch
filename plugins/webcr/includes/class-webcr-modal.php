@@ -1,6 +1,6 @@
 <?php
 /**
- * Register class that defines the Modal custom content type as well as associated Modal functions
+ * Register class that defines the Modal custom content type as well as associated Modal functions temp
  * 
  */
 class Webcr_Modal {
@@ -119,11 +119,15 @@ class Webcr_Modal {
             $locations[$locations_row -> name] = $locations_row -> name;
         }
 
-        $scene_titles =[];
-        $scene_titles[""] = "Modal Scene";
+        // used by both scene and icon dropdowns
         if (array_key_exists("post", $_GET)) {
             $modal_id = intval($_GET["post"]);
             $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
+        }
+
+        $scene_titles =[];
+        $scene_titles[""] = "Modal Scene";
+        if (array_key_exists("post", $_GET)) {
             $scene_location = get_post_meta($modal_id, "modal_location", true);
             $scene_name = get_post_meta($scene_id, "post_title", true);
             $scenes[$scene_id] = $scene_name;
@@ -155,6 +159,57 @@ class Webcr_Modal {
             $tempo= 1+1;
         }
 
+        $modal_icons = array(" " => "Modal Icons");
+        if (array_key_exists("post", $_GET)) {
+            $scene_infographic = get_post_meta($scene_id, "scene_infographic", true);
+            if ($scene_infographic == true){
+                $relative_path =  ltrim(parse_url($scene_infographic)['path'], "/");
+
+                $full_path = get_home_path() . $relative_path;
+
+                $svg_content = file_get_contents($full_path);
+
+                if ($svg_content === false) {
+                    die("Failed to load SVG file.");
+                }
+                
+                // Create a new DOMDocument instance and load the SVG content
+                $dom = new DOMDocument();
+                libxml_use_internal_errors(true); // Suppress errors related to invalid XML
+                $dom->loadXML($svg_content);
+                libxml_clear_errors();
+                
+                // Create a new DOMXPath instance
+                $xpath = new DOMXPath($dom);
+                
+                // Find the element with the ID "icons"
+                $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
+                
+                if ($icons_element === null) {
+                    die('Element with ID "icons" not found.');
+                }
+                
+                // Get all child elements of the "icons" element
+                $child_elements = $icons_element->childNodes;
+                
+                // Initialize an array to hold the IDs
+                $child_ids = array();
+                
+                // Loop through the child elements and extract their IDs
+                foreach ($child_elements as $child) {
+                    if ($child->nodeType === XML_ELEMENT_NODE && $child->hasAttribute('id')) {
+                        $child_ids[] = $child->getAttribute('id');
+                    }
+                }
+                asort($child_ids);
+            //    $modal_icons = array();
+                foreach ($child_ids as $single_icon){
+                    $modal_icons[$single_icon] = $single_icon;
+                }
+
+            }
+        }
+
         $fields[] = array(
             'name'   => 'basic',
             'title'  => 'Basic',
@@ -183,32 +238,32 @@ class Webcr_Modal {
                     'id'             => 'modal_icons',
                     'type'           => 'select',
                     'title'          => 'Icons',
-                    'options'        => array (" " => "Modal Icons"), 
+                    'options'        => $modal_icons, // array (" " => "Modal Icons")
                     'description' => 'Modal Icons description',
                 ),
                 array(
-                    'id'             => 'modal_window',
+                    'id'             => 'icon_function',
                     'type'           => 'select',
-                    'title'          => 'Modal Window',
-                    'options'        => array("Yes" => "Yes", "No" => "No"),
-                    'description' => 'Modal Window description',
-                    'default'     => 'Yes',
+                    'title'          => 'Icon Function',
+                    'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
+                    'description' => 'Icon Function description',
+                    'default'     => 'Modal',
                      'class'      => 'chosen', 
                 ),
+//                array(
+//                    'id'             => 'icon_out_type',
+//                    'type'           => 'select',
+//                    'title'          => 'Icon Out Type',
+  //                  'options'        => array ("External" => "External", "Internal" => "Internal"), 
+    //                'description' => 'Icon Out type description',
+      //              'default'     => 'External',
+        //        ),
                 array(
-                    'id'             => 'icon_out_type',
-                    'type'           => 'select',
-                    'title'          => 'Icon Out Type',
-                    'options'        => array ("External" => "External", "Internal" => "Internal"), 
-                    'description' => 'Icon Out type description',
-                    'default'     => 'External',
-                ),
-                array(
-                    'id'          => 'icon_out_url',
+                    'id'          => 'icon_external_url',
                     'type'        => 'text',
-                    'title'       => 'Icon Out URL',
+                    'title'       => 'Icon External URL',
                      'class'       => 'text-class',   
-                     'description' => 'Icon Out URL Description',  
+                     'description' => 'Icon External URL Description',  
                 ),
                 array(
                     'id'             => 'icon_scene_out',

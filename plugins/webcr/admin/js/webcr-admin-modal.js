@@ -14,7 +14,20 @@
     let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
     displayTabEntries(opening_tab_entries);
 
-    iconOut();
+    // used by modal_scene_change function to determine if the page has just loaded
+    let isPageLoad = true;
+    function changePageLoad() {
+        isPageLoad = false;
+    }
+
+    // Use the window.onload event to change isPageLoad to false 3 seconds after page loads 
+    window.onload = function() {
+        setTimeout(changePageLoad, 3000);
+    };
+
+
+
+    iconFunction();
     modalWindow();
     modal_scene_change();
     //modal_location_change();
@@ -106,28 +119,15 @@
                 .catch(error => console.error('Error fetching data:', error));
         }
 
-//        const elementNumber = dropdownElements.length;
-//        if (elementNumber > 0) {
-//            for (let i = 0; i <= elementNumber -1; i++){
-//                let option = document.createElement('option');
-//                option.value = dropdownElements[i];
-//                option.text = dropdownElements[i];
-//                iconsDropdown.appendChild(option);
-//            }
-//        }
-
-
-
     }
 
     function modalWindow(){
-        const modalWindowOut = document.getElementsByName("modal_window")[0].value;
-        if (modalWindowOut == "Yes"){
+        const iconFunctionValue = document.getElementsByName("icon_function")[0].value;
+        if (iconFunctionValue == "Modal"){ 
           //  document.getElementsByName("icon_out_type")[0].value = "External";
-            document.getElementsByName("icon_out_type")[0].parentElement.parentElement.style.display = "none";
-          //  document.getElementsByName("icon_out_url")[0].value = "";
-            document.getElementsByName("icon_out_url")[0].parentElement.parentElement.style.display = "none";
-          //  document.getElementsByName("icon_scene_out")[0].value = "";
+            document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
+            document.getElementsByName("icon_external_url")[0].value = "";
+            document.getElementsByName("icon_scene_out")[0].value = "";
             document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
             document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "block";
             document.getElementsByName("modal_info_entries")[0].parentElement.parentElement.style.display = "block";
@@ -135,11 +135,7 @@
             document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "block";
             document.getElementsByClassName("modal_preview")[0].parentElement.parentElement.style.display = "block";
         } else {
-            // Show the Icon Out field and then run the IconOut function to see whether the "Icon Out URL" or
-            // the "Icon Scene Out" field should be shown
-            document.getElementsByName("icon_out_type")[0].parentElement.parentElement.style.display = "block";
-            iconOut();
-            // Hide the Tagline field
+
             document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "none";
 
             // Set the Modal Info entries to 0, run displayEntries to hide all of the resulting Modal Info fields 
@@ -168,17 +164,27 @@
         }
     }
 
-    function iconOut(){
-        let iconOutType = document.getElementsByName("icon_out_type")[0].value;
-        if (iconOutType=="External"){
-            document.getElementsByName("icon_scene_out")[0].value = "";
-            document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
-            document.getElementsByName("icon_out_url")[0].parentElement.parentElement.style.display = "block";
-        } else {
-            document.getElementsByName("icon_out_url")[0].value = "";
-            document.getElementsByName("icon_out_url")[0].parentElement.parentElement.style.display = "none";
-            document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "block";
+    function iconFunction(){
+        let iconFunctionType = document.getElementsByName("icon_function")[0].value;
+        switch (iconFunctionType){
+            case "External URL":
+                document.getElementsByName("icon_scene_out")[0].value = "";
+                document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "block";
+                break;
+            case "Modal":
+                document.getElementsByName("icon_scene_out")[0].value = "";
+                document.getElementsByName("icon_external_url")[0].value = "";
+                document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
+                break;
+            case "Scene":
+                document.getElementsByName("icon_external_url")[0].value = "";
+                document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "block";
+                document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
+                break;
         }
+        modalWindow();
     }
 
     function displayTabEntries (entry_number){
@@ -295,7 +301,7 @@ function modal_location_change(){
 function modal_scene_change(){
     const sceneID = $( "select[name='modal_scene']" ).val();
 
-    if (sceneID != "") {
+    if (sceneID != "" && sceneID != null) {
         iconSceneOutDropdown();
         // Let's remove the preview window if it already exists
 		const previewWindow = document.getElementById('preview_window');
@@ -337,6 +343,23 @@ function modal_scene_change(){
                             const width = imageColumn.clientWidth;
                             document.getElementById("previewSvg").setAttribute('width', width);
 
+                            if (isPageLoad == true) {
+                                const iconValue = document.getElementsByName("modal_icons")[0].value;
+
+                                if (iconValue != null && iconValue != " "){
+                                    let svgIcons = imageColumn.querySelector('g[id="icons"]');
+                                    let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+                                    const svgIconHighlight = svgIconTarget.cloneNode(true);
+                                    svgIconHighlight.id = "icon_highlight";
+                                    svgIconHighlight.style.stroke = "yellow";
+                                    svgIconHighlight.style.strokeWidth = "6";
+                                    svgIcons.prepend(svgIconHighlight);
+                                }
+                            }
+
+
+
+
                             let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
                             // Initialize an array to hold the sublayer names
                             let sublayers = [];
@@ -350,40 +373,51 @@ function modal_scene_change(){
                                 });
                                 sublayers = sublayers.sort();
                             }
-                            modalIconsDropdown(sublayers);
+                            if (isPageLoad == false) {
+                                modalIconsDropdown(sublayers);
+                            }
                         })
                 }
             })
             .catch((err) => {console.error(err)});
             
+
+
             imageRow.appendChild(imageColumn);
             newDiv.appendChild(imageRow);
             document.getElementsByClassName("exopite-sof-field-select")[1].appendChild(newDiv);
+
+
     }
 }
 
 function modal_icons_change() {
     const iconValue = document.getElementsByName("modal_icons")[0].value;
-    const svg = document.getElementById("previewSvg");
-    const svgIcons = svg.getElementById("icons");
-    const svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
 
-    if(svgIcons.querySelector('g[id="icon_highlight"]')){
-        svgIcons.querySelector('g[id="icon_highlight"]').remove();
+    if (iconValue != null && iconValue != " "){
+
+        let svg = document.getElementById("previewSvg");
+
+        let svgIcons = svg.getElementById("icons");
+
+        if(svgIcons.querySelector('g[id="icon_highlight"]')){
+            svgIcons.querySelector('g[id="icon_highlight"]').remove();
+        }
+
+        let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+
+        const svgIconHighlight = svgIconTarget.cloneNode(true);
+        svgIconHighlight.id = "icon_highlight";
+        svgIconHighlight.style.stroke = "yellow";
+        svgIconHighlight.style.strokeWidth = "6";
+        svgIcons.prepend(svgIconHighlight);
     }
-
-    const svgIconHighlight = svgIconTarget.cloneNode(true);
-    svgIconHighlight.id = "icon_highlight";
-    svgIconHighlight.style.stroke = "yellow";
-    svgIconHighlight.style.strokeWidth = "6";
-    svgIcons.prepend(svgIconHighlight);
 }
 
 $('.chosen').first().change(modal_location_change);
 $( "select[name='modal_scene']" ).change(modal_scene_change);
 $( "select[name='modal_icons']" ).change(modal_icons_change);
-$( "select[name='icon_out_type']" ).change(iconOut);
-$( "select[name='modal_window']" ).change(modalWindow);
+$( "select[name='icon_function']" ).change(iconFunction);
 
 $(".range[data-depend-id='modal_tab_number']").change(function(){ 
     let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
