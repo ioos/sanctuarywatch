@@ -46,6 +46,7 @@ class Webcr_Taxonomy {
 
         wp_insert_term('Channel Islands NMS','location', array('slug' => 'ChannelIslands'));
         wp_insert_term('Florida Keys NMS','location', array('slug' => 'FloridaKeys'));
+        wp_insert_term('Monterey Bay NMS','location', array('slug' => 'MontereyBay'));
         wp_insert_term('Olympic Coast NMS','location', array('slug' => 'OlympicCoast'));
     }
 
