@@ -22,6 +22,7 @@
     wp_enqueue_style( 'style', get_stylesheet_uri() );
   } 
   add_action( 'wp_enqueue_scripts', 'files' );
+
   /**
    * Enqueues Bootstrap's JavaScript library with dependency management.
    *
@@ -47,6 +48,7 @@
    * @return void
    */
   //attempting to rewrite scene base url
+  //for some reason, despite the post being already registed in the backend by Jai, without registering the new urls doesnt link ;-;
   function register_scene_post_type (){
     $args = array (
       'labels' => array(
@@ -63,7 +65,7 @@
     
     register_post_type( 'scene', $args);
   }
-  add_action('init', 'register_scene_post_type' );
+  //add_action('init', 'register_scene_post_type' );
 
   /**
    * Adds rewrite rules for custom 'scene' post type URLs.
@@ -102,6 +104,7 @@
   function scene_post_type_permalink($post_link, $post) {
     if (is_object($post) && $post->post_type == 'scene') {
         $postMeta = get_post_meta($post->ID);
+        //Undefined array key "scene_location"
         $sceneLocation = $postMeta['scene_location'][0];
         if ($sceneLocation) {
             $scene_base_url = 'webcr-';
@@ -117,7 +120,7 @@
     }
     return $post_link;
   }
-  add_filter('post_type_link', 'scene_post_type_permalink', 10, 2);
+  //add_filter('post_type_link', 'scene_post_type_permalink', 10, 2);
 
   /**
    * Sets up and flushes rewrite rules on plugin activation.
@@ -133,6 +136,8 @@
    * @return void
    */
   // Flush rewrite rules on activation
+
+  //TODO ensures the custom post type and rewrite rules are registered and applied, which affects URL handling in WordPress.
   function scene_rewrite_flush() {
     register_scene_post_type();
     scene_rewrite_rules();

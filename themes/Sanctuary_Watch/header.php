@@ -65,6 +65,7 @@ if ( get_header_textcolor() ) : ?>
 		// Breadcrumbs are dynamically generated based on the current post's metadata to facilitate navigation and enhance SEO
 			// Fetch and store the post meta data and the scene location for the current post using its ID.
 			$postMeta = get_post_meta(get_the_ID());
+			//Trying to access array offset on value of type null ??
 			$sceneLocation = $postMeta['scene_location'][0];
 			// Split the 'scene_location' string into an array based on spaces.
 			$sceneArr = explode(' ', $sceneLocation);

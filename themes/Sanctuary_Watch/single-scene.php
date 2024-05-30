@@ -80,11 +80,47 @@ $scene_photo_arr = $total_arr[1];
         if (!empty($svg_url)) {
             echo '<img src="' . esc_url($svg_url) . '" alt="Description of SVG">';
         }
-        /*
-        if (!empty($svg_url)) {
-            echo '<object type="image/svg+xml" data="' . esc_url($svg_url) . '">Your browser does not support SVGs</object>';
+        if($svg_url){
+            $relative_path = ltrim(parse_url($svg_url)['path'], "/");
+
+            $full_path = get_home_path() . $relative_path;
+
+            $svg_content = file_get_contents($full_path);
+
+            if(!$svg_content){
+                die("Fail to load SVG file");
+
+                $dom  = new DOMDocument();
+                libxml_use_internal_errors(true);
+                $dom->loadXML($svg_content);
+                libxml_clear_errors();
+
+                $xpath = new DOMXPath($dom);
+
+                $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
+
+                if($icons_element === null){
+                    die('Element with ID "icons" not found');
+                }
+
+                $child_elements = $icons_element->childNodes;
+
+                $child_ids = array();
+
+                foreach($child_elements as $child){
+                    if($child->nodeType === XML_ELEMENT_NODE && $child->hasAttribute('id')) {
+                        $child_ids[] = $child->getAttribute('id');
+                    }
+                }
+
+                asort($child_ids);
+
+                foreach ($child_ids as $single_icon){
+                    $modal_icons[$single_icon] = $single_icon;
+                }
+            }
         }
-        */ 
+
     ?>
     </div>
 </div>
