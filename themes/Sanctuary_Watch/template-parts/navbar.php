@@ -77,7 +77,7 @@ defined( 'ABSPATH' ) || exit;
                             $post_titles[] = [get_the_title(), $scene_order[0], get_the_ID()];
                         }
                     }
-                    //reset the post daata
+                    //reset the post data
                     wp_reset_postdata();
                     // Custom function to sort posts by scene order and then alphabetically
                     function customCompare($a, $b) {
