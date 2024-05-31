@@ -173,7 +173,7 @@ class Webcr_Modal {
                     die("Failed to load SVG file.");
                 }
                 
-                // Create a new DOMDocument instance and load the SVG content
+                // Create a new DOMDocument instance and load the SVG content 828 242 5661
                 $dom = new DOMDocument();
                 libxml_use_internal_errors(true); // Suppress errors related to invalid XML
                 $dom->loadXML($svg_content);
@@ -615,6 +615,58 @@ class Webcr_Modal {
 
     }
 
+    public function modal_admin_notice() {
+        // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
+        // posts after it has been updated. The if statement is looking for three things: 1. Scene post type? 2. An individual post (as opposed to the scene
+        // admin screen)? 3. A new post?
+        $current_screen = get_current_screen();
+        if ($current_screen->base == "post" && $current_screen->id =="modal" && !($current_screen->action =="add") ) { 
+            if( isset( $_COOKIE["modal_post_status"] ) ) {
+                $modal_post_status =  $_COOKIE["modal_post_status"];
+                if ($modal_post_status == "post_good") {
+                    echo '<div class="notice notice-info is-dismissible"><p>Modal created or updated.</p></div>';
+                } 
+                else {
+                    if (isset($_COOKIE["modal_errors"])) {
+                        $error_message = "<p>Error or errors in modal</p>";
+                        $error_list_coded = stripslashes($_COOKIE["modal_errors"]);
+                        $error_list_array = json_decode($error_list_coded);
+                        $error_array_length = count($error_list_array);
+                        $error_message = $error_message . '<p><ul>';
+                        for ($i = 0; $i < $error_array_length; $i++){
+                            $error_message = $error_message . '<li>' . $error_list_array[$i] . '</li>';
+                        }
+                        $error_message = $error_message . '</ul></p>';
+                    }
+                    echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
+
+                    if (isset($_COOKIE["modal_error_all_fields"])) {
+                        $modal_fields_coded = stripslashes($_COOKIE["modal_error_all_fields"]);
+                        $modal_fields_array = json_decode($modal_fields_coded, true);	
+                     //   $_POST['scene_location'] = $scene_fields_array['scene_location'];
+                     //   $_POST['scene_infographic'] = $scene_fields_array['scene_infographic'];
+                     //   $_POST['scene_tagline'] = $scene_fields_array['scene_tagline'];
+                     //   $_POST['scene_info_entries'] = $scene_fields_array['scene_info_entries'];
+                     //   $_POST['scene_photo_entries'] = $scene_fields_array['scene_photo_entries'];
+
+                    }
+                }
+             //   setcookie("scene_post_status", "", time() - 300, "/");
+            }
+            if (isset($_COOKIE["scene_warnings"])){
+                $warning_message = "<p>Warning or warnings in scene</p>";
+                $warning_list_coded = stripslashes($_COOKIE["scene_warnings"]);
+                $warning_list_array = json_decode($warning_list_coded);
+                $warning_array_length = count($warning_list_array);
+                $warning_message = $warning_message . '<p><ul>';
+                for ($i = 0; $i < $warning_array_length; $i++){
+                    $warning_message = $warning_message . '<li>' . $warning_list_array[$i] . '</li>';
+                }
+                $warning_message = $warning_message . '</ul></p>';
+                echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
+            }
+        }
+    }
 
 
 }
