@@ -250,14 +250,6 @@ class Webcr_Modal {
                     'default'     => 'Modal',
                      'class'      => 'chosen', 
                 ),
-//                array(
-//                    'id'             => 'icon_out_type',
-//                    'type'           => 'select',
-//                    'title'          => 'Icon Out Type',
-  //                  'options'        => array ("External" => "External", "Internal" => "Internal"), 
-    //                'description' => 'Icon Out type description',
-      //              'default'     => 'External',
-        //        ),
                 array(
                     'id'          => 'icon_external_url',
                     'type'        => 'text',
@@ -615,6 +607,29 @@ class Webcr_Modal {
 
     }
 
+    /**
+	 * Set columns in admin screen for Modal custom content type.
+	 *
+     * @link https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
+	 * @since    1.0.0
+	 */
+    function change_modal_columns( $columns ) {
+        $columns = array (
+            //'cb' => $columns['cb'],
+            'title' => 'Title',
+            'scene_location' => 'Instance',
+            'scene' => 'Scene',		
+            'scene_icon' => 'Scene Icon',	
+            'icon_function' => 'Function',		
+            'scene_tagline' => 'Tagline',			
+            'scene_info_link' => 'Info Link #',		
+            'scene_info_photo_link' => 'Photo Link #',
+            'tab_number' => 'Tab #',	
+            'status' => 'Status',
+        );
+        return $columns;
+    }
+
     public function modal_admin_notice() {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
         // posts after it has been updated. The if statement is looking for three things: 1. Scene post type? 2. An individual post (as opposed to the scene
@@ -643,19 +658,25 @@ class Webcr_Modal {
                     if (isset($_COOKIE["modal_error_all_fields"])) {
                         $modal_fields_coded = stripslashes($_COOKIE["modal_error_all_fields"]);
                         $modal_fields_array = json_decode($modal_fields_coded, true);	
-                     //   $_POST['scene_location'] = $scene_fields_array['scene_location'];
-                     //   $_POST['scene_infographic'] = $scene_fields_array['scene_infographic'];
-                     //   $_POST['scene_tagline'] = $scene_fields_array['scene_tagline'];
-                     //   $_POST['scene_info_entries'] = $scene_fields_array['scene_info_entries'];
-                     //   $_POST['scene_photo_entries'] = $scene_fields_array['scene_photo_entries'];
+                        $_POST['modal_location'] = $modal_fields_array['modal_location'];
+                        $_POST['modal_scene'] = $modal_fields_array['modal_scene'];
+                        $_POST['modal_icons'] = $modal_fields_array['modal_icons'];
+                        $_POST['icon_function'] = $modal_fields_array['icon_function'];
+                        $_POST['icon_external_url'] = $modal_fields_array['icon_external_url'];
+                        $_POST['icon_scene_out'] = $modal_fields_array['icon_scene_out'];
+                        $_POST['modal_tagline'] = $modal_fields_array['modal_tagline'];
+                        $_POST['modal_info_entries'] = $modal_fields_array['modal_info_entries'];
+                        $_POST['modal_photo_entries'] = $modal_fields_array['modal_photo_entries'];
+                        $_POST['modal_tab_number'] = $modal_fields_array['modal_tab_number'];
+
 
                     }
                 }
              //   setcookie("scene_post_status", "", time() - 300, "/");
             }
-            if (isset($_COOKIE["scene_warnings"])){
-                $warning_message = "<p>Warning or warnings in scene</p>";
-                $warning_list_coded = stripslashes($_COOKIE["scene_warnings"]);
+            if (isset($_COOKIE["modal_warnings"])){
+                $warning_message = "<p>Warning or warnings in modal</p>";
+                $warning_list_coded = stripslashes($_COOKIE["modal_warnings"]);
                 $warning_list_array = json_decode($warning_list_coded);
                 $warning_array_length = count($warning_list_array);
                 $warning_message = $warning_message . '<p><ul>';
