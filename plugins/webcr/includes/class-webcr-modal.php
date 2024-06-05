@@ -617,7 +617,7 @@ class Webcr_Modal {
         $columns = array (
             //'cb' => $columns['cb'],
             'title' => 'Title',
-            'scene_location' => 'Instance',
+            'modal_location' => 'Instance',
             'scene' => 'Scene',		
             'scene_icon' => 'Scene Icon',	
             'icon_function' => 'Function',		
@@ -629,6 +629,88 @@ class Webcr_Modal {
         );
         return $columns;
     }
+
+    /**
+	 * Populate custom fields for Modal content type in the admin screen.
+	 *
+     * @param string $column The name of the column.
+     * @param int $post_id The database id of the post.
+	 * @since    1.0.0
+	 */
+    public function custom_modal_column( $column, $post_id ) {  
+
+
+        // maybe knock this next section out
+        if (isset($_GET["field_length"])) {
+            $field_length = $_GET["field_length"];
+        } else {
+            $field_length = "large";
+        }
+
+        if ( $column === 'modal_location' ) {
+            echo get_post_meta( $post_id, 'modal_location', true ); 
+        }
+
+
+ //       if ($column == 'scene_tagline'){
+ //           $scene_tagline = get_post_meta( $post_id, 'scene_tagline', true );
+ //           switch ($field_length){
+ //               case "large":
+ //                   echo $scene_tagline;
+   //                 break;
+     //           case "medium":
+       //             echo $this->stringTruncate($scene_tagline, 75);
+         //           break;
+           //     case "small":
+             //       if ($scene_tagline != NULL){
+               //         echo '<span class="dashicons dashicons-yes"></span>';
+                 //   }
+                   // break;
+    //        }
+      //  }
+
+        if ($column == 'modal_info_photo_link'){
+            $url_count = 0;
+            for ($i = 1; $i < 7; $i++){
+                $search_fieldset = "modal_photo" . $i;
+                $search_field = "modal_photo_url" . $i;
+                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
+                if ($database_value != ""){
+                    $url_count++;
+                }
+            }
+            echo $url_count; 
+
+        }
+
+        if ($column == 'modal_info_link'){
+
+            $url_count = 0;
+            for ($i = 1; $i < 7; $i++){
+                $search_fieldset = "modal_info" . $i;
+                $search_field = "modal_info_url" . $i;
+                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
+                if ($database_value != ""){
+                    $url_count++;
+                }
+            }
+            echo $url_count; 
+
+        }
+
+
+        if ($column === "status"){
+            date_default_timezone_set('America/Los_Angeles'); 
+            $last_modified_time = get_post_modified_time('g:i A', false, $post_id, true);
+            $last_modified_date = get_post_modified_time('F j, Y', false, $post_id, true);
+            $last_modified_user_id = get_post_field('post_author', $post_id);
+            $last_modified_user = get_userdata($last_modified_user_id);
+            $last_modified_name = $last_modified_user -> first_name . " " . $last_modified_user -> last_name; 
+
+            echo "Last updated at " . $last_modified_time . " Pacific Time on " . $last_modified_date . " by " . $last_modified_name;
+        }
+    }
+
 
     public function modal_admin_notice() {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 

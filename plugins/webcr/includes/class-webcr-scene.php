@@ -203,8 +203,8 @@ class Webcr_Scene {
             'scene_location' => 'Instance',
             'scene_infographic' => 'Infographic',		
             'scene_tagline' => 'Tagline',			
-            'scene_info_link' => 'Info Link Number',		
-            'scene_info_photo_link' => 'Photo Link Number',
+            'scene_info_link' => 'Info Link #',		
+            'scene_info_photo_link' => 'Photo Link #',
             'scene_order' => 'Order',	
             'status' => 'Status',
         );
