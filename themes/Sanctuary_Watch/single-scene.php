@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-//ALL CURRENTLY ASSUME THERE IS POSTMETA AND THERE IS ALL SUFFICIENT INFORMATION
+//ALL CURRENTLY ASSUME THERE IS THE CORRECT POSTMETA DATA AND THERE ALL SUFFICIENT INFORMATION EXISTS
 //IMPLEMENT ERROR CHECKS LATER
 
 
@@ -73,6 +73,7 @@ $scene_photo_arr = $total_arr[1];
         ?>
             </div>
     </div>
+    <!-- Displays SVG (currently as an image) and the simplified TOC as a list  -->
     <div class="row">
         <div class="col-md-9">
             <div id="svg">
@@ -117,6 +118,7 @@ $scene_photo_arr = $total_arr[1];
             </div>
         </div>
     </div>
+    <!--  script embeds json variable -->
     <script>
         // Convert the array of child IDs to a JSON string and mbed the child_ids_json variable into the html for the JS script to pick up and use.
         const child_id_json = <?php echo json_encode($child_ids); ?>;
