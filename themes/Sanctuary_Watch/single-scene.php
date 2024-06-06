@@ -73,7 +73,7 @@ $scene_photo_arr = $total_arr[1];
         ?>
             </div>
     </div>
-    <div class="content">
+    <div class="row">
         <div class="col-md-9">
             <div id="svg">
                 <?php
@@ -89,24 +89,27 @@ $scene_photo_arr = $total_arr[1];
             <div id="toc">
                 <?php
                 //temporary display
-                /*
-                json file structure:
-                name:
-                title:
-                post-id:
-                function: 
-                    modal:
-                    link:
-                        scene:
-                        external:
-
-                */ 
                 $child_ids = generateModalArray($svg_url);
                 $child_ids_json = json_encode($child_ids);
                 ?>
                 <ul>
                     <?php
-                        foreach($ids as $child_ids)
+                        foreach($child_ids as $ids) {
+                            //echo "<li class='nav-item'><a class='nav-link' href='". esc_url(get_permalink($post_title[2])) ."'>$post_title[0]</a></li>";
+                            if(is_array($ids)){
+                                $title = $ids["title"];
+                                if($ids["icon_function"] === "External URL"){
+                                    echo "<li class='toc-item'><a class='toc-link' href='". esc_url($ids['external']) ."' target='_blank'>$title</a></li>";
+                                }
+                                if($ids["icon_function"] === "Scene"){
+                                    echo "<li class='toc-item'><a class='toc-link' href='". esc_url($ids['scene']) ."'>$title</a></li>";
+                                }
+                                //TODO
+                                if($ids["icon_function"] === "Modal"){
+                                    //run js script?
+                                }
+                            }
+                        }
                     ?>
                 </ul>
             </div>

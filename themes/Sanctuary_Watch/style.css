@@ -90,3 +90,22 @@ p[itemprop="name"], p[itemprop="address"] {
 .nav-link:hover{
   background-color: #002a4c;
 }
+
+#svg img {
+  width: 100%;
+  height: auto;
+}
+#toc ul {
+  list-style-type: none;
+  padding: 0;
+}
+#toc li {
+  margin-bottom: 10px;
+}
+.toc-link {
+  text-decoration: none;
+  color: #007bff;
+}
+.toc-link:hover {
+  text-decoration: underline;
+}

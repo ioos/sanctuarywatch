@@ -216,41 +216,64 @@
     }
   }
 
+  /**
+   * Generates an array of modal information from an SVG file.
+   *
+   * This function processes an SVG file to extract child elements of a specified element and 
+   * generates an array of information related to these child elements, based on associated 
+   * WordPress post metadata. It utilizes DOMDocument and DOMXPath to parse and query the SVG 
+   * content and creates a structured array containing details for each child element.
+   *
+   * @param string $svg_url The URL of the SVG file to be processed.
+   * @return array|null An array of associative arrays containing modal information for each 
+   *                    child element, or null if the SVG file could not be processed.
+   */
   function generateModalArray($svg_url){
+    //Check if $svg_url contains anything, return null if nothing
     if($svg_url){
+      // Find the path to the SVG file
       $relative_path = ltrim(parse_url($svg_url)['path'], "/");
-
       $full_path = ABSPATH . $relative_path;
 
+      // Get the contents from the SVG file
       $svg_content = file_get_contents($full_path);
 
+      // If the SVG content could not be loaded, terminate with an error message
       if(!$svg_content){
           die("Fail to load SVG file");
           return null;
       }
+      // Load the SVG content into a DOMDocument
       $dom  = new DOMDocument();
       libxml_use_internal_errors(true);
       $dom->loadXML($svg_content);
       libxml_clear_errors();
 
+      // Create a DOMXPath object for querying the DOMDocument
       $xpath = new DOMXPath($dom);
 
+      // Find the element with ID "icons"
       $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
 
+      // If the element with ID "icons" is not found, terminate with an error message
       if($icons_element === null){
           die('Element with ID "icons" not found');
           return null;
       }
 
+      // Get the child nodes of the "icons" element
       $child_elements = $icons_element->childNodes;
 
+      // Initialize an array to hold the IDs of the child elements
       $child_ids = array();
       foreach($child_elements as $child){
+        // Check if the child node is an element and has an "id" attribute
           if($child->nodeType === XML_ELEMENT_NODE && $child->hasAttribute('id')) {
+              // Add the "id" attribute to the array
               $child_ids[] = $child->getAttribute('id');
           }
       }
-
+      // Sort the IDs alphabetically
       asort($child_ids);
       /*
       json file structure:
@@ -258,22 +281,28 @@
       title:
       post-id:
       function: 
-          modal:
-          link:
-              scene:
-              external:
-
+      modal:
+      scene:
+      external:
       */ 
+      // Iterate over the sorted IDs and create an associative array for each one
       for ($i = 0; $i < count($child_ids); $i++){
+        // Create a new WP_Query object for the current ID
         $query = new WP_Query(postQuery($child_ids[$i]));
+        // Check if there are any posts for the current ID
         if($query->have_posts()){
+            // Get the post ID and post object
             $child_post_id = $query->posts[0];
-            $post = get_post($child_post_id);
+            $post = get_post($child_post_id); //this might not be needed
+
+            // Get the icon type, title, and other meta information
             $icon_type = get_post_meta($child_post_id, "icon_function");
             $icon_title = get_post_meta($child_post_id, "post_title");
             $modal = "";
             $scene_url = "";
             $external_url = "";
+
+            // Determine the URL based on the icon type or Modal
             if($icon_type[0] === "External URL"){
                 $external_url = get_post_meta( $child_post_id, "icon_external_url");
             }
@@ -285,26 +314,36 @@
             if($icon_type[0] === "Modal"){
                 $modal = "Modal TODO";
             }
+
+            //Create an array using the information above
             $child_ids[$i] = ["name" => $child_ids[$i], 
                               "title" => $icon_title[0],
                               "post_id" => $child_post_id,
-                              "icon_function" => [
-                                "modal" => $modal,
-                                "link"  => [
-                                    "scene" => $scene_url,
-                                    "external" => $external_url[0]
-                                ]
-                              ]
+                              "icon_function" => $icon_type[0],
+                              "modal" => $modal,
+                              "scene" => $scene_url,
+                              "external" => $external_url[0]
                             ];
         }
       }
-      //$child_ids_json = json_encode($child_ids);
+
+      // Reset the global $post object after query
       wp_reset_postdata();
       return $child_ids;
     }
     return null;
   }
 
+  /**
+   * Constructs a query argument array for retrieving posts with a specific meta key value.
+   *
+   * This function generates an array of arguments tailored for a WordPress query. It targets 
+   * any post type and filters posts based on a meta key `modal_icons` matching the provided 
+   * icon name. The function ensures that only the IDs of the matching posts are retrieved.
+   *
+   * @param string $icon_name The value to be matched against the `modal_icons` meta key.
+   * @return array The argument array to be used with a WordPress query.
+   */
   function postQuery($icon_name){
     $args = array(
         'post_type' => 'any', 
@@ -318,5 +357,5 @@
         'fields' => 'ids' 
     );
     return $args;
-}
+  }
 ?>
