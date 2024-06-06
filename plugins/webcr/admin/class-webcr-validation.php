@@ -103,9 +103,8 @@ class webcr_validation {
         $modal_fields['modal_location'] = $_POST['modal_location'];
         $modal_fields['modal_scene'] = $_POST['modal_scene'];
         $modal_fields['modal_icons'] = $_POST['modal_icons'];
-        $modal_fields['modal_window'] = $_POST['modal_window'];
-        $modal_fields['icon_out_type'] = $_POST['icon_out_type'];
-        $modal_fields['icon_out_url'] = $_POST['icon_out_url'];        
+        $modal_fields['icon_function'] = $_POST['icon_function'];
+        $modal_fields['icon_external_url'] = $_POST['icon_external_url'];
         $modal_fields['icon_scene_out'] = $_POST['icon_scene_out'];        
         $modal_fields['modal_tagline'] = $_POST['modal_tagline'];        
         $modal_fields['modal_info_entries'] = $_POST['modal_info_entries'];        

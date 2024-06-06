@@ -203,8 +203,8 @@ class Webcr_Scene {
             'scene_location' => 'Instance',
             'scene_infographic' => 'Infographic',		
             'scene_tagline' => 'Tagline',			
-            'scene_info_link' => 'Info Link Number',		
-            'scene_info_photo_link' => 'Photo Link Number',
+            'scene_info_link' => 'Info Link #',		
+            'scene_info_photo_link' => 'Photo Link #',
             'scene_order' => 'Order',	
             'status' => 'Status',
         );
@@ -348,15 +348,15 @@ class Webcr_Scene {
     }
 
     /**
-	 * Remove Bulk Actions dropdown from Scene admin screen.
+	 * Remove Bulk Actions dropdown from Scene and Modal admin screens.
 	 *
      * @param array $actions An array of the available bulk actions.
 	 * @since    1.0.0
 	 */
-    function remove_bulk_actions_scene($actions) {
+    function remove_bulk_actions($actions) {
         global $post_type;
     
-        if ($post_type === 'scene') {
+        if ($post_type === 'scene' || $post_type === 'modal' ) {
             unset($actions['bulk-edit']);
             unset($actions['edit']);
             unset($actions['trash']);

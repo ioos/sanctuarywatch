@@ -4,6 +4,7 @@
  * 
  */
 class Webcr_Modal {
+  //  require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-admin.php';
 
 	/**
 	 * The ID of this plugin.
@@ -173,7 +174,7 @@ class Webcr_Modal {
                     die("Failed to load SVG file.");
                 }
                 
-                // Create a new DOMDocument instance and load the SVG content
+                // Create a new DOMDocument instance and load the SVG content 828 242 5661
                 $dom = new DOMDocument();
                 libxml_use_internal_errors(true); // Suppress errors related to invalid XML
                 $dom->loadXML($svg_content);
@@ -231,7 +232,6 @@ class Webcr_Modal {
                     'type'           => 'select',
                     'title'          => 'Scene',
                     'options'        => $scene_titles,
-//                    'options'        => array ("" => "Modal Scene", 58 => "Deep Seafloor", 45 => "Tempo 55"), 
                     'description' => 'Modal Scene description',
                 ),
                 array(
@@ -250,14 +250,6 @@ class Webcr_Modal {
                     'default'     => 'Modal',
                      'class'      => 'chosen', 
                 ),
-//                array(
-//                    'id'             => 'icon_out_type',
-//                    'type'           => 'select',
-//                    'title'          => 'Icon Out Type',
-  //                  'options'        => array ("External" => "External", "Internal" => "Internal"), 
-    //                'description' => 'Icon Out type description',
-      //              'default'     => 'External',
-        //        ),
                 array(
                     'id'          => 'icon_external_url',
                     'type'        => 'text',
@@ -615,6 +607,248 @@ class Webcr_Modal {
 
     }
 
+    /**
+	 * Add two filter dropdowns, field length and scene location, for the admin screen for the Modal content type.
+	 *
+	 * @since    1.0.0
+	 */
+    function modal_filter_dropdowns () {
+        $screen = get_current_screen();
+        if ( $screen->id == 'edit-modal' ){
+            $fieldOptions = array(
+                array("", "large", "Full tagline"),
+                array("", "medium", "Medium tagline"),
+                array("", "small", "Short tagline")
+            );
+
+            if (isset($_GET["field_length"])) {
+                $field_length = $_GET["field_length"];
+                switch ($field_length){
+                    case "large":
+                        $fieldOptions[0][0] = "selected ";
+                        break;
+                    case "medium":
+                        $fieldOptions[1][0] = "selected ";
+                        break;
+                    case "small":
+                        $fieldOptions[2][0] = "selected ";
+                        break;
+                }
+            }
+
+            $field_length_dropdown = '<select name="field_length" id="field_length">';
+            for ($i=0; $i <3; $i++){
+                $field_length_dropdown .= '<option ' . $fieldOptions[$i][0] .  'value="' . $fieldOptions[$i][1] .'">' . $fieldOptions[$i][2] . '</option>';
+            }
+            $field_length_dropdown .= '</select>';
+
+            echo $field_length_dropdown;
+            
+            $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
+            $locations = array(array("All Instances", ""));
+            foreach ( $locations_array as $locations_row ){
+                array_push($locations, array($locations_row -> name,"")); 
+            }
+
+            if (isset($_GET["modal_location"])) { 
+                $scene_location = str_replace("_", " ", $_GET["modal_location"]);
+                $i = 0;
+                foreach ($locations as $location_row) {
+                    if ($location_row[0] == $scene_location) {
+                        $locations[$i][1] = "selected ";
+                        break;
+                    }
+                    $i++;
+                }
+            }
+
+            $location_dropdown = '<select name="modal_location" id="modal_location">';
+            foreach ($locations as $location_row) {
+                $location_dropdown .= '<option ' . $location_row[1] . 'value="' . $location_row[0] .'">' . $location_row[0]  . '</option>';
+            }
+            $location_dropdown .= '</select>';
+            echo $location_dropdown;
+        }
+    }
+
+    /**
+	 * Set columns in admin screen for Modal custom content type.
+	 *
+     * @link https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
+	 * @since    1.0.0
+	 */
+    function change_modal_columns( $columns ) {
+        $columns = array (
+            //'cb' => $columns['cb'],
+            'title' => 'Title',
+            'modal_location' => 'Instance',
+            'modal_scene' => 'Scene',		
+            'modal_icons' => 'Icon',	
+            'icon_function' => 'Function',		
+            'modal_tagline' => 'Tagline',			
+            'modal_info_link' => 'Info Link #',		
+            'modal_info_photo_link' => 'Photo Link #',
+            'tab_number' => 'Tab #',	
+            'status' => 'Status',
+        );
+        return $columns;
+    }
+
+    /**
+	 * Populate custom fields for Modal content type in the admin screen.
+	 *
+     * @param string $column The name of the column.
+     * @param int $post_id The database id of the post.
+	 * @since    1.0.0
+	 */
+    public function custom_modal_column( $column, $post_id ) {  
+
+
+        // maybe knock this next section out
+        if (isset($_GET["field_length"])) {
+            $field_length = $_GET["field_length"];
+        } else {
+            $field_length = "large";
+        }
+
+        if ( $column === 'modal_location' ) {
+            echo get_post_meta( $post_id, 'modal_location', true ); 
+        }
+
+        if ( $column === 'modal_scene' ) {
+            $scene_id = get_post_meta( $post_id, 'modal_scene', true );
+            $scene_title = get_the_title($scene_id);
+            echo $scene_title; 
+        }
+
+        if ( $column === 'modal_icons' ) {
+            echo get_post_meta( $post_id, 'modal_icons', true ); 
+        }
+
+        if ( $column === 'icon_function' ) {
+            echo get_post_meta( $post_id, 'icon_function', true ); 
+        }
+        
+        if ($column === 'modal_tagline'){
+            $modal_tagline = get_post_meta( $post_id, 'modal_tagline', true );
+            switch ($field_length){
+                case "large":
+                    echo $modal_tagline;
+                    break;
+                case "medium":
+                    $medium_tagline = new Webcr_Admin();
+                    $medium_tagline -> stringTruncate($modal_tagline, 75);
+                    echo $medium_tagline;
+                    // echo stringTruncate($modal_tagline, 75);
+                    break;
+                case "small":
+                    if ($scene_tagline != NULL){
+                        echo '<span class="dashicons dashicons-yes"></span>';
+                    }
+                    break;
+            }
+        }
+
+        if ($column == 'modal_info_photo_link'){
+            $url_count = 0;
+            for ($i = 1; $i < 7; $i++){
+                $search_fieldset = "modal_photo" . $i;
+                $search_field = "modal_photo_url" . $i;
+                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
+                if ($database_value != ""){
+                    $url_count++;
+                }
+            }
+            echo $url_count; 
+        }
+
+        if ($column == 'modal_info_link'){
+
+            $url_count = 0;
+            for ($i = 1; $i < 7; $i++){
+                $search_fieldset = "modal_info" . $i;
+                $search_field = "modal_info_url" . $i;
+                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
+                if ($database_value != ""){
+                    $url_count++;
+                }
+            }
+            echo $url_count; 
+
+        }
+
+
+        if ($column === "status"){
+            date_default_timezone_set('America/Los_Angeles'); 
+            $last_modified_time = get_post_modified_time('g:i A', false, $post_id, true);
+            $last_modified_date = get_post_modified_time('F j, Y', false, $post_id, true);
+            $last_modified_user_id = get_post_field('post_author', $post_id);
+            $last_modified_user = get_userdata($last_modified_user_id);
+            $last_modified_name = $last_modified_user -> first_name . " " . $last_modified_user -> last_name; 
+
+            echo "Last updated at " . $last_modified_time . " Pacific Time on " . $last_modified_date . " by " . $last_modified_name;
+        }
+    }
+
+
+    public function modal_admin_notice() {
+        // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
+        // posts after it has been updated. The if statement is looking for three things: 1. Scene post type? 2. An individual post (as opposed to the scene
+        // admin screen)? 3. A new post?
+        $current_screen = get_current_screen();
+        if ($current_screen->base == "post" && $current_screen->id =="modal" && !($current_screen->action =="add") ) { 
+            if( isset( $_COOKIE["modal_post_status"] ) ) {
+                $modal_post_status =  $_COOKIE["modal_post_status"];
+                if ($modal_post_status == "post_good") {
+                    echo '<div class="notice notice-info is-dismissible"><p>Modal created or updated.</p></div>';
+                } 
+                else {
+                    if (isset($_COOKIE["modal_errors"])) {
+                        $error_message = "<p>Error or errors in modal</p>";
+                        $error_list_coded = stripslashes($_COOKIE["modal_errors"]);
+                        $error_list_array = json_decode($error_list_coded);
+                        $error_array_length = count($error_list_array);
+                        $error_message = $error_message . '<p><ul>';
+                        for ($i = 0; $i < $error_array_length; $i++){
+                            $error_message = $error_message . '<li>' . $error_list_array[$i] . '</li>';
+                        }
+                        $error_message = $error_message . '</ul></p>';
+                    }
+                    echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
+
+                    if (isset($_COOKIE["modal_error_all_fields"])) {
+                        $modal_fields_coded = stripslashes($_COOKIE["modal_error_all_fields"]);
+                        $modal_fields_array = json_decode($modal_fields_coded, true);	
+                        $_POST['modal_location'] = $modal_fields_array['modal_location'];
+                        $_POST['modal_scene'] = $modal_fields_array['modal_scene'];
+                        $_POST['modal_icons'] = $modal_fields_array['modal_icons'];
+                        $_POST['icon_function'] = $modal_fields_array['icon_function'];
+                        $_POST['icon_external_url'] = $modal_fields_array['icon_external_url'];
+                        $_POST['icon_scene_out'] = $modal_fields_array['icon_scene_out'];
+                        $_POST['modal_tagline'] = $modal_fields_array['modal_tagline'];
+                        $_POST['modal_info_entries'] = $modal_fields_array['modal_info_entries'];
+                        $_POST['modal_photo_entries'] = $modal_fields_array['modal_photo_entries'];
+                        $_POST['modal_tab_number'] = $modal_fields_array['modal_tab_number'];
+
+
+                    }
+                }
+             //   setcookie("scene_post_status", "", time() - 300, "/");
+            }
+            if (isset($_COOKIE["modal_warnings"])){
+                $warning_message = "<p>Warning or warnings in modal</p>";
+                $warning_list_coded = stripslashes($_COOKIE["modal_warnings"]);
+                $warning_list_array = json_decode($warning_list_coded);
+                $warning_array_length = count($warning_list_array);
+                $warning_message = $warning_message . '<p><ul>';
+                for ($i = 0; $i < $warning_array_length; $i++){
+                    $warning_message = $warning_message . '<li>' . $warning_list_array[$i] . '</li>';
+                }
+                $warning_message = $warning_message . '</ul></p>';
+                echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
+            }
+        }
+    }
 
 
 }

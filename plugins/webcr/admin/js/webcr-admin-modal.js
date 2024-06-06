@@ -25,12 +25,10 @@
         setTimeout(changePageLoad, 3000);
     };
 
-
-
     iconFunction();
     modalWindow();
     modal_scene_change();
-    //modal_location_change();
+    modal_location_change();
 
 	function createAccordion(accordionType, parentDiv, listElements){
 
@@ -269,8 +267,7 @@ function urlifyRecursiveFunc(str) {
 } 
 
 function modal_location_change(){
-    console.log(document.getElementsByName("modal_scene")[0].value);
-    console.log(document.getElementsByName("modal_location")[0].value);
+
     const modal_location = $('.chosen').first().val();
     if (modal_location != ""){
         iconSceneOutDropdown();
