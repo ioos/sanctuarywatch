@@ -215,4 +215,108 @@
         echo '</div>';
     }
   }
+
+  function generateModalArray($svg_url){
+    if($svg_url){
+      $relative_path = ltrim(parse_url($svg_url)['path'], "/");
+
+      $full_path = ABSPATH . $relative_path;
+
+      $svg_content = file_get_contents($full_path);
+
+      if(!$svg_content){
+          die("Fail to load SVG file");
+          return null;
+      }
+      $dom  = new DOMDocument();
+      libxml_use_internal_errors(true);
+      $dom->loadXML($svg_content);
+      libxml_clear_errors();
+
+      $xpath = new DOMXPath($dom);
+
+      $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
+
+      if($icons_element === null){
+          die('Element with ID "icons" not found');
+          return null;
+      }
+
+      $child_elements = $icons_element->childNodes;
+
+      $child_ids = array();
+      foreach($child_elements as $child){
+          if($child->nodeType === XML_ELEMENT_NODE && $child->hasAttribute('id')) {
+              $child_ids[] = $child->getAttribute('id');
+          }
+      }
+
+      asort($child_ids);
+      /*
+      json file structure:
+      name:
+      title:
+      post-id:
+      function: 
+          modal:
+          link:
+              scene:
+              external:
+
+      */ 
+      for ($i = 0; $i < count($child_ids); $i++){
+        $query = new WP_Query(postQuery($child_ids[$i]));
+        if($query->have_posts()){
+            $child_post_id = $query->posts[0];
+            $post = get_post($child_post_id);
+            $icon_type = get_post_meta($child_post_id, "icon_function");
+            $icon_title = get_post_meta($child_post_id, "post_title");
+            $modal = "";
+            $scene_url = "";
+            $external_url = "";
+            if($icon_type[0] === "External URL"){
+                $external_url = get_post_meta( $child_post_id, "icon_external_url");
+            }
+            if($icon_type[0] === "Scene"){
+                $scene_id = get_post_meta( $child_post_id, "icon_scene_out");
+                $scene_url = get_permalink($scene_id[0]);
+            }
+            //TODO
+            if($icon_type[0] === "Modal"){
+                $modal = "Modal TODO";
+            }
+            $child_ids[$i] = ["name" => $child_ids[$i], 
+                              "title" => $icon_title[0],
+                              "post_id" => $child_post_id,
+                              "icon_function" => [
+                                "modal" => $modal,
+                                "link"  => [
+                                    "scene" => $scene_url,
+                                    "external" => $external_url[0]
+                                ]
+                              ]
+                            ];
+        }
+      }
+      //$child_ids_json = json_encode($child_ids);
+      wp_reset_postdata();
+      return $child_ids;
+    }
+    return null;
+  }
+
+  function postQuery($icon_name){
+    $args = array(
+        'post_type' => 'any', 
+        'meta_query' => array(
+            array(
+                'key'     => 'modal_icons',
+                'value'   => $icon_name,
+                'compare' => '='
+            )
+        ),
+        'fields' => 'ids' 
+    );
+    return $args;
+}
 ?>

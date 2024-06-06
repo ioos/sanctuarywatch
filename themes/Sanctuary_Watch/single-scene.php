@@ -73,112 +73,48 @@ $scene_photo_arr = $total_arr[1];
         ?>
             </div>
     </div>
-    <div class="svg">
-    <?php
-        // Fetches and displays an SVG graphic if available
-        $svg_url = get_post_meta($post_id, 'scene_infographic', true);
-        if (!empty($svg_url)) {
-            echo '<img src="' . esc_url($svg_url) . '" alt="Description of SVG">';
-        }
-        if($svg_url){
-            //NEED TO CALL THE DOM CLASS
-            $relative_path = ltrim(parse_url($svg_url)['path'], "/");
-
-            //Call to undefined function get_home_path()
-            $full_path = ABSPATH . $relative_path;
-
-            $svg_content = file_get_contents($full_path);
-
-            if(!$svg_content){
-                die("Fail to load SVG file");
-            }
-            $dom  = new DOMDocument();
-            libxml_use_internal_errors(true);
-            $dom->loadXML($svg_content);
-            libxml_clear_errors();
-
-            $xpath = new DOMXPath($dom);
-
-            $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
-
-            if($icons_element === null){
-                die('Element with ID "icons" not found');
-            }
-
-            $child_elements = $icons_element->childNodes;
-
-            $child_ids = array();
-            foreach($child_elements as $child){
-                if($child->nodeType === XML_ELEMENT_NODE && $child->hasAttribute('id')) {
-                    $child_ids[] = $child->getAttribute('id');
+    <div class="content">
+        <div class="col-md-9">
+            <div id="svg">
+                <?php
+                // Fetches and displays an SVG graphic if available
+                $svg_url = get_post_meta($post_id, 'scene_infographic', true);
+                if (!empty($svg_url)) {
+                    echo '<img src="' . esc_url($svg_url) . '" alt="Description of SVG">';
                 }
-            }
+                ?>
+            </div>
+        </div>
+        <div class = "col-md-3">
+            <div id="toc">
+                <?php
+                //temporary display
+                /*
+                json file structure:
+                name:
+                title:
+                post-id:
+                function: 
+                    modal:
+                    link:
+                        scene:
+                        external:
 
-            asort($child_ids);
-            /*
-            json file structure:
-            name:
-            title:
-            post-id:
-            function: 
-                modal:
-                link:
-                    scene:
-                    external:
-            
-            notes: external should open a new page
-            */ 
-            for ($i = 0; $i < count($child_ids); $i++){
-                $query = new WP_Query(postQuery($child_ids[$i]));
-                if($query->have_posts()){
-                    $child_post_id = $query->posts[0];
-                    $post = get_post($child_post_id);
-                    $icon_type = get_post_meta($child_post_id, "icon_function");
-                    $icon_title = get_post_meta($child_post_id, "post_title");
-                    $modal = "";
-                    $scene_url = "";
-                    $external_url = "";
-                    if($icon_type[0] === "External URL"){
-                        $external_url = get_post_meta( $child_post_id, "icon_external_url");
-                    }
-                    if($icon_type[0] === "Scene"){
-                        $scene_id = get_post_meta( $child_post_id, "icon_scene_out");
-                        $scene_url = get_permalink($scene_id[0]);
-                    }
-                    //TODO
-                    if($icon_type[0] === "Modal"){
-                        $modal = "Modal TODO";
-                    }
-                    $child_ids[$i] = ["name" => $child_ids[$i], 
-                                      "title" => $icon_title[0],
-                                      "post_id" => $child_post_id,
-                                      "icon_function" => [
-                                        "modal" => $modal,
-                                        "link"  => [
-                                            "scene" => $scene_url,
-                                            "external" => $external_url[0]
-                                        ]
-                                      ]
-                                    ];
-                }
-            }
-            wp_reset_postdata();
-        }
-        function postQuery($icon_name){
-            $args = array(
-                'post_type' => 'any', 
-                'meta_query' => array(
-                    array(
-                        'key'     => 'modal_icons',
-                        'value'   => $icon_name,
-                        'compare' => '='
-                    )
-                ),
-                'fields' => 'ids' 
-            );
-            return $args;
-        }
-    ?>
+                */ 
+                $child_ids = generateModalArray($svg_url);
+                $child_ids_json = json_encode($child_ids);
+                ?>
+                <ul>
+                    <?php
+                        foreach($ids as $child_ids)
+                    ?>
+                </ul>
+            </div>
+        </div>
+    <script>
+        const child_id_json = <?php echo $child_ids_json; ?>;
+        console.log(child_id_json);
+    </script>
     </div>
 </div>
 <?php
