@@ -80,6 +80,7 @@ $scene_photo_arr = $total_arr[1];
                 // Fetches and displays an SVG graphic if available
                 $svg_url = get_post_meta($post_id, 'scene_infographic', true);
                 if (!empty($svg_url)) {
+                    // Display the SVG image 
                     echo '<img src="' . esc_url($svg_url) . '" alt="Description of SVG">';
                 }
                 ?>
@@ -88,25 +89,26 @@ $scene_photo_arr = $total_arr[1];
         <div class = "col-md-3">
             <div id="toc">
                 <?php
-                //temporary display
+                // Generate an array of child IDs based on the SVG URL, function in functions.php
                 $child_ids = generateModalArray($svg_url);
-                $child_ids_json = json_encode($child_ids);
                 ?>
                 <ul>
                     <?php
+                        // Loop through each item in the child IDs array
                         foreach($child_ids as $ids) {
-                            //echo "<li class='nav-item'><a class='nav-link' href='". esc_url(get_permalink($post_title[2])) ."'>$post_title[0]</a></li>";
                             if(is_array($ids)){
                                 $title = $ids["title"];
+                                // If the icon function is "External URL", create a list item with a link to the external URL
                                 if($ids["icon_function"] === "External URL"){
                                     echo "<li class='toc-item'><a class='toc-link' href='". esc_url($ids['external']) ."' target='_blank'>$title</a></li>";
                                 }
+                                // If the icon function is "Scene", create a list item with a link to the scene
                                 if($ids["icon_function"] === "Scene"){
                                     echo "<li class='toc-item'><a class='toc-link' href='". esc_url($ids['scene']) ."'>$title</a></li>";
                                 }
-                                //TODO
+                                // If the icon function is "Modal", (TODO: run a JS script?)
                                 if($ids["icon_function"] === "Modal"){
-                                    //run js script?
+                                    // TODO: Implement JS script for modal functionality
                                 }
                             }
                         }
@@ -114,11 +116,13 @@ $scene_photo_arr = $total_arr[1];
                 </ul>
             </div>
         </div>
+    </div>
     <script>
-        const child_id_json = <?php echo $child_ids_json; ?>;
+        // Convert the array of child IDs to a JSON string and mbed the child_ids_json variable into the html for the JS script to pick up and use.
+        const child_id_json = <?php echo json_encode($child_ids); ?>;
+        //Log json file for debugging.
         console.log(child_id_json);
     </script>
-    </div>
 </div>
 <?php
 get_footer();
