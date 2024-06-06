@@ -177,7 +177,7 @@ class Webcr {
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_orderby' ); //scene
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin_scene, 'scene_remove_quick_edit_link', 10, 2 ); //scene
 		$this->loader->add_action( 'init', $plugin_admin_scene, 'custom_content_type_scene' ); //scene
-		$this->loader->add_filter( 'bulk_actions-edit-scene', $plugin_admin_scene, 'remove_bulk_actions_scene' ); 
+		$this->loader->add_filter( 'bulk_actions-edit-scene', $plugin_admin_scene, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'wp_ajax_scene_preview', $plugin_admin_scene, 'scene_preview' ); //scene
 
 		// Load  class and functions associated with Modal custom content type
@@ -187,6 +187,8 @@ class Webcr {
 		$this->loader->add_action( 'admin_menu', $plugin_admin_modal, 'create_modal_fields', 1 );
 		$this->loader->add_action( 'manage_modal_posts_columns', $plugin_admin_modal, 'change_modal_columns' ); //scene
 		$this->loader->add_action( 'manage_modal_posts_custom_column', $plugin_admin_modal, 'custom_modal_column', 10, 2 ); //scene
+		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); //scene 11
+		$this->loader->add_filter( 'bulk_actions-edit-modal', $plugin_admin_scene, 'remove_bulk_actions' ); 
 
 		// Load class and functions connected to custom taxonomies
 		$plugin_admin_taxonomy = new Webcr_Taxonomy( $this->get_plugin_name(), $this->get_version() );

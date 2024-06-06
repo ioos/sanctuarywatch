@@ -4,6 +4,7 @@
  * 
  */
 class Webcr_Modal {
+  //  require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-admin.php';
 
 	/**
 	 * The ID of this plugin.
@@ -231,7 +232,6 @@ class Webcr_Modal {
                     'type'           => 'select',
                     'title'          => 'Scene',
                     'options'        => $scene_titles,
-//                    'options'        => array ("" => "Modal Scene", 58 => "Deep Seafloor", 45 => "Tempo 55"), 
                     'description' => 'Modal Scene description',
                 ),
                 array(
@@ -608,6 +608,70 @@ class Webcr_Modal {
     }
 
     /**
+	 * Add two filter dropdowns, field length and scene location, for the admin screen for the Modal content type.
+	 *
+	 * @since    1.0.0
+	 */
+    function modal_filter_dropdowns () {
+        $screen = get_current_screen();
+        if ( $screen->id == 'edit-modal' ){
+            $fieldOptions = array(
+                array("", "large", "Full tagline"),
+                array("", "medium", "Medium tagline"),
+                array("", "small", "Short tagline")
+            );
+
+            if (isset($_GET["field_length"])) {
+                $field_length = $_GET["field_length"];
+                switch ($field_length){
+                    case "large":
+                        $fieldOptions[0][0] = "selected ";
+                        break;
+                    case "medium":
+                        $fieldOptions[1][0] = "selected ";
+                        break;
+                    case "small":
+                        $fieldOptions[2][0] = "selected ";
+                        break;
+                }
+            }
+
+            $field_length_dropdown = '<select name="field_length" id="field_length">';
+            for ($i=0; $i <3; $i++){
+                $field_length_dropdown .= '<option ' . $fieldOptions[$i][0] .  'value="' . $fieldOptions[$i][1] .'">' . $fieldOptions[$i][2] . '</option>';
+            }
+            $field_length_dropdown .= '</select>';
+
+            echo $field_length_dropdown;
+            
+            $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
+            $locations = array(array("All Instances", ""));
+            foreach ( $locations_array as $locations_row ){
+                array_push($locations, array($locations_row -> name,"")); 
+            }
+
+            if (isset($_GET["modal_location"])) { 
+                $scene_location = str_replace("_", " ", $_GET["modal_location"]);
+                $i = 0;
+                foreach ($locations as $location_row) {
+                    if ($location_row[0] == $scene_location) {
+                        $locations[$i][1] = "selected ";
+                        break;
+                    }
+                    $i++;
+                }
+            }
+
+            $location_dropdown = '<select name="modal_location" id="modal_location">';
+            foreach ($locations as $location_row) {
+                $location_dropdown .= '<option ' . $location_row[1] . 'value="' . $location_row[0] .'">' . $location_row[0]  . '</option>';
+            }
+            $location_dropdown .= '</select>';
+            echo $location_dropdown;
+        }
+    }
+
+    /**
 	 * Set columns in admin screen for Modal custom content type.
 	 *
      * @link https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
@@ -618,12 +682,12 @@ class Webcr_Modal {
             //'cb' => $columns['cb'],
             'title' => 'Title',
             'modal_location' => 'Instance',
-            'scene' => 'Scene',		
-            'scene_icon' => 'Scene Icon',	
+            'modal_scene' => 'Scene',		
+            'modal_icons' => 'Icon',	
             'icon_function' => 'Function',		
-            'scene_tagline' => 'Tagline',			
-            'scene_info_link' => 'Info Link #',		
-            'scene_info_photo_link' => 'Photo Link #',
+            'modal_tagline' => 'Tagline',			
+            'modal_info_link' => 'Info Link #',		
+            'modal_info_photo_link' => 'Photo Link #',
             'tab_number' => 'Tab #',	
             'status' => 'Status',
         );
@@ -651,23 +715,39 @@ class Webcr_Modal {
             echo get_post_meta( $post_id, 'modal_location', true ); 
         }
 
+        if ( $column === 'modal_scene' ) {
+            $scene_id = get_post_meta( $post_id, 'modal_scene', true );
+            $scene_title = get_the_title($scene_id);
+            echo $scene_title; 
+        }
 
- //       if ($column == 'scene_tagline'){
- //           $scene_tagline = get_post_meta( $post_id, 'scene_tagline', true );
- //           switch ($field_length){
- //               case "large":
- //                   echo $scene_tagline;
-   //                 break;
-     //           case "medium":
-       //             echo $this->stringTruncate($scene_tagline, 75);
-         //           break;
-           //     case "small":
-             //       if ($scene_tagline != NULL){
-               //         echo '<span class="dashicons dashicons-yes"></span>';
-                 //   }
-                   // break;
-    //        }
-      //  }
+        if ( $column === 'modal_icons' ) {
+            echo get_post_meta( $post_id, 'modal_icons', true ); 
+        }
+
+        if ( $column === 'icon_function' ) {
+            echo get_post_meta( $post_id, 'icon_function', true ); 
+        }
+        
+        if ($column === 'modal_tagline'){
+            $modal_tagline = get_post_meta( $post_id, 'modal_tagline', true );
+            switch ($field_length){
+                case "large":
+                    echo $modal_tagline;
+                    break;
+                case "medium":
+                    $medium_tagline = new Webcr_Admin();
+                    $medium_tagline -> stringTruncate($modal_tagline, 75);
+                    echo $medium_tagline;
+                    // echo stringTruncate($modal_tagline, 75);
+                    break;
+                case "small":
+                    if ($scene_tagline != NULL){
+                        echo '<span class="dashicons dashicons-yes"></span>';
+                    }
+                    break;
+            }
+        }
 
         if ($column == 'modal_info_photo_link'){
             $url_count = 0;
@@ -680,7 +760,6 @@ class Webcr_Modal {
                 }
             }
             echo $url_count; 
-
         }
 
         if ($column == 'modal_info_link'){
