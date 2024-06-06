@@ -134,29 +134,29 @@ $scene_photo_arr = $total_arr[1];
                     $child_post_id = $query->posts[0];
                     $post = get_post($child_post_id);
                     $icon_type = get_post_meta($child_post_id, "icon_function");
+                    $icon_title = get_post_meta($child_post_id, "post_title");
                     $modal = "";
                     $scene_url = "";
                     $external_url = "";
-                    if($icon_type === "External URL"){
+                    if($icon_type[0] === "External URL"){
                         $external_url = get_post_meta( $child_post_id, "icon_external_url");
                     }
-                    if($icon_type === "Scene"){
-                        $scene = get_post_meta( $child_post_id, "icon_scene_out");
-                        $scene_url = get_permalink($scene);
+                    if($icon_type[0] === "Scene"){
+                        $scene_id = get_post_meta( $child_post_id, "icon_scene_out");
+                        $scene_url = get_permalink($scene_id[0]);
                     }
                     //TODO
-                    if($icon_type === "Modal"){
-                        $modal = "";
+                    if($icon_type[0] === "Modal"){
+                        $modal = "Modal TODO";
                     }
-                    //$child_ids[$i] = array($child_ids[$i], $child_post_id);
                     $child_ids[$i] = ["name" => $child_ids[$i], 
-                                      "title" => "",
+                                      "title" => $icon_title[0],
                                       "post_id" => $child_post_id,
                                       "icon_function" => [
                                         "modal" => $modal,
                                         "link"  => [
                                             "scene" => $scene_url,
-                                            "external" => $external_url
+                                            "external" => $external_url[0]
                                         ]
                                       ]
                                     ];
