@@ -696,6 +696,33 @@ class Webcr_Modal {
     }
 
     /**
+     * Filter the results for the Modal admin screen by the Modal Location dropdown field.
+     *
+     * @param WP_Query $query The WordPress Query instance that is passed to the function.
+     * @since    1.0.0
+     */
+    function modal_location_filter_results($query){
+        if ( isset($_GET['post_type']) ) {
+            $post_type = $_GET['post_type'];
+            if ($post_type = "modal"){
+                if(isset($_GET['modal_location'])){
+                    $modal_location = str_replace("_", " ", $_GET['modal_location']);
+                    if($modal_location != "All Locations"){
+                        $meta_query = array( 'relation' => 'OR' );
+
+                        array_push( $meta_query, array(
+                            'key' => "modal_location",
+                            'value' => $modal_location,
+                            'compare' => 'LIKE'
+                        ));
+                        $query->set( 'meta_query', $meta_query );
+                    }
+                }
+            }
+        }
+    }
+
+    /**
 	 * Populate custom fields for Modal content type in the admin screen.
 	 *
      * @param string $column The name of the column.

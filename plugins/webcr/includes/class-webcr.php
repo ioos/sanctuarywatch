@@ -189,6 +189,7 @@ class Webcr {
 		$this->loader->add_action( 'manage_modal_posts_custom_column', $plugin_admin_modal, 'custom_modal_column', 10, 2 ); //scene
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); //scene 11
 		$this->loader->add_filter( 'bulk_actions-edit-modal', $plugin_admin_scene, 'remove_bulk_actions' ); 
+		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); //scene
 
 		// Load class and functions connected to custom taxonomies
 		$plugin_admin_taxonomy = new Webcr_Taxonomy( $this->get_plugin_name(), $this->get_version() );
