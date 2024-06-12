@@ -3,7 +3,7 @@
  * Register class that defines the Modal custom content type as well as associated Modal functions temp
  * 
  */
-include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-admin.php';
+include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_Modal {
 
 
@@ -736,13 +736,12 @@ class Webcr_Modal {
                     echo $modal_tagline;
                     break;
                 case "medium":
-                    $medium_tagline = new Webcr_Admin("temp1", "temp2");
-                    $medium_tagline -> stringTruncate($modal_tagline, 75);
-                    echo $medium_tagline;
-                 //    echo stringTruncate($modal_tagline, 75);
+                    $medium_tagline = new Webcr_Utility();
+                    $final_tagline = $medium_tagline -> stringTruncate($modal_tagline, 75);
+                    echo $final_tagline;
                     break;
                 case "small":
-                    if ($scene_tagline != NULL){
+                    if ($modal_tagline != NULL){
                         echo '<span class="dashicons dashicons-yes"></span>';
                     }
                     break;
@@ -763,7 +762,6 @@ class Webcr_Modal {
         }
 
         if ($column == 'modal_info_link'){
-
             $url_count = 0;
             for ($i = 1; $i < 7; $i++){
                 $search_fieldset = "modal_info" . $i;
@@ -774,7 +772,18 @@ class Webcr_Modal {
                 }
             }
             echo $url_count; 
+        }
 
+        if ($column == 'tab_number'){
+            $tab_count = 0;
+            for ($i = 1; $i < 7; $i++){
+                $search_field = "modal_tab_title" . $i;
+                $database_value = get_post_meta( $post_id, $search_field, true ); 
+                if ($database_value != ""){
+                    $tab_count++;
+                }
+            }
+            echo $tab_count; 
         }
 
         if ($column === "status"){
@@ -793,56 +802,58 @@ class Webcr_Modal {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
         // posts after it has been updated. The if statement is looking for three things: 1. Scene post type? 2. An individual post (as opposed to the scene
         // admin screen)? 3. A new post?
-        $current_screen = get_current_screen();
-        if ($current_screen){
-            if ($current_screen->base == "post" && $current_screen->id =="modal" && !($current_screen->action =="add") ) { 
-                if( isset( $_COOKIE["modal_post_status"] ) ) {
-                    $modal_post_status =  $_COOKIE["modal_post_status"];
-                    if ($modal_post_status == "post_good") {
-                        echo '<div class="notice notice-info is-dismissible"><p>Modal created or updated.</p></div>';
-                    } 
-                    else {
-                        if (isset($_COOKIE["modal_errors"])) {
-                            $error_message = "<p>Error or errors in modal</p>";
-                            $error_list_coded = stripslashes($_COOKIE["modal_errors"]);
-                            $error_list_array = json_decode($error_list_coded);
-                            $error_array_length = count($error_list_array);
-                            $error_message = $error_message . '<p><ul>';
-                            for ($i = 0; $i < $error_array_length; $i++){
-                                $error_message = $error_message . '<li>' . $error_list_array[$i] . '</li>';
+        if (function_exists('get_current_screen')) {
+            $current_screen = get_current_screen();
+            if ($current_screen){
+                if ($current_screen->base == "post" && $current_screen->id =="modal" && !($current_screen->action =="add") ) { 
+                    if( isset( $_COOKIE["modal_post_status"] ) ) {
+                        $modal_post_status =  $_COOKIE["modal_post_status"];
+                        if ($modal_post_status == "post_good") {
+                            echo '<div class="notice notice-info is-dismissible"><p>Modal created or updated.</p></div>';
+                        } 
+                        else {
+                            if (isset($_COOKIE["modal_errors"])) {
+                                $error_message = "<p>Error or errors in modal</p>";
+                                $error_list_coded = stripslashes($_COOKIE["modal_errors"]);
+                                $error_list_array = json_decode($error_list_coded);
+                                $error_array_length = count($error_list_array);
+                                $error_message = $error_message . '<p><ul>';
+                                for ($i = 0; $i < $error_array_length; $i++){
+                                    $error_message = $error_message . '<li>' . $error_list_array[$i] . '</li>';
+                                }
+                                $error_message = $error_message . '</ul></p>';
                             }
-                            $error_message = $error_message . '</ul></p>';
-                        }
-                        echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
+                            echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
 
-                        if (isset($_COOKIE["modal_error_all_fields"])) {
-                            $modal_fields_coded = stripslashes($_COOKIE["modal_error_all_fields"]);
-                            $modal_fields_array = json_decode($modal_fields_coded, true);	
-                            $_POST['modal_location'] = $modal_fields_array['modal_location'];
-                            $_POST['modal_scene'] = $modal_fields_array['modal_scene'];
-                            $_POST['modal_icons'] = $modal_fields_array['modal_icons'];
-                            $_POST['icon_function'] = $modal_fields_array['icon_function'];
-                            $_POST['icon_external_url'] = $modal_fields_array['icon_external_url'];
-                            $_POST['icon_scene_out'] = $modal_fields_array['icon_scene_out'];
-                            $_POST['modal_tagline'] = $modal_fields_array['modal_tagline'];
-                            $_POST['modal_info_entries'] = $modal_fields_array['modal_info_entries'];
-                            $_POST['modal_photo_entries'] = $modal_fields_array['modal_photo_entries'];
-                            $_POST['modal_tab_number'] = $modal_fields_array['modal_tab_number'];
+                            if (isset($_COOKIE["modal_error_all_fields"])) {
+                                $modal_fields_coded = stripslashes($_COOKIE["modal_error_all_fields"]);
+                                $modal_fields_array = json_decode($modal_fields_coded, true);	
+                                $_POST['modal_location'] = $modal_fields_array['modal_location'];
+                                $_POST['modal_scene'] = $modal_fields_array['modal_scene'];
+                                $_POST['modal_icons'] = $modal_fields_array['modal_icons'];
+                                $_POST['icon_function'] = $modal_fields_array['icon_function'];
+                                $_POST['icon_external_url'] = $modal_fields_array['icon_external_url'];
+                                $_POST['icon_scene_out'] = $modal_fields_array['icon_scene_out'];
+                                $_POST['modal_tagline'] = $modal_fields_array['modal_tagline'];
+                                $_POST['modal_info_entries'] = $modal_fields_array['modal_info_entries'];
+                                $_POST['modal_photo_entries'] = $modal_fields_array['modal_photo_entries'];
+                                $_POST['modal_tab_number'] = $modal_fields_array['modal_tab_number'];
+                            }
                         }
+                    //   setcookie("scene_post_status", "", time() - 300, "/");
                     }
-                //   setcookie("scene_post_status", "", time() - 300, "/");
-                }
-                if (isset($_COOKIE["modal_warnings"])){
-                    $warning_message = "<p>Warning or warnings in modal</p>";
-                    $warning_list_coded = stripslashes($_COOKIE["modal_warnings"]);
-                    $warning_list_array = json_decode($warning_list_coded);
-                    $warning_array_length = count($warning_list_array);
-                    $warning_message = $warning_message . '<p><ul>';
-                    for ($i = 0; $i < $warning_array_length; $i++){
-                        $warning_message = $warning_message . '<li>' . $warning_list_array[$i] . '</li>';
+                    if (isset($_COOKIE["modal_warnings"])){
+                        $warning_message = "<p>Warning or warnings in modal</p>";
+                        $warning_list_coded = stripslashes($_COOKIE["modal_warnings"]);
+                        $warning_list_array = json_decode($warning_list_coded);
+                        $warning_array_length = count($warning_list_array);
+                        $warning_message = $warning_message . '<p><ul>';
+                        for ($i = 0; $i < $warning_array_length; $i++){
+                            $warning_message = $warning_message . '<li>' . $warning_list_array[$i] . '</li>';
+                        }
+                        $warning_message = $warning_message . '</ul></p>';
+                        echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
                     }
-                    $warning_message = $warning_message . '</ul></p>';
-                    echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
                 }
             }
         }
