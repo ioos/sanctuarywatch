@@ -226,27 +226,5 @@ class Webcr_Admin {
         $favicon_url = plugin_dir_url( __FILE__ ) . 'images/onms-logo-80.png';
         echo '<link rel="shortcut icon" href="' . $favicon_url . '" />';
    }
-
-    /**
-	 * Shorten string without cutting words midword. Used in both scene and modal.
-	 *
-     * @param string $string The string to be shortened.
-     * @param int $your_desired_width The number of characters in the shortened string.
-	 * @since    1.0.0
-	 */
-    public function stringTruncate($string, $your_desired_width) {
-        $parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
-        $parts_count = count($parts);
-        
-        $length = 0;
-        //$last_part = 0;
-        for ($last_part = 0; $last_part < $parts_count; ++$last_part) {
-            $length += strlen($parts[$last_part]);
-            if ($length > $your_desired_width) { break; }
-        }
-        
-        return implode(array_slice($parts, 0, $last_part));
-    }
-
 }
 

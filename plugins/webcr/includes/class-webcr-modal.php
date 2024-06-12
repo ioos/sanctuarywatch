@@ -704,7 +704,6 @@ class Webcr_Modal {
 	 */
     public function custom_modal_column( $column, $post_id ) {  
 
-
         // maybe knock this next section out
         if (isset($_GET["field_length"])) {
             $field_length = $_GET["field_length"];
@@ -737,10 +736,10 @@ class Webcr_Modal {
                     echo $modal_tagline;
                     break;
                 case "medium":
-                    $medium_tagline = new Webcr_Admin();
+                    $medium_tagline = new Webcr_Admin("temp1", "temp2");
                     $medium_tagline -> stringTruncate($modal_tagline, 75);
-                  //  echo $medium_tagline;
-                     echo stringTruncate($modal_tagline, 75);
+                    echo $medium_tagline;
+                 //    echo stringTruncate($modal_tagline, 75);
                     break;
                 case "small":
                     if ($scene_tagline != NULL){
