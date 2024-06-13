@@ -85,7 +85,7 @@ class Webcr_Modal {
             'has_archive'        => true,
             'hierarchical'       => false,
             'menu_position'      => null,
-            'supports'           => array( 'title', 'revisions' ),
+            'supports'           => array( 'title', 'revisions' ), 
         );
     
         register_post_type( 'modal', $args );
@@ -827,7 +827,7 @@ class Webcr_Modal {
 
     public function modal_admin_notice() {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
-        // posts after it has been updated. The if statement is looking for three things: 1. Scene post type? 2. An individual post (as opposed to the scene
+        // posts after it has been updated. The if statement is looking for three things: 1. Modal post type? 2. An individual post (as opposed to the scene
         // admin screen)? 3. A new post?
         if (function_exists('get_current_screen')) {
             $current_screen = get_current_screen();
