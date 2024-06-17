@@ -1,0 +1,111 @@
+/*
+Theme Name: Sanctuary Watch 
+*/
+
+@import url('assets/css/bootstrap.css');
+
+#top-bar {
+  background-color: white;
+  text-align: center;
+  padding: 5px;
+}
+
+#top-bar img {
+  max-width: 100%;
+  height: 35px;
+  margin: 10px;
+}
+
+#ioos-breadcrumb {
+  background-color: #008da8;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  text-align: center;
+  align-items: center;
+  color: white;
+  min-height: 25.98px;
+}
+
+#header-margin a,
+#header-margin p {
+  display: inline;
+  margin: 0;
+  color:white;
+  text-decoration: none;
+}
+
+.footer {
+  background-color: #020e38;
+  background-image: url(https://ioos.us/images/bg_footer.png);
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.footer-column {
+  flex: 1;
+}
+
+.footer-column a {
+  text-decoration: none;
+  color: #55d6f8;
+}
+
+.footer h5 {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+p[itemprop="name"], p[itemprop="address"] {
+  color: white;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  margin-bottom: 20px;
+}
+
+.navbar-emblem {
+  size: 10%;
+}
+.image-center{
+  text-align: center;
+}
+.nav-link:hover{
+  background-color: #002a4c;
+}
+
+#svg img {
+  width: 100%;
+  height: auto;
+}
+#toc ul {
+  list-style-type: none;
+  padding: 0;
+}
+#toc li {
+  margin-bottom: 10px;
+}
+.toc-link {
+  text-decoration: none;
+  color: #007bff;
+}
+.toc-link:hover {
+  text-decoration: underline;
+}
