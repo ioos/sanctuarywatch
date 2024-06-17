@@ -97,431 +97,432 @@ class Webcr_Modal {
 	 * @since    1.0.0
 	 */
     public function create_modal_fields() {
+        if (isset($_GET["post_type"])) {
+            if ($_GET["post_type"]) = "modal") {{
 
-        $config_metabox = array(
+                $config_metabox = array(
 
-            /*
-             * METABOX
-             */
-            'type'              => 'metabox',                       // Required, menu or metabox
-            'id'                => $this->plugin_name,              // Required, meta box id, unique, for saving meta: id[field-id]
-            'post_types'        => array( 'modal' ),                 // Post types to display meta box
-            'context'           => 'advanced',                      // 	The context within the screen where the boxes should display: 'normal', 'side', and 'advanced'.
-            'priority'          => 'default',                       // 	The priority within the context where the boxes should show ('high', 'low').
-            'title'             => 'Modal Fields',                  // The title of the metabox
-            'capability'        => 'edit_posts',                    // The capability needed to view the page
-            'tabbed'            => true,
-            'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
-        );
+                    /*
+                    * METABOX
+                    */
+                    'type'              => 'metabox',                       // Required, menu or metabox
+                    'id'                => $this->plugin_name,              // Required, meta box id, unique, for saving meta: id[field-id]
+                    'post_types'        => array( 'modal' ),                 // Post types to display meta box
+                    'context'           => 'advanced',                      // 	The context within the screen where the boxes should display: 'normal', 'side', and 'advanced'.
+                    'priority'          => 'default',                       // 	The priority within the context where the boxes should show ('high', 'low').
+                    'title'             => 'Modal Fields',                  // The title of the metabox
+                    'capability'        => 'edit_posts',                    // The capability needed to view the page
+                    'tabbed'            => true,
+                    'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
+                );
 
+                // get list of locations, which is saved as a taxonomy
+                $function_utilities = new Webcr_Utility();
+                $locations = $function_utilities -> returnInstances();
 
+                // used by both scene and icon dropdowns
+                if (array_key_exists("post", $_GET)) {
+                    $modal_id = intval($_GET["post"]);
+                    $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
+                    $scene_titles = $function_utilities -> returnSceneTitles($scene_id, $modal_id);
+                    $modal_icons = $function_utilities -> returnIcons($scene_id);
+                }
 
-        // get list of locations, which is saved as a taxonomy
-        $function_utilities = new Webcr_Utility();
-        $locations = $function_utilities -> returnInstances();
+                $fields[] = array(
+                    'name'   => 'basic',
+                    'title'  => 'Basic',
+                    'icon'   => 'dashicons-admin-generic',
+                    'fields' => array(
 
-        // used by both scene and icon dropdowns
-        if (array_key_exists("post", $_GET)) {
-            $modal_id = intval($_GET["post"]);
-            $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
-            $scene_titles = $function_utilities -> returnSceneTitles($scene_id, $modal_id);
-            $modal_icons = $function_utilities -> returnIcons($scene_id);
+                        array(
+                            'id'             => 'modal_location',
+                            'type'           => 'select',
+                            'title'          => 'Instance',
+                            'options'        => $locations,
+                            'default_option' => 'Modal Instance',
+                            'description' => 'Modal Instance description',
+                            'default'     => ' ',
+                            'class'      => 'chosen', 
+                        ),
+                        array(
+                            'id'             => 'modal_scene',
+                            'type'           => 'select',
+                            'title'          => 'Scene',
+                            'options'        => $scene_titles,
+                            'description' => 'Modal Scene description',
+                        ),
+                        array(
+                            'id'             => 'modal_icons',
+                            'type'           => 'select',
+                            'title'          => 'Icons',
+                            'options'        => $modal_icons, // array (" " => "Modal Icons")
+                            'description' => 'Modal Icons description',
+                        ),
+                        array(
+                            'id'             => 'icon_function',
+                            'type'           => 'select',
+                            'title'          => 'Icon Function',
+                            'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
+                            'description' => 'Icon Function description',
+                            'default'     => 'Modal',
+                            'class'      => 'chosen', 
+                        ),
+                        array(
+                            'id'          => 'icon_external_url',
+                            'type'        => 'text',
+                            'title'       => 'Icon External URL',
+                            'class'       => 'text-class',   
+                            'description' => 'Icon External URL Description',  
+                        ),
+                        array(
+                            'id'             => 'icon_scene_out',
+                            'type'           => 'select',
+                            'title'          => 'Icon Scene Out',
+                            'options'        => array ("" => "Icon Scene Out"), 
+                            'description' => 'Icon Scene Out description',
+                        ),
+
+                        array(
+                            'id'          => 'modal_tagline',
+                            'type'        => 'textarea',
+                            'title'       => 'Modal Tagline',
+                            'description' => 'Modal Tagline description',
+                        ),
+                        array(
+                            'id'      => 'modal_info_entries',
+                            'type'    => 'range',
+                            'title'   => 'Number of Modal Info Entries',
+                            'description' => 'Number of Modal Info Entries description',
+                            'min'     => 0,    
+                            'default' => 1,    
+                            'max'     => 6,         
+                            'step'    => 1,             
+                        ),              
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_info1',
+                            'title'   => 'Modal Info Link 1',
+                            'description' => 'Modal Info Link 1 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_info_text1',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_info_url1',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_info2',
+                            'title'   => 'Modal Info Link 2',
+                            'description' => 'Modal Info Link 2 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_info_text2',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_info_url2',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_info3',
+                            'title'   => 'Modal Info Link 3',
+                            'description' => 'Modal Info Link 3 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_info_text3',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_info_url3',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_info4',
+                            'title'   => 'Modal Info Link 4',
+                            'description' => 'Modal Info Link 4 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_info_text4',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_info_url4',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_info5',
+                            'title'   => 'Modal Info Link 5',
+                            'description' => 'Modal Info Link 5 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_info_text5',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_info_url5',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_info6',
+                            'title'   => 'Modal Info Link 6',
+                            'description' => 'Modal Info Link 6 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_info_text6',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_info_url6',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+
+                        array(
+                            'id'      => 'modal_photo_entries',
+                            'type'    => 'range',
+                            'title'   => 'Number of Modal Photo Entries',
+                            'description' => 'Number of Modal Photo Entries description',
+                            'min'     => 0,    
+                            'default' => 1,    
+                            'max'     => 6,         
+                            'step'    => 1,             
+                        ),              
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_photo1',
+                            'title'   => 'Modal Photo Link 1',
+                            'description' => 'Modal Photo 1 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_photo_text1',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_photo_url1',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_photo2',
+                            'title'   => 'Modal Photo Link 2',
+                            'description' => 'Modal Photo Link 2 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_photo_text2',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_photo_url2',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_photo3',
+                            'title'   => 'Modal Photo Link 3',
+                            'description' => 'Modal Photo Link 3 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_photo_text3',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_photo_url3',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_photo4',
+                            'title'   => 'Modal Photo Link 4',
+                            'description' => 'Modal Photo Link 4 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_photo_text4',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_photo_url4',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_photo5',
+                            'title'   => 'Modal Photo Link 5',
+                            'description' => 'Modal Photo Link 5 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_photo_text5',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_photo_url5',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'modal_photo6',
+                            'title'   => 'Modal Photo Link 6',
+                            'description' => 'Modal Photo Link 6 description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'modal_photo_text6',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'modal_photo_url6',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+
+                        array(
+                            'id'      => 'modal_tab_number',
+                            'type'    => 'range',
+                            'title'   => 'Number of Modal Tabs',
+                            'description' => 'Number of Modal Tabs description',
+                            'min'     => 0,    
+                            'default' => 1,    
+                            'max'     => 6,         
+                            'step'    => 1,             
+                        ),              
+                        array(
+                            'id'          => 'modal_tab_title1',
+                            'type'        => 'text',
+                            'title'       => 'Modal Tab Title 1',
+                            'class'       => 'text-class',   
+                            'description' => 'Modal Tab Title 1 Description',  
+                        ),
+                        array(
+                            'id'          => 'modal_tab_title2',
+                            'type'        => 'text',
+                            'title'       => 'Modal Tab Title 2',
+                            'class'       => 'text-class',   
+                            'description' => 'Modal Tab Title 2 Description',  
+                        ),
+                        array(
+                            'id'          => 'modal_tab_title3',
+                            'type'        => 'text',
+                            'title'       => 'Modal Tab Title 3',
+                            'class'       => 'text-class',   
+                            'description' => 'Modal Tab Title 3 Description',  
+                        ),
+                        array(
+                            'id'          => 'modal_tab_title4',
+                            'type'        => 'text',
+                            'title'       => 'Modal Tab Title 4',
+                            'class'       => 'text-class',   
+                            'description' => 'Modal Tab Title 4 Description',  
+                        ),                
+                        array(
+                            'id'          => 'modal_tab_title5',
+                            'type'        => 'text',
+                            'title'       => 'Modal Tab Title 5',
+                            'class'       => 'text-class',   
+                            'description' => 'Modal Tab Title 5 Description',  
+                        ),                
+                        array(
+                            'id'          => 'modal_tab_title6',
+                            'type'        => 'text',
+                            'title'       => 'Modal Tab Title 6',
+                            'class'       => 'text-class',   
+                            'description' => 'Modal Tab Title 6 Description',  
+                        ),
+                        array(
+                            'id'          => 'modal_preview',
+                            'type'        => 'button',
+                            'title'       => 'Preview Modal',
+                            'class'        => 'modal_preview',
+                            'options'     => array(
+                                'href'  =>  '#nowhere',
+                                'target' => '_self',
+                                'value' => 'Preview',
+                                'btn-class' => 'exopite-sof-btn'
+                            ),
+                        ),
+                    )
+                );
+
+                // instantiate the admin page
+                $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
+            }  
         }
-
-        $fields[] = array(
-            'name'   => 'basic',
-            'title'  => 'Basic',
-            'icon'   => 'dashicons-admin-generic',
-            'fields' => array(
-
-                array(
-                    'id'             => 'modal_location',
-                    'type'           => 'select',
-                    'title'          => 'Instance',
-                    'options'        => $locations,
-                    'default_option' => 'Modal Instance',
-                    'description' => 'Modal Instance description',
-                     'default'     => ' ',
-                     'class'      => 'chosen', 
-                ),
-                array(
-                    'id'             => 'modal_scene',
-                    'type'           => 'select',
-                    'title'          => 'Scene',
-                    'options'        => $scene_titles,
-                    'description' => 'Modal Scene description',
-                ),
-                array(
-                    'id'             => 'modal_icons',
-                    'type'           => 'select',
-                    'title'          => 'Icons',
-                    'options'        => $modal_icons, // array (" " => "Modal Icons")
-                    'description' => 'Modal Icons description',
-                ),
-                array(
-                    'id'             => 'icon_function',
-                    'type'           => 'select',
-                    'title'          => 'Icon Function',
-                    'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
-                    'description' => 'Icon Function description',
-                    'default'     => 'Modal',
-                     'class'      => 'chosen', 
-                ),
-                array(
-                    'id'          => 'icon_external_url',
-                    'type'        => 'text',
-                    'title'       => 'Icon External URL',
-                     'class'       => 'text-class',   
-                     'description' => 'Icon External URL Description',  
-                ),
-                array(
-                    'id'             => 'icon_scene_out',
-                    'type'           => 'select',
-                    'title'          => 'Icon Scene Out',
-                    'options'        => array ("" => "Icon Scene Out"), 
-                    'description' => 'Icon Scene Out description',
-                ),
-
-                array(
-                    'id'          => 'modal_tagline',
-                    'type'        => 'textarea',
-                    'title'       => 'Modal Tagline',
-                    'description' => 'Modal Tagline description',
-                ),
-                array(
-                    'id'      => 'modal_info_entries',
-                    'type'    => 'range',
-                    'title'   => 'Number of Modal Info Entries',
-                    'description' => 'Number of Modal Info Entries description',
-                    'min'     => 0,    
-                     'default' => 1,    
-                     'max'     => 6,         
-                     'step'    => 1,             
-                ),              
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info1',
-                    'title'   => 'Modal Info Link 1',
-                    'description' => 'Modal Info Link 1 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text1',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url1',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info2',
-                    'title'   => 'Modal Info Link 2',
-                    'description' => 'Modal Info Link 2 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text2',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url2',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info3',
-                    'title'   => 'Modal Info Link 3',
-                    'description' => 'Modal Info Link 3 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text3',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url3',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info4',
-                    'title'   => 'Modal Info Link 4',
-                    'description' => 'Modal Info Link 4 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text4',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url4',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info5',
-                    'title'   => 'Modal Info Link 5',
-                    'description' => 'Modal Info Link 5 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text5',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url5',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info6',
-                    'title'   => 'Modal Info Link 6',
-                    'description' => 'Modal Info Link 6 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text6',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url6',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'id'      => 'modal_photo_entries',
-                    'type'    => 'range',
-                    'title'   => 'Number of Modal Photo Entries',
-                    'description' => 'Number of Modal Photo Entries description',
-                    'min'     => 0,    
-                     'default' => 1,    
-                     'max'     => 6,         
-                     'step'    => 1,             
-                ),              
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo1',
-                    'title'   => 'Modal Photo Link 1',
-                    'description' => 'Modal Photo 1 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_photo_text1',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url1',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo2',
-                    'title'   => 'Modal Photo Link 2',
-                    'description' => 'Modal Photo Link 2 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_photo_text2',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url2',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo3',
-                    'title'   => 'Modal Photo Link 3',
-                    'description' => 'Modal Photo Link 3 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_photo_text3',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url3',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo4',
-                    'title'   => 'Modal Photo Link 4',
-                    'description' => 'Modal Photo Link 4 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_photo_text4',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url4',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo5',
-                    'title'   => 'Modal Photo Link 5',
-                    'description' => 'Modal Photo Link 5 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_photo_text5',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url5',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo6',
-                    'title'   => 'Modal Photo Link 6',
-                    'description' => 'Modal Photo Link 6 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_photo_text6',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url6',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'id'      => 'modal_tab_number',
-                    'type'    => 'range',
-                    'title'   => 'Number of Modal Tabs',
-                    'description' => 'Number of Modal Tabs description',
-                    'min'     => 0,    
-                     'default' => 1,    
-                     'max'     => 6,         
-                     'step'    => 1,             
-                ),              
-                array(
-                    'id'          => 'modal_tab_title1',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 1',
-                     'class'       => 'text-class',   
-                     'description' => 'Modal Tab Title 1 Description',  
-                ),
-                array(
-                    'id'          => 'modal_tab_title2',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 2',
-                     'class'       => 'text-class',   
-                     'description' => 'Modal Tab Title 2 Description',  
-                ),
-                array(
-                    'id'          => 'modal_tab_title3',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 3',
-                     'class'       => 'text-class',   
-                     'description' => 'Modal Tab Title 3 Description',  
-                ),
-                array(
-                    'id'          => 'modal_tab_title4',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 4',
-                     'class'       => 'text-class',   
-                     'description' => 'Modal Tab Title 4 Description',  
-                ),                
-                array(
-                    'id'          => 'modal_tab_title5',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 5',
-                     'class'       => 'text-class',   
-                     'description' => 'Modal Tab Title 5 Description',  
-                ),                
-                array(
-                    'id'          => 'modal_tab_title6',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 6',
-                     'class'       => 'text-class',   
-                     'description' => 'Modal Tab Title 6 Description',  
-                ),
-                array(
-                    'id'          => 'modal_preview',
-                    'type'        => 'button',
-                    'title'       => 'Preview Modal',
-                    'class'        => 'modal_preview',
-                    'options'     => array(
-                        'href'  =>  '#nowhere',
-                        'target' => '_self',
-                        'value' => 'Preview',
-                        'btn-class' => 'exopite-sof-btn'
-                    ),
-                ),
-            )
-        );
-
-        // instantiate the admin page
-        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
-
     }
 
     /**
