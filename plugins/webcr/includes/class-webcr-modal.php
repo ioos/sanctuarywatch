@@ -1,6 +1,6 @@
 <?php
 /**
- * Register class that defines the Modal custom content type as well as associated Modal functions temp
+ * Register class that defines the Modal custom content type as well as associated Modal functions 
  * 
  */
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
@@ -85,7 +85,7 @@ class Webcr_Modal {
             'has_archive'        => true,
             'hierarchical'       => false,
             'menu_position'      => null,
-            'supports'           => array( 'title', 'revisions' ), 
+            'supports'           => array( 'title' ), //array( 'title', 'revisions' ), 
         );
     
         register_post_type( 'modal', $args );
@@ -114,102 +114,18 @@ class Webcr_Modal {
             'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
         );
 
+
+
         // get list of locations, which is saved as a taxonomy
-        $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
-        $locations=[];
-        foreach ( $locations_array as $locations_row ){
-            $locations[$locations_row -> name] = $locations_row -> name;
-        }
+        $function_utilities = new Webcr_Utility();
+        $locations = $function_utilities -> returnInstances();
 
         // used by both scene and icon dropdowns
         if (array_key_exists("post", $_GET)) {
             $modal_id = intval($_GET["post"]);
             $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
-        }
-
-        $scene_titles =[];
-        $scene_titles[""] = "Modal Scene";
-        if (array_key_exists("post", $_GET)) {
-            $scene_location = get_post_meta($modal_id, "modal_location", true);
-            $scene_name = get_post_meta($scene_id, "post_title", true);
-            $scenes[$scene_id] = $scene_name;
-
-            $args = array(
-                'post_type' => 'scene',  // Your custom post type
-                'meta_query' => array(
-                    array(
-                        'key' => 'scene_location',      // The custom field key
-                        'value' => $scene_location, // The value you are searching for
-                        'compare' => '='         // Comparison operator
-                    )
-                ),
-                'fields' => 'ids'            // Only return post IDs
-            );
-            
-            // Execute the query
-            $query = new WP_Query($args);
-            
-            // Get the array of post IDs
-            $scene_post_ids = $query->posts;
-
-            $scene_titles =[];
-            foreach ($scene_post_ids as $target_id){
-                $target_title = get_post_meta($target_id, "post_title", true);
-                $scene_titles[$target_id] = $target_title;
-            }
-            asort($scene_titles);
-            $tempo= 1+1;
-        }
-
-        $modal_icons = array(" " => "Modal Icons");
-        if (array_key_exists("post", $_GET)) {
-            $scene_infographic = get_post_meta($scene_id, "scene_infographic", true);
-            if ($scene_infographic == true){
-                $relative_path =  ltrim(parse_url($scene_infographic)['path'], "/");
-
-                $full_path = get_home_path() . $relative_path;
-
-                $svg_content = file_get_contents($full_path);
-
-                if ($svg_content === false) {
-                    die("Failed to load SVG file.");
-                }
-                
-                // Create a new DOMDocument instance and load the SVG content 828 242 5661
-                $dom = new DOMDocument();
-                libxml_use_internal_errors(true); // Suppress errors related to invalid XML
-                $dom->loadXML($svg_content);
-                libxml_clear_errors();
-                
-                // Create a new DOMXPath instance
-                $xpath = new DOMXPath($dom);
-                
-                // Find the element with the ID "icons"
-                $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
-                
-                if ($icons_element === null) {
-                    die('Element with ID "icons" not found.');
-                }
-                
-                // Get all child elements of the "icons" element
-                $child_elements = $icons_element->childNodes;
-                
-                // Initialize an array to hold the IDs
-                $child_ids = array();
-                
-                // Loop through the child elements and extract their IDs
-                foreach ($child_elements as $child) {
-                    if ($child->nodeType === XML_ELEMENT_NODE && $child->hasAttribute('id')) {
-                        $child_ids[] = $child->getAttribute('id');
-                    }
-                }
-                asort($child_ids);
-            //    $modal_icons = array();
-                foreach ($child_ids as $single_icon){
-                    $modal_icons[$single_icon] = $single_icon;
-                }
-
-            }
+            $scene_titles = $function_utilities -> returnSceneTitles($scene_id, $modal_id);
+            $modal_icons = $function_utilities -> returnIcons($scene_id);
         }
 
         $fields[] = array(
@@ -828,7 +744,8 @@ class Webcr_Modal {
     public function modal_admin_notice() {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
         // posts after it has been updated. The if statement is looking for three things: 1. Modal post type? 2. An individual post (as opposed to the scene
-        // admin screen)? 3. A new post?
+        // admin screen)? 3. A new post
+
         if (function_exists('get_current_screen')) {
             $current_screen = get_current_screen();
             if ($current_screen){
@@ -885,6 +802,5 @@ class Webcr_Modal {
             }
         }
     }
-
 
 }

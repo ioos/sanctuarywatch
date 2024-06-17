@@ -216,7 +216,6 @@
 
     function modalSceneDropdown (dropdownElements=[]){
         const sceneDropdown = document.getElementsByName("modal_scene")[0];
-        console.log(sceneDropdown.value);
         if (!(sceneDropdown.value > 0)) {
 
             sceneDropdown.innerHTML ='';
@@ -241,8 +240,8 @@
         const iconsDropdown = document.getElementsByName("modal_icons")[0];
         iconsDropdown.innerHTML ='';
         let optionIcon = document.createElement('option');
-        optionIcon.text = "Modal Icons";
-        optionIcon.value = " ";
+        optionIcon.text = "Icons";
+        optionIcon.value = "";
         iconsDropdown.add(optionIcon);
         const elementNumber = dropdownElements.length;
         if (elementNumber > 0) {

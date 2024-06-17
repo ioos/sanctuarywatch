@@ -129,6 +129,9 @@ class Webcr {
 		// The class that defines the functions used for the Modal custom content type
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-modal.php';
 
+		// The class that defines the functions used for the Figure custom content type
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-figure.php';
+
 		// The class that defines the validation methods used for the custom post types
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-validation.php';
 
@@ -166,7 +169,7 @@ class Webcr {
 		$this->loader->add_filter( 'screen_options_show_screen', $plugin_admin, 'remove_screen_options'); 
 
 		// Load  class and functions associated with Scene custom content type
-		$plugin_admin_scene = new Webcr_Scene( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin_scene = new Webcr_Scene( $this->get_plugin_name(), $this->get_version() );		
 		$this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'scene_admin_notice' ); // scene 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_scene, 'scene_filter_dropdowns' ); //scene 11
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_filter_results' ); //scene
@@ -181,15 +184,19 @@ class Webcr {
 		$this->loader->add_action( 'wp_ajax_scene_preview', $plugin_admin_scene, 'scene_preview' ); //scene
 
 		// Load  class and functions associated with Modal custom content type
-		$plugin_admin_modal = new Webcr_Modal( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		
 		$this->loader->add_action( 'admin_notices', $plugin_admin_modal, 'modal_admin_notice' ); // scene 
-		$this->loader->add_action( 'init', $plugin_admin_modal, 'custom_content_type_modal' ); // scene 
+		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); //scene 11
+		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); //scene
 		$this->loader->add_action( 'admin_menu', $plugin_admin_modal, 'create_modal_fields', 1 );
 		$this->loader->add_action( 'manage_modal_posts_columns', $plugin_admin_modal, 'change_modal_columns' ); //scene
 		$this->loader->add_action( 'manage_modal_posts_custom_column', $plugin_admin_modal, 'custom_modal_column', 10, 2 ); //scene
-		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); //scene 11
+		$this->loader->add_action( 'init', $plugin_admin_modal, 'custom_content_type_modal' ); // scene 
 		$this->loader->add_filter( 'bulk_actions-edit-modal', $plugin_admin_scene, 'remove_bulk_actions' ); 
-		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); //scene
+
+		// Load  class and functions associated with Figure custom content type
+		$plugin_admin_figure = new Webcr_Figure( );		
+		$this->loader->add_action( 'init', $plugin_admin_figure, 'custom_content_type_figure' ); //scene
 
 		// Load class and functions connected to custom taxonomies
 		$plugin_admin_taxonomy = new Webcr_Taxonomy( $this->get_plugin_name(), $this->get_version() );
