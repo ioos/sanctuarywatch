@@ -96,9 +96,9 @@ class Webcr_Modal {
 	 *
 	 * @since    1.0.0
 	 */
-    public function create_modal_fields() {
+    function create_modal_fields() {
         if (isset($_GET["post_type"])) {
-            if ($_GET["post_type"]) = "modal") {{
+            if ($_GET["post_type"] == "modal") {
 
                 $config_metabox = array(
 
