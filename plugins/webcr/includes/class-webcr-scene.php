@@ -260,9 +260,11 @@ class Webcr_Scene {
             for ($i = 1; $i < 7; $i++){
                 $search_fieldset = "scene_photo" . $i;
                 $search_field = "scene_photo_url" . $i;
-                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
-                if ($database_value != ""){
-                    $url_count++;
+                if (isset(get_post_meta( $post_id, $search_fieldset, true )[$search_field])){
+                    $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
+                    if ($database_value != ""){
+                        $url_count++;
+                    }
                 }
             }
             echo $url_count; 
