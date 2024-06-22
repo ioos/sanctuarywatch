@@ -195,8 +195,9 @@ class Webcr {
 		$this->loader->add_filter( 'bulk_actions-edit-modal', $plugin_admin_scene, 'remove_bulk_actions' ); 
 
 		// Load  class and functions associated with Figure custom content type
-		$plugin_admin_figure = new Webcr_Figure( );		
+		$plugin_admin_figure = new Webcr_Figure( $this->get_plugin_name());		
 		$this->loader->add_action( 'init', $plugin_admin_figure, 'custom_content_type_figure' ); //scene
+		$this->loader->add_action( 'admin_menu', $plugin_admin_figure, 'create_figure_fields', 1 );
 
 		// Load class and functions connected to custom taxonomies
 		$plugin_admin_taxonomy = new Webcr_Taxonomy( $this->get_plugin_name(), $this->get_version() );

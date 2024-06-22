@@ -97,8 +97,8 @@ class Webcr_Modal {
 	 * @since    1.0.0
 	 */
     function create_modal_fields() {
-        if (isset($_GET["action"])) {
-            if ($_GET["action"] == "edit") {
+  //      if (isset($_GET["action"])) {
+  //          if ($_GET["action"] == "edit") {
 
                 $config_metabox = array(
 
@@ -120,6 +120,8 @@ class Webcr_Modal {
                 $function_utilities = new Webcr_Utility();
                 $locations = $function_utilities -> returnInstances();
 
+                $scene_titles =[];
+                $modal_icons = [];
                 // used by both scene and icon dropdowns
                 if (array_key_exists("post", $_GET)) {
                     $modal_id = intval($_GET["post"]);
@@ -521,8 +523,8 @@ class Webcr_Modal {
 
                 // instantiate the admin page
                 $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
-            }  
-        }
+   //         }  
+     //   }
     }
 
     /**

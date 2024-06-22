@@ -6,6 +6,10 @@
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_Figure {
 
+    public function __construct( $plugin_name ) {
+		$this->plugin_name = $plugin_name;
+	}
+
     /**
 	 * Create Figure custom content type.
 	 *
@@ -65,8 +69,8 @@ class Webcr_Figure {
 	 * @since    1.0.0
 	 */
     function create_figure_fields() {
-        if (isset($_GET["action"])) {
-            if ($_GET["action"] == "edit") {
+ //       if (isset($_GET["action"])) {
+ //           if ($_GET["action"] == "edit") {
 
                 $config_metabox = array(
 
@@ -87,6 +91,9 @@ class Webcr_Figure {
                 // get list of locations, which is saved as a taxonomy
                 $function_utilities = new Webcr_Utility();
                 $locations = $function_utilities -> returnInstances();
+
+                $scene_titles = [];
+                $modal_icons = [];
 
                 // used by both scene and icon dropdowns
                 if (array_key_exists("post", $_GET)) {
@@ -144,7 +151,7 @@ class Webcr_Figure {
                 // instantiate the admin page
                 $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
             }  
-        }
-    }
+ //       }
+ //   }
 
 }
