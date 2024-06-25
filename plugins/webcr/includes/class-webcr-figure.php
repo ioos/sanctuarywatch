@@ -94,6 +94,7 @@ class Webcr_Figure {
 
                 $scene_titles = [];
                 $modal_icons = [];
+                $modal_tabs = [];
 
                 // used by both scene and icon dropdowns
                 if (array_key_exists("post", $_GET)) {
@@ -129,9 +130,82 @@ class Webcr_Figure {
                         array(
                             'id'             => 'modal_icons',
                             'type'           => 'select',
-                            'title'          => 'Icons',
+                            'title'          => 'Icon',
                             'options'        => $modal_icons, // array (" " => "Modal Icons")
                             'description' => 'Figure Icons description',
+                        ),
+                        array(
+                            'id'             => 'modal_tab',
+                            'type'           => 'select',
+                            'title'          => 'Tab',
+                            'options'        => $modal_tabs, // array (" " => "Modal Icons")
+                            'description' => 'Modal tab description',
+                        ),
+                        array(
+                            'id'      => 'figure_order',
+                            'type'    => 'number',
+                            'title'   => 'Figure Order',
+                            'description' => 'Add description',
+                            'default' => '1',                               
+                            'min'     => '1',                                    
+                            'max'     => '4',      
+                            'step'    => '1',   
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'figure_science_info',
+                            'title'   => 'More science link',
+                            'description' => 'More science description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'figure_science_link_text',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'figure_science_link_url',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'fieldset',
+                            'id' => 'figure_data_info',
+                            'title'   => 'More data link',
+                            'description' => 'More data description',
+                            'fields' => array(
+                                array(
+                                    'id'          => 'figure_data_link_text',
+                                    'type'        => 'text',
+                                    'title'       => 'Text',
+                                    'class'       => 'text-class',
+                                ),
+                                array(
+                                    'id'          => 'figure_data_link_url',
+                                    'type'        => 'text',
+                                    'title'       => 'URL',
+                                    'class'       => 'text-class',
+                                ),
+                            ),
+                        ),
+                        array(
+                            'id'    => 'figure_image',
+                            'type'  => 'image',
+                            'title' => 'Figure image',
+                            'description' => 'Figure image description'
+                        ),
+                        array(
+                            'id'     => 'figure_caption_short',
+                            'type'   => 'editor',
+                            'title'  => 'Short caption', 
+                        ),
+                        array(
+                            'id'     => 'figure_caption_long',
+                            'type'   => 'editor',
+                            'title'  => 'Long caption', 
                         ),
                         array(
                             'id'          => 'figure_preview',
