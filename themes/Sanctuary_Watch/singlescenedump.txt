@@ -1,3 +1,7 @@
+<!-- originally lines ~44 to 128 in single-scene.php, use as reference but dont need
+
+
+
 <?php
 /**
  * Detailed Scene Page Template
@@ -34,37 +38,76 @@ get_header();
 
 // Retrieves the ID of the current post
 $post_id = get_the_ID();
-$scene_url = get_post_meta($post_id, 'scene_infographic');
 
 // Fetches scene information and photos based on the current post ID
 //array structure(triple nested arrays): arr = [[text1, url1],[text2, url2], ....]
-// $total_arr = get_scene_info_photo($post_id);
-// $scene_info_arr = $total_arr[0];
-// $scene_photo_arr = $total_arr[1];
+$total_arr = get_scene_info_photo($post_id);
+$scene_info_arr = $total_arr[0];
+$scene_photo_arr = $total_arr[1];
 ?>
-<div class="container-fluid">
-      <div class="row">
-        <div class="col-md-9">
-          <div id = "svg1">
-          <?php
-          $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
-          $child_ids = get_modal_array($svg_url);
-          ?>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <ul id="toc1"></ul>
-        </div>
-      </div>
-      <script>
-        // Convert the array of child IDs to a JSON string and mbed the child_ids_json variable into the html for the JS script to pick up and use.
-        let child_ids = <?php echo json_encode($child_ids); ?>;
-        let post_id =  <?php echo $post_id; ?>;
-        let svg_url =  <?php echo json_encode($scene_url); ?>;
-        //Log json file for debugging.
-        // console.log(child_id_json);
-    </script>
+<div class="container-fluid main-container">
+    <div>
+        <!-- Displays the title of the current post -->
+        <h1 class="title toc-ignore"><?php echo get_the_title( $post_id ) ?></h1>
     </div>
+    <p></p>
+    <!-- Temporary Following bootstrap styling, will move to css file later -->
+    <div style="display: flex">
+        <!-- Accordion section begins -->
+        <?php 
+            // If the scene info array is not empty, or if its not empty and the scene title is not overview, create the accordion
+            if((!empty($scene_info_arr) || !empty($scene_photo_arr)) && $scene_title != 'Overview') : 
+        ?> 
+            <div style="margin-top: 10px;margin-bottom: 10px; margin-right: 10px; flex: 1;">
+                <div class="accordion" id="sceneAccordions">
+                    <?php
+                    // Function calls to generate accordion sections for scene information and photos
+                        generateAccordionSection('Scene Info', $scene_info_arr);
+                        generateAccordionSection('Scene Photo', $scene_photo_arr);
+                    ?>
+                </div>
+            </div>
+            <div style="margin: 10px; font-style: italic; flex: 20; ">
+        <?php else: ?>
+            <!-- If no accordion is needed, adjust the container flex sizing -->
+            <div style="flex: 20; ">
+        <?php endif; 
+        // // Displays the tagline fetched from post meta
+        //     echo get_post_meta($post_id, "scene_tagline")[0];
+        ?>
+            </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div id="svg">
+                <?php
+                $svg_url = get_post_meta($post_id, 'scene_infographic', true);
+                ?>
+            </div>
+        </div>
+        <div class = "col-md-3">
+            <div id="toc">
+                <?php
+                // Generate an array of child IDs based on the SVG URL, function in functions.php
+                $child_ids = get_modal_array($svg_url);
+                ?>
+                <ul>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--  script embeds json variable -->
+    <script>
+        // Convert the array of child IDs to a JSON string and mbed the child_ids_json variable into the html for the JS script to pick up and use.
+        let child_id_json = <?php echo json_encode($child_ids); ?>;
+        let post_id =  <?php $post_id; ?>;
+        // let svg_url =  <?php $svg_url; ?>;
+        //Log json file for debugging.
+        console.log(child_id_json);
+    </script>
+</div>
 <?php
 get_footer();
 ?>

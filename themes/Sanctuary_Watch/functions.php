@@ -24,6 +24,22 @@
   add_action( 'wp_enqueue_scripts', 'files' );
 
   /**
+   * Enqueues Bootstrap's CSS library with dependency management.
+   *
+   * This function registers and enqueues the Bootstrap CSS library from a CDN.
+   *
+   * @return void
+   */
+  // function enqueue_bootstrap_css(){
+  //   wp_register_style('bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css', array(), 
+  //           false, 'all');
+  //   wp_enqueue_style('bootstrap');
+  // }
+  // add_action('wp_enqueue_scripts', 'enqueue_bootstrap_css');
+
+
+
+  /**
    * Enqueues Bootstrap's JavaScript library with dependency management.
    *
    * This function registers and enqueues the Bootstrap JavaScript library from a CDN. It specifies jQuery as a dependency,
@@ -358,4 +374,104 @@
     );
     return $args;
   }
+  /**
+   * Ideal behavior: create n-D array with element IDs and boolean indicating whether or not element has corresponding modal
+   *
+   *
+   * @param $svg_url The URL of the SVG file to be processed.
+   * @return array The argument array to be used with a WordPress query.
+   */
+  function get_modal_array($svg_url){
+    // from original function - just preprocessing of the svg url, etc.
+    if($svg_url){
+      // Find the path to the SVG file
+      $relative_path = ltrim(parse_url($svg_url)['path'], "/");
+      $full_path = ABSPATH . $relative_path;
+
+      // Get the contents from the SVG file
+      $svg_content = file_get_contents($full_path);
+
+      // If the SVG content could not be loaded, terminate with an error message
+      if(!$svg_content){
+          die("Fail to load SVG file");
+          return null;
+      }
+      // Load the SVG content into a DOMDocument
+      $dom  = new DOMDocument();
+      libxml_use_internal_errors(true);
+      $dom->loadXML($svg_content);
+      libxml_clear_errors();
+
+      // Create a DOMXPath object for querying the DOMDocument
+      $xpath = new DOMXPath($dom);
+
+      // Find the element with ID "icons"
+      $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
+
+      // If the element with ID "icons" is not found, terminate with an error message
+      if($icons_element === null){
+          die('Element with ID "icons" not found');
+          return null;
+      }
+
+      // Get the child nodes of the "icons" element
+      $child_elements = $icons_element->childNodes;
+      $child_ids = array();
+      foreach($child_elements as $child){
+        if($child->nodeType === XML_ELEMENT_NODE && $child->hasAttribute('id')) {
+          // Add the "id" attribute to the array
+          $child_id = $child->getAttribute('id');
+          //this is a WP_query object for the current child ID
+          $query = new WP_Query(postQuery($child_id));
+
+          $child_post_id = $query->posts[0];
+          //get icon_type to check if modal
+          $icon_type = get_post_meta($child_post_id, "icon_function");
+          $icon_title = get_post_meta($child_post_id, "post_title");
+          $modal = FALSE;
+          $external_url =  '';
+          $external_scene_id = '';
+          $is_modal = get_post_meta($child_post_id,"post_type" )[0];
+          //create array/map from child id to different attributes (ie hyperlinks)
+          if($is_modal){
+            if ($icon_type[0] === "Modal"){
+              $modal = TRUE;
+            } else if ($icon_type[0] === "External URL"){
+              $external_url = get_post_meta( $child_post_id, "icon_external_url")[0];
+            } else if ($icon_type[0] === "Scene"){
+              $external_scene_id = get_post_meta( $child_post_id, "icon_scene_out");
+              $external_url = get_permalink($scene_id[0]);
+
+            } 
+            $child_ids[$child_id] = [
+              "title" => $icon_title[0],
+              "modal_id" => $child_post_id,
+              "external_url" => $external_url,
+              "modal" => $modal
+            ];
+          } 
+          //add to array
+          // $child_ids[$icon_title[0]] = $modal;
+        }
+      }
+      //reset global $Post object
+      wp_reset_postdata();
+      return $child_ids;
+    }
+    return null;
+  }
+
+  //enqueue javascript for infographiq
+  function enqueue_info_scripts() {
+    wp_enqueue_script(
+        'script-js',
+        get_template_directory_uri() . '/assets/js/script.js',
+        array(),
+        null,
+        array('strategy' => 'defer') 
+    );
+}
+add_action('wp_enqueue_scripts', 'enqueue_info_scripts');
 ?>
+
+
