@@ -2,6 +2,25 @@
 (function( $ ) {
 	'use strict';
 
+
+	let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
+	displaySceneEntries(openingSceneSections);
+
+	   // function to display Scene Section fields
+	function displaySceneEntries (entry_number){
+		let target_element = "";
+		for (let i = 6; i > entry_number; i--){
+			target_element = "scene_section" + i;
+			document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "none";
+			document.getElementsByName(target_element)[0].value = "";
+		}
+
+		for (let i = 1; i <= entry_number; i++){
+			target_element = "scene_section" + i;
+			document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "block";
+		}
+	}
+
     // Function to resize the SVG
     function resizeSvg() {
 		// Get the SVG element
@@ -277,6 +296,12 @@
 			}
 		}
 	}
+
+  $('select[name="scene_section_number"]').change(function(){
+      let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
+      displaySceneEntries(openingSceneSections);
+  });
+
 
 	$(".range[data-depend-id='scene_info_entries']").change(function(){ 
 		let number_of_scene_info_entries = $(".range[data-depend-id='scene_info_entries']").val();
