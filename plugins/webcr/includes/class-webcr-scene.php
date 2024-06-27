@@ -771,7 +771,64 @@ class Webcr_Scene {
                     'max'     => '10',      
                     'step'    => '1',   
                 ),
-
+                array(
+                    'id'      => 'scene_section_number',
+                    'type'    => 'select',
+                    'title'   => 'Number of Scene Sections',
+                    'description' => 'Number of Scene Sections description',
+                    'options' => array(
+                        0 => "0",
+                        1 => "1",
+                        2 => "2",
+                        3 => "3",
+                        4 => "4",
+                        5 => "5",
+                        6 => "6"
+                    ),
+                    'default' => 0           
+                ),              
+                array(
+                    'id'          => 'scene_section1',
+                    'type'        => 'text',
+                    'title'       => 'Scene Section 1',
+                    'class'       => 'text-class',   
+                    'description' => 'Scene Section 1 Description',  
+                ),
+                array(
+                    'id'          => 'scene_section2',
+                    'type'        => 'text',
+                    'title'       => 'Scene Section 2',
+                    'class'       => 'text-class',   
+                    'description' => 'Scene Section 2 Description',  
+                ),
+                array(
+                    'id'          => 'scene_section3',
+                    'type'        => 'text',
+                    'title'       => 'Scene Section 3',
+                    'class'       => 'text-class',   
+                    'description' => 'Scene Section 3 Description',  
+                ),
+                array(
+                    'id'          => 'scene_section4',
+                    'type'        => 'text',
+                    'title'       => 'Scene Section 4',
+                    'class'       => 'text-class',   
+                    'description' => 'Scene Section 4 Description',  
+                ),              
+                array(
+                    'id'          => 'scene_section5',
+                    'type'        => 'text',
+                    'title'       => 'Scene Section 5',
+                    'class'       => 'text-class',   
+                    'description' => 'Scene Section 5 Description',  
+                ),
+                array(
+                    'id'          => 'scene_section6',
+                    'type'        => 'text',
+                    'title'       => 'Scene Section 6',
+                    'class'       => 'text-class',   
+                    'description' => 'Scene Section 6 Description',  
+                ),
                 array(
                     'id'          => 'scene_preview',
                     'type'        => 'button',
