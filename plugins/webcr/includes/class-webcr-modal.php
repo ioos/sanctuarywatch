@@ -122,6 +122,7 @@ class Webcr_Modal {
 
                 $scene_titles =[];
                 $modal_icons = [];
+                $toc_sections = [];
                 // used by both scene and icon dropdowns
                 if (array_key_exists("post", $_GET)) {
                     $modal_id = intval($_GET["post"]);
@@ -189,6 +190,13 @@ class Webcr_Modal {
                             'type'        => 'textarea',
                             'title'       => 'Modal Tagline',
                             'description' => 'Modal Tagline description',
+                        ),
+                        array(
+                            'id'             => 'modal_toc_section',
+                            'type'           => 'select',
+                            'title'          => 'Table of Contents Section',
+                            'options'        => $toc_sections,
+                            'description' => 'Table of Contents Section description',
                         ),
                         array(
                             'id'      => 'modal_info_entries',
