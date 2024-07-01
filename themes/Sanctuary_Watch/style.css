@@ -4,6 +4,7 @@ Theme Name: Sanctuary Watch
 
 @import url('assets/css/bootstrap.css');
 
+
 #top-bar {
   background-color: white;
   text-align: center;
@@ -109,3 +110,4 @@ p[itemprop="name"], p[itemprop="address"] {
 .toc-link:hover {
   text-decoration: underline;
 }
+

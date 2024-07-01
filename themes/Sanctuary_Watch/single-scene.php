@@ -42,19 +42,22 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 // $scene_info_arr = $total_arr[0];
 // $scene_photo_arr = $total_arr[1];
 ?>
-<div class="container-fluid">
-      <div class="row">
-        <div class="col-md-9">
-          <div id = "svg1">
+<div class="container-fluid main-container" style="max-width: 50%; margin-left: 10%; margin-right: 10%; padding-right: 15px; padding-left: 15px;">
+      <div class="row" > 
+        <!-- style="margin-right: -15px; margin-left: -15px; box-sizing: border-box; display: block;" > -->
+      <div class="col-lg-9" id="image-container" style="position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px; padding-bottom: 10px; box-sizing: border-box; float:left" >
+          <div id = "svg1"  style="display:flex">
           <?php
           $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
           $child_ids = get_modal_array($svg_url);
           ?>
           </div>
         </div>
-        <div class="col-md-3">
-          <ul id="toc1">
-            TABLE OF CONTENTS WILL GO HERE
+        <div class="col-md-3" style=" width: 25%; float: left; position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px; box-sizing: border-box; ">
+
+          <ul id="toc1"  >
+            <!-- TABLE OF CONTENTS WILL GO HERE -->
+            
           </ul>
         </div>
       </div>
@@ -65,6 +68,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
         let svg_url =  <?php echo json_encode($scene_url); ?>;
         //Log json file for debugging.
         // console.log(child_id_json);
+        
     </script>
     </div>
 <?php

@@ -41,16 +41,16 @@ async function loadSVG(url, containerId) {
         container.appendChild(svgElement);
         // console.log(svgElement);
         highlight_icons();
+        table_of_contents();
     } catch (error) {
         console.error('Error fetching or parsing the SVG:', error);
     }
 }
 
+
 //highlight items on mouseover, remove highlight when off; TODO: add more stuff to event listeners 
 function highlight_icons(){
     for (let key in child_obj){
-        //console.log(key);
-        //console.log(typeof(key));
         let elem = document.querySelector('g[id="' + key + '"]');
         console.log(elem);
         elem.addEventListener('mouseover', function(){
@@ -66,7 +66,50 @@ function highlight_icons(){
             
     }  
 }
+ 
 
+
+
+function table_of_contents(){
+    let elem = document.getElementById("toc1");
+    for (let key in child_obj){
+        let item = document.createElement("li");
+        
+        let title = child_obj[key]['title'];  
+        //newLi.innerHTML = 
+        let link = document.createElement("a");
+        let modal = child_obj[key]['modal'];
+        if (modal){
+            //two things: 
+            //on hover over link,
+            link.href = "https://mail.google.com/mail/u/0/?tab=rm&ogbl"; //temporary, want to make it modal popup here
+            // link.classList.add("hidden-link");
+            link.innerHTML = title;
+            item.appendChild(link);
+        } else{
+            link.href = child_obj[key]['external_url'];
+            link.innerHTML = title;
+            item.appendChild(link);
+        }
+        let svg_elem = document.querySelector('g[id="' + key + '"]');
+        // console.log(elem);
+        item.addEventListener('mouseover', function(){
+            console.log('mousing over: ', key); 
+            svg_elem.style.stroke = "yellow";
+            svg_elem.style.strokeWidth = "6";
+        });
+        item.addEventListener('mouseout', function(){
+            console.log('mousing out: ', key); 
+            svg_elem.style.stroke = "";
+            svg_elem.style.strokeWidth = "";
+        });
+        elem.appendChild(item);
+        
+        console.log(elem);
+    }
+        
+    
+}
 //idea for function: HTML alr exists for each modal (w all the information at least)
 // find way to inject modal into IFra
 function add_modal(){
@@ -74,4 +117,6 @@ function add_modal(){
 }
 
 loadSVG(url, "svg1");
-// highlight_icons();
+
+
+
