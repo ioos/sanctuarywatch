@@ -4,10 +4,10 @@ console.log("THIS IS A TEST");
 //get all links from single-scene.php
 let child_obj = JSON.parse(JSON.stringify(child_ids));
 console.log(child_obj);
-console.log("this is the post id: ", post_id);//prob dont need this
+// console.log("this is the post id: ", post_id);//prob dont need this
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
-console.log(url)
+// console.log(url)
 
 //lol
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
@@ -15,12 +15,63 @@ console.log(url)
 
 // Below is the function that will be used to include SVGs within each scene
 //based on link_svg from infographiq.js
-function link_svg(child_obj, url){
-    //stuff to actually build SVG
-    const svg = document.createElement('li');
 
-    //add child 
-    document.getElementById('svg1').appendChild(svg);
+async function loadSVG(url, containerId) {
+    try {
+        // Step 1: Fetch the SVG content
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const svgText = await response.text();
+
+        // Step 2: Parse the SVG content
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+        const svgElement = svgDoc.documentElement;
+
+        // Step 3: Move the SVG upwards
+        // const translateY = -10; // Adjust this value to move the image up
+        // const existingTransform = svgElement.getAttribute("transform") || "";
+        // const newTransform = `translate(0, ${translateY}) ${existingTransform}`;
+        // svgElement.setAttribute("transform", newTransform.trim());
+
+        // Step 4: Append the SVG to the DOM
+        const container = document.getElementById(containerId);
+        container.appendChild(svgElement);
+        // console.log(svgElement);
+        highlight_icons();
+    } catch (error) {
+        console.error('Error fetching or parsing the SVG:', error);
+    }
 }
 
-link_svg(child_obj, url);
+//highlight items on mouseover, remove highlight when off; TODO: add more stuff to event listeners 
+function highlight_icons(){
+    for (let key in child_obj){
+        //console.log(key);
+        //console.log(typeof(key));
+        let elem = document.querySelector('g[id="' + key + '"]');
+        console.log(elem);
+        elem.addEventListener('mouseover', function(){
+            console.log('mousing over: ', key); 
+            elem.style.stroke = "yellow";
+            elem.style.strokeWidth = "6";
+        });
+        elem.addEventListener('mouseout', function(){
+            console.log('mousing out: ', key); 
+            elem.style.stroke = "";
+            elem.style.strokeWidth = "";
+        });
+            
+    }  
+}
+
+//idea for function: HTML alr exists for each modal (w all the information at least)
+// find way to inject modal into IFra
+function add_modal(){
+
+}
+
+loadSVG(url, "svg1");
+// highlight_icons();
