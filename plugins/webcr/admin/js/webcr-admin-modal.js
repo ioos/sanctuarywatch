@@ -104,6 +104,7 @@
             fetch(restURL)
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data);
                     data.forEach( element => {
                         if (element.id != modalScene){
                             let option = document.createElement('option');
