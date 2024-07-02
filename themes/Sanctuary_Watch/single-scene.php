@@ -66,21 +66,21 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
   </div>
 </div>
 
-<div class="container-fluid main-container" style="max-width: 50%; margin-left: 10%; margin-right: 10%; padding-right: 15px; padding-left: 15px;">
+<div class="container-fluid main-container" style="margin-bottom: 4rem">
 
-      <div class="row" > 
+      <div class="row" style="display:flex" > 
         <!-- style="margin-right: -15px; margin-left: -15px; box-sizing: border-box; display: block;" > -->
-      <div class="col-lg-9" id="image-container" style="position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px; padding-bottom: 10px; box-sizing: border-box; float:left" >
-          <div id = "svg1"  style="display:flex">
+      <div class="col-lg-9" >
+          <div id = "svg1"  style="display:flex; flex-sizing: border-flex ">
           <?php
           $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
           $child_ids = get_modal_array($svg_url);
           ?>
           </div>
         </div>
-        <div class="col-md-3" style=" width: 25%; float: left; position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px; box-sizing: border-box; ">
+        <div class="col-md-3">
 
-          <ul id="toc1"  >
+          <ul id="toc1"   >
             <!-- TABLE OF CONTENTS WILL GO HERE -->
             
           </ul>
@@ -96,6 +96,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
         
     </script>
     </div>
+
   <!-- </body> -->
 
 <?php

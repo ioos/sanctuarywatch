@@ -144,6 +144,19 @@ function add_modal(){
     }
 }
 
+
+
+//api request
+
+// fetch('http://sanctuary.local/wp-json/wp/v2/scene')
+//     .then(response => response.json())
+//     .then(data => {
+//         // Process the JSON data here
+//         console.log(data); // Log the data to the console for example
+//     })
+//     .catch(error => console.error('Error fetching data:', error));
+
+
 loadSVG(url, "svg1");
 
 

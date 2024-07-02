@@ -53,6 +53,11 @@
   }
   add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
 
+  function enqueue_api_script(){
+    wp_enqueue_script( 'wp-api' );
+  }
+  add_action('wp_enqueue_scripts', 'enqueue_api_script');
+
 
   /**
    * Registers the 'scene' custom post type.
