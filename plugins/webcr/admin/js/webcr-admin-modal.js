@@ -92,7 +92,7 @@
         iconSceneOut.innerHTML ='';
         let optionIcon = document.createElement('option');
         optionIcon.text = "Icon Scene Out";
-        optionIcon.value = "";
+        optionIcon.value = " ";
         iconSceneOut.add(optionIcon);
 
         const modalScene = document.getElementsByName("modal_scene")[0].value;
@@ -270,7 +270,7 @@ function modal_location_change(){
 
     const modal_location = $('.chosen').first().val();
     if (modal_location != ""){
-        iconSceneOutDropdown();
+      //  iconSceneOutDropdown();
         const modal_location_no_space = urlifyRecursiveFunc(modal_location);
         const protocol = window.location.protocol;
         const host = window.location.host;
