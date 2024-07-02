@@ -42,7 +42,32 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 // $scene_info_arr = $total_arr[0];
 // $scene_photo_arr = $total_arr[1];
 ?>
+<!-- <body> -->
+<div class="modal" id="myModal" style="z-index: 999; background-color: rgba(0,0,0,0.8);">
+  <div class="modal-dialog" style="margin: 10% auto">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 id = "modal-title" class="modal-title"></h4>
+        <button id="close" type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="container-fluid main-container" style="max-width: 50%; margin-left: 10%; margin-right: 10%; padding-right: 15px; padding-left: 15px;">
+
       <div class="row" > 
         <!-- style="margin-right: -15px; margin-left: -15px; box-sizing: border-box; display: block;" > -->
       <div class="col-lg-9" id="image-container" style="position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px; padding-bottom: 10px; box-sizing: border-box; float:left" >
@@ -71,6 +96,8 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
         
     </script>
     </div>
+  <!-- </body> -->
+
 <?php
 get_footer();
 ?>

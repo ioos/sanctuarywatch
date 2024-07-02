@@ -42,51 +42,60 @@ async function loadSVG(url, containerId) {
         // console.log(svgElement);
         highlight_icons();
         table_of_contents();
+        add_modal();
     } catch (error) {
         console.error('Error fetching or parsing the SVG:', error);
     }
 }
 
+//TODO: lot of redundant code within below 3 functions, a working start; might be a good idea to clean up at some point
 
-//highlight items on mouseover, remove highlight when off; TODO: add more stuff to event listeners 
+
+//highlight items on mouseover, remove highlight when off; 
 function highlight_icons(){
     for (let key in child_obj){
         let elem = document.querySelector('g[id="' + key + '"]');
         console.log(elem);
         elem.addEventListener('mouseover', function(){
-            console.log('mousing over: ', key); 
+            // console.log('mousing over: ', key); 
             elem.style.stroke = "yellow";
             elem.style.strokeWidth = "6";
         });
         elem.addEventListener('mouseout', function(){
-            console.log('mousing out: ', key); 
+            // console.log('mousing out: ', key); 
             elem.style.stroke = "";
             elem.style.strokeWidth = "";
         });
-            
     }  
 }
  
 
 
-
+//generates table of contents; modal table of contents open modal window, others go to external URLs
 function table_of_contents(){
     let elem = document.getElementById("toc1");
     for (let key in child_obj){
         let item = document.createElement("li");
         
         let title = child_obj[key]['title'];  
-        //newLi.innerHTML = 
         let link = document.createElement("a");
         let modal = child_obj[key]['modal'];
-        if (modal){
-            //two things: 
-            //on hover over link,
-            link.href = "https://mail.google.com/mail/u/0/?tab=rm&ogbl"; //temporary, want to make it modal popup here
-            // link.classList.add("hidden-link");
+        if (modal) {
+            link.classList.add("modal-link"); 
             link.innerHTML = title;
             item.appendChild(link);
-        } else{
+            
+            item.addEventListener('click', function() {
+                
+                let modal = document.getElementById("myModal");
+                modal.style.display = "block";
+                let title = child_obj[key]['title'];  
+                let modal_title = document.getElementById("modal-title");
+                modal_title.innerHTML = title;
+            });
+        }
+        
+        else{
             link.href = child_obj[key]['external_url'];
             link.innerHTML = title;
             item.appendChild(link);
@@ -94,26 +103,45 @@ function table_of_contents(){
         let svg_elem = document.querySelector('g[id="' + key + '"]');
         // console.log(elem);
         item.addEventListener('mouseover', function(){
-            console.log('mousing over: ', key); 
+            // console.log('mousing over: ', key); 
             svg_elem.style.stroke = "yellow";
             svg_elem.style.strokeWidth = "6";
         });
         item.addEventListener('mouseout', function(){
-            console.log('mousing out: ', key); 
+            // console.log('mousing out: ', key); 
             svg_elem.style.stroke = "";
             svg_elem.style.strokeWidth = "";
         });
-        elem.appendChild(item);
         
+        
+        elem.appendChild(item);
         console.log(elem);
     }
         
     
 }
-//idea for function: HTML alr exists for each modal (w all the information at least)
-// find way to inject modal into IFra
-function add_modal(){
 
+//generates modal window when SVG element is clicked. 
+function add_modal(){
+    for (let key in child_obj){
+        if (child_obj[key]['modal']){
+            let elem = document.querySelector('g[id="' + key + '"]');
+            let modal = document.getElementById("myModal");
+            let closeButton = document.getElementById("close");
+            
+
+            elem.addEventListener('click', function() {
+                    modal.style.display = "block";
+                    let title = child_obj[key]['title'];  
+                    let modal_title = document.getElementById("modal-title");
+                    modal_title.innerHTML = title;
+            });
+            
+            closeButton.addEventListener('click', function() {
+                    modal.style.display = "none";
+            });
+        }
+    }
 }
 
 loadSVG(url, "svg1");
