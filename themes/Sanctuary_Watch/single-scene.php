@@ -77,7 +77,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
       </div>
     </div>
     <div class="col-12 col-lg-4">
-      <ul id="toc1" class="sticky-top">
+      <ul id="toc1" > 
             <!-- TABLE OF CONTENTS WILL GO HERE -->
             
           </ul>
