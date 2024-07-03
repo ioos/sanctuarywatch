@@ -69,6 +69,143 @@ function highlight_icons(){
     }  
 }
  
+//creates an accordion item w/custom IDs based on input
+function createAccordionItem(accordionId, headerId, collapseId, buttonText, collapseContent) {
+    // Create Accordion Item
+    let accordionItem = document.createElement("div");
+    accordionItem.classList.add("accordion-item");
+    accordionItem.setAttribute("id", accordionId);
+
+    // Create Accordion Header
+    let accordionHeader = document.createElement('h2');
+    accordionHeader.classList.add("accordion-header");
+    accordionHeader.setAttribute("id", headerId);
+
+    // Create Accordion Button
+    let accordionButton = document.createElement('button');
+    accordionButton.classList.add('accordion-button');
+    accordionButton.setAttribute("type", "button");
+    accordionButton.setAttribute("data-bs-toggle", "collapse");
+    accordionButton.setAttribute("data-bs-target", `#${collapseId}`);
+    accordionButton.setAttribute("aria-expanded", "true");
+    accordionButton.setAttribute("aria-controls", collapseId);
+    accordionButton.innerHTML = buttonText;
+
+    // Append Button to Header
+    accordionHeader.appendChild(accordionButton);
+
+    // Create Accordion Collapse
+    let accordionCollapse = document.createElement('div');
+    accordionCollapse.classList.add("accordion-collapse", "collapse", "show");
+    accordionCollapse.setAttribute("id", collapseId);
+    accordionCollapse.setAttribute("aria-labelledby", headerId);
+
+    // Create Accordion Collapse Body
+    let accordionCollapseBody = document.createElement('div');
+    accordionCollapseBody.classList.add("accordion-body");
+    accordionCollapseBody.innerHTML = collapseContent;
+
+    // Append Collapse Body to Collapse
+    accordionCollapse.appendChild(accordionCollapseBody);
+
+    // Append Header and Collapse to Accordion Item
+    accordionItem.appendChild(accordionHeader);
+    accordionItem.appendChild(accordionCollapse);
+
+    return accordionItem;
+}
+
+let allkeys = Object.keys(child_obj);
+console.log(allkeys);
+let allkeyobj = {};
+allkeys.forEach(key => {
+    allkeyobj[key] = false;
+});
+
+console.log(allkeyobj);
+
+
+function render_modal(key){
+    // fetch data from JSON
+    // if (allkeyobj[key]){
+    //     return;
+    // }
+    console.log(allkeyobj);
+    let id = child_obj[key]['modal_id'];
+    let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc';
+    fetch(fetchURL)
+        .then(response => response.json())
+        .then(data => {
+            modal_data = data.find(modal => modal.id === id);
+            console.log(modal_data); 
+            //title stuff:
+            let title = child_obj[key]['title'];  
+            let modal_title = document.getElementById("modal-title");
+            
+            modal_title.innerHTML = title;
+
+            //tagline container
+            let tagline_container = document.getElementById('tagline-container');
+            let modal_tagline = modal_data["modal_tagline"];
+            tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
+
+            //generate accordion
+            // Select the container where the accordion will be appended
+            let accordion_container = document.getElementById('accordion-container');
+            // accordion_container.innerHTML = '';
+            // Create the accordion element
+            let acc = document.createElement("div");
+            acc.classList.add("accordion");
+
+            // let collapseList = document.createElement("ul");
+            let collapseListHTML = '<div>';
+            for (let i = 1; i < 7; i++){
+                let info_field = "modal_info" + i;
+                let info_text = "modal_info_text" + i;
+                let info_url = "modal_info_url" + i;
+
+                
+                
+                let modal_info_text = modal_data[info_field][info_text];
+                let modal_info_url = modal_data[info_field][info_url];
+                if ((modal_info_text == '') && (modal_info_url == '')){
+                    continue;
+                }
+                console.log(modal_info_text);
+                console.log(modal_info_url);
+                let listItem = document.createElement('li');
+                let anchor = document.createElement('a');
+                anchor.setAttribute('href', modal_info_url); 
+                anchor.textContent = modal_info_text;
+
+                listItem.appendChild(anchor);
+
+                // collapseList.appendChild(listItem);
+                collapseListHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
+                collapseListHTML += '</div>';
+
+                
+                
+            }
+            
+            let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
+            let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", "Content of more info accordion item 2 goes here");
+
+            acc.appendChild(accordionItem1);
+            acc.appendChild(accordionItem2);
+
+
+            accordion_container.appendChild(acc);
+            // allkeyobj[key] = true;
+            
+            
+
+
+
+        })
+    .catch(error => console.error('Error fetching data:', error));
+    
+}
 
 
 //generates table of contents; modal table of contents open modal window, others go to external URLs
@@ -89,9 +226,7 @@ function table_of_contents(){
                 
                 let modal = document.getElementById("myModal");
                 modal.style.display = "block";
-                let title = child_obj[key]['title'];  
-                let modal_title = document.getElementById("modal-title");
-                modal_title.innerHTML = title;
+                render_modal(key);
             });
         }
         
@@ -121,6 +256,7 @@ function table_of_contents(){
     
 }
 
+
 //generates modal window when SVG element is clicked. 
 function add_modal(){
     for (let key in child_obj){
@@ -132,13 +268,19 @@ function add_modal(){
 
             elem.addEventListener('click', function() {
                     modal.style.display = "block";
-                    let title = child_obj[key]['title'];  
-                    let modal_title = document.getElementById("modal-title");
-                    modal_title.innerHTML = title;
+                    render_modal(key )
+
             });
             
             closeButton.addEventListener('click', function() {
+                    
                     modal.style.display = "none";
+                    let accordion_container = document.getElementById('accordion-container');
+                    accordion_container.innerHTML = '';
+
+                    let tagline_container = document.getElementById('tagline-container');
+                    tagline_container.innerHTML = '';
+
             });
         }
     }
@@ -146,18 +288,15 @@ function add_modal(){
 
 
 
-//api request
 
-// fetch('http://sanctuary.local/wp-json/wp/v2/scene')
-//     .then(response => response.json())
-//     .then(data => {
-//         // Process the JSON data here
-//         console.log(data); // Log the data to the console for example
-//     })
-//     .catch(error => console.error('Error fetching data:', error));
+
 
 
 loadSVG(url, "svg1");
+
+
+
+
 
 
 

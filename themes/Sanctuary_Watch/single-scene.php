@@ -55,12 +55,21 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 
       <!-- Modal body -->
       <div class="modal-body">
+        <div class="row">
+          <div id="accordion-container" class="col-6">
         
+          </div>
+          <div id="tagline-container" class="col-3">
+            <!-- tagline goes -->
+            tagline here
+          </div>
+        </div>
       </div>
 
       <!-- Modal footer -->
-      <div class="modal-footer">
-      </div>
+      <!-- <div class="modal-footer">
+        
+      </div> -->
 
     </div>
   </div>
