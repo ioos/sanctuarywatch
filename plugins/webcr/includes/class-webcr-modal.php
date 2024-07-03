@@ -78,6 +78,7 @@ class Webcr_Modal {
             'publicly_queryable' => true,
             'show_ui'            => true,
             'show_in_menu'       => true,
+            'show_in_rest'       => true,
             'query_var'          => true,
             'rewrite'            => array( 'slug' => 'modals' ),
             'capability_type'    => 'post',
@@ -550,82 +551,95 @@ class Webcr_Modal {
                 'show_in_rest' => true, // Make the field available in REST API
                 'single' => true, // Indicates whether the meta key has one single value
                 'type' => 'integer', // Data type of the meta value
-                'description' => 'The modal tagline', // Description of the meta key
+                'description' => 'The number of info links', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );        
+        
+        for ($i = 1; $i < 7; $i++){
+            $field_target = 'modal_info' . $i;
+            $field_description = "Info link " . $i;
+            register_meta( 
+                'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+                $field_target, // Meta key name
+                array(
+                    'auth_callback'     => '__return_false', // Return false to disallow writing
+                    'single'            => true, // The field contains a single array
+                    'description' => $field_description, // Description of the meta key
+                    'show_in_rest'      => array(
+                        'schema' => array(
+                            'type'  => 'array', // The meta field is an array
+                            'items' => array(
+                                'type' => 'string', // Each item in the array is a string
+                            ),
+                        ),
+                    ),
+                ) 
+            );
+        }
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'modal_photo_entries', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'integer', // Data type of the meta value
+                'description' => 'The number of photo links', // Description of the meta key
                 'auth_callback' => '__return_false' //Return false to disallow writing
             )
         );        
 
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_info1', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'array', // Data type of the meta value
-                'description' => 'Info link 1', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );   
+        for ($i = 1; $i < 7; $i++){
+            $field_target = 'modal_photo' . $i;
+            $field_description = "Photo link " . $i;
+                register_meta( 
+                    'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+                    $field_target, // Meta key name
+                    array(
+                        'auth_callback'     => '__return_false', // Return false to disallow writing
+                        'single'            => true, // The field contains a single array
+                        'description' => $field_description, // Description of the meta key
+                        'show_in_rest'      => array(
+                            'schema' => array(
+                                'type'  => 'array', // The meta field is an array
+                                'items' => array(
+                                    'type' => 'string', // Each item in the array is a string
+                                ),
+                            ),
+                        ),
+                    ) 
+                ); 
+        }
 
         register_meta(
             'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_info2', // Meta key name
+            'modal_tab_number', // Meta key name
             array(
                 'show_in_rest' => true, // Make the field available in REST API
                 'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'array', // Data type of the meta value
-                'description' => 'Info link 2', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );  
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_info3', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'array', // Data type of the meta value
-                'description' => 'Info link 3', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );  
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_info4', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'array', // Data type of the meta value
-                'description' => 'Info link 4', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );   
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_info5', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'array', // Data type of the meta value
-                'description' => 'Info link 5', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );    
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_info6', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'array', // Data type of the meta value
-                'description' => 'Info link 6', // Description of the meta key
+                'type' => 'integer', // Data type of the meta value
+                'description' => 'The number of modal tabs', // Description of the meta key
                 'auth_callback' => '__return_false' //Return false to disallow writing
             )
         ); 
+
+        for ($i = 1; $i < 7; $i++){
+            $field_target = 'modal_tab_title' . $i;
+            $field_description = "Modal tab " . $i;
+            register_meta(
+                'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+                $field_target, // Meta key name
+                array(
+                    'show_in_rest' => true, // Make the field available in REST API
+                    'single' => true, // Indicates whether the meta key has one single value
+                    'type' => 'string', // Data type of the meta value
+                    'description' => $field_description, // Description of the meta key
+                    'auth_callback' => '__return_false' //Return false to disallow writing
+                )
+            );
+        }
+   
     }
 
     /**

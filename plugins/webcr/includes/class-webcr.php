@@ -226,35 +226,108 @@ class Webcr {
 		//Disable Screen Options in admin screens
 		add_filter('screen_options_show_screen', '__return_false');
 
-		function register_scene_location_rest_field() {
+		function register_scene_rest_fields() {
 			register_rest_field(
 				'scene', // Custom post type name
 				'scene_location', // Name of the custom field
 				array(
-					'get_callback' => 'get_scene_location_callback',
+					'get_callback' => 'meta_get_callback',
 					'schema' => null,
 				)
 			);
-		}
 
-		function register_scene_infographic_rest_field() {
 			register_rest_field(
 				'scene', // Custom post type name
 				'scene_infographic', // Name of the custom field
 				array(
-					'get_callback' => 'get_scene_location_callback',
+					'get_callback' => 'meta_get_callback',
 					'schema' => null,
 				)
 			);
 		}
 
-		function get_scene_location_callback($object, $field_name, $request) {
+		function meta_get_callback($object, $field_name, $request) {
 			return get_post_meta($object['id'], $field_name, true);
 		}
 
-		add_action('rest_api_init', 'register_scene_location_rest_field');
+		add_action('rest_api_init', 'register_scene_rest_fields');
 
-		add_action('rest_api_init', 'register_scene_infographic_rest_field');
+		function register_modal_rest_fields() {
+
+			register_rest_field(
+				'modal', // Custom post type name
+				'modal_tagline', // Name of the custom field
+				array(
+					'get_callback' => 'meta_get_callback',
+					'schema' => null,
+				)
+			);
+
+			register_rest_field(
+				'modal', // Custom post type name
+				'modal_info_entries', // Name of the custom field
+				array(
+					'get_callback' => 'meta_get_callback',
+					'schema' => null,
+				)
+			);
+
+			for ($i = 1; $i < 7; $i++){
+				$field_target = 'modal_info' . $i;
+				register_rest_field(
+					'modal', // Custom post type name
+					$field_target, // Name of the custom field
+					array(
+						'get_callback' => 'meta_get_callback',
+						'schema' => null,
+					)
+				);
+			}
+
+			register_rest_field(
+				'modal', // Custom post type name
+				'modal_photo_entries', // Name of the custom field
+				array(
+					'get_callback' => 'meta_get_callback',
+					'schema' => null,
+				)
+			);
+
+			for ($i = 1; $i < 7; $i++){
+				$field_target = 'photo_info' . $i;
+				register_rest_field(
+					'modal', // Custom post type name
+					$field_target, // Name of the custom field
+					array(
+						'get_callback' => 'meta_get_callback',
+						'schema' => null,
+					)
+				);
+			}
+
+			register_rest_field(
+				'modal', // Custom post type name
+				'modal_tab_number', // Name of the custom field
+				array(
+					'get_callback' => 'meta_get_callback',
+					'schema' => null,
+				)
+			);
+
+			for ($i = 1; $i < 7; $i++){
+				$field_target = 'modal_tab_title' . $i;
+				register_rest_field(
+					'modal', // Custom post type name
+					$field_target, // Name of the custom field
+					array(
+						'get_callback' => 'meta_get_callback',
+						'schema' => null,
+					)
+				);
+			}
+		}
+
+		add_action('rest_api_init', 'register_modal_rest_fields');
 
 		// Add the filter to support filtering by "scene_location" in REST API queries
 		function filter_scene_by_scene_location($args, $request) {
