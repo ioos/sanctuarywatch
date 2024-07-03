@@ -158,14 +158,13 @@ function render_modal(key){
             acc.classList.add("accordion");
 
             // let collapseList = document.createElement("ul");
+            //for more info
             let collapseListHTML = '<div>';
             for (let i = 1; i < 7; i++){
                 let info_field = "modal_info" + i;
                 let info_text = "modal_info_text" + i;
                 let info_url = "modal_info_url" + i;
 
-                
-                
                 let modal_info_text = modal_data[info_field][info_text];
                 let modal_info_url = modal_data[info_field][info_url];
                 if ((modal_info_text == '') && (modal_info_url == '')){
@@ -183,13 +182,35 @@ function render_modal(key){
                 // collapseList.appendChild(listItem);
                 collapseListHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
                 collapseListHTML += '</div>';
+            }
+            //for photos:
+            let collapsePhotoHTML = '<div>';
+            for (let i = 1; i < 7; i++){
+                let info_field = "modal_photo" + i;
+                let info_text = "modal_photo_text" + i;
+                let info_url = "modal_photo_url" + i;
 
-                
-                
+                let modal_info_text = modal_data[info_field][info_text];
+                let modal_info_url = modal_data[info_field][info_url];
+                if ((modal_info_text == '') && (modal_info_url == '')){
+                    continue;
+                }
+                console.log(modal_info_text);
+                console.log(modal_info_url);
+                let listItem = document.createElement('li');
+                let anchor = document.createElement('a');
+                anchor.setAttribute('href', modal_info_url); 
+                anchor.textContent = modal_info_text;
+
+                listItem.appendChild(anchor);
+
+                // collapseList.appendChild(listItem);
+                collapsePhotoHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
+                collapsePhotoHTML += '</div>';
             }
             
             let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
-            let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", "Content of more info accordion item 2 goes here");
+            let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", collapsePhotoHTML);
 
             acc.appendChild(accordionItem1);
             acc.appendChild(accordionItem2);
@@ -228,6 +249,18 @@ function table_of_contents(){
                 modal.style.display = "block";
                 render_modal(key);
             });
+
+            let closeButton = document.getElementById("close");
+            closeButton.addEventListener('click', function() {
+                    
+                modal.style.display = "none";
+                let accordion_container = document.getElementById('accordion-container');
+                accordion_container.innerHTML = '';
+
+                let tagline_container = document.getElementById('tagline-container');
+                tagline_container.innerHTML = '';
+
+        });
         }
         
         else{
