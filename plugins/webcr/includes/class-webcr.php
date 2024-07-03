@@ -294,7 +294,7 @@ class Webcr {
 			);
 
 			for ($i = 1; $i < 7; $i++){
-				$field_target = 'photo_info' . $i;
+				$field_target = 'modal_photo' . $i;
 				register_rest_field(
 					'modal', // Custom post type name
 					$field_target, // Name of the custom field
