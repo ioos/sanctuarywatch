@@ -115,22 +115,11 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     return accordionItem;
 }
 
-let allkeys = Object.keys(child_obj);
-console.log(allkeys);
-let allkeyobj = {};
-allkeys.forEach(key => {
-    allkeyobj[key] = false;
-});
 
-console.log(allkeyobj);
 
 
 function render_modal(key){
     // fetch data from JSON
-    // if (allkeyobj[key]){
-    //     return;
-    // }
-    console.log(allkeyobj);
     let id = child_obj[key]['modal_id'];
     let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc';
     fetch(fetchURL)

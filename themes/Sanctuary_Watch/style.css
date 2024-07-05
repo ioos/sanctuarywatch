@@ -1,5 +1,6 @@
 /*
 Theme Name: Sanctuary Watch 
+Description: Sanctuary Watch is an interactive theme that visualizes and webenizes National Marine Sanctuary condition reports, helping display valuable information with a user-friendly experience. 
 */
 
 @import url('assets/css/bootstrap.css');
@@ -155,3 +156,6 @@ p[itemprop="name"], p[itemprop="address"] {
   }
 
 
+  /* .nav-link {
+    color: black ;
+} */

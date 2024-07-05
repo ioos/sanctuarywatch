@@ -45,7 +45,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 <!-- <body> -->
 <div class="modal" id="myModal" style="z-index: 999; background-color: rgba(0,0,0,0.8);">
   <div class="modal-dialog" style="margin: 10% auto">
-    <div class="modal-content">
+    <div class="modal-content" >
 
       <!-- Modal Header -->
       <div class="modal-header">
@@ -66,10 +66,23 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
         </div>
       </div>
 
-      <!-- Modal footer -->
-      <!-- <div class="modal-footer">
-        
-      </div> -->
+      <!-- images go here -->
+      <div id = "tab-container" class="modal-body">
+        <ul class="nav nav-tabs nav-fill">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Active</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          
+        </ul>
+
+      
+      </div>
 
     </div>
   </div>
