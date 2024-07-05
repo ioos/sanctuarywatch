@@ -43,8 +43,9 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 // $scene_photo_arr = $total_arr[1];
 ?>
 <!-- <body> -->
+<!-- <body class="p-3 m-0 border-0 bd-example m-0 border-0"> -->
 <div class="modal" id="myModal" style="z-index: 999; background-color: rgba(0,0,0,0.8);">
-  <div class="modal-dialog" style="margin: 10% auto">
+  <div class="modal-dialog" style="margin: 10% auto; max-width: 80%">
     <div class="modal-content" >
 
       <!-- Modal Header -->
@@ -67,22 +68,26 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
       </div>
 
       <!-- images go here -->
-      <div id = "tab-container" class="modal-body">
-        <ul class="nav nav-tabs nav-fill">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Active</a>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <!-- <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          
-        </ul>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
+          </li> -->
+        
+      </ul>
 
-      
+      <div class="tab-content" id="myTabContent">
+          <!-- <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">Blah Blah</div>
+          <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">ok</div>
+          <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">bruh </div> -->
+          <!-- <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">tuff</div> -->
       </div>
+      <!-- image stuff ends here -->
 
     </div>
   </div>

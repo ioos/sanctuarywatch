@@ -156,6 +156,10 @@ p[itemprop="name"], p[itemprop="address"] {
   }
 
 
-  /* .nav-link {
-    color: black ;
-} */
+.nav-tabs .nav-link {
+    color: black; /* Default color for non-active tabs */
+}
+.nav-tabs .nav-link.active {
+    color: black; /* Color for active tab */
+}
+

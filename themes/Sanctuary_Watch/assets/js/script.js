@@ -115,11 +115,51 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     return accordionItem;
 }
 
+//create tabs here
+function create_tabs(iter, tab_id, tab_label, tab_content) {
+    let tab_target = `#${tab_id}-pane`;
+    let tab_controls = `${tab_id}-pane`;
 
+    let myTab = document.getElementById('myTab');
+    let navItem = document.createElement("li");
+    navItem.classList.add("nav-item");
+    navItem.setAttribute("role", "presentation");
+    
+    const button = document.createElement('button');
+    button.classList.add('nav-link');
+    if (iter === 1) {
+        button.classList.add('active');
+        button.setAttribute('aria-selected', 'true');
+    } else {
+        button.setAttribute('aria-selected', 'false');
+    }
+    button.id = `${tab_id}`;
+    button.setAttribute('data-bs-toggle', 'tab');
+    button.setAttribute('data-bs-target', tab_target);
+    button.setAttribute('type', 'button');
+    button.setAttribute('role', 'tab');
+    button.setAttribute('aria-controls', tab_controls);
+    button.textContent = tab_label;
+
+    navItem.appendChild(button);
+    myTab.appendChild(navItem);
+
+    let tabContentContainer = document.getElementById("myTabContent");
+    const tabContentElement = document.createElement('div');
+    tabContentElement.classList.add('tab-pane', 'fade');
+    if (iter === 1) {
+        tabContentElement.classList.add('show', 'active');
+    }
+    tabContentElement.id = tab_controls;
+    tabContentElement.setAttribute('role', 'tabpanel');
+    tabContentElement.setAttribute('aria-labelledby', tab_id);
+    tabContentElement.setAttribute('tabindex', '0');
+    tabContentElement.textContent = tab_content;
+    tabContentContainer.appendChild(tabContentElement);
+}
 
 
 function render_modal(key){
-    // fetch data from JSON
     let id = child_obj[key]['modal_id'];
     let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc';
     fetch(fetchURL)
@@ -207,6 +247,14 @@ function render_modal(key){
 
             accordion_container.appendChild(acc);
             // allkeyobj[key] = true;
+
+            //for tabs jere:
+            let num_tabs = Number(modal_data["modal_tab_number"]);
+            for (let i =1; i <= num_tabs; i ++){
+                let tab_key = "modal_tab_title" + i;
+                let tab_title = modal_data[tab_key];
+                create_tabs(i, tab_key, tab_title, tab_title);
+            }
             
             
 
@@ -242,7 +290,7 @@ function table_of_contents(){
             let closeButton = document.getElementById("close");
             closeButton.addEventListener('click', function() {
                     
-                modal.style.display = "none";
+                // modal.style.display = "none";
                 let accordion_container = document.getElementById('accordion-container');
                 accordion_container.innerHTML = '';
 
@@ -303,6 +351,12 @@ function add_modal(){
                     let tagline_container = document.getElementById('tagline-container');
                     tagline_container.innerHTML = '';
 
+
+                    let myTab = document.getElementById('myTab');
+                    myTab.innerHTML = '';
+
+                    let tabContentContainer = document.getElementById("myTabContent");
+                    tabContentContainer.innerHTML = '';
             });
         }
     }
@@ -311,11 +365,16 @@ function add_modal(){
 
 
 
+// create_tabs(1, "home-tab", "#home-tab-pane", "home-tab-pane", "Home", "Content for Home tab");
+// let tabContentContainer = document.getElementById("myTabContent");
+// // tabContentContainer.innerHTML = '';
+// create_tabs(2, "not-tab", "#not-tab-pane", "not-tab-pane", "Not", "Content for Noy tab");
+// tabContentContainer.innerHTML = '';
+// create_tabs(1, "home-tab", "#home-tab-pane", "home-tab-pane", "Home", "Content for Home tab");
 
 
 
 loadSVG(url, "svg1");
-
 
 
 
