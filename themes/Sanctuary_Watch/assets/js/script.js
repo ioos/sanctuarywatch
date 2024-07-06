@@ -40,7 +40,13 @@ async function loadSVG(url, containerId) {
         const container = document.getElementById(containerId);
         container.appendChild(svgElement);
         // console.log(svgElement);
-        highlight_icons();
+        if (is_touchscreen()){
+            flicker_highlight_icons();
+        }
+        else{
+            highlight_icons();
+        }
+        // highlight_icons();
         table_of_contents();
         add_modal();
     } catch (error) {
@@ -52,6 +58,7 @@ async function loadSVG(url, containerId) {
 
 
 //highlight items on mouseover, remove highlight when off; 
+//CHANGE HERE FOR TABLET STUFF
 function highlight_icons(){
     for (let key in child_obj){
         let elem = document.querySelector('g[id="' + key + '"]');
@@ -68,6 +75,44 @@ function highlight_icons(){
         });
     }  
 }
+function flicker_highlight_icons() {
+    for (let key in child_obj) {
+        let elem = document.querySelector('g[id="' + key + '"]');
+        if (elem) {
+            // Add transition for smooth fading
+            elem.style.transition = 'stroke-opacity 0.8s ease-in-out';
+            
+            // Initial state
+            elem.style.stroke = "yellow";
+            elem.style.strokeWidth = "6";
+            elem.style.strokeOpacity = "0";
+
+            // Create flickering effect
+            let increasing = true;
+            setInterval(() => {
+                if (increasing) {
+                    elem.style.strokeOpacity = "0.7";
+                    increasing = false;
+                } else {
+                    elem.style.strokeOpacity = "0";
+                    increasing = true;
+                }
+            }, 1500); // Change every 1 second
+        }
+    }
+}
+
+function is_touchscreen(){
+    //check multiple things here: type of device, screen width, 
+    return ( 'ontouchstart' in window ) || 
+           ( navigator.maxTouchPoints > 0 ) || 
+           ( navigator.msMaxTouchPoints > 0 );
+    
+}
+
+
+
+
  
 //creates an accordion item w/custom IDs based on input
 function createAccordionItem(accordionId, headerId, collapseId, buttonText, collapseContent) {
@@ -307,6 +352,8 @@ function table_of_contents(){
         }
         let svg_elem = document.querySelector('g[id="' + key + '"]');
         // console.log(elem);
+        //CHANGE HERE FOR TABLET STUFF
+
         item.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
             svg_elem.style.stroke = "yellow";
@@ -365,12 +412,6 @@ function add_modal(){
 
 
 
-// create_tabs(1, "home-tab", "#home-tab-pane", "home-tab-pane", "Home", "Content for Home tab");
-// let tabContentContainer = document.getElementById("myTabContent");
-// // tabContentContainer.innerHTML = '';
-// create_tabs(2, "not-tab", "#not-tab-pane", "not-tab-pane", "Not", "Content for Noy tab");
-// tabContentContainer.innerHTML = '';
-// create_tabs(1, "home-tab", "#home-tab-pane", "home-tab-pane", "Home", "Content for Home tab");
 
 
 

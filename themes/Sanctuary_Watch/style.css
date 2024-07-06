@@ -163,3 +163,13 @@ p[itemprop="name"], p[itemprop="address"] {
     color: black; /* Color for active tab */
 }
 
+@keyframes flickerAnimation {
+  0%, 100% { stroke: yellow; stroke-width: 6; opacity: 1; }
+  50% { stroke: yellow; stroke-width: 6; opacity: 0; }
+}
+
+.flicker {
+  animation: flickerAnimation 2s infinite;
+  stroke: yellow;
+  stroke-width: 6;
+}
