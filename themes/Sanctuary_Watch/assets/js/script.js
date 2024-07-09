@@ -40,13 +40,27 @@ async function loadSVG(url, containerId) {
             console.log("touchscreen recognized");
             if (is_mobile() && (deviceDetector.device != 'tablet')){ //a phone and not a tablet; screen will be its own UI here
                 console.log("mobile recognized within conditional");
+                const iconsElement = svgElement.getElementById("icons");
+                //for mobile: only leave icons, nothing else
+                const parentElement = svgElement.querySelector('g.cls-3');
+                    // console.log(Array.from(parentElement.children));
+                const children = Array.from(parentElement.children);
+                children.forEach(child => {
+                if (child !== iconsElement) {
+                        parentElement.removeChild(child);
+                    }
+                });
+
+                
                 highlight_icons()
+
             } else{ //if it gets here, device is a tablet
                 flicker_highlight_icons();
             }
         }
         else{ //device is a PC
             highlight_icons();
+            
         }
         // highlight_icons();
         table_of_contents();
