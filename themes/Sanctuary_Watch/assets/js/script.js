@@ -30,20 +30,22 @@ async function loadSVG(url, containerId) {
         const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
         const svgElement = svgDoc.documentElement;
 
-        // Step 3: Move the SVG upwards
-        // const translateY = -10; // Adjust this value to move the image up
-        // const existingTransform = svgElement.getAttribute("transform") || "";
-        // const newTransform = `translate(0, ${translateY}) ${existingTransform}`;
-        // svgElement.setAttribute("transform", newTransform.trim());
-
-        // Step 4: Append the SVG to the DOM
+        //Append the SVG to the DOM
         const container = document.getElementById(containerId);
         container.appendChild(svgElement);
         // console.log(svgElement);
+        // checking if user device is touchscreen
         if (is_touchscreen()){
-            flicker_highlight_icons();
+            // flicker_highlight_icons();
+            console.log("touchscreen recognized");
+            if (is_mobile() && (deviceDetector.device != 'tablet')){ //a phone and not a tablet; screen will be its own UI here
+                console.log("mobile recognized within conditional");
+                highlight_icons()
+            } else{ //if it gets here, device is a tablet
+                flicker_highlight_icons();
+            }
         }
-        else{
+        else{ //device is a PC
             highlight_icons();
         }
         // highlight_icons();
@@ -53,8 +55,6 @@ async function loadSVG(url, containerId) {
         console.error('Error fetching or parsing the SVG:', error);
     }
 }
-
-//TODO: lot of redundant code within below 3 functions, a working start; might be a good idea to clean up at some point
 
 
 //highlight items on mouseover, remove highlight when off; 
@@ -75,6 +75,7 @@ function highlight_icons(){
         });
     }  
 }
+//flicker highlight on and off, for tablets
 function flicker_highlight_icons() {
     for (let key in child_obj) {
         let elem = document.querySelector('g[id="' + key + '"]');
@@ -102,6 +103,9 @@ function flicker_highlight_icons() {
     }
 }
 
+
+
+//check if touchscreen
 function is_touchscreen(){
     //check multiple things here: type of device, screen width, 
     return ( 'ontouchstart' in window ) || 
@@ -110,9 +114,34 @@ function is_touchscreen(){
     
 }
 
+//check operating system
+function is_mobile(){
+    return (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+        
+}
 
-
-
+//helper function from the internet; using it to check if device is a tablet or not. 
+var deviceDetector = (function ()
+{
+  var ua = navigator.userAgent.toLowerCase();
+  var detect = (function(s)
+  {
+    if(s===undefined)s=ua;
+    else ua = s.toLowerCase();
+    if(/(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(ua))
+                return 'tablet';
+          else
+      if(/(mobi|ipod|phone|blackberry|opera mini|fennec|minimo|symbian|psp|nintendo ds|archos|skyfire|puffin|blazer|bolt|gobrowser|iris|maemo|semc|teashark|uzard)/.test(ua))            
+                    return 'phone';
+                else return 'desktop';
+    });
+    return{
+        device:detect(),
+        detect:detect,
+        isMobile:((detect()!='desktop')?true:false),
+        userAgent:ua
+    };
+}());
  
 //creates an accordion item w/custom IDs based on input
 function createAccordionItem(accordionId, headerId, collapseId, buttonText, collapseContent) {

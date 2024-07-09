@@ -118,7 +118,9 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
         //Log json file for debugging.
         // console.log(child_id_json);
         
+        
     </script>
+
     </div>
 
   <!-- </body> -->
