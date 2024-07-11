@@ -58,7 +58,7 @@ class Webcr_Utility {
     }
 
     public function returnSceneTitles($scene_id, $modal_id){
-        $scene_titles = array("" => "Scene");
+        $scene_titles =  array("" => "Scene");
         if (array_key_exists("post", $_GET)) {
             $scene_location = get_post_meta($modal_id, "modal_location", true);
             $scene_name = get_post_meta($scene_id, "post_title", true);
@@ -140,6 +140,79 @@ class Webcr_Utility {
             }
         }
         return $modal_icons;
+    }
+
+    // return an array of scenes, other than the current scene, for a given location
+    public function returnScenesExceptCurrent($scene_id){
+        $potential_scenes = [];// array(" " => "Scenes");
+        $scene_location = get_post_meta($scene_id, "scene_location", true);
+        if ($scene_location == true){
+            $args = array(
+                'post_type' => 'scene',  // Your custom post type
+                'meta_query' => array(
+                    array(
+                        'key' => 'scene_location',      // The custom field key
+                        'value' => $scene_location, // The value you are searching for
+                        'compare' => '='         // Comparison operator
+                    )
+                ),
+                'fields' => 'ids'            // Only return post IDs
+            );
+            
+            // Execute the query
+            $query = new WP_Query($args);
+            
+            // Get the array of post IDs
+            $scene_post_ids = $query->posts;
+            foreach ($scene_post_ids as $target_id){
+                if ($target_id != $scene_id) {
+                    $target_title = get_post_meta($target_id, "post_title", true);
+                    $potential_scenes[$target_id] = $target_title;
+                }
+            }
+            asort($potential_scenes);
+        }
+        return $potential_scenes;
+    }
+
+    public function returnModalSections($scene_id){
+        $modal_sections = [];
+        for ($i = 1; $i < 7; $i++){
+            $field_target = 'scene_section' . $i;
+            $target_section = get_post_meta($scene_id, $field_target, true);
+            if ($target_section != null && target_section != ""){
+                array_push($modal_sections, $target_section);
+            }
+        }
+
+        $scene_location = get_post_meta($scene_id, "scene_location", true);
+        if ($scene_location == true){
+            $args = array(
+                'post_type' => 'scene',  // Your custom post type
+                'meta_query' => array(
+                    array(
+                        'key' => 'scene_location',      // The custom field key
+                        'value' => $scene_location, // The value you are searching for
+                        'compare' => '='         // Comparison operator
+                    )
+                ),
+                'fields' => 'ids'            // Only return post IDs
+            );
+            
+            // Execute the query
+            $query = new WP_Query($args);
+            
+            // Get the array of post IDs
+            $scene_post_ids = $query->posts;
+            foreach ($scene_post_ids as $target_id){
+                if ($target_id != $scene_id) {
+                    $target_title = get_post_meta($target_id, "post_title", true);
+                    $potential_scenes[$target_id] = $target_title;
+                }
+            }
+            asort($potential_scenes);
+        }
+        return $potential_scenes;
     }
 }
 

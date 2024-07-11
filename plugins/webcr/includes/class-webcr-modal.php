@@ -122,12 +122,16 @@ class Webcr_Modal {
         $scene_titles =[];
         $modal_icons = [];
         $toc_sections = [];
+        $icon_scene_out = []; 
+        $modal_section = [];
         // used by both scene and icon dropdowns
         if (array_key_exists("post", $_GET)) {
             $modal_id = intval($_GET["post"]);
             $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
             $scene_titles = $function_utilities -> returnSceneTitles($scene_id, $modal_id);
             $modal_icons = $function_utilities -> returnIcons($scene_id);
+            $icon_scene_out = $function_utilities -> returnScenesExceptCurrent($scene_id);
+            $modal_section = $function_utilities -> modalSections($scene_id);
         }
 
         $fields[] = array(
@@ -161,6 +165,13 @@ class Webcr_Modal {
                     'description' => 'Modal Icons description',
                 ),
                 array(
+                    'id'             => 'modal_section',
+                    'type'           => 'select',
+                    'title'          => 'Section',
+                    'options'        =>  $modal_section,
+                    'description' => 'Modal Section description',
+                ),
+                array(
                     'id'             => 'icon_function',
                     'type'           => 'select',
                     'title'          => 'Icon Function',
@@ -180,7 +191,7 @@ class Webcr_Modal {
                     'id'             => 'icon_scene_out',
                     'type'           => 'select',
                     'title'          => 'Icon Scene Out',
-                    'options'        => array ("" => "Icon Scene Out"), 
+                    'options'        => $icon_scene_out,  
                     'description' => 'Icon Scene Out description',
                 ),
 
@@ -555,17 +566,16 @@ class Webcr_Modal {
                 'auth_callback' => '__return_false' //Return false to disallow writing
             )
         );        
-        
-        for ($i = 1; $i < 7; $i++){
-            $field_target = 'modal_info' . $i;
-            $field_description = "Info link " . $i;
-            register_meta( 
-                'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-                $field_target, // Meta key name
+
+        for ($i = 1; $i < 7; $i++ ) {
+            $target_field = 'modal_info' . $i;
+            $target_description = 'Info link ' . $i;
+            register_meta( 'post', 
+                $target_field,
                 array(
-                    'auth_callback'     => '__return_false', // Return false to disallow writing
+                    'auth_callback'     => '__return_false' ,
                     'single'            => true, // The field contains a single array
-                    'description' => $field_description, // Description of the meta key
+                    'description' => $target_description, // Description of the meta key
                     'show_in_rest'      => array(
                         'schema' => array(
                             'type'  => 'array', // The meta field is an array
@@ -590,26 +600,25 @@ class Webcr_Modal {
             )
         );        
 
-        for ($i = 1; $i < 7; $i++){
-            $field_target = 'modal_photo' . $i;
-            $field_description = "Photo link " . $i;
-                register_meta( 
-                    'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-                    $field_target, // Meta key name
-                    array(
-                        'auth_callback'     => '__return_false', // Return false to disallow writing
-                        'single'            => true, // The field contains a single array
-                        'description' => $field_description, // Description of the meta key
-                        'show_in_rest'      => array(
-                            'schema' => array(
-                                'type'  => 'array', // The meta field is an array
-                                'items' => array(
-                                    'type' => 'string', // Each item in the array is a string
-                                ),
+        for ($i = 1; $i < 7; $i++ ) {
+            $target_field = 'modal_photo' . $i;
+            $target_description = 'Photo link ' . $i;
+            register_meta( 'post', 
+                $target_field,
+                array(
+                    'auth_callback'     => '__return_false' ,
+                    'single'            => true, // The field contains a single array
+                    'description' => $target_description, // Description of the meta key
+                    'show_in_rest'      => array(
+                        'schema' => array(
+                            'type'  => 'array', // The meta field is an array
+                            'items' => array(
+                                'type' => 'string', // Each item in the array is a string
                             ),
                         ),
-                    ) 
-                ); 
+                    ),
+                ) 
+            );
         }
 
         register_meta(
@@ -622,24 +631,23 @@ class Webcr_Modal {
                 'description' => 'The number of modal tabs', // Description of the meta key
                 'auth_callback' => '__return_false' //Return false to disallow writing
             )
-        ); 
+        );    
 
-        for ($i = 1; $i < 7; $i++){
-            $field_target = 'modal_tab_title' . $i;
-            $field_description = "Modal tab " . $i;
+        for ($i = 1; $i < 7; $i++ ) {
+            $target_field = 'modal_tab_title' . $i;
+            $target_description = 'Modal tab ' . $i;
             register_meta(
                 'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-                $field_target, // Meta key name
+                $target_field, // Meta key name
                 array(
                     'show_in_rest' => true, // Make the field available in REST API
                     'single' => true, // Indicates whether the meta key has one single value
                     'type' => 'string', // Data type of the meta value
-                    'description' => $field_description, // Description of the meta key
+                    'description' => $target_description, // Description of the meta key
                     'auth_callback' => '__return_false' //Return false to disallow writing
                 )
             );
         }
-   
     }
 
     /**
