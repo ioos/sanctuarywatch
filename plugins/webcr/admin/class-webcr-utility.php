@@ -175,44 +175,19 @@ class Webcr_Utility {
         return $potential_scenes;
     }
 
+    // Potential section headers for icons
     public function returnModalSections($scene_id){
         $modal_sections = [];
         for ($i = 1; $i < 7; $i++){
             $field_target = 'scene_section' . $i;
             $target_section = get_post_meta($scene_id, $field_target, true);
-            if ($target_section != null && target_section != ""){
-                array_push($modal_sections, $target_section);
+            if ($target_section != null && $target_section != ""){
+                $modal_sections[$target_section] = $target_section;
             }
         }
-
-        $scene_location = get_post_meta($scene_id, "scene_location", true);
-        if ($scene_location == true){
-            $args = array(
-                'post_type' => 'scene',  // Your custom post type
-                'meta_query' => array(
-                    array(
-                        'key' => 'scene_location',      // The custom field key
-                        'value' => $scene_location, // The value you are searching for
-                        'compare' => '='         // Comparison operator
-                    )
-                ),
-                'fields' => 'ids'            // Only return post IDs
-            );
-            
-            // Execute the query
-            $query = new WP_Query($args);
-            
-            // Get the array of post IDs
-            $scene_post_ids = $query->posts;
-            foreach ($scene_post_ids as $target_id){
-                if ($target_id != $scene_id) {
-                    $target_title = get_post_meta($target_id, "post_title", true);
-                    $potential_scenes[$target_id] = $target_title;
-                }
-            }
-            asort($potential_scenes);
-        }
-        return $potential_scenes;
+        asort($modal_sections);
+        $modal_sections = array_merge(array("None" => "None"),$modal_sections );
+        return $modal_sections;
     }
 }
 
