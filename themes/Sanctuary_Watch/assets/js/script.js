@@ -32,7 +32,8 @@ async function loadSVG(url, containerId) {
 
         //Append the SVG to the DOM
         const container = document.getElementById(containerId);
-        container.appendChild(svgElement);
+        console.log(container);
+        // container.appendChild(svgElement);
         // console.log(svgElement);
         // checking if user device is touchscreen
         if (is_touchscreen()){
@@ -46,24 +47,94 @@ async function loadSVG(url, containerId) {
                     // console.log(Array.from(parentElement.children));
                 const children = Array.from(parentElement.children);
                 children.forEach(child => {
-                if (child !== iconsElement) {
-                        parentElement.removeChild(child);
+                    if (child !== iconsElement) {
+                            parentElement.removeChild(child);
                     }
                 });
+                // console.log("icons element:");
+                // let iconsArr = Array.from(iconsElement.children);
+                // console.log(iconsArr);
+                // console.log("length of arr is: ");
+                // console.log(iconsArr.length);
+                // let numRows = Math.ceil(iconsArr.length/3);
+                // console.log("num of rows in grid:");
+                // console.log(numRows);
+                // // for (let i = 0; i < numRows; i ++){
+                // //     console.log(iconsArr[i]);
+                // //     let newRow = document.createElement("div");
+                // //     newRow.classList.add("row");
+                // //     newRow.setAttribute("id", `row${i}`);
+                // //     newRow.innerText;
+                // //     let item1 = document.querySelector("#infauna");
+                // //     newRow.append(item1);
+                // //     parentElement.appendChild(newRow);
+                // // }
+                // // console.log(children);
+                // container.innerHTML = '';
 
+
+                let outer_cont = document.querySelector("body > div.container-fluid");
+                outer_cont.innerHTML = '';
+                let row_cont = document.createElement("div");
+                row_cont.classList.add("row");
+                let cont = document.createElement("div");
+                cont.classList.add("col-4");
+
+                cont.appendChild(svgElement);
+                // svgElement.removeChild("cls-3");
+                let key = svgElement.querySelector("#key-climate-ocean");
+                // console.log(mob);
+
+
+                const cls3Element = svgElement.querySelector('.cls-3');
+                cls3Element.remove();
                 
-                highlight_icons()
+                svgElement.append(key);
+                
 
+		        // svgElement.setAttribute('width', 'auto');
+                // svgElement.setAttribute('height', 'auto');
+
+                svgElement.removeAttribute("height");
+                svgElement.removeAttribute("width");
+                svgElement.removeAttribute("max-width");
+
+
+
+                svgElement.setAttribute('viewBox', `0 0 180 180`);
+                // // svgElement.setAttribute('enable-background:new', 'new 0 0 auto auto');
+                // svgElement.setAttribute("display", "inline-block");
+                // svgElement.setAttribute("max-width", "100%");
+                // let col4 = document.querySelector("body > div.container-fluid > div > div");
+                let caption = document.createElement("div");
+                caption.innerText = "dummy caption here";
+                caption.setAttribute("style", "font-size: 10px")
+                cont.appendChild(caption);
+
+                // cont.appendChild(svgIcon);
+                row_cont.appendChild(cont);
+                outer_cont.appendChild(row_cont);
+                // highlight_icons()
+                
             } else{ //if it gets here, device is a tablet
+                container.appendChild(svgElement);
                 flicker_highlight_icons();
+                table_of_contents();
+                add_modal();
+
+
             }
         }
         else{ //device is a PC
+            container.appendChild(svgElement);
             highlight_icons();
+            table_of_contents();
+            add_modal();
+
             
         }
         // highlight_icons();
-        table_of_contents();
+        // table_of_contents();
         add_modal();
     } catch (error) {
         console.error('Error fetching or parsing the SVG:', error);

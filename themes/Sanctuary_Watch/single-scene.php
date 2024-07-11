@@ -122,6 +122,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
     </script>
 
     </div>
+    
 
   <!-- </body> -->
 
