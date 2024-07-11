@@ -131,7 +131,7 @@ class Webcr_Modal {
             $scene_titles = $function_utilities -> returnSceneTitles($scene_id, $modal_id);
             $modal_icons = $function_utilities -> returnIcons($scene_id);
             $icon_scene_out = $function_utilities -> returnScenesExceptCurrent($scene_id);
-            $modal_section = $function_utilities -> modalSections($scene_id);
+            $modal_section = $function_utilities -> returnModalSections($scene_id);
         }
 
         $fields[] = array(
