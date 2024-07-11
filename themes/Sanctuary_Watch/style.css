@@ -174,3 +174,51 @@ p[itemprop="name"], p[itemprop="address"] {
   stroke-width: 6;
 }
 
+/* Ensure the outer container takes full width */
+.container-fluid {
+  width: 100%;
+  padding: 20px;
+}
+
+/* Style each row */
+.row {
+  display: flex;
+  justify-content: center; /* Center columns horizontally */
+  margin-bottom: 20px; /* Space between rows */
+}
+
+/* Style each column */
+.col-4 {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center icons vertically */
+  justify-content: center;
+  text-align: center;
+  /* overflow: hidden; */
+  border: 0.25px solid #ccc; /* Border style */
+  border-radius: 10px; /* Rounded corners */
+  /* padding: 10px; */
+  /* margin: 0.25px; */
+  transform: scale(0.9);
+}
+
+/* Ensure SVG icons are a reasonable size */
+.col-4 svg {
+  width: 100px; 
+  height: 100px; /* Base size */
+  max-width: 100%; 
+  /* transform: scale(1.55);
+  transform-origin: center; */
+  /* transform: scale(1.5); Adjust scale as needed */
+   /* Ensure scaling is centered */
+  /* overflow: hidden; */
+  transform: scale(0.9);
+}
+
+/* Style the captions */
+.col-4 div {
+  font-size: 12px; /* Adjust size as needed */
+  margin-top: 10px;
+  transform: scale(0.9);
+}
+

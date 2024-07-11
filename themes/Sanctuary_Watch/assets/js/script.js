@@ -11,7 +11,84 @@ url = url1.substring(2, url1.length - 2);
 
 //lol
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
+viewBoxObj = {
+    'key-climate-ocean': '-25 20 160 160',
+    'key_drivers_and_pressures': '-25 20 160 160',
+    'key-human-activities': '370 20 160 160',
+    'mobile-inverts': '210 485 120 20',
+    'infauna': '640 355 60 60',
+    'deep-seafloor-seastars': '99 500 47 40',
+    'ca-sheephead': '400 130 100 100',
+    'demersal-fishes': '320 220 200 200',
+    'biogenic-inverts': '380 460 130 130' //or 360 430 160 160
 
+};
+let mobileBool = false;
+//helper function for creating mobile grid for loadSVG:
+function mobile_helper(svgElement, iconsArr){
+    //just some checks to make sure the variables are right
+    // console.log(iconsArr[1].id);
+    // console.log("length of arr is: ");
+    // console.log(iconsArr.length);
+    let numRows = Math.ceil((iconsArr.length/3));
+    // console.log("num of rows in grid:");
+    // console.log(numRows);
+    //this is the outer fluid container that will hold all the rows/columns
+    let outer_cont = document.querySelector("body > div.container-fluid");
+    outer_cont.innerHTML = '';
+
+    let idx = 0;
+    for (let i = 0; i < numRows; i++){
+        //each row has 3 columns, so number of rows is ceiling of number of icons/3
+        let row_cont = document.createElement("div");
+        row_cont.classList.add("row");
+        row_cont.setAttribute("id", `row-${i}`);
+
+        for (let j = 0; j < 3; j++){
+            if (idx < iconsArr.length){
+                //3 columns/row no matter what
+                let cont = document.createElement("div");
+                cont.classList.add("col-4");
+                let svgClone = svgElement.cloneNode(true);
+                cont.appendChild(svgClone);
+                    // svgElement.removeChild("cls-3");
+                let currIcon = iconsArr[idx].id;
+                let key = svgClone.querySelector(`#${currIcon}`);
+                cont.setAttribute("id", currIcon);
+
+                // console.log(mob);
+
+                const cls3Element = svgClone.lastElementChild;
+                cls3Element.remove();
+                svgClone.append(key);
+                svgClone.removeAttribute("height");
+                svgClone.removeAttribute("width");
+                svgClone.removeAttribute("max-width");
+
+
+
+                svgClone.setAttribute('viewBox',viewBoxObj[currIcon]);
+                let caption = document.createElement("div");
+                if (child_obj[currIcon]){
+                    caption.innerText = child_obj[currIcon].title;
+                } else {
+                    caption.innerText = "not in wp yet";
+                    
+                }
+                
+                caption.setAttribute("style", "font-size: 10px")
+                cont.appendChild(caption);
+                row_cont.appendChild(cont);
+                idx+=1;
+            } else{
+                
+                continue;
+            }
+        }
+        outer_cont.appendChild(row_cont);
+    }    
+   
+}
 
 // Below is the function that will be used to include SVGs within each scene
 //based on link_svg from infographiq.js
@@ -41,9 +118,13 @@ async function loadSVG(url, containerId) {
             console.log("touchscreen recognized");
             if (is_mobile() && (deviceDetector.device != 'tablet')){ //a phone and not a tablet; screen will be its own UI here
                 console.log("mobile recognized within conditional");
+                mobileBool = true;
                 const iconsElement = svgElement.getElementById("icons");
                 //for mobile: only leave icons, nothing else
-                const parentElement = svgElement.querySelector('g.cls-3');
+                // const parentElement = svgElement.querySelector('g.cls-3');
+                // let parentElement = svgElement.querySelector("#g");
+                console.log(svgElement.lastElementChild);
+                let parentElement = svgElement.lastElementChild;
                     // console.log(Array.from(parentElement.children));
                 const children = Array.from(parentElement.children);
                 children.forEach(child => {
@@ -51,70 +132,13 @@ async function loadSVG(url, containerId) {
                             parentElement.removeChild(child);
                     }
                 });
-                // console.log("icons element:");
-                // let iconsArr = Array.from(iconsElement.children);
-                // console.log(iconsArr);
-                // console.log("length of arr is: ");
-                // console.log(iconsArr.length);
-                // let numRows = Math.ceil(iconsArr.length/3);
-                // console.log("num of rows in grid:");
-                // console.log(numRows);
-                // // for (let i = 0; i < numRows; i ++){
-                // //     console.log(iconsArr[i]);
-                // //     let newRow = document.createElement("div");
-                // //     newRow.classList.add("row");
-                // //     newRow.setAttribute("id", `row${i}`);
-                // //     newRow.innerText;
-                // //     let item1 = document.querySelector("#infauna");
-                // //     newRow.append(item1);
-                // //     parentElement.appendChild(newRow);
-                // // }
-                // // console.log(children);
-                // container.innerHTML = '';
-
-
-                let outer_cont = document.querySelector("body > div.container-fluid");
-                outer_cont.innerHTML = '';
-                let row_cont = document.createElement("div");
-                row_cont.classList.add("row");
-                let cont = document.createElement("div");
-                cont.classList.add("col-4");
-
-                cont.appendChild(svgElement);
-                // svgElement.removeChild("cls-3");
-                let key = svgElement.querySelector("#key-climate-ocean");
-                // console.log(mob);
-
-
-                const cls3Element = svgElement.querySelector('.cls-3');
-                cls3Element.remove();
                 
-                svgElement.append(key);
+                let iconsArr = Array.from(iconsElement.children);
+                mobile_helper(svgElement, iconsArr);
+
+                add_modal();
+                // flicker_highlight_icons(); turned off for now but can toggle
                 
-
-		        // svgElement.setAttribute('width', 'auto');
-                // svgElement.setAttribute('height', 'auto');
-
-                svgElement.removeAttribute("height");
-                svgElement.removeAttribute("width");
-                svgElement.removeAttribute("max-width");
-
-
-
-                svgElement.setAttribute('viewBox', `0 0 180 180`);
-                // // svgElement.setAttribute('enable-background:new', 'new 0 0 auto auto');
-                // svgElement.setAttribute("display", "inline-block");
-                // svgElement.setAttribute("max-width", "100%");
-                // let col4 = document.querySelector("body > div.container-fluid > div > div");
-                let caption = document.createElement("div");
-                caption.innerText = "dummy caption here";
-                caption.setAttribute("style", "font-size: 10px")
-                cont.appendChild(caption);
-
-                // cont.appendChild(svgIcon);
-                row_cont.appendChild(cont);
-                outer_cont.appendChild(row_cont);
-                // highlight_icons()
                 
             } else{ //if it gets here, device is a tablet
                 container.appendChild(svgElement);
@@ -135,7 +159,7 @@ async function loadSVG(url, containerId) {
         }
         // highlight_icons();
         // table_of_contents();
-        add_modal();
+        // add_modal();
     } catch (error) {
         console.error('Error fetching or parsing the SVG:', error);
     }
@@ -166,18 +190,18 @@ function flicker_highlight_icons() {
         let elem = document.querySelector('g[id="' + key + '"]');
         if (elem) {
             // Add transition for smooth fading
-            elem.style.transition = 'stroke-opacity 0.8s ease-in-out';
+            elem.style.transition = 'stroke-opacity 1s ease-in-out';
             
             // Initial state
             elem.style.stroke = "yellow";
-            elem.style.strokeWidth = "6";
+            elem.style.strokeWidth = "3";
             elem.style.strokeOpacity = "0";
 
             // Create flickering effect
             let increasing = true;
             setInterval(() => {
                 if (increasing) {
-                    elem.style.strokeOpacity = "0.7";
+                    elem.style.strokeOpacity = "0.5";
                     increasing = false;
                 } else {
                     elem.style.strokeOpacity = "0";
@@ -499,9 +523,18 @@ function add_modal(){
 
             elem.addEventListener('click', function() {
                     modal.style.display = "block";
-                    render_modal(key )
+                    render_modal(key );
 
             });
+            
+            if (mobileBool){
+                let itemContainer = document.querySelector(`#${key}`);
+                itemContainer.addEventListener('click', function() {
+                    modal.style.display = "block";
+                    render_modal(key );
+
+            });
+            }
             
             closeButton.addEventListener('click', function() {
                     
