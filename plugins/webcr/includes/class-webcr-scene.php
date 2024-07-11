@@ -855,7 +855,7 @@ class Webcr_Scene {
                 'single' => true, // Indicates whether the meta key has one single value
                 'type' => 'string', // Data type of the meta value
                 'description' => 'The location of the scene', // Description of the meta key
-                'sanitize_callback' => 'meta_sanitize_callback', // Callback function to sanitize the value
+        //        'sanitize_callback' => 'meta_sanitize_callback', // Callback function to sanitize the value
                 'auth_callback' => '__return_false'
 //                'auth_callback' => function () {
   //                  return true; // Return true to allow reading, false to disallow writing
@@ -871,7 +871,7 @@ class Webcr_Scene {
                 'single' => true, // Indicates whether the meta key has one single value
                 'type' => 'string', // Data type of the meta value
                 'description' => 'The url of the infographic', // Description of the meta key
-                'sanitize_callback' => 'meta_sanitize_callback', // Callback function to sanitize the value
+       //         'sanitize_callback' => 'meta_sanitize_callback', // Callback function to sanitize the value
                 'auth_callback' => '__return_false'
 //                'auth_callback' => function () {
   //                  return true; // Return true to allow reading, false to disallow writing
@@ -879,11 +879,6 @@ class Webcr_Scene {
             )
         );
 
-    }
-
-    function meta_sanitize_callback( $meta_value, $meta_key, $object_type ) {
-        // Prevent updating metadata by returning the old value
-        return get_metadata( $object_type, $object_id, $meta_key, true );
     }
 
     function scene_preview() {
