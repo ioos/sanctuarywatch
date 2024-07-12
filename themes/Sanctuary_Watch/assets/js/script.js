@@ -64,26 +64,14 @@ function mobile_helper(svgElement, iconsArr){
                 console.log(key);
                 cont.setAttribute("id", `${currIcon}-container`);
 
-                // console.log(mob);
-                // let layer = svgClone.parentElement;
-
-                // const cls3Element = svgClone.lastElementChild;
-                // cls3Element.remove();
                 svgClone.append(defs);
                 svgClone.append(key);
-                // svgClone.removeAttribute("height");
-                // svgClone.setAttribute('preserveAspectRatio', 'xMidYMid meet');
                 
-                // let viewboxAttr = '0 0 70.get0 600';
-                // if (viewBoxObj[currIcon]){
-                //     viewboxAttr = viewBoxObj[currIcon];
-                // } 
-                // svgClone.setAttribute('viewBox',viewboxAttr);
                 let caption = document.createElement("div");
                 if (child_obj[currIcon]){
                     caption.innerText = child_obj[currIcon].title;
                 } else {
-                    caption.innerText = "not in wp yet";
+                    caption.innerText = "not in wp yet, have to add";
                     
                 }
                 
@@ -91,7 +79,7 @@ function mobile_helper(svgElement, iconsArr){
                 cont.appendChild(caption);
                 row_cont.appendChild(cont);
                 setTimeout(() => {
-                    let bbox = key.getBBox();
+                    let bbox = key.getBBox(); //toggle
                     svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
                 }, 0);
 
@@ -532,8 +520,9 @@ function table_of_contents(){
 //generates modal window when SVG element is clicked. 
 function add_modal(){
     for (let key in child_obj){
+        let elem = document.querySelector('g[id="' + key + '"]');
         if (child_obj[key]['modal']){
-            let elem = document.querySelector('g[id="' + key + '"]');
+            // let elem = document.querySelector('g[id="' + key + '"]');
             let modal = document.getElementById("myModal");
             let closeButton = document.getElementById("close");
             
@@ -569,6 +558,20 @@ function add_modal(){
                     let tabContentContainer = document.getElementById("myTabContent");
                     tabContentContainer.innerHTML = '';
             });
+        } else {
+            elem.addEventListener('click', function() {
+                let link =  child_obj[key]['external_url'];
+                window.location.href = link;
+
+        });
+        if (mobileBool){
+            let itemContainer = document.querySelector(`#${key}-container`);
+            itemContainer.addEventListener('click', function() {
+                let link =  child_obj[key]['external_url'];
+                window.location.href = link;
+
+        });
+        }
         }
     }
 }

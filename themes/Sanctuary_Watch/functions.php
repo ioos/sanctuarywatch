@@ -446,7 +446,7 @@
               $external_url = get_post_meta( $child_post_id, "icon_external_url")[0];
             } else if ($icon_type[0] === "Scene"){
               $external_scene_id = get_post_meta( $child_post_id, "icon_scene_out");
-              $external_url = get_permalink($scene_id[0]);
+              $external_url = get_permalink($external_scene_id[0]);
 
             } 
             $child_ids[$child_id] = [
