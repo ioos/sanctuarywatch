@@ -199,26 +199,36 @@ p[itemprop="name"], p[itemprop="address"] {
   border-radius: 10px; /* Rounded corners */
   /* padding: 10px; */
   /* margin: 0.25px; */
-  transform: scale(0.9);
+  background-color: #d8dbe3;
+  transform: scale(0.95);
+  max-width: 100%; 
+  max-height: 100%; 
+  width: 120px; 
+  height: 170px;
 }
 
 /* Ensure SVG icons are a reasonable size */
 .col-4 svg {
-  width: 100px; 
-  height: 100px; /* Base size */
+  /* width: 100px;  */
+  /* height: 100px;  */
+  width: 100px;
+  height: 180px;
   max-width: 100%; 
-  /* transform: scale(1.55);
-  transform-origin: center; */
+  max-height: 100%; 
+
+  /* transform: scale(1.55); */
+  transform-origin: center;
+  object-fit: contain;
   /* transform: scale(1.5); Adjust scale as needed */
    /* Ensure scaling is centered */
   /* overflow: hidden; */
-  transform: scale(0.9);
+  /* transform: scale(0.95); */
 }
 
 /* Style the captions */
 .col-4 div {
-  font-size: 12px; /* Adjust size as needed */
+  font-size: 13px; /* Adjust size as needed */
   margin-top: 10px;
-  transform: scale(0.9);
+  transform: scale(0.95);
 }
 

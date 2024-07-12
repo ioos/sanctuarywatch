@@ -12,20 +12,22 @@ url = url1.substring(2, url1.length - 2);
 //lol
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
 viewBoxObj = {
-    'key-climate-ocean': '-25 20 160 160',
-    'key_drivers_and_pressures': '-25 20 160 160',
-    'key-human-activities': '370 20 160 160',
-    'mobile-inverts': '210 485 120 20',
-    'infauna': '640 355 60 60',
-    'deep-seafloor-seastars': '99 500 47 40',
-    'ca-sheephead': '400 130 100 100',
-    'demersal-fishes': '320 220 200 200',
-    'biogenic-inverts': '380 460 130 130' //or 360 430 160 160
+    // 'key-climate-ocean': '-25 20 160 160',
+    // 'key_drivers_and_pressures': '-25 20 160 160',
+    // 'key-human-activities': '370 20 160 160',
+    // 'mobile-inverts': '210 485 120 20',
+    // 'infauna': '640 355 60 60',
+    // 'deep-seafloor-seastars': '99 500 47 40',
+    // 'ca-sheephead': '400 130 100 100',
+    // 'demersal-fishes': '320 220 200 200',
+    // 'biogenic-inverts': '380 460 130 130' //or 360 430 160 160
 
 };
 let mobileBool = false;
 //helper function for creating mobile grid for loadSVG:
 function mobile_helper(svgElement, iconsArr){
+    let defs = svgElement.firstElementChild;
+    console.log(defs);
     //just some checks to make sure the variables are right
     // console.log(iconsArr[1].id);
     // console.log("length of arr is: ");
@@ -49,25 +51,34 @@ function mobile_helper(svgElement, iconsArr){
                 //3 columns/row no matter what
                 let cont = document.createElement("div");
                 cont.classList.add("col-4");
-                let svgClone = svgElement.cloneNode(true);
+                // let svgClone = svgElement.cloneNode(true);
+                let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+                console.log(svgClone);
+                // svgClone.setAttributeNS("")
                 cont.appendChild(svgClone);
                     // svgElement.removeChild("cls-3");
                 let currIcon = iconsArr[idx].id;
-                let key = svgClone.querySelector(`#${currIcon}`);
-                cont.setAttribute("id", currIcon);
+                let key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                console.log(key);
+                cont.setAttribute("id", `${currIcon}-container`);
 
                 // console.log(mob);
+                // let layer = svgClone.parentElement;
 
-                const cls3Element = svgClone.lastElementChild;
-                cls3Element.remove();
+                // const cls3Element = svgClone.lastElementChild;
+                // cls3Element.remove();
+                svgClone.append(defs);
                 svgClone.append(key);
-                svgClone.removeAttribute("height");
-                svgClone.removeAttribute("width");
-                svgClone.removeAttribute("max-width");
-
-
-
-                svgClone.setAttribute('viewBox',viewBoxObj[currIcon]);
+                // svgClone.removeAttribute("height");
+                // svgClone.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                
+                // let viewboxAttr = '0 0 70.get0 600';
+                // if (viewBoxObj[currIcon]){
+                //     viewboxAttr = viewBoxObj[currIcon];
+                // } 
+                // svgClone.setAttribute('viewBox',viewboxAttr);
                 let caption = document.createElement("div");
                 if (child_obj[currIcon]){
                     caption.innerText = child_obj[currIcon].title;
@@ -76,9 +87,14 @@ function mobile_helper(svgElement, iconsArr){
                     
                 }
                 
-                caption.setAttribute("style", "font-size: 10px")
+                caption.setAttribute("style", "font-size: 15px")
                 cont.appendChild(caption);
                 row_cont.appendChild(cont);
+                setTimeout(() => {
+                    let bbox = key.getBBox();
+                    svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+                }, 0);
+
                 idx+=1;
             } else{
                 
@@ -485,6 +501,7 @@ function table_of_contents(){
         
         else{
             link.href = child_obj[key]['external_url'];
+            console.log(link.href);
             link.innerHTML = title;
             item.appendChild(link);
         }
@@ -528,7 +545,7 @@ function add_modal(){
             });
             
             if (mobileBool){
-                let itemContainer = document.querySelector(`#${key}`);
+                let itemContainer = document.querySelector(`#${key}-container`);
                 itemContainer.addEventListener('click', function() {
                     modal.style.display = "block";
                     render_modal(key );
