@@ -175,7 +175,7 @@ class Webcr_Scene {
             if ($post_type = "scene"){
                 if(isset($_GET['scene_location'])){
                     $scene_location = str_replace("_", " ", $_GET['scene_location']);
-                    if($scene_location != "All Locations"){
+                    if($scene_location != "All Instances"){
                         $meta_query = array( 'relation' => 'OR' );
 
                         array_push( $meta_query, array(

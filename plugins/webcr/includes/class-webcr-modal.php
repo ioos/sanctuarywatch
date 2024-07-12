@@ -752,7 +752,7 @@ class Webcr_Modal {
             if ($post_type = "modal"){
                 if(isset($_GET['modal_location'])){
                     $modal_location = str_replace("_", " ", $_GET['modal_location']);
-                    if($modal_location != "All Locations"){
+                    if($modal_location != "All Instances"){
                         $meta_query = array( 'relation' => 'OR' );
 
                         array_push( $meta_query, array(
