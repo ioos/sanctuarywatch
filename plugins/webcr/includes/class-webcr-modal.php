@@ -121,7 +121,6 @@ class Webcr_Modal {
 
         $scene_titles =[];
         $modal_icons = [];
-        $toc_sections = [];
         $icon_scene_out = []; 
         $modal_section = [];
         // used by both scene and icon dropdowns
@@ -165,11 +164,11 @@ class Webcr_Modal {
                     'description' => 'Modal Icons description',
                 ),
                 array(
-                    'id'             => 'modal_section',
+                    'id'             => 'icon_toc_section',
                     'type'           => 'select',
-                    'title'          => 'Section',
+                    'title'          => 'Icon Section',
                     'options'        =>  $modal_section,
-                    'description' => 'Modal Section description',
+                    'description' => 'Icon Section description',
                 ),
                 array(
                     'id'             => 'icon_function',
@@ -200,13 +199,6 @@ class Webcr_Modal {
                     'type'        => 'textarea',
                     'title'       => 'Modal Tagline',
                     'description' => 'Modal Tagline description',
-                ),
-                array(
-                    'id'             => 'modal_toc_section',
-                    'type'           => 'select',
-                    'title'          => 'Table of Contents Section',
-                    'options'        => $toc_sections,
-                    'description' => 'Table of Contents Section description',
                 ),
                 array(
                     'id'      => 'modal_info_entries',
@@ -554,6 +546,17 @@ class Webcr_Modal {
                 'auth_callback' => '__return_false' //Return false to disallow writing
             )
         );
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'icon_toc_section', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The icon table of contents section', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
 
         register_meta(
             'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
@@ -749,7 +752,7 @@ class Webcr_Modal {
             if ($post_type = "modal"){
                 if(isset($_GET['modal_location'])){
                     $modal_location = str_replace("_", " ", $_GET['modal_location']);
-                    if($modal_location != "All Locations"){
+                    if($modal_location != "All Instances"){
                         $meta_query = array( 'relation' => 'OR' );
 
                         array_push( $meta_query, array(
