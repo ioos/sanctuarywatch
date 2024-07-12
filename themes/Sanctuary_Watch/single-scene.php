@@ -93,9 +93,9 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
   </div>
 </div>
 
-<div class="container-fluid">
-  <div class="row align-items-start">
-    <div class="col-12 col-lg-8 mb-3 mb-lg-0">
+<div class="container-fluid" id="scene-fluid">
+  <div class="row" id="scene-row">
+    <div class="col-md-9">
       <div id="svg1" class="responsive-image-container">
         <?php
           $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
@@ -103,25 +103,19 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
         ?>
       </div>
     </div>
-    <div class="col-12 col-lg-4">
-      <ul id="toc1" > 
-            <!-- TABLE OF CONTENTS WILL GO HERE -->
-            
-          </ul>
-        </div>
-      </div>
-      <script>
-        // Convert the array of child IDs to a JSON string and mbed the child_ids_json variable into the html for the JS script to pick up and use.
-        let child_ids = <?php echo json_encode($child_ids); ?>;
-        let post_id =  <?php echo $post_id; ?>;
-        let svg_url =  <?php echo json_encode($scene_url); ?>;
-        //Log json file for debugging.
-        // console.log(child_id_json);
-        
-        
-    </script>
-
+    <div class="col-md-3" id="toc-container">
+      <ul id="toc1"> 
+        <!-- TABLE OF CONTENTS WILL GO HERE -->
+      </ul>
     </div>
+  </div>
+  <script>
+    let child_ids = <?php echo json_encode($child_ids); ?>;
+    let post_id =  <?php echo $post_id; ?>;
+    let svg_url =  <?php echo json_encode($scene_url); ?>;
+  </script>
+</div>
+
     
 
   <!-- </body> -->

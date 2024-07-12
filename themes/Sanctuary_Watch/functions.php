@@ -430,14 +430,14 @@
           //this is a WP_query object for the current child ID
           $query = new WP_Query(postQuery($child_id));
 
-          $child_post_id = $query->posts[0];
+          $child_post_id = $query->posts[0]; //error here?
           //get icon_type to check if modal
           $icon_type = get_post_meta($child_post_id, "icon_function");
           $icon_title = get_post_meta($child_post_id, "post_title");
           $modal = FALSE;
           $external_url =  '';
           $external_scene_id = '';
-          $is_modal = get_post_meta($child_post_id,"post_type" )[0];
+          $is_modal = get_post_meta($child_post_id,"post_type" )[0]; //error here?
           //create array/map from child id to different attributes (ie hyperlinks)
           if($is_modal){
             if ($icon_type[0] === "Modal"){

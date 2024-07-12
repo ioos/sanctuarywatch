@@ -115,66 +115,116 @@ p[itemprop="name"], p[itemprop="address"] {
   object-fit: contain;
 } */
   
+/* Ensure the outer container takes full width */
+/* Ensure the outer container takes full width */
+.container-fluid {
+  width: 100%;
+  padding: 20px;
+}
+
+/* Apply flexbox layout only for PC/tablet views */
+@media (min-width: 768px) {
+  .container-fluid {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  /* Row styling */
+  #scene-row {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-start;
+  }
+
+  /* Column styling */
+  .col-md-9, .col-md-3 {
+    flex: 0 0 auto;
+  }
+
+  /* Responsive image container */
   .responsive-image-container {
-    width: 100%;
-    max-width: 100%;
+    width: 90%;
     height: auto;
     display: flex;
     align-items: flex-start;
+    justify-content: center;
   }
 
+  /* Ensure the image scales properly */
   .responsive-image-container img,
   .responsive-image-container svg {
-    max-width: 100%;
+    width: 100%;
     height: auto;
     object-fit: contain;
   }
 
+  /* Ensure the table of contents stays aligned */
+  #toc-container {
+    flex: 0 0 25%;
+    max-width: 25%;
+    position: relative;
+  }
+
   #toc1 {
-    top: 20px; /
+    position: relative;
+    width: 25%;
+    top: 20px; /* Adjust as needed */
+    max-width: 300px; /* Set a max width if needed */
   }
 
-  @media (min-width: 992px) {
-    .responsive-image-container {
-      width: auto;
-      max-width: none;
-    }
+  /* Nav tabs styles */
+  .nav-tabs .nav-link {
+    color: black;
+  }
+  .nav-tabs .nav-link.active {
+    color: black;
   }
 
-  @media (max-width: 1200px) {
-    .responsive-image-container img,
-    .responsive-image-container svg {
-      max-width: 90%; /* Start shrinking a bit earlier */
-    }
+  /* Flicker animation */
+  @keyframes flickerAnimation {
+    0%, 100% { stroke: yellow; stroke-width: 6; opacity: 1; }
+    50% { stroke: yellow; stroke-width: 6; opacity: 0; }
+  }
+  .flicker {
+    animation: flickerAnimation 2s infinite;
+    stroke: yellow;
+    stroke-width: 6;
   }
 
-  @media (max-width: 991px) {
-    .responsive-image-container img,
-    .responsive-image-container svg {
-      max-width: 100%; /* Full width on smaller screens */
-    }
+  /* Main container centering */
+  .main-container {
+    max-width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
   }
 
-
-.nav-tabs .nav-link {
-    color: black; /* Default color for non-active tabs */
-}
-.nav-tabs .nav-link.active {
-    color: black; /* Color for active tab */
-}
-
-@keyframes flickerAnimation {
-  0%, 100% { stroke: yellow; stroke-width: 6; opacity: 1; }
-  50% { stroke: yellow; stroke-width: 6; opacity: 0; }
+  #scene-row {
+    display: flex;
+    justify-content: center;
+    margin-right: -15px;
+    margin-left: -15px;
+  }
 }
 
-.flicker {
-  animation: flickerAnimation 2s infinite;
-  stroke: yellow;
-  stroke-width: 6;
+/* Responsive image container for all screen sizes */
+.responsive-image-container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
-/* Ensure the outer container takes full width */
+.responsive-image-container img,
+.responsive-image-container svg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Style each row */
+
 .container-fluid {
   width: 100%;
   padding: 20px;
@@ -232,4 +282,3 @@ p[itemprop="name"], p[itemprop="address"] {
   margin-top: 10px;
   transform: scale(0.95);
 }
-

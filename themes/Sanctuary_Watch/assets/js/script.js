@@ -79,7 +79,7 @@ function mobile_helper(svgElement, iconsArr){
                 cont.appendChild(caption);
                 row_cont.appendChild(cont);
                 setTimeout(() => {
-                    let bbox = key.getBBox(); //toggle
+                    let bbox = key.getBBox(); //toggle -- key.firstElementChild
                     svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
                 }, 0);
 
@@ -141,7 +141,8 @@ async function loadSVG(url, containerId) {
                 mobile_helper(svgElement, iconsArr);
 
                 add_modal();
-                // flicker_highlight_icons(); turned off for now but can toggle
+                // highlight_icons();
+                // flicker_highlight_icons();
                 
                 
             } else{ //if it gets here, device is a tablet
