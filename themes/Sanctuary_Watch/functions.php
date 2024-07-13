@@ -449,11 +449,16 @@
               $external_url = get_permalink($external_scene_id[0]);
 
             } 
+          $sceneID = get_post_meta($child_post_id, "modal_scene");
+          $scenePost = get_post($scene_id[0]);
+          $sceneName = get_post_meta($scenePost, "post_title");
+
             $child_ids[$child_id] = [
               "title" => $icon_title[0],
               "modal_id" => $child_post_id,
               "external_url" => $external_url,
-              "modal" => $modal
+              "modal" => $modal,
+              "scene" => $scenePost
             ];
           } 
           //add to array

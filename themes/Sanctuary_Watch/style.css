@@ -115,6 +115,10 @@ p[itemprop="name"], p[itemprop="address"] {
   object-fit: contain;
 } */
   
+body > h1{
+  margin-left: 10%;
+}
+
 /* Ensure the outer container takes full width */
 /* Ensure the outer container takes full width */
 .container-fluid {
@@ -154,7 +158,8 @@ p[itemprop="name"], p[itemprop="address"] {
   /* Ensure the image scales properly */
   .responsive-image-container img,
   .responsive-image-container svg {
-    width: 100%;
+    width: 80%;
+    max-width: 80%;
     height: auto;
     object-fit: contain;
   }
@@ -168,9 +173,11 @@ p[itemprop="name"], p[itemprop="address"] {
 
   #toc1 {
     position: relative;
-    width: 25%;
-    top: 20px; /* Adjust as needed */
-    max-width: 300px; /* Set a max width if needed */
+    width: 75%;
+    top: 20px; 
+    max-width: 300px; 
+    /* font-size: 2rem; */
+    margin-left: -50px;
   }
 
   /* Nav tabs styles */
@@ -281,4 +288,8 @@ p[itemprop="name"], p[itemprop="address"] {
   font-size: 13px; /* Adjust size as needed */
   margin-top: 10px;
   transform: scale(0.95);
+}
+
+.modal {
+  z-index: 100001 ;
 }

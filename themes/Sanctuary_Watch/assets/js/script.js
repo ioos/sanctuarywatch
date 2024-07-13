@@ -7,7 +7,7 @@ console.log(child_obj);
 // console.log("this is the post id: ", post_id);//prob dont need this
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
-// console.log(url)
+// console.log(url1)
 
 //lol
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
@@ -23,6 +23,16 @@ viewBoxObj = {
     // 'biogenic-inverts': '380 460 130 130' //or 360 430 160 160
 
 };
+
+function make_title(){
+    let title = '';
+    for (let key in child_obj){
+        title = child_obj[key]['scene']['post_title'];
+        break;
+    }
+    let titleDom = document.querySelector("body > h1");
+    titleDom.innerHTML = title;
+}
 let mobileBool = false;
 //helper function for creating mobile grid for loadSVG:
 function mobile_helper(svgElement, iconsArr){
@@ -110,6 +120,8 @@ async function loadSVG(url, containerId) {
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
         const svgElement = svgDoc.documentElement;
+        console.log(svgElement);
+        svgElement.setAttribute("id", "svg-elem");
 
         //Append the SVG to the DOM
         const container = document.getElementById(containerId);
@@ -165,6 +177,10 @@ async function loadSVG(url, containerId) {
         // highlight_icons();
         // table_of_contents();
         // add_modal();
+        make_title();
+        full_screen_button('svg1');
+
+
     } catch (error) {
         console.error('Error fetching or parsing the SVG:', error);
     }
@@ -349,7 +365,7 @@ function create_tabs(iter, tab_id, tab_label, tab_content) {
 
 function render_modal(key){
     let id = child_obj[key]['modal_id'];
-    let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc';
+    let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
@@ -453,6 +469,66 @@ function render_modal(key){
     
 }
 
+function full_screen_button(svgId){
+    // let toc_container = document.querySelector("#toc-container");
+    // let button = document.createElement("button");
+    // // <button style="margin-bottom: 5px; font-size: large;" class="btn btn-info fa fa-arrows-alt btn-block" id="top-button"> Full Screen</button>
+    // button.setAttribute("style", "margin-botton: 5px; font-size: large");
+    // button.setAttribute("id", "top-button");
+    // button.setAttribute('class', `btn btn-info fa fa-arrows-alt btn-block`);
+    // toc_container.prepend(button);
+    // button.innerHTML = "Full Screen";
+
+
+    if ((document.fullscreenEnabled || document.webkitFullscreenEnabled)){ 
+        let toc_container = document.querySelector("#toc-container");
+        let button = document.createElement("button");
+        
+        // Button attributes
+        button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1");
+        button.setAttribute("id", "top-button");
+        button.setAttribute('class', 'btn btn-info fa fa-arrows-alt btn-block');
+        button.innerHTML = "Full Screen";
+        toc_container.prepend(button);
+        
+        // Fullscreen change event for SVG
+        var webkitElem = document.getElementById(svgId);
+        webkitElem.addEventListener('webkitfullscreenchange', (event) => {
+          if (document.webkitFullscreenElement) {
+            webkitElem.style.width = (window.innerWidth) + 'px';
+            webkitElem.style.height = (window.innerHeight) + 'px';
+          } else {
+            webkitElem.style.width = width;
+            webkitElem.style.height = height;
+          }
+        });
+        
+        
+        // Open Fullscreen Function
+        function openFullScreen() {
+          var elem = document.getElementById(svgId);
+          if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+          } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+          }
+          let modal = document.getElementById("myModal");
+            elem.prepend(modal);
+        }
+
+        
+
+        
+        // Button click event
+        button.addEventListener('click', function() {
+          openFullScreen();
+          // add_modal(); // Ensure add_modal() is defined and functional
+        });
+        
+    }
+
+}
+// full_screen_button('svg-elem');
 
 //generates table of contents; modal table of contents open modal window, others go to external URLs
 function table_of_contents(){
@@ -584,6 +660,7 @@ function add_modal(){
 
 
 loadSVG(url, "svg1");
+
 
 
 

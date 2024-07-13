@@ -42,10 +42,10 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 // $scene_info_arr = $total_arr[0];
 // $scene_photo_arr = $total_arr[1];
 ?>
-<!-- <body> -->
+<body>
 <!-- <body class="p-3 m-0 border-0 bd-example m-0 border-0"> -->
-<div class="modal" id="myModal" style="z-index: 999; background-color: rgba(0,0,0,0.8);">
-  <div class="modal-dialog" style="margin: 10% auto; max-width: 80%">
+<div class="modal" id="myModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
+  <div class="modal-dialog" style="z-index: 9999; margin: 10% auto; max-width: 30%">
     <div class="modal-content" >
 
       <!-- Modal Header -->
@@ -57,7 +57,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
       <!-- Modal body -->
       <div class="modal-body">
         <div class="row">
-          <div id="accordion-container" class="col-6">
+          <div id="accordion-container" class="col-6" style="margin-left: -45%; max-width: 30%">
         
           </div>
           <div id="tagline-container" class="col-3">
@@ -68,7 +68,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
       </div>
 
       <!-- images go here -->
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-left: 1%">
           <!-- <li class="nav-item" role="presentation">
             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
           </li>
@@ -81,7 +81,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
         
       </ul>
 
-      <div class="tab-content" id="myTabContent">
+      <div class="tab-content" id="myTabContent" style="margin-top: 2%; margin-left: 2%">
           <!-- <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">Blah Blah</div>
           <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">ok</div>
           <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">bruh </div> -->
@@ -92,7 +92,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
     </div>
   </div>
 </div>
-
+<h1></h1>
 <div class="container-fluid" id="scene-fluid">
   <div class="row" id="scene-row">
     <div class="col-md-9">
@@ -103,7 +103,11 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
         ?>
       </div>
     </div>
+
     <div class="col-md-3" id="toc-container">
+    <!-- <button style="margin-bottom: 5px; font-size: large;" class="btn btn-info fa fa-arrows-alt btn-block" id="top-button"> Full Screen</button> -->
+
+      <!-- temporary, make the above a dropdown -->
       <ul id="toc1"> 
         <!-- TABLE OF CONTENTS WILL GO HERE -->
       </ul>
@@ -115,7 +119,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
     let svg_url =  <?php echo json_encode($scene_url); ?>;
   </script>
 </div>
-
+ </body>
     
 
   <!-- </body> -->
