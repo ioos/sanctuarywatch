@@ -189,5 +189,32 @@ class Webcr_Utility {
         $modal_sections = array_merge(array("None" => "None"),$modal_sections );
         return $modal_sections;
     }
+
+    // Dropdown options for Scene in figure content type
+    public function returnScenesFigure($location){
+        $potential_scenes = [];
+        $args = array(
+            'post_type' => 'scene',  // Your custom post type
+            'meta_query' => array(
+                array(
+                    'key' => 'scene_location',      // The custom field key
+                    'value' => $location, // The value you are searching for
+                    'compare' => '='         // Comparison operator
+                )
+            ),
+            'fields' => 'ids'            // Only return post IDs
+        );
+        // Execute the query
+        $query = new WP_Query($args);
+
+        // Get the array of post IDs
+        $scene_post_ids = $query->posts;
+        foreach ($scene_post_ids as $target_id){
+            $target_title = get_post_meta($target_id, "post_title", true);
+            $potential_scenes[$target_id] = $target_title;
+        }
+        asort($potential_scenes);
+        return $potential_scenes;
+    }
 }
 

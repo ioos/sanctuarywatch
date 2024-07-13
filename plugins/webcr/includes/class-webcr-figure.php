@@ -98,10 +98,11 @@ class Webcr_Figure {
 
                 // used by both scene and icon dropdowns
                 if (array_key_exists("post", $_GET)) {
-                    $modal_id = intval($_GET["post"]);
-                    $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
-                    $scene_titles = $function_utilities -> returnSceneTitles($scene_id, $modal_id);
-                    $modal_icons = $function_utilities -> returnIcons($scene_id);
+                    $figure_id = intval($_GET["post"]);
+                   // $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
+                    $location = get_post_meta($figure_id, "location", true);
+                    $scene_titles = $function_utilities -> returnScenesFigure($location);
+                 //   $modal_icons = $function_utilities -> returnIcons($scene_id);
                 }
 
                 $fields[] = array(
@@ -111,7 +112,7 @@ class Webcr_Figure {
                     'fields' => array(
 
                         array(
-                            'id'             => 'figure_location',
+                            'id'             => 'location',
                             'type'           => 'select',
                             'title'          => 'Instance',
                             'options'        => $locations,
