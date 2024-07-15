@@ -449,16 +449,19 @@
               $external_url = get_permalink($external_scene_id[0]);
 
             } 
-          $sceneID = get_post_meta($child_post_id, "modal_scene");
+          $scene_id = get_post_meta($child_post_id, "modal_scene");
           $scenePost = get_post($scene_id[0]);
           $sceneName = get_post_meta($scenePost, "post_title");
+
+          $section_name = get_post_meta($child_post_id, "icon_toc_section")[0];
 
             $child_ids[$child_id] = [
               "title" => $icon_title[0],
               "modal_id" => $child_post_id,
               "external_url" => $external_url,
               "modal" => $modal,
-              "scene" => $scenePost
+              "scene" => $scenePost,
+              "section_name" => $section_name
             ];
           } 
           //add to array

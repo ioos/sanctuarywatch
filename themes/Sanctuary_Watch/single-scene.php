@@ -108,9 +108,11 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
     <!-- <button style="margin-bottom: 5px; font-size: large;" class="btn btn-info fa fa-arrows-alt btn-block" id="top-button"> Full Screen</button> -->
 
       <!-- temporary, make the above a dropdown -->
-      <ul id="toc1"> 
+      <!-- <div class="row">  -->
+      <!-- <ul id="toc1">  -->
         <!-- TABLE OF CONTENTS WILL GO HERE -->
-      </ul>
+      <!-- </ul> -->
+      <!-- </div> -->
     </div>
   </div>
   <script>
@@ -118,6 +120,8 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
     let post_id =  <?php echo $post_id; ?>;
     let svg_url =  <?php echo json_encode($scene_url); ?>;
   </script>
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
 </div>
  </body>
     

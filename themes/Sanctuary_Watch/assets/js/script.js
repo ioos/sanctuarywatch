@@ -9,20 +9,7 @@ let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
 // console.log(url1)
 
-//lol
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
-viewBoxObj = {
-    // 'key-climate-ocean': '-25 20 160 160',
-    // 'key_drivers_and_pressures': '-25 20 160 160',
-    // 'key-human-activities': '370 20 160 160',
-    // 'mobile-inverts': '210 485 120 20',
-    // 'infauna': '640 355 60 60',
-    // 'deep-seafloor-seastars': '99 500 47 40',
-    // 'ca-sheephead': '400 130 100 100',
-    // 'demersal-fishes': '320 220 200 200',
-    // 'biogenic-inverts': '380 460 130 130' //or 360 430 160 160
-
-};
 
 function make_title(){
     let title = '';
@@ -372,7 +359,10 @@ function create_tabs(iter, tab_id, tab_label, tab_content) {
 
 function render_modal(key){
     let id = child_obj[key]['modal_id'];
-    let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/modal?&order=asc"
+    // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
@@ -603,11 +593,139 @@ function toggle_text(){
     
 }
 // full_screen_button('svg-elem');
+// function toc_sections(){
+//     // let s = '';
+//     let sections = [];
+//     for (let key in child_obj){
+//             let section = child_obj[key]['section_name'];
+//             // console.log(section);
+//             if (!sections.includes(section)){
+//                 sections.push(section);
+//             }
+            
+            
+//     }
+//     sections.sort();
+//     console.log(sections);
+    
+//     let toc_container = document.querySelector("#toc-container");
+//     let toc_group = document.createElement("div");
+//     toc_group.classList.add("panel-group");
+//     toc_group.setAttribute("role", "tablist");
+//     toc_group.setAttribute("aria-multiselectable", "true");
+//     toc_group.setAttribute("id", "toc-group")
 
+//     for (let i = 0; i < sections.length; i++){
+//         let sect = document.createElement("div");
+//         sect.setAttribute("class", "panel panel-default");
+        
+//         let heading = document.createElement("div");
+//         heading.classList.add("panel-heading");
+//         heading.setAttribute("role", "tab");
+        
+//         let title = document.createElement("h4");
+//         title.innerHTML = sections[i];
+//         let arrowSpan = document.createElement("span");
+//         arrowSpan.classList.add("arrow");
+//         title.appendChild(arrowSpan);
+//         title.classList.add("panel-title");
+//         title.setAttribute("data-toggle", "collapse");
+//         title.setAttribute("data-target", `#toccollapse${i}`);
+//         title.setAttribute("role", "button");
+//         title.setAttribute("aria-controls", `toccollapse${i}`);
+//         title.setAttribute("aria-expanded", "true");
+//         heading.appendChild(title);
+
+//         sect.append(heading);
+
+//         let tocCollapse = document.createElement("div");
+//         tocCollapse.setAttribute("id", `toccollapse${i}`);
+//         tocCollapse.setAttribute("class", "panel-collapse collapse in");
+//         tocCollapse.setAttribute("aria-expanded", "true");
+//         tocCollapse.setAttribute("role", "tabpanel");
+
+//         let tocbody = document.createElement("div");
+//         tocbody.setAttribute("class", "panel-body");
+
+
+//         let sectlist = document.createElement("ul");
+//         sectlist.setAttribute("id", sections[i]);
+//         tocbody.appendChild(sectlist);
+//         tocCollapse.appendChild(tocbody);
+        
+//         sect.appendChild(tocCollapse);
+//         toc_group.appendChild(sect);
+//     }
+//     toc_container.appendChild(toc_group);
+// }
+function toc_sections() {
+    let sections = [];
+    for (let key in child_obj) {
+        let section = child_obj[key]['section_name'];
+        if (!sections.includes(section)) {
+            sections.push(section);
+        }
+    }
+    sections.sort();
+    console.log(sections);
+
+    let toc_container = document.querySelector("#toc-container");
+    let toc_group = document.createElement("div");
+    toc_group.classList.add("accordion");
+    toc_group.setAttribute("id", "toc-group");
+
+    for (let i = 0; i < sections.length; i++) {
+        let sect = document.createElement("div");
+        sect.classList.add("accordion-item");
+
+        let heading = document.createElement("h2");
+        heading.classList.add("accordion-header");
+        heading.setAttribute("id", `heading${i}`);
+
+        let button = document.createElement("button");
+        button.classList.add("accordion-button");
+        button.setAttribute("type", "button");
+        button.setAttribute("data-bs-toggle", "collapse");
+        button.setAttribute("data-bs-target", `#toccollapse${i}`);
+        button.setAttribute("aria-expanded", "true");
+        button.setAttribute("aria-controls", `toccollapse${i}`);
+        button.innerHTML = sections[i];
+
+        let arrowSpan = document.createElement("span");
+        arrowSpan.classList.add("arrow");
+        button.appendChild(arrowSpan);
+
+        heading.appendChild(button);
+        sect.appendChild(heading);
+
+        let tocCollapse = document.createElement("div");
+        tocCollapse.setAttribute("id", `toccollapse${i}`);
+        tocCollapse.classList.add("accordion-collapse", "collapse", "show");
+        tocCollapse.setAttribute("aria-labelledby", `heading${i}`);
+        // tocCollapse.setAttribute("data-bs-parent", "#toc-group");
+
+        let tocbody = document.createElement("div");
+        tocbody.classList.add("accordion-body");
+
+        let sectlist = document.createElement("ul");
+        sectlist.setAttribute("id", sections[i]);
+        tocbody.appendChild(sectlist);
+        tocCollapse.appendChild(tocbody);
+
+        sect.appendChild(tocCollapse);
+        toc_group.appendChild(sect);
+    }
+    toc_container.appendChild(toc_group);
+}
+// toc_sections();
 //generates table of contents; modal table of contents open modal window, others go to external URLs
 function table_of_contents(){
-    let elem = document.getElementById("toc1");
+    toc_sections();
+    // let elem = document.getElementById("toc1");
+    // let elem = document.createElement("ul")
     for (let key in child_obj){
+        // document.querySelector("#Section\\ 1")
+        let elem = document.getElementById(child_obj[key]['section_name']);
         let item = document.createElement("li");
         
         let title = child_obj[key]['title'];  
@@ -662,10 +780,12 @@ function table_of_contents(){
         
         elem.appendChild(item);
         console.log(elem);
+        // return elem;
     }
         
     
 }
+
 
 
 //generates modal window when SVG element is clicked. 
