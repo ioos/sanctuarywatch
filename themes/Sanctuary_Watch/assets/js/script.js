@@ -160,6 +160,8 @@ async function loadSVG(url, containerId) {
             } else{ //if it gets here, device is a tablet
                 container.appendChild(svgElement);
                 flicker_highlight_icons();
+                toggle_text();
+                full_screen_button('svg1');
                 table_of_contents();
                 add_modal();
 
@@ -170,6 +172,9 @@ async function loadSVG(url, containerId) {
             container.appendChild(svgElement);
             highlight_icons();
             table_of_contents();
+            toggle_text();
+            full_screen_button('svg1');
+            // table_of_contents();
             add_modal();
 
             
@@ -178,7 +183,9 @@ async function loadSVG(url, containerId) {
         // table_of_contents();
         // add_modal();
         make_title();
-        full_screen_button('svg1');
+        // full_screen_button('svg1');
+        // toggle_text();
+
 
 
     } catch (error) {
@@ -489,7 +496,18 @@ function full_screen_button(svgId){
         button.setAttribute("id", "top-button");
         button.setAttribute('class', 'btn btn-info fa fa-arrows-alt btn-block');
         button.innerHTML = "Full Screen";
-        toc_container.prepend(button);
+        
+        // let row = document.createElement("div");
+        let row = document.createElement("div");
+
+        row.classList.add("row");
+        row.setAttribute("id", "buttonRow");
+        // let col = document.createElement("div");
+        // col.classList.add("col");
+        // col.appendChild(button);
+        row.appendChild(button);
+
+        toc_container.prepend(row);
         
         // Fullscreen change event for SVG
         var webkitElem = document.getElementById(svgId);
@@ -527,6 +545,62 @@ function full_screen_button(svgId){
         
     }
 
+}
+function toggle_text(){
+    let toc_container = document.querySelector("#toc-container");
+
+    let button = document.createElement("label");
+    button.setAttribute("class", "switch");
+
+    // Create a checkbox input element
+    let checkbox = document.createElement("input");
+    checkbox.setAttribute("type", "checkbox");
+    checkbox.setAttribute("id", "tocWrapper");
+
+    // Create a span element for the slider
+    let slider = document.createElement("span");
+    slider.setAttribute("class", "slider round");
+
+    // Append the checkbox and slider to the label (button)
+    button.appendChild(checkbox);
+    button.appendChild(slider);
+    // button.innerHTML = "Toggle Image Text";
+
+    let row = document.createElement("div");
+    row.classList.add("row");
+    row.setAttribute("id", "switchRow");
+    // let col = document.createElement("div");
+    let col1 = document.createElement("div");
+    col1.classList.add("col");
+    col1.appendChild(button);
+
+    let col2 = document.createElement("div");
+    col2.classList.add("col");
+    let toggleText = document.createElement("h5");
+    toggleText.innerHTML = "Toggle Text in Image: "
+    col2.appendChild(toggleText);
+
+    row.appendChild(col2);
+    row.appendChild(col1);
+    
+
+    // row.innerText = "Toggle image text:      ";
+    // row.appendChild(button);
+
+    toc_container.prepend(row);
+
+    checkbox.addEventListener('change', function() {
+        let svgText = document.querySelector("#text");
+        if (this.checked) {
+            svgText.setAttribute("display", "none");
+            // Add your logic for when the toggle switch is ON
+        } else {
+            svgText.setAttribute("display", "");
+            // Add your logic for when the toggle switch is OFF
+        }
+    });
+
+    
 }
 // full_screen_button('svg-elem');
 
