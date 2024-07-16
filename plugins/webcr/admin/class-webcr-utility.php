@@ -220,6 +220,21 @@ class Webcr_Utility {
         
     }
 
+    public function returnModalTabs($modal_id){
+        $potential_tabs = [];
+        if ($modal_id != "") {
+            for ($i = 1; $i < 7; $i++){
+                $target_field = "modal_tab_title" . $i;
+                $target_title = get_post_meta($modal_id, $target_field, true);
+                if ($target_title != "" && $target_title != null ){
+                    $potential_tabs[$target_title] = $target_title;
+                }
+            }
+            asort($potential_tabs);
+        }
+        return $potential_tabs;
+    }
+
     //dropdown options for Icon in figure content type
     public function returnFigureIcons($scene_id){
         $potential_icons = [];
@@ -227,14 +242,19 @@ class Webcr_Utility {
 
             $args = array(
                 'post_type' => 'modal',  // Your custom post type
+                'fields' => 'ids',           // Only return post IDs
                 'meta_query' => array(
                     array(
                         'key' => 'modal_scene',      // The custom field key
                         'value' => $scene_id, // The value you are searching for
                         'compare' => '='         // Comparison operator
-                    )
+                    ),
+                    array(
+                        'key' => 'icon_function',
+                        'value' => 'Modal',
+                        'compare' => '='
+                    ),
                 ),
-                'fields' => 'ids'            // Only return post IDs
             );
             
             // Execute the query

@@ -104,6 +104,8 @@ class Webcr_Figure {
                     $scene_titles = $function_utilities -> returnScenesFigure($location);
                     $scene_id = get_post_meta($figure_id, "figure_scene", true);
                     $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
+                    $modal_id = get_post_meta($figure_id, "figure_modal", true);
+                    $modal_tabs = $function_utilities -> returnModalTabs($modal_id);
                 }
 
                 $fields[] = array(
@@ -130,7 +132,7 @@ class Webcr_Figure {
                             'description' => 'Figure Scene description',
                         ),
                         array(
-                            'id'             => 'figure_icons',
+                            'id'             => 'figure_modal',
                             'type'           => 'select',
                             'title'          => 'Icon',
                             'options'        => $modal_icons, // array (" " => "Modal Icons")
