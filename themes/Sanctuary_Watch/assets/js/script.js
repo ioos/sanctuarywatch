@@ -21,10 +21,47 @@ function make_title(){
     titleDom.innerHTML = title;
 }
 let mobileBool = false;
+
+//checks whether or not an icon has an associated mobile layer.
+function has_mobile_layer(mob_icons, elemname){
+    console.log("mobile icons here:");
+    console.log(mob_icons);
+    for (let i = 0; i < mob_icons.children.length; i++) {
+        let child = mob_icons.children[i];
+        // console.log("mob icons helper here");
+        // console.log(child); 
+        let label = child.getAttribute('inkscape:label');
+        if (label === elemname){
+            console.log(`found ${label}`);
+            return true;
+        }             
+    }
+    return false;
+}
+
+//returns DOM elements for mobile layer
+function get_mobile_layer(mob_icons, elemname){
+    for (let i = 0; i < mob_icons.children.length; i++) {
+        let child = mob_icons.children[i];
+        console.log("mob icons helper here");
+        console.log(child); 
+        let label = child.getAttribute('inkscape:label');
+        if (label === elemname){
+            console.log("in get mobile laters");
+            console.log(child);
+            return child;
+        }             
+    }
+    return null;
+}
+
 //helper function for creating mobile grid for loadSVG:
-function mobile_helper(svgElement, iconsArr){
+function mobile_helper(svgElement, iconsArr, mobile_icons){
+    console.log(svgElement);
     let defs = svgElement.firstElementChild;
     console.log(defs);
+    // let mob_icons = svgElement.querySelector("#mobile");
+    // console.log(mob_icons);
     //just some checks to make sure the variables are right
     // console.log(iconsArr[1].id);
     // console.log("length of arr is: ");
@@ -57,12 +94,22 @@ function mobile_helper(svgElement, iconsArr){
                 cont.appendChild(svgClone);
                     // svgElement.removeChild("cls-3");
                 let currIcon = iconsArr[idx].id;
-                let key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                let key  ='';
+                if (!has_mobile_layer(mobile_icons, currIcon)){
+                    key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                    
+                } else {
+                    key = get_mobile_layer(mobile_icons, currIcon);
+                    let temp = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                    let tempId = temp.getAttribute("id");
+                    key.setAttribute("id",  tempId);
+                }
+                console.log(`this is the key: ${key}`);
                 console.log(key);
                 cont.setAttribute("id", `${currIcon}-container`);
-
                 svgClone.append(defs);
                 svgClone.append(key);
+                
                 
                 let caption = document.createElement("div");
                 if (child_obj[currIcon]){
@@ -123,21 +170,29 @@ async function loadSVG(url, containerId) {
                 console.log("mobile recognized within conditional");
                 mobileBool = true;
                 const iconsElement = svgElement.getElementById("icons");
+                const mobileIcons = svgElement.getElementById("mobile").cloneNode(true);
+                // console.log(iconsElement);
+                // console.log("mobile icons here:");
+                // console.log(mobileIcons);
+
                 //for mobile: only leave icons, nothing else
                 // const parentElement = svgElement.querySelector('g.cls-3');
                 // let parentElement = svgElement.querySelector("#g");
-                console.log(svgElement.lastElementChild);
+                // console.log(svgElement.lastElementChild);
                 let parentElement = svgElement.lastElementChild;
                     // console.log(Array.from(parentElement.children));
                 const children = Array.from(parentElement.children);
+                // console.log(children);
                 children.forEach(child => {
-                    if (child !== iconsElement) {
+                    if ((child !== iconsElement ) ) {
                             parentElement.removeChild(child);
                     }
                 });
-                
+                // parentElement.appendChild(mobileIcons);
+                console.log(svgElement);
                 let iconsArr = Array.from(iconsElement.children);
-                mobile_helper(svgElement, iconsArr);
+                mobile_helper(svgElement, iconsArr, mobileIcons);
+                // mobile_icons_helper(mobileIcons);
 
                 add_modal();
                 // highlight_icons();
@@ -145,6 +200,15 @@ async function loadSVG(url, containerId) {
                 
                 
             } else{ //if it gets here, device is a tablet
+                //hide mobile icons
+                window.addEventListener('load', function() {
+                    let mob_icons = document.querySelector("#mobile");
+                    if (mob_icons) {
+                        mob_icons.setAttribute("display", "none");
+                    }
+                });
+                
+                
                 container.appendChild(svgElement);
                 flicker_highlight_icons();
                 toggle_text();
@@ -156,6 +220,14 @@ async function loadSVG(url, containerId) {
             }
         }
         else{ //device is a PC
+            //hide mobile icons
+            window.addEventListener('load', function() {
+                let mob_icons = document.querySelector("#mobile");
+                if (mob_icons) {
+                    mob_icons.setAttribute("display", "none");
+                }
+            });
+            
             container.appendChild(svgElement);
             highlight_icons();
             table_of_contents();
@@ -592,7 +664,7 @@ function toggle_text(){
 
     
 }
-//should create sections and pertinent collapsible
+//should create sections and pertinent collapsible, implemented as accordion
 function toc_sections() {
     let sections = [];
     for (let key in child_obj) {
