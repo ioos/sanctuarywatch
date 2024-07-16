@@ -16,17 +16,19 @@ class webcr_validation {
             case "modal":
                 return $this->validate_modal();
                 break;
+            case "figure":
+                return $this->validate_figure();
+                break;
             case "default":
                 return false;
         }
-
-   //     if ($validate_content_type == "scene") {
-   //         return $this->validate_scene();
-   //     } else {
-   //         return false;
-   //     }
     }
 
+    public function validate_figure (){
+        $save_figure_fields = true;
+        return $save_figure_fields;
+    }
+    
     public function validate_modal(){
         $save_modal_fields = true;
 

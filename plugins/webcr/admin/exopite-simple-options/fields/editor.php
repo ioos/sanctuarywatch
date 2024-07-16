@@ -51,7 +51,13 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_editor' ) ) {
 					// load Quicktags, can be used to pass settings directly to Quicktags using an array()
 				);
 
-				wp_editor( $this->element_value(), $this->field['id'], $args );
+				//addition by jai - changing initial value of first argument so that a null is transformed to ""
+				$content =  $this->element_value();
+				if ($content == null) {
+					$content = "";
+				}
+				wp_editor( $content , $this->field['id'], $args );
+				// wp_editor( $this->element_value(), $this->field['id'], $args );
 
 			}
 
