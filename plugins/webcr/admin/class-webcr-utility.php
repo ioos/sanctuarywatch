@@ -193,28 +193,65 @@ class Webcr_Utility {
     // Dropdown options for Scene in figure content type
     public function returnScenesFigure($location){
         $potential_scenes = [];
-        $args = array(
-            'post_type' => 'scene',  // Your custom post type
-            'meta_query' => array(
-                array(
-                    'key' => 'scene_location',      // The custom field key
-                    'value' => $location, // The value you are searching for
-                    'compare' => '='         // Comparison operator
-                )
-            ),
-            'fields' => 'ids'            // Only return post IDs
-        );
-        // Execute the query
-        $query = new WP_Query($args);
+        if ($location != ""){
+            $args = array(
+                'post_type' => 'scene',  // Your custom post type
+                'meta_query' => array(
+                    array(
+                        'key' => 'scene_location',      // The custom field key
+                        'value' => $location, // The value you are searching for
+                        'compare' => '='         // Comparison operator
+                    )
+                ),
+                'fields' => 'ids'            // Only return post IDs
+            );
+            // Execute the query
+            $query = new WP_Query($args);
 
-        // Get the array of post IDs
-        $scene_post_ids = $query->posts;
-        foreach ($scene_post_ids as $target_id){
-            $target_title = get_post_meta($target_id, "post_title", true);
-            $potential_scenes[$target_id] = $target_title;
+            // Get the array of post IDs
+            $scene_post_ids = $query->posts;
+            foreach ($scene_post_ids as $target_id){
+                $target_title = get_post_meta($target_id, "post_title", true);
+                $potential_scenes[$target_id] = $target_title;
+            }
+            asort($potential_scenes);
         }
-        asort($potential_scenes);
         return $potential_scenes;
+        
     }
+
+    //dropdown options for Icon in figure content type
+    public function returnFigureIcons($scene_id){
+        $potential_icons = [];
+        if ($scene_id != ""){
+
+            $args = array(
+                'post_type' => 'modal',  // Your custom post type
+                'meta_query' => array(
+                    array(
+                        'key' => 'modal_scene',      // The custom field key
+                        'value' => $scene_id, // The value you are searching for
+                        'compare' => '='         // Comparison operator
+                    )
+                ),
+                'fields' => 'ids'            // Only return post IDs
+            );
+            
+            // Execute the query
+            $query = new WP_Query($args);
+            
+            // Get the array of post IDs
+            $modal_post_ids = $query->posts;
+
+            $modal_titles =[];
+            foreach ($modal_post_ids as $target_id){
+                $target_title = get_post_meta($target_id, "post_title", true);
+                $potential_icons[$target_id] = $target_title;
+            }
+            asort($potential_icons);
+        }
+        return $potential_icons;
+    }
+
 }
 

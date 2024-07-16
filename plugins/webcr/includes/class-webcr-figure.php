@@ -102,7 +102,8 @@ class Webcr_Figure {
                    // $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
                     $location = get_post_meta($figure_id, "location", true);
                     $scene_titles = $function_utilities -> returnScenesFigure($location);
-                 //   $modal_icons = $function_utilities -> returnIcons($scene_id);
+                    $scene_id = get_post_meta($figure_id, "figure_scene", true);
+                    $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
                 }
 
                 $fields[] = array(
@@ -122,21 +123,21 @@ class Webcr_Figure {
                             'class'      => 'chosen', 
                         ),
                         array(
-                            'id'             => 'Figure_scene',
+                            'id'             => 'figure_scene',
                             'type'           => 'select',
                             'title'          => 'Scene',
                             'options'        => $scene_titles,
                             'description' => 'Figure Scene description',
                         ),
                         array(
-                            'id'             => 'modal_icons',
+                            'id'             => 'figure_icons',
                             'type'           => 'select',
                             'title'          => 'Icon',
                             'options'        => $modal_icons, // array (" " => "Modal Icons")
                             'description' => 'Figure Icons description',
                         ),
                         array(
-                            'id'             => 'modal_tab',
+                            'id'             => 'figure_tab',
                             'type'           => 'select',
                             'title'          => 'Tab',
                             'options'        => $modal_tabs, // array (" " => "Modal Icons")
@@ -145,7 +146,7 @@ class Webcr_Figure {
                         array(
                             'id'      => 'figure_order',
                             'type'    => 'number',
-                            'title'   => 'Figure Order',
+                            'title'   => 'Order',
                             'description' => 'Add description',
                             'default' => '1',                               
                             'min'     => '1',                                    
@@ -193,10 +194,26 @@ class Webcr_Figure {
                             ),
                         ),
                         array(
+                            'id'             => 'figure_path',
+                            'type'           => 'select',
+                            'title'          => 'Path',
+                            'options'        => array("Internal" => "Internal", "External" => "External"),
+                            'default'        => "Internal",
+                            'description' => 'Figure path description',
+                        ),
+
+                        array(
                             'id'    => 'figure_image',
                             'type'  => 'image',
                             'title' => 'Figure image',
                             'description' => 'Figure image description'
+                        ),
+                        array(
+                            'id'          => 'figure_external_url',
+                            'type'        => 'text',
+                            'title'       => 'Figure External URL',
+                            'class'       => 'text-class',
+                            'description' => 'Figure External URL description',
                         ),
                         array(
                             'id'     => 'figure_caption_short',
