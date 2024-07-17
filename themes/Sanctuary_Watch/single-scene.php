@@ -45,7 +45,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 <body>
 <!-- <body class="p-3 m-0 border-0 bd-example m-0 border-0"> -->
 <div class="modal" id="myModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
-  <div class="modal-dialog" style="z-index: 9999; margin: 10% auto; max-width: 30%">
+  <div class="modal-dialog" style="z-index: 9999; margin: 10% auto;  min-width: 70%;max-width: 80% ">
     <div class="modal-content" >
 
       <!-- Modal Header -->
@@ -57,7 +57,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
       <!-- Modal body -->
       <div class="modal-body">
         <div class="row">
-          <div id="accordion-container" class="col-6" style="margin-left: -45%; max-width: 30%">
+          <div id="accordion-container" class="col-6" style="margin-left: -25%; min-width: 30%; max-width: 50%">
         
           </div>
           <div id="tagline-container" class="col-3">
@@ -81,12 +81,12 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
         
       </ul>
 
-      <div class="tab-content" id="myTabContent" style="margin-top: 2%; margin-left: 2%">
-          <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+      <div class="tab-content" id="myTabContent" style="margin-top: 2%; margin-left: 2%; margin-right: 2%">
+          <!-- <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0"> -->
             <!-- hard coded -->
             
         <!-- hard coded -->
-          </div>
+          <!-- </div> -->
           <!-- <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">ok</div>
           <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">bruh </div>  -->
           <!-- <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">tuff</div> -->

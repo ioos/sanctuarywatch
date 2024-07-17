@@ -402,13 +402,169 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
 
     return accordionItem;
 }
+function render_tab_info(tabContentElement, tabContentContainer, info_obj){
+    const containerDiv = document.createElement('div');
+    containerDiv.style.background = 'LightGrey';
+    containerDiv.style.width = '100%';
+    containerDiv.style.display = 'table';
+    containerDiv.style.fontSize = '120%';
+    containerDiv.style.padding = '10px';
+    containerDiv.style.marginBottom = '10px';
+    containerDiv.style.margin = '0 auto'; 
+    containerDiv.style.borderRadius = '3px 3px 3px 3px'; 
 
+
+    // Create the table row div
+    const tableRowDiv = document.createElement('div');
+    tableRowDiv.style.display = 'table-row';
+
+    // Create the left cell div
+    const leftCellDiv = document.createElement('div');
+    leftCellDiv.style.textAlign = 'left';
+    leftCellDiv.style.display = 'table-cell';
+
+    // More Science Link Here
+    const firstLink = document.createElement('a');
+    firstLink.href = info_obj['scienceLink'];
+    firstLink.target = '_blank';
+
+    // Create the first icon
+    const firstIcon = document.createElement('i');
+    firstIcon.classList.add('fa', 'fa-clipboard-list');
+    firstIcon.setAttribute('role', 'presentation');
+    firstIcon.setAttribute('aria-label', 'clipboard-list icon');
+
+    // Add the icon and text to the first link
+    firstLink.appendChild(firstIcon);
+    firstLink.appendChild(document.createTextNode(info_obj['scienceText']));
+    leftCellDiv.appendChild(firstLink);
+
+    // Create the right cell div
+    const rightCellDiv = document.createElement('div');
+    rightCellDiv.style.textAlign = 'right';
+    rightCellDiv.style.display = 'table-cell';
+
+    // Create the second link
+    const secondLink = document.createElement('a');
+    secondLink.href = info_obj['dataLink'];
+    secondLink.target = '_blank';
+
+    // Create the second icon
+    const secondIcon = document.createElement('i');
+    secondIcon.classList.add('fa', 'fa-database');
+    secondIcon.setAttribute('role', 'presentation');
+    secondIcon.setAttribute('aria-label', 'database icon');
+    secondLink.appendChild(secondIcon);
+    secondLink.appendChild(document.createTextNode(info_obj['dataText']));
+
+    // Add the second link to the right cell div
+    rightCellDiv.appendChild(secondLink);
+    tableRowDiv.appendChild(leftCellDiv);
+    tableRowDiv.appendChild(rightCellDiv);
+    containerDiv.appendChild(tableRowDiv);
+    tabContentElement.appendChild(containerDiv);
+
+    const figureDiv = document.createElement('div');
+    figureDiv.classList.add('figure');
+
+    const img = document.createElement('img');
+    img.src = info_obj['imageLink'];
+    img.alt = '';
+    figureDiv.appendChild(img);
+    figureDiv.setAttribute("display","flex");
+    // figureDiv.style.display = "flex";
+    figureDiv.style.justifyContent = "center"; // Center horizontally
+    figureDiv.style.alignItems = "center";
+    img.setAttribute("style", "max-width: 100%;margin-top: 3%; justify-content: center");
+    // img.setAttribute("style", "margin-top: 2px;");
+
+    
+
+    // img.setAttribute("style", "justify-content: center;");
+
+    const caption = document.createElement('p');
+    caption.classList.add('caption');
+    caption.innerHTML = info_obj['shortCaption'];
+    figureDiv.appendChild(caption);
+    tabContentElement.appendChild(figureDiv);
+
+    // Create the details element
+    const details = document.createElement('details');
+    const summary = document.createElement('summary');
+    summary.textContent = 'Click for Details';
+    details.appendChild(summary);
+    // details.appendChild(document.createTextNode(info_obj['longCaption']));
+    let longCaption = document.createElement("p");
+    longCaption.innerHTML = info_obj['longCaption'];
+    details.appendChild(longCaption);
+
+    // Add the details element to the tab content element
+    tabContentElement.appendChild(details);
+    tabContentContainer.appendChild(tabContentElement);
+
+    console.log("tab content container");
+    console.log(tabContentContainer);
+}
+
+function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
+    let id = child_obj['infauna']['modal_id'];
+    console.log(id);
+    console.log(tab_label);
+    // tab_label = "test";
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/figure?&order=asc"
+    // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
+    fetch(fetchURL)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            console.log(tab_label);
+            figure_data = data.find(figure => figure.figure_tab === tab_label);
+            if (!figure_data){
+                //we don't create anything here...
+                //don't have to render any of the info
+                // tabContentContainer.setAttribute("display", "hidden");
+                return;
+                
+            } else{
+                console.log(figure_data); 
+                // tabContentContainer.setAttribute("display", "");
+
+            // console.log(figure_data['figure_caption_long']);
+            //title stuff:
+                let img = '';
+                if (figure_data['figure_path']==='External'){
+                    img = figure_data['figure_external_url'];
+                } else {
+                    img = figure_data['figure_image'];
+                }
+                info_obj = {
+                "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
+                "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
+                "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
+                "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
+                "imageLink" : img,
+                "shortCaption" : figure_data["figure_caption_short"],
+                "longCaption": figure_data["figure_caption_long"]
+                };
+                console.log(info_obj);
+                render_tab_info(tabContentElement, tabContentContainer, info_obj);
+            }
+
+        })
+    .catch(error => console.error('Error fetching data:', error));
+        //new stuff here
+   
+}
 //create tabs here
 function create_tabs(iter, tab_id, tab_label, tab_content) {
+    console.log(tab_id);
     let tab_target = `#${tab_id}-pane`;
     let tab_controls = `${tab_id}-pane`;
 
     let myTab = document.getElementById('myTab');
+    // myTab.innerHTML = '';
     let navItem = document.createElement("li");
     navItem.classList.add("nav-item");
     navItem.setAttribute("role", "presentation");
@@ -443,97 +599,15 @@ function create_tabs(iter, tab_id, tab_label, tab_content) {
     tabContentElement.setAttribute('aria-labelledby', tab_id);
     tabContentElement.setAttribute('tabindex', '0');
 
-    tabContentElement.textContent = tab_content;
+    // tabContentElement.textContent = tab_content;
     tabContentContainer.appendChild(tabContentElement);
     console.log("tab content container");
     console.log(tabContentContainer);
 
-    const containerDiv = document.createElement('div');
-    containerDiv.style.background = 'LightGrey';
-    containerDiv.style.width = '100%';
-    containerDiv.style.display = 'table';
-    containerDiv.style.fontSize = '120%';
-    containerDiv.style.padding = '10px';
-    containerDiv.style.marginBottom = '10px';
 
-    // Create the table row div
-    const tableRowDiv = document.createElement('div');
-    tableRowDiv.style.display = 'table-row';
+    fetch_tab_info(tabContentElement, tabContentContainer, tab_label);
+ }
 
-    // Create the left cell div
-    const leftCellDiv = document.createElement('div');
-    leftCellDiv.style.textAlign = 'left';
-    leftCellDiv.style.display = 'table-cell';
-
-    // More Science Link Here
-    const firstLink = document.createElement('a');
-    firstLink.href = 'https://sanctuarysimon.org/dbtools/project-database/index.php?ID=100428';
-    firstLink.target = '_blank';
-
-    // Create the first icon
-    const firstIcon = document.createElement('i');
-    firstIcon.classList.add('fa', 'fa-clipboard-list');
-    firstIcon.setAttribute('role', 'presentation');
-    firstIcon.setAttribute('aria-label', 'clipboard-list icon');
-
-    // Add the icon and text to the first link
-    firstLink.appendChild(firstIcon);
-    firstLink.appendChild(document.createTextNode(' Placeholder Science Link'));
-    leftCellDiv.appendChild(firstLink);
-
-    // Create the right cell div
-    const rightCellDiv = document.createElement('div');
-    rightCellDiv.style.textAlign = 'right';
-    rightCellDiv.style.display = 'table-cell';
-
-    // Create the second link
-    const secondLink = document.createElement('a');
-    secondLink.href = 'https://www.sccwrp.org/about/research-areas/data-portal/';
-    secondLink.target = '_blank';
-
-    // Create the second icon
-    const secondIcon = document.createElement('i');
-    secondIcon.classList.add('fa', 'fa-database');
-    secondIcon.setAttribute('role', 'presentation');
-    secondIcon.setAttribute('aria-label', 'database icon');
-    secondLink.appendChild(secondIcon);
-    secondLink.appendChild(document.createTextNode(' Placeholder data link'));
-
-    // Add the second link to the right cell div
-    rightCellDiv.appendChild(secondLink);
-    tableRowDiv.appendChild(leftCellDiv);
-    tableRowDiv.appendChild(rightCellDiv);
-    containerDiv.appendChild(tableRowDiv);
-    tabContentElement.appendChild(containerDiv);
-
-    const figureDiv = document.createElement('div');
-    figureDiv.classList.add('figure');
-
-    const img = document.createElement('img');
-    img.src = 'https://sanctuarywatch.ioos.us/webcr-channelislands/img/cinms_cr/App.F.12.12.sheephead_PISCO.jpg';
-    img.alt = '';
-    figureDiv.appendChild(img);
-
-    const caption = document.createElement('p');
-    caption.classList.add('caption');
-    caption.textContent = ' placeholder short caption';
-    figureDiv.appendChild(caption);
-    tabContentElement.appendChild(figureDiv);
-
-    // Create the details element
-    const details = document.createElement('details');
-    const summary = document.createElement('summary');
-    summary.textContent = 'Click for Details';
-    details.appendChild(summary);
-    details.appendChild(document.createTextNode(' placeholder long caption'));
-
-    // Add the details element to the tab content element
-    tabContentElement.appendChild(details);
-    tabContentContainer.appendChild(tabContentElement);
-
-    console.log("tab content container");
-    console.log(tabContentContainer);
-}
 
 
 function render_modal(key){
@@ -545,6 +619,7 @@ function render_modal(key){
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             modal_data = data.find(modal => modal.id === id);
             console.log("modal data here:");
             console.log(modal_data); 
@@ -635,6 +710,9 @@ function render_modal(key){
                 let tab_key = "modal_tab_title" + i;
                 let tab_title = modal_data[tab_key];
                 create_tabs(i, tab_key, tab_title, tab_title);
+                // let tabContentContainer = document.getElementById("myTabContent");
+                // tabContentContainer.innerHTML = '';
+                // document.querySelector("#myModal > div > div>div").innerHTML = '';
             }
             
             
