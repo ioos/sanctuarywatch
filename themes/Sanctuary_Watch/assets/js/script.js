@@ -26,6 +26,9 @@ let mobileBool = false;
 function has_mobile_layer(mob_icons, elemname){
     console.log("mobile icons here:");
     console.log(mob_icons);
+    if (mob_icons == null){
+        return false;
+    }
     for (let i = 0; i < mob_icons.children.length; i++) {
         let child = mob_icons.children[i];
         // console.log("mob icons helper here");
@@ -170,7 +173,12 @@ async function loadSVG(url, containerId) {
                 console.log("mobile recognized within conditional");
                 mobileBool = true;
                 const iconsElement = svgElement.getElementById("icons");
-                const mobileIcons = svgElement.getElementById("mobile").cloneNode(true);
+                //fix here
+                let mobileIcons = null;
+                if (svgElement.getElementById("mobile")){
+                    mobileIcons = svgElement.getElementById("mobile").cloneNode(true);
+                } 
+                // const mobileIcons = svgElement.getElementById("mobile").cloneNode(true);
                 // console.log(iconsElement);
                 // console.log("mobile icons here:");
                 // console.log(mobileIcons);
@@ -195,6 +203,10 @@ async function loadSVG(url, containerId) {
                 // mobile_icons_helper(mobileIcons);
 
                 add_modal();
+                // window.addEventListener('load', function() {
+                //     make_title();
+                // });
+                // make_title();
                 // highlight_icons();
                 // flicker_highlight_icons();
                 
@@ -215,6 +227,7 @@ async function loadSVG(url, containerId) {
                 full_screen_button('svg1');
                 table_of_contents();
                 add_modal();
+                // make_title();
 
 
             }
@@ -235,15 +248,20 @@ async function loadSVG(url, containerId) {
             full_screen_button('svg1');
             // table_of_contents();
             add_modal();
+            // make_title();
 
             
         }
         // highlight_icons();
         // table_of_contents();
         // add_modal();
-        make_title();
+        // make_title();
         // full_screen_button('svg1');
         // toggle_text();
+        window.addEventListener('load', function() {
+            make_title();
+            console.log(child_obj);
+        });
 
 
 
@@ -424,8 +442,97 @@ function create_tabs(iter, tab_id, tab_label, tab_content) {
     tabContentElement.setAttribute('role', 'tabpanel');
     tabContentElement.setAttribute('aria-labelledby', tab_id);
     tabContentElement.setAttribute('tabindex', '0');
+
     tabContentElement.textContent = tab_content;
     tabContentContainer.appendChild(tabContentElement);
+    console.log("tab content container");
+    console.log(tabContentContainer);
+
+    const containerDiv = document.createElement('div');
+    containerDiv.style.background = 'LightGrey';
+    containerDiv.style.width = '100%';
+    containerDiv.style.display = 'table';
+    containerDiv.style.fontSize = '120%';
+    containerDiv.style.padding = '10px';
+    containerDiv.style.marginBottom = '10px';
+
+    // Create the table row div
+    const tableRowDiv = document.createElement('div');
+    tableRowDiv.style.display = 'table-row';
+
+    // Create the left cell div
+    const leftCellDiv = document.createElement('div');
+    leftCellDiv.style.textAlign = 'left';
+    leftCellDiv.style.display = 'table-cell';
+
+    // More Science Link Here
+    const firstLink = document.createElement('a');
+    firstLink.href = 'https://sanctuarysimon.org/dbtools/project-database/index.php?ID=100428';
+    firstLink.target = '_blank';
+
+    // Create the first icon
+    const firstIcon = document.createElement('i');
+    firstIcon.classList.add('fa', 'fa-clipboard-list');
+    firstIcon.setAttribute('role', 'presentation');
+    firstIcon.setAttribute('aria-label', 'clipboard-list icon');
+
+    // Add the icon and text to the first link
+    firstLink.appendChild(firstIcon);
+    firstLink.appendChild(document.createTextNode(' Placeholder Science Link'));
+    leftCellDiv.appendChild(firstLink);
+
+    // Create the right cell div
+    const rightCellDiv = document.createElement('div');
+    rightCellDiv.style.textAlign = 'right';
+    rightCellDiv.style.display = 'table-cell';
+
+    // Create the second link
+    const secondLink = document.createElement('a');
+    secondLink.href = 'https://www.sccwrp.org/about/research-areas/data-portal/';
+    secondLink.target = '_blank';
+
+    // Create the second icon
+    const secondIcon = document.createElement('i');
+    secondIcon.classList.add('fa', 'fa-database');
+    secondIcon.setAttribute('role', 'presentation');
+    secondIcon.setAttribute('aria-label', 'database icon');
+    secondLink.appendChild(secondIcon);
+    secondLink.appendChild(document.createTextNode(' Placeholder data link'));
+
+    // Add the second link to the right cell div
+    rightCellDiv.appendChild(secondLink);
+    tableRowDiv.appendChild(leftCellDiv);
+    tableRowDiv.appendChild(rightCellDiv);
+    containerDiv.appendChild(tableRowDiv);
+    tabContentElement.appendChild(containerDiv);
+
+    const figureDiv = document.createElement('div');
+    figureDiv.classList.add('figure');
+
+    const img = document.createElement('img');
+    img.src = 'https://sanctuarywatch.ioos.us/webcr-channelislands/img/cinms_cr/App.F.12.12.sheephead_PISCO.jpg';
+    img.alt = '';
+    figureDiv.appendChild(img);
+
+    const caption = document.createElement('p');
+    caption.classList.add('caption');
+    caption.textContent = ' placeholder short caption';
+    figureDiv.appendChild(caption);
+    tabContentElement.appendChild(figureDiv);
+
+    // Create the details element
+    const details = document.createElement('details');
+    const summary = document.createElement('summary');
+    summary.textContent = 'Click for Details';
+    details.appendChild(summary);
+    details.appendChild(document.createTextNode(' placeholder long caption'));
+
+    // Add the details element to the tab content element
+    tabContentElement.appendChild(details);
+    tabContentContainer.appendChild(tabContentElement);
+
+    console.log("tab content container");
+    console.log(tabContentContainer);
 }
 
 
@@ -439,6 +546,7 @@ function render_modal(key){
         .then(response => response.json())
         .then(data => {
             modal_data = data.find(modal => modal.id === id);
+            console.log("modal data here:");
             console.log(modal_data); 
             //title stuff:
             let title = child_obj[key]['title'];  
