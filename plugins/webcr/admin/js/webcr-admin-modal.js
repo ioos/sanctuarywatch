@@ -564,9 +564,6 @@ $('.modal_preview').click(function(){
     }
     secondParent.appendChild(newDiv);
 
-
-
-
 });
 
 

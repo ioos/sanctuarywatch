@@ -49,8 +49,9 @@ class Webcr_Figure {
             'publicly_queryable' => true,
             'show_ui'            => true,
             'show_in_menu'       => true,
+            'show_in_rest'       => true,
             'query_var'          => true,
-            'rewrite'            => array( 'slug' => 'modals' ),
+            'rewrite'            => array( 'slug' => 'figures' ),
             'capability_type'    => 'post',
             'menu_icon'          => 'dashicons-admin-comments',
             'has_archive'        => true,
@@ -69,183 +70,320 @@ class Webcr_Figure {
 	 * @since    1.0.0
 	 */
     function create_figure_fields() {
- //       if (isset($_GET["action"])) {
- //           if ($_GET["action"] == "edit") {
 
-                $config_metabox = array(
+        $config_metabox = array(
 
-                    /*
-                    * METABOX
-                    */
-                    'type'              => 'metabox',                       // Required, menu or metabox
-                    'id'                => $this->plugin_name,              // Required, meta box id, unique, for saving meta: id[field-id]
-                    'post_types'        => array( 'figure' ),                 // Post types to display meta box
-                    'context'           => 'advanced',                      // 	The context within the screen where the boxes should display: 'normal', 'side', and 'advanced'.
-                    'priority'          => 'default',                       // 	The priority within the context where the boxes should show ('high', 'low').
-                    'title'             => 'Figure Fields',                  // The title of the metabox
-                    'capability'        => 'edit_posts',                    // The capability needed to view the page
-                    'tabbed'            => true,
-                    'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
-                );
+            /*
+            * METABOX
+            */
+            'type'              => 'metabox',                       // Required, menu or metabox
+            'id'                => $this->plugin_name,              // Required, meta box id, unique, for saving meta: id[field-id]
+            'post_types'        => array( 'figure' ),                 // Post types to display meta box
+            'context'           => 'advanced',                      // 	The context within the screen where the boxes should display: 'normal', 'side', and 'advanced'.
+            'priority'          => 'default',                       // 	The priority within the context where the boxes should show ('high', 'low').
+            'title'             => 'Figure Fields',                  // The title of the metabox
+            'capability'        => 'edit_posts',                    // The capability needed to view the page
+            'tabbed'            => true,
+            'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
+        );
 
-                // get list of locations, which is saved as a taxonomy
-                $function_utilities = new Webcr_Utility();
-                $locations = $function_utilities -> returnInstances();
+        // get list of locations, which is saved as a taxonomy
+        $function_utilities = new Webcr_Utility();
+        $locations = $function_utilities -> returnInstances();
 
-                $scene_titles = [];
-                $modal_icons = [];
-                $modal_tabs = [];
+        $scene_titles = [];
+        $modal_icons = [];
+        $modal_tabs = [];
 
-                // used by both scene and icon dropdowns
-                if (array_key_exists("post", $_GET)) {
-                    $figure_id = intval($_GET["post"]);
-                   // $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
-                    $location = get_post_meta($figure_id, "location", true);
-                    $scene_titles = $function_utilities -> returnScenesFigure($location);
-                    $scene_id = get_post_meta($figure_id, "figure_scene", true);
-                    $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
-                    $modal_id = get_post_meta($figure_id, "figure_modal", true);
-                    $modal_tabs = $function_utilities -> returnModalTabs($modal_id);
-                }
+        // used by both scene and icon dropdowns
+        if (array_key_exists("post", $_GET)) {
+            $figure_id = intval($_GET["post"]);
+            // $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
+            $location = get_post_meta($figure_id, "location", true);
+            $scene_titles = $function_utilities -> returnScenesFigure($location);
+            $scene_id = get_post_meta($figure_id, "figure_scene", true);
+            $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
+            $modal_id = get_post_meta($figure_id, "figure_modal", true);
+            $modal_tabs = $function_utilities -> returnModalTabs($modal_id);
+        }
 
-                $fields[] = array(
-                    'name'   => 'basic',
-                    'title'  => 'Basic',
-                    'icon'   => 'dashicons-admin-generic',
+        $fields[] = array(
+            'name'   => 'basic',
+            'title'  => 'Basic',
+            'icon'   => 'dashicons-admin-generic',
+            'fields' => array(
+
+                array(
+                    'id'             => 'location',
+                    'type'           => 'select',
+                    'title'          => 'Instance',
+                    'options'        => $locations,
+                    'default_option' => 'Figure Instance',
+                    'description' => 'Figure Instance description',
+                    'default'     => ' ',
+                    'class'      => 'chosen', 
+                ),
+                array(
+                    'id'             => 'figure_scene',
+                    'type'           => 'select',
+                    'title'          => 'Scene',
+                    'options'        => $scene_titles,
+                    'description' => 'Figure Scene description',
+                ),
+                array(
+                    'id'             => 'figure_modal',
+                    'type'           => 'select',
+                    'title'          => 'Icon',
+                    'options'        => $modal_icons, // array (" " => "Modal Icons")
+                    'description' => 'Figure Icons description',
+                ),
+                array(
+                    'id'             => 'figure_tab',
+                    'type'           => 'select',
+                    'title'          => 'Tab',
+                    'options'        => $modal_tabs, // array (" " => "Modal Icons")
+                    'description' => 'Modal tab description',
+                ),
+                array(
+                    'id'      => 'figure_order',
+                    'type'    => 'number',
+                    'title'   => 'Order',
+                    'description' => 'Add description',
+                    'default' => '1',                               
+                    'min'     => '1',                                    
+                    'max'     => '4',      
+                    'step'    => '1',   
+                ),
+                array(
+                    'type' => 'fieldset',
+                    'id' => 'figure_science_info',
+                    'title'   => 'More science link',
+                    'description' => 'More science description',
                     'fields' => array(
-
                         array(
-                            'id'             => 'location',
-                            'type'           => 'select',
-                            'title'          => 'Instance',
-                            'options'        => $locations,
-                            'default_option' => 'Figure Instance',
-                            'description' => 'Figure Instance description',
-                            'default'     => ' ',
-                            'class'      => 'chosen', 
-                        ),
-                        array(
-                            'id'             => 'figure_scene',
-                            'type'           => 'select',
-                            'title'          => 'Scene',
-                            'options'        => $scene_titles,
-                            'description' => 'Figure Scene description',
-                        ),
-                        array(
-                            'id'             => 'figure_modal',
-                            'type'           => 'select',
-                            'title'          => 'Icon',
-                            'options'        => $modal_icons, // array (" " => "Modal Icons")
-                            'description' => 'Figure Icons description',
-                        ),
-                        array(
-                            'id'             => 'figure_tab',
-                            'type'           => 'select',
-                            'title'          => 'Tab',
-                            'options'        => $modal_tabs, // array (" " => "Modal Icons")
-                            'description' => 'Modal tab description',
-                        ),
-                        array(
-                            'id'      => 'figure_order',
-                            'type'    => 'number',
-                            'title'   => 'Order',
-                            'description' => 'Add description',
-                            'default' => '1',                               
-                            'min'     => '1',                                    
-                            'max'     => '4',      
-                            'step'    => '1',   
-                        ),
-                        array(
-                            'type' => 'fieldset',
-                            'id' => 'figure_science_info',
-                            'title'   => 'More science link',
-                            'description' => 'More science description',
-                            'fields' => array(
-                                array(
-                                    'id'          => 'figure_science_link_text',
-                                    'type'        => 'text',
-                                    'title'       => 'Text',
-                                    'class'       => 'text-class',
-                                ),
-                                array(
-                                    'id'          => 'figure_science_link_url',
-                                    'type'        => 'text',
-                                    'title'       => 'URL',
-                                    'class'       => 'text-class',
-                                ),
-                            ),
-                        ),
-                        array(
-                            'type' => 'fieldset',
-                            'id' => 'figure_data_info',
-                            'title'   => 'More data link',
-                            'description' => 'More data description',
-                            'fields' => array(
-                                array(
-                                    'id'          => 'figure_data_link_text',
-                                    'type'        => 'text',
-                                    'title'       => 'Text',
-                                    'class'       => 'text-class',
-                                ),
-                                array(
-                                    'id'          => 'figure_data_link_url',
-                                    'type'        => 'text',
-                                    'title'       => 'URL',
-                                    'class'       => 'text-class',
-                                ),
-                            ),
-                        ),
-                        array(
-                            'id'             => 'figure_path',
-                            'type'           => 'select',
-                            'title'          => 'Path',
-                            'options'        => array("Internal" => "Internal", "External" => "External"),
-                            'default'        => "Internal",
-                            'description' => 'Figure path description',
-                        ),
-
-                        array(
-                            'id'    => 'figure_image',
-                            'type'  => 'image',
-                            'title' => 'Figure image',
-                            'description' => 'Figure image description'
-                        ),
-                        array(
-                            'id'          => 'figure_external_url',
+                            'id'          => 'figure_science_link_text',
                             'type'        => 'text',
-                            'title'       => 'Figure External URL',
+                            'title'       => 'Text',
                             'class'       => 'text-class',
-                            'description' => 'Figure External URL description',
                         ),
                         array(
-                            'id'     => 'figure_caption_short',
-                            'type'   => 'editor',
-                            'title'  => 'Short caption', 
+                            'id'          => 'figure_science_link_url',
+                            'type'        => 'text',
+                            'title'       => 'URL',
+                            'class'       => 'text-class',
+                        ),
+                    ),
+                ),
+                array(
+                    'type' => 'fieldset',
+                    'id' => 'figure_data_info',
+                    'title'   => 'More data link',
+                    'description' => 'More data description',
+                    'fields' => array(
+                        array(
+                            'id'          => 'figure_data_link_text',
+                            'type'        => 'text',
+                            'title'       => 'Text',
+                            'class'       => 'text-class',
                         ),
                         array(
-                            'id'     => 'figure_caption_long',
-                            'type'   => 'editor',
-                            'title'  => 'Long caption', 
+                            'id'          => 'figure_data_link_url',
+                            'type'        => 'text',
+                            'title'       => 'URL',
+                            'class'       => 'text-class',
                         ),
-                        array(
-                            'id'          => 'figure_preview',
-                            'type'        => 'button',
-                            'title'       => 'Preview Figure',
-                            'class'        => 'modal_preview',
-                            'options'     => array(
-                                'href'  =>  '#nowhere',
-                                'target' => '_self',
-                                'value' => 'Preview',
-                                'btn-class' => 'exopite-sof-btn'
-                            ),
-                        ),
-                    )
-                );
+                    ),
+                ),
+                array(
+                    'id'    => 'interactive_image',
+                    'type'  => 'checkbox',
+                    'title' => 'Interactive image?',
+                    'description' => 'Static figure that needs to be converted to interactive',
+                ),
+                array(
+                    'id'             => 'figure_path',
+                    'type'           => 'select',
+                    'title'          => 'Path',
+                    'options'        => array("Internal" => "Internal", "External" => "External"),
+                    'default'        => "Internal",
+                    'description' => 'Figure path description',
+                ),
 
-                // instantiate the admin page
-                $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
-            }  
- //       }
- //   }
+                array(
+                    'id'    => 'figure_image',
+                    'type'  => 'image',
+                    'title' => 'Figure image',
+                    'description' => 'Figure image description'
+                ),
+                array(
+                    'id'          => 'figure_external_url',
+                    'type'        => 'text',
+                    'title'       => 'Figure External URL',
+                    'class'       => 'text-class',
+                    'description' => 'Figure External URL description',
+                ),
+                array(
+                    'id'     => 'figure_caption_short',
+                    'type'   => 'editor',
+                    'title'  => 'Short caption', 
+                ),
+                array(
+                    'id'     => 'figure_caption_long',
+                    'type'   => 'editor',
+                    'title'  => 'Long caption', 
+                ),
+                array(
+                    'id'          => 'figure_preview',
+                    'type'        => 'button',
+                    'title'       => 'Preview Figure',
+                    'class'        => 'modal_preview',
+                    'options'     => array(
+                        'href'  =>  '#nowhere',
+                        'target' => '_self',
+                        'value' => 'Preview',
+                        'btn-class' => 'exopite-sof-btn'
+                    ),
+                ),
+            )
+        );
+
+        // instantiate the admin page
+        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
+
+        // make several of the modal custom fields available to the REST API
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+            'figure_modal', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The figure modal', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+            'figure_tab', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The figure tab', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+            'figure_order', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'integer', // Data type of the meta value
+                'description' => 'The figure tab', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
+        register_meta( 
+            'post', 
+            "figure_science_info", // Meta key name
+            array(
+                'auth_callback'     => '__return_false' ,
+                'single'            => true, // The field contains a single array
+                'description' => "URL for figure info", // Description of the meta key
+                'show_in_rest'      => array(
+                    'schema' => array(
+                        'type'  => 'array', // The meta field is an array
+                        'items' => array(
+                            'type' => 'string', // Each item in the array is a string
+                        ),
+                    ),
+                ),
+            ) 
+        );
+
+        register_meta( 
+            'post', 
+            "figure_data_info", // Meta key name
+            array(
+                'auth_callback'     => '__return_false' ,
+                'single'            => true, // The field contains a single array
+                'description' => "URL for figure data", // Description of the meta key
+                'show_in_rest'      => array(
+                    'schema' => array(
+                        'type'  => 'array', // The meta field is an array
+                        'items' => array(
+                            'type' => 'string', // Each item in the array is a string
+                        ),
+                    ),
+                ),
+            ) 
+        );
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+            'figure_path', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The figure path', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+            'figure_image', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The figure image, internal', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+            'figure_external_url', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The figure external url', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+            'figure_caption_short', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The short figure caption', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+            'figure_caption_long', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The long figure caption', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
+    }  
+
 
 }

@@ -329,6 +329,21 @@ class Webcr {
 
 		add_action('rest_api_init', 'register_modal_rest_fields');
 
+		function register_figure_rest_fields() {
+			$figure_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_caption_short', 'figure_caption_long');
+			foreach ($figure_fields as $target_field) {
+				register_rest_field(
+					'figure', // Custom post type name
+					$target_field, // Name of the custom field
+					array(
+						'get_callback' => 'meta_get_callback',
+						'schema' => null,
+					)
+				);
+			}
+		}
+		add_action('rest_api_init', 'register_figure_rest_fields');
+
 		// Add the filter to support filtering by "scene_location" in REST API queries
 		function filter_scene_by_scene_location($args, $request) {
 			if (isset($request['scene_location'])) {
