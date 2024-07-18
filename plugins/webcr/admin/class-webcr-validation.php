@@ -19,9 +19,17 @@ class webcr_validation {
             case "figure":
                 return $this->validate_figure();
                 break;
+            case "instance":
+                return $this->validate_instance();
+                break;
             case "default":
                 return false;
         }
+    }
+
+    public function validate_instance (){
+        $save_instance_fields = true;
+        return $save_instance_fields;
     }
 
     public function validate_figure (){
