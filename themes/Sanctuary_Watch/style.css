@@ -351,5 +351,41 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+@media (min-width: 576px) {
+  .modal-dialog {
+    min-width: 30%;
+    max-width: 50%;
+  }
+  #tagline-container{
+    max-width: 100%;
+    min-width: 300px;
+    /* margin-left: 10%; */
+  }
+  #accordion-container{
+    max-width: 40%;
+    min-width: 200px;
+    /* margin-left: -15% */
+  }
+}
 
+@media (max-width: 430px) {
+.modal-dialog {
+  min-width: 300px;
+}
 
+#tagline-container{
+  min-width: 300px;
+  /* max-width: 85%;
+  margin-left: -20% */
+}
+#accordion-container{
+  max-width: 40%;
+  min-width: 200px;
+  /* min-width: 300px;
+  min-width: 10%; 
+  max-width: 20%; */
+}
+#myModal > div > div > div.modal-body{
+  min-width: 300px;
+}
+}

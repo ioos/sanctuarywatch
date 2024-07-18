@@ -45,7 +45,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 <body>
 <!-- <body class="p-3 m-0 border-0 bd-example m-0 border-0"> -->
 <div class="modal" id="myModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
-  <div class="modal-dialog" style="z-index: 9999; margin: 10% auto;  min-width: 70%;max-width: 80% ">
+  <div class="modal-dialog modal-lg" style="z-index: 9999; margin: 10% auto;   ">
     <div class="modal-content" >
 
       <!-- Modal Header -->
@@ -57,10 +57,10 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
       <!-- Modal body -->
       <div class="modal-body">
         <div class="row">
-          <div id="accordion-container" class="col-6" style="margin-left: -25%; min-width: 30%; max-width: 50%">
+          <div id="accordion-container"  >
         
           </div>
-          <div id="tagline-container" class="col-3">
+          <div id="tagline-container"  >
             <!-- tagline goes -->
             tagline here
           </div>

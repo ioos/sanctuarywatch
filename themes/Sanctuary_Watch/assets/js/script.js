@@ -24,8 +24,8 @@ let mobileBool = false;
 
 //checks whether or not an icon has an associated mobile layer.
 function has_mobile_layer(mob_icons, elemname){
-    console.log("mobile icons here:");
-    console.log(mob_icons);
+    // console.log("mobile icons here:");
+    // console.log(mob_icons);
     if (mob_icons == null){
         return false;
     }
@@ -35,7 +35,7 @@ function has_mobile_layer(mob_icons, elemname){
         // console.log(child); 
         let label = child.getAttribute('inkscape:label');
         if (label === elemname){
-            console.log(`found ${label}`);
+            // console.log(`found ${label}`);
             return true;
         }             
     }
@@ -46,12 +46,12 @@ function has_mobile_layer(mob_icons, elemname){
 function get_mobile_layer(mob_icons, elemname){
     for (let i = 0; i < mob_icons.children.length; i++) {
         let child = mob_icons.children[i];
-        console.log("mob icons helper here");
-        console.log(child); 
+        // console.log("mob icons helper here");
+        // console.log(child); 
         let label = child.getAttribute('inkscape:label');
         if (label === elemname){
-            console.log("in get mobile laters");
-            console.log(child);
+            // console.log("in get mobile laters");
+            // console.log(child);
             return child;
         }             
     }
@@ -60,9 +60,9 @@ function get_mobile_layer(mob_icons, elemname){
 
 //helper function for creating mobile grid for loadSVG:
 function mobile_helper(svgElement, iconsArr, mobile_icons){
-    console.log(svgElement);
+    // console.log(svgElement);
     let defs = svgElement.firstElementChild;
-    console.log(defs);
+    // console.log(defs);
     // let mob_icons = svgElement.querySelector("#mobile");
     // console.log(mob_icons);
     //just some checks to make sure the variables are right
@@ -92,7 +92,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                 let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
                 svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-                console.log(svgClone);
+                // console.log(svgClone);
                 // svgClone.setAttributeNS("")
                 cont.appendChild(svgClone);
                     // svgElement.removeChild("cls-3");
@@ -107,8 +107,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     let tempId = temp.getAttribute("id");
                     key.setAttribute("id",  tempId);
                 }
-                console.log(`this is the key: ${key}`);
-                console.log(key);
+                // console.log(`this is the key: ${key}`);
+                // console.log(key);
                 cont.setAttribute("id", `${currIcon}-container`);
                 svgClone.append(defs);
                 svgClone.append(key);
@@ -157,20 +157,20 @@ async function loadSVG(url, containerId) {
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
         const svgElement = svgDoc.documentElement;
-        console.log(svgElement);
+        // console.log(svgElement);
         svgElement.setAttribute("id", "svg-elem");
 
         //Append the SVG to the DOM
         const container = document.getElementById(containerId);
-        console.log(container);
+        // console.log(container);
         // container.appendChild(svgElement);
         // console.log(svgElement);
         // checking if user device is touchscreen
         if (is_touchscreen()){
             // flicker_highlight_icons();
-            console.log("touchscreen recognized");
+            // console.log("touchscreen recognized");
             if (is_mobile() && (deviceDetector.device != 'tablet')){ //a phone and not a tablet; screen will be its own UI here
-                console.log("mobile recognized within conditional");
+                // console.log("mobile recognized within conditional");
                 mobileBool = true;
                 const iconsElement = svgElement.getElementById("icons");
                 //fix here
@@ -197,7 +197,7 @@ async function loadSVG(url, containerId) {
                     }
                 });
                 // parentElement.appendChild(mobileIcons);
-                console.log(svgElement);
+                // console.log(svgElement);
                 let iconsArr = Array.from(iconsElement.children);
                 mobile_helper(svgElement, iconsArr, mobileIcons);
                 // mobile_icons_helper(mobileIcons);
@@ -260,7 +260,7 @@ async function loadSVG(url, containerId) {
         // toggle_text();
         window.addEventListener('load', function() {
             make_title();
-            console.log(child_obj);
+            // console.log(child_obj);
         });
 
 
@@ -276,7 +276,7 @@ async function loadSVG(url, containerId) {
 function highlight_icons(){
     for (let key in child_obj){
         let elem = document.querySelector('g[id="' + key + '"]');
-        console.log(elem);
+        // console.log(elem);
         elem.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
             elem.style.stroke = "yellow";
@@ -411,7 +411,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     containerDiv.style.padding = '10px';
     containerDiv.style.marginBottom = '10px';
     containerDiv.style.margin = '0 auto'; 
-    containerDiv.style.borderRadius = '3px 3px 3px 3px'; 
+    containerDiv.style.borderRadius = '6px 6px 6px 6px'; 
 
 
     // Create the table row div
@@ -427,15 +427,6 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const firstLink = document.createElement('a');
     firstLink.href = info_obj['scienceLink'];
     firstLink.target = '_blank';
-
-    // Create the first icon
-    const firstIcon = document.createElement('i');
-    firstIcon.classList.add('fa', 'fa-clipboard-list');
-    firstIcon.setAttribute('role', 'presentation');
-    firstIcon.setAttribute('aria-label', 'clipboard-list icon');
-
-    // Add the icon and text to the first link
-    firstLink.appendChild(firstIcon);
     firstLink.appendChild(document.createTextNode(info_obj['scienceText']));
     leftCellDiv.appendChild(firstLink);
 
@@ -448,13 +439,6 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const secondLink = document.createElement('a');
     secondLink.href = info_obj['dataLink'];
     secondLink.target = '_blank';
-
-    // Create the second icon
-    const secondIcon = document.createElement('i');
-    secondIcon.classList.add('fa', 'fa-database');
-    secondIcon.setAttribute('role', 'presentation');
-    secondIcon.setAttribute('aria-label', 'database icon');
-    secondLink.appendChild(secondIcon);
     secondLink.appendChild(document.createTextNode(info_obj['dataText']));
 
     // Add the second link to the right cell div
@@ -502,14 +486,14 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
 
-    console.log("tab content container");
-    console.log(tabContentContainer);
+    // console.log("tab content container");
+    // console.log(tabContentContainer);
 }
 
 function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
     let id = child_obj['infauna']['modal_id'];
-    console.log(id);
-    console.log(tab_label);
+    // console.log(id);
+    // console.log(tab_label);
     // tab_label = "test";
     const protocol = window.location.protocol;
     const host = window.location.host;
@@ -518,8 +502,8 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
-            console.log(tab_label);
+            // console.log(data);
+            // console.log(tab_label);
             figure_data = data.find(figure => figure.figure_tab === tab_label);
             if (!figure_data){
                 //we don't create anything here...
@@ -548,7 +532,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
                 "shortCaption" : figure_data["figure_caption_short"],
                 "longCaption": figure_data["figure_caption_long"]
                 };
-                console.log(info_obj);
+                // console.log(info_obj);
                 render_tab_info(tabContentElement, tabContentContainer, info_obj);
             }
 
@@ -558,8 +542,9 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
    
 }
 //create tabs here
-function create_tabs(iter, tab_id, tab_label, tab_content) {
-    console.log(tab_id);
+function create_tabs(iter, tab_id, tab_label) {
+    // console.log(tab_id);
+    console.log("creating a tab");
     let tab_target = `#${tab_id}-pane`;
     let tab_controls = `${tab_id}-pane`;
 
@@ -601,8 +586,8 @@ function create_tabs(iter, tab_id, tab_label, tab_content) {
 
     // tabContentElement.textContent = tab_content;
     tabContentContainer.appendChild(tabContentElement);
-    console.log("tab content container");
-    console.log(tabContentContainer);
+    // console.log("tab content container");
+    // console.log(tabContentContainer);
 
 
     fetch_tab_info(tabContentElement, tabContentContainer, tab_label);
@@ -619,10 +604,10 @@ function render_modal(key){
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            // console.log(data);
             modal_data = data.find(modal => modal.id === id);
-            console.log("modal data here:");
-            console.log(modal_data); 
+            // console.log("modal data here:");
+            // console.log(modal_data); 
             //title stuff:
             let title = child_obj[key]['title'];  
             let modal_title = document.getElementById("modal-title");
@@ -631,17 +616,31 @@ function render_modal(key){
 
             //tagline container
             let tagline_container = document.getElementById('tagline-container');
+            //add stuff for formatting here...
             let modal_tagline = modal_data["modal_tagline"];
             tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
 
             //generate accordion
             // Select the container where the accordion will be appended
             let accordion_container = document.getElementById('accordion-container');
+            //add stuff for formatting here...
             // accordion_container.innerHTML = '';
             // Create the accordion element
             let acc = document.createElement("div");
             acc.classList.add("accordion");
 
+            if (is_mobile()){
+                console.log("is mobile");
+                tagline_container.classList.add("col-6");
+                accordion_container.classList.add("col-6");
+                tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
+                accordion_container.setAttribute("style", "min-width: 300px;  max-width: 20%;");
+            } else{
+                tagline_container.classList.add("col-9");
+                accordion_container.classList.add("col-3");
+                // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
+                // accordion_container.setAttribute("style", "min-width: 300px; min-width: 10%; max-width: 20%;");
+            }
             // let collapseList = document.createElement("ul");
             //for more info
             let collapseListHTML = '<div>';
@@ -655,8 +654,8 @@ function render_modal(key){
                 if ((modal_info_text == '') && (modal_info_url == '')){
                     continue;
                 }
-                console.log(modal_info_text);
-                console.log(modal_info_url);
+                // console.log(modal_info_text);
+                // console.log(modal_info_url);
                 let listItem = document.createElement('li');
                 let anchor = document.createElement('a');
                 anchor.setAttribute('href', modal_info_url); 
@@ -680,8 +679,8 @@ function render_modal(key){
                 if ((modal_info_text == '') && (modal_info_url == '')){
                     continue;
                 }
-                console.log(modal_info_text);
-                console.log(modal_info_url);
+                // console.log(modal_info_text);
+                // console.log(modal_info_url);
                 let listItem = document.createElement('li');
                 let anchor = document.createElement('a');
                 anchor.setAttribute('href', modal_info_url); 
@@ -705,16 +704,24 @@ function render_modal(key){
             // allkeyobj[key] = true;
 
             //for tabs jere:
+            // window.addEventListener('load', function() {
+            
             let num_tabs = Number(modal_data["modal_tab_number"]);
-            for (let i =1; i <= num_tabs; i ++){
+            for (let i =1; i <= num_tabs; i++){
                 let tab_key = "modal_tab_title" + i;
                 let tab_title = modal_data[tab_key];
-                create_tabs(i, tab_key, tab_title, tab_title);
+
+               
+                create_tabs(i, tab_key, tab_title);
+                console.log(`iteration ${i}, tab key ${tab_key} tab title ${tab_title}`);
+                if (i === num_tabs){
+                    break;
+                }
                 // let tabContentContainer = document.getElementById("myTabContent");
                 // tabContentContainer.innerHTML = '';
                 // document.querySelector("#myModal > div > div>div").innerHTML = '';
             }
-            
+        // });
             
 
 
@@ -860,7 +867,7 @@ function toc_sections() {
         }
     }
     sections.sort();
-    console.log(sections);
+    // console.log(sections);
 
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("div");
@@ -951,7 +958,7 @@ function table_of_contents(){
         
         else{
             link.href = child_obj[key]['external_url'];
-            console.log(link.href);
+            // console.log(link.href);
             link.innerHTML = title;
             item.appendChild(link);
         }
@@ -972,7 +979,7 @@ function table_of_contents(){
         
         
         elem.appendChild(item);
-        console.log(elem);
+        // console.log(elem);
         // return elem;
     }
         
@@ -990,16 +997,21 @@ function add_modal(){
             let modal = document.getElementById("myModal");
             let closeButton = document.getElementById("close");
             
+            // elem.addEventListener('click', function() {
+            //         modal.style.display = "block";
+            //         render_modal(key );
 
-            elem.addEventListener('click', function() {
-                    modal.style.display = "block";
-                    render_modal(key );
-
-            });
+            // });
             
             if (mobileBool){
                 let itemContainer = document.querySelector(`#${key}-container`);
                 itemContainer.addEventListener('click', function() {
+                    modal.style.display = "block";
+                    render_modal(key );
+
+            });
+            } else {
+                elem.addEventListener('click', function() {
                     modal.style.display = "block";
                     render_modal(key );
 
