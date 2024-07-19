@@ -177,6 +177,18 @@ class Webcr_Instance {
                     'description' => 'Should there be a text toggle button?',
                     'class'      => 'chosen', 
                 ),
+                array(
+                    'id'          => 'instance_check',
+                    'type'        => 'button',
+                    'title'       => 'Check Instance for Errors',
+                    'class'        => 'instance_check',
+                    'options'     => array(
+                        'href'  =>  '#nowhere',
+                        'target' => '_self',
+                        'value' => 'Error Check',
+                        'btn-class' => 'exopite-sof-btn'
+                    ),
+                ),
             )
         );
 

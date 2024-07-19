@@ -254,6 +254,57 @@ class Webcr {
 					'schema' => null,
 				)
 			);
+
+			register_rest_field(
+				'scene', // Custom post type name
+				'scene_tagline', // Name of the custom field
+				array(
+					'get_callback' => 'meta_get_callback',
+					'schema' => null,
+				)
+			);
+
+			register_rest_field(
+				'scene', // Custom post type name
+				'scene_info_entries', // Name of the custom field
+				array(
+					'get_callback' => 'meta_get_callback',
+					'schema' => null,
+				)
+			);
+
+			for ($i = 1; $i < 7; $i++){
+				$field_target = 'scene_info' . $i;
+				register_rest_field(
+					'scene', // Custom post type name
+					$field_target, // Name of the custom field
+					array(
+						'get_callback' => 'meta_get_callback',
+						'schema' => null,
+					)
+				);
+			}
+
+			register_rest_field(
+				'scene', // Custom post type name
+				'scene_photo_entries', // Name of the custom field
+				array(
+					'get_callback' => 'meta_get_callback',
+					'schema' => null,
+				)
+			);
+
+			for ($i = 1; $i < 7; $i++){
+				$field_target = 'scene_photo' . $i;
+				register_rest_field(
+					'scene', // Custom post type name
+					$field_target, // Name of the custom field
+					array(
+						'get_callback' => 'meta_get_callback',
+						'schema' => null,
+					)
+				);
+			}
 		}
 
 		function meta_get_callback($object, $field_name, $request) {

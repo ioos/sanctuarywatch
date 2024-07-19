@@ -855,14 +855,22 @@ class Webcr_Scene {
                 'single' => true, // Indicates whether the meta key has one single value
                 'type' => 'string', // Data type of the meta value
                 'description' => 'The location of the scene', // Description of the meta key
-        //        'sanitize_callback' => 'meta_sanitize_callback', // Callback function to sanitize the value
                 'auth_callback' => '__return_false'
-//                'auth_callback' => function () {
-  //                  return true; // Return true to allow reading, false to disallow writing
-    //            }
             )
         );
  
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'scene_tagline', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The scene tagline', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
         register_meta(
             'post', // Object type. In this case, 'post' refers to custom post type 'Scene'
             'scene_infographic', // Meta key name
@@ -871,13 +879,75 @@ class Webcr_Scene {
                 'single' => true, // Indicates whether the meta key has one single value
                 'type' => 'string', // Data type of the meta value
                 'description' => 'The url of the infographic', // Description of the meta key
-       //         'sanitize_callback' => 'meta_sanitize_callback', // Callback function to sanitize the value
                 'auth_callback' => '__return_false'
-//                'auth_callback' => function () {
-  //                  return true; // Return true to allow reading, false to disallow writing
-    //            }
             )
         );
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'scene_info_entries', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'integer', // Data type of the meta value
+                'description' => 'The number of info links', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );        
+
+        for ($i = 1; $i < 7; $i++ ) {
+            $target_field = 'scene_info' . $i;
+            $target_description = 'Info link ' . $i;
+            register_meta( 'post', 
+                $target_field,
+                array(
+                    'auth_callback'     => '__return_false' ,
+                    'single'            => true, // The field contains a single array
+                    'description' => $target_description, // Description of the meta key
+                    'show_in_rest'      => array(
+                        'schema' => array(
+                            'type'  => 'array', // The meta field is an array
+                            'items' => array(
+                                'type' => 'string', // Each item in the array is a string
+                            ),
+                        ),
+                    ),
+                ) 
+            );
+        }
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'scene_photo_entries', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'integer', // Data type of the meta value
+                'description' => 'The number of scene links', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );        
+
+        for ($i = 1; $i < 7; $i++ ) {
+            $target_field = 'scene_photo' . $i;
+            $target_description = 'Photo link ' . $i;
+            register_meta( 'post', 
+                $target_field,
+                array(
+                    'auth_callback'     => '__return_false' ,
+                    'single'            => true, // The field contains a single array
+                    'description' => $target_description, // Description of the meta key
+                    'show_in_rest'      => array(
+                        'schema' => array(
+                            'type'  => 'array', // The meta field is an array
+                            'items' => array(
+                                'type' => 'string', // Each item in the array is a string
+                            ),
+                        ),
+                    ),
+                ) 
+            );
+        }
 
     }
 
