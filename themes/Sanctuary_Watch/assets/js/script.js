@@ -11,6 +11,43 @@ console.log(url1)
 
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
 
+function make_scene_elements(info, iText, iUrl, scene_data, type, name){
+    let collapseListHTML = '<div>';
+            for (let i = 1; i < 7; i++){
+                // let info_field = "scene_info" + i;
+                let info_field = info + i;
+
+                // let info_text = "scene_info_text" + i;
+                let info_text = iText + i;
+
+                // let info_url = "scene_info_url" + i;
+                let info_url = iUrl + i;
+
+                let scene_info_text = scene_data[info_field][info_text];
+                let scene_info_url = scene_data[info_field][info_url];
+                if ((scene_info_text == '') && (scene_info_url == '')){
+                    continue;
+                }
+                console.log(scene_info_text);
+                console.log(scene_info_url);
+                let listItem = document.createElement('li');
+                let anchor = document.createElement('a');
+                anchor.setAttribute('href', 'test'); 
+                anchor.textContent = 'test';
+
+                listItem.appendChild(anchor);
+
+                // collapseList.appendChild(listItem);
+                collapseListHTML += `<div> <a href="${scene_info_url}">${scene_info_text}</a> </div>`;
+                collapseListHTML += '</div>';
+            }
+    // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
+    let acc = createAccordionItem(`${type}-item-1`, `${type}-header-1`, `${type}-collapse-1`, name, collapseListHTML);
+
+    
+    return acc;
+}
+
 function make_title(){
     const protocol = window.location.protocol;
     const host = window.location.host;
@@ -36,10 +73,48 @@ function make_title(){
             titleh1.innerHTML = title;
             titleDom.appendChild(titleh1);
 
-            let titleTagline = document.createElement("p");
+            
             // p.innerHTML = scene_data.
             // titleDom.innerHTML = title;
+            // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
+            let acc = make_scene_elements( "scene_info", "scene_info_text","scene_info_url", scene_data, "more-info", "More Info");
+            let acc1 = make_scene_elements( "scene_photo", "scene_photo_text","scene_photo_url", scene_data, "images", "Images");
+            // let acc2 = make_scene_elements();
+            let accgroup = document.createElement("div");
+            if (!is_mobile()){
+                // accgroup.setAttribute("style", "max-width: 15%; margin-top: 2%");
+                accgroup.setAttribute("style", "margin-top: 2%");
+
+            } else {
+                accgroup.setAttribute("style", "max-width: 85%; margin-top: 2%");
+            }
+            // accgroup.setAttribute("style", "max-width: 15%; margin-top: 2%")
+            accgroup.classList.add("accordion");
+
             
+            accgroup.appendChild(acc);
+            accgroup.appendChild(acc1);
+
+            let row = document.createElement("div");
+            row.classList.add("row");
+
+            let col1 = document.createElement("div");
+            col1.classList.add("col-md-2");
+            col1.appendChild(accgroup);
+
+            let col2 = document.createElement("div");
+            col2.classList.add("col-md-10");
+            let titleTagline = document.createElement("p");
+            titleTagline.innerHTML = scene_data.scene_tagline;
+            col2.appendChild(titleTagline);
+
+            row.appendChild(col1);
+            row.appendChild(col2);
+            row.setAttribute("style", "margin-top: 2%");
+
+
+            // accgroup.append(acc2);
+            titleDom.append(row);
 
         })
     .catch(error => console.error('Error fetching data:', error));
