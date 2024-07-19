@@ -7,18 +7,44 @@ console.log(child_obj);
 // console.log("this is the post id: ", post_id);//prob dont need this
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
-// console.log(url1)
+console.log(url1)
 
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
 
 function make_title(){
-    let title = '';
-    for (let key in child_obj){
-        title = child_obj[key]['scene']['post_title'];
-        break;
-    }
-    let titleDom = document.querySelector("body > h1");
-    titleDom.innerHTML = title;
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/scene?&order=asc"
+    // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
+    fetch(fetchURL)
+        .then(response => response.json())
+        .then(data => {
+            // console.log(data);
+            // console.log(tab_label);
+            const currentUrl = window.location.href;
+            console.log(currentUrl);
+
+            console.log(data);
+            // figure_data = data.find(figure => figure.figure_tab === tab_label);
+            scene_data = data.find(scene => scene.link === currentUrl);
+            console.log(scene_data);
+
+            let title = scene_data.title.rendered;
+            // let titleDom = document.querySelector("body > h1");
+            let titleDom = document.getElementById("title-container");
+            let titleh1 = document.createElement("h1");
+            titleh1.innerHTML = title;
+            titleDom.appendChild(titleh1);
+
+            let titleTagline = document.createElement("p");
+            // p.innerHTML = scene_data.
+            // titleDom.innerHTML = title;
+            
+
+        })
+    .catch(error => console.error('Error fetching data:', error));
+        //new stuff here
+   
 }
 let mobileBool = false;
 
@@ -152,17 +178,19 @@ async function loadSVG(url, containerId) {
             throw new Error('Network response was not ok');
         }
         const svgText = await response.text();
+        // console.log(svgText);
 
         // Step 2: Parse the SVG content
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
         const svgElement = svgDoc.documentElement;
         // console.log(svgElement);
+        // console.log(svgElement);
         svgElement.setAttribute("id", "svg-elem");
 
         //Append the SVG to the DOM
         const container = document.getElementById(containerId);
-        // console.log(container);
+        console.log(container);
         // container.appendChild(svgElement);
         // console.log(svgElement);
         // checking if user device is touchscreen
@@ -171,6 +199,14 @@ async function loadSVG(url, containerId) {
             // console.log("touchscreen recognized");
             if (is_mobile() && (deviceDetector.device != 'tablet')){ //a phone and not a tablet; screen will be its own UI here
                 // console.log("mobile recognized within conditional");
+
+                //smaller image preview here for mobile
+                let fullImgCont = document.querySelector("#mobile-view-image");
+                let svgElementMobileDisplay = svgElement.cloneNode(true);
+                fullImgCont.setAttribute("style", "transform: scale(0.3); margin-right: 75%; margin-top: -70%; margin-bottom: -70%");
+                fullImgCont.appendChild(svgElementMobileDisplay);
+
+
                 mobileBool = true;
                 const iconsElement = svgElement.getElementById("icons");
                 //fix here
@@ -1051,7 +1087,6 @@ function add_modal(){
         }
     }
 }
-
 
 
 

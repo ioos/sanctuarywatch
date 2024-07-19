@@ -96,7 +96,8 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
     </div>
   </div>
 </div>
-<h1></h1>
+<div id="title-container" style="margin-left: 9%" ></div>
+<div id="mobile-view-image"></div>
 <div class="container-fluid" id="scene-fluid">
   <div class="row" id="scene-row">
     <div class="col-md-9">
