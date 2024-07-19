@@ -132,6 +132,9 @@ class Webcr {
 		// The class that defines the functions used for the Figure custom content type
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-figure.php';
 
+		// The class that defines the functions used for the Instance custom content type
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-instance.php';
+
 		// The class that defines the validation methods used for the custom post types
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-validation.php';
 
@@ -168,6 +171,11 @@ class Webcr {
 		$this->loader->add_filter( 'use_block_editor_for_post', $plugin_admin, 'remove_gutenberg');
 		$this->loader->add_filter( 'screen_options_show_screen', $plugin_admin, 'remove_screen_options'); 
 
+		// Load  class and functions associated with Instance custom content type
+		$plugin_admin_instance = new Webcr_Instance ( $this->get_plugin_name(), $this->get_version() );		
+		$this->loader->add_action( 'init', $plugin_admin_instance, 'custom_content_type_instance' ); //scene
+		$this->loader->add_action( 'admin_menu', $plugin_admin_instance, 'create_instance_fields', 1 );
+
 		// Load  class and functions associated with Scene custom content type
 		$plugin_admin_scene = new Webcr_Scene( $this->get_plugin_name(), $this->get_version() );		
 		$this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'scene_admin_notice' ); // scene 
@@ -198,6 +206,8 @@ class Webcr {
 		$plugin_admin_figure = new Webcr_Figure( $this->get_plugin_name());		
 		$this->loader->add_action( 'init', $plugin_admin_figure, 'custom_content_type_figure' ); //scene
 		$this->loader->add_action( 'admin_menu', $plugin_admin_figure, 'create_figure_fields', 1 );
+
+
 
 		// Load class and functions connected to custom taxonomies
 		$plugin_admin_taxonomy = new Webcr_Taxonomy( $this->get_plugin_name(), $this->get_version() );
