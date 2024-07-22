@@ -258,7 +258,7 @@
 
 						sublayers.forEach (listElement => {
 						//	document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').classList.add("highlightIcons");
-						console.log  (hoverColor);
+						//console.log  (hoverColor);
 							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.stroke = "yellow"; //hoverColor; 
 							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.strokeWidth = "2";
 						})
