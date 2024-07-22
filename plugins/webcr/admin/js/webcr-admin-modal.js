@@ -22,7 +22,7 @@
 
     // Use the window.onload event to change isPageLoad to false 3 seconds after page loads 
     window.onload = function() {
-        setTimeout(changePageLoad, 3000);
+        setTimeout(changePageLoad, 1000);
     };
 
     iconFunction();
@@ -97,10 +97,10 @@
 
         const modalScene = document.getElementsByName("modal_scene")[0].value;
         if (modalScene != "") {
-            const modal_location_no_space = urlifyRecursiveFunc(modal_location);
+       //     const modal_location_no_space = urlifyRecursiveFunc(modal_location);
             const protocol = window.location.protocol;
             const host = window.location.host;
-            const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&scene_location=" + modal_location_no_space;
+            const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&scene_location=" + modal_location;
             fetch(restURL)
                 .then(response => response.json())
                 .then(data => {
@@ -216,8 +216,12 @@
 	}
 
     function modalSceneDropdown (dropdownElements=[]){
+
+
         const sceneDropdown = document.getElementsByName("modal_scene")[0];
-        if (!(sceneDropdown.value > 0)) {
+        console.log("sceneDropdown: "+ sceneDropdown.value);
+        console.log(!(sceneDropdown.value > 0));
+     //   if (!(sceneDropdown.value > 0)) {
 
             sceneDropdown.innerHTML ='';
             let optionScene = document.createElement('option');
@@ -225,6 +229,7 @@
             optionScene.value = "";
             sceneDropdown.add(optionScene);
             const elementNumber = dropdownElements.length;
+            console.log("elementNumber: "+ elementNumber);
             if (elementNumber > 0) {
                 for (let i = 0; i <= elementNumber -1; i++){
                     let option = document.createElement('option');
@@ -232,9 +237,9 @@
                     option.text = dropdownElements[i][1];
                     sceneDropdown.appendChild(option);
                 }
-            }
+       //     }
 
-        }
+            }
     }
 
     function modalIconsDropdown (dropdownElements=[]){
@@ -268,35 +273,54 @@ function urlifyRecursiveFunc(str) {
 
 function modal_location_change(){
 
-    const modal_location = $('.chosen').first().val();
-    if (modal_location != ""){
-      //  iconSceneOutDropdown();
-        const modal_location_no_space = urlifyRecursiveFunc(modal_location);
-        const protocol = window.location.protocol;
-        const host = window.location.host;
-        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=" + modal_location_no_space;
+    if (isPageLoad == false){
+        // Let's remove the preview window if it already exists
+		const previewWindow = document.getElementById('preview_window');
+		// If the element exists
+		if (previewWindow) {
+			// Remove the scene window
+			previewWindow.parentNode.removeChild(previewWindow);
+		}
 
-        fetch(restURL)
-            .then(response => response.json())
-            .then(data => {
-                // Variable to hold the JSON object
-                const jsonData = data;
+        const modal_location = $('.chosen').first().val();
+        if (modal_location != ""){
 
-                // Now you can use the jsonData variable to access the JSON object
-                let sceneArray = [];
-                let newRow;
-                jsonData.forEach(element => {
-                    newRow = [element["id"], element["title"]["rendered"]];
-                    sceneArray.push(newRow)
-                });
-                modalSceneDropdown(sceneArray);
-            })
-            .catch(error => console.error('Error fetching data:', error));
+            const modal_location_no_space = urlifyRecursiveFunc(modal_location);
+            const protocol = window.location.protocol;
+            const host = window.location.host;
+            const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=" + modal_location_no_space;
+    console.log(restURL);
+            fetch(restURL)
+                .then(response => response.json())
+                .then(data => {
+                    // Variable to hold the JSON object
+                    const jsonData = data;
+
+                    // Now you can use the jsonData variable to access the JSON object
+                    let sceneArray = [];
+                    let newRow;
+                    jsonData.forEach(element => {
+                        newRow = [element["id"], element["title"]["rendered"]];
+                        sceneArray.push(newRow)
+                    });
+                    console.log(sceneArray);
+                    modalSceneDropdown(sceneArray);
+
+                    const iconsDropdown = document.getElementsByName("modal_icons")[0];
+                    iconsDropdown.innerHTML ='';
+                    iconsDropdown.value ='';
+                    let optionIcon = document.createElement('option');
+                    optionIcon.text = "Icons";
+                    optionIcon.value = "";
+                    iconsDropdown.add(optionIcon);
+
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
     }
 }
 
 function modal_scene_change(){
-    console.log("hello");
     const sceneID = $( "select[name='modal_scene']" ).val();
 
     if (sceneID != "" && sceneID != null) {
@@ -323,8 +347,24 @@ function modal_scene_change(){
         const protocol = window.location.protocol;
         const host = window.location.host;
         const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_infographic";
-        console.log(restURL);
-        fetch(restURL)
+
+        const modalInstance = document.getElementsByName("modal_location")[0].value;
+        const restHoverColor = protocol + "//" + host  + "/wp-json/wp/v2/instance/" + modalInstance;
+
+        fetch(restHoverColor)
+            .then(response => response.json())
+            .then(data => {
+                const rawHoverColorString = data['instance_hover_color'];
+                let hoverColor = "yellow"; 
+                if (rawHoverColorString) {
+                    hoverColor = rawHoverColorString;
+                    const commaIndex = hoverColor.indexOf(',');
+                    if (commaIndex !== -1) {
+                        hoverColor = hoverColor.substring(0, commaIndex);
+                    }
+                }
+                return fetch(restURL);
+            })
             .then(response => response.json())
             .then(svgJson => {
                 svgUrl = svgJson["scene_infographic"];
@@ -351,14 +391,11 @@ function modal_scene_change(){
                                     let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
                                     const svgIconHighlight = svgIconTarget.cloneNode(true);
                                     svgIconHighlight.id = "icon_highlight";
-                                    svgIconHighlight.style.stroke = "yellow";
+                                    svgIconHighlight.style.stroke = hoverColor; // "yellow";
                                     svgIconHighlight.style.strokeWidth = "6";
                                     svgIcons.prepend(svgIconHighlight);
                                 }
                             }
-
-
-
 
                             let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
                             // Initialize an array to hold the sublayer names
@@ -406,11 +443,34 @@ function modal_icons_change() {
 
         let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
 
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        const modalInstance = document.getElementsByName("modal_location")[0].value;
+        const restHoverColor = protocol + "//" + host  + "/wp-json/wp/v2/instance/" + modalInstance;
+
+
+        fetch(restHoverColor)
+            .then(response => response.json())
+            .then(data => {
+                const rawHoverColorString = data['instance_hover_color'];
+                let hoverColor = "yellow"; 
+                if (rawHoverColorString) {
+                    hoverColor = rawHoverColorString;
+                    const commaIndex = hoverColor.indexOf(',');
+                    if (commaIndex !== -1) {
+                        hoverColor = hoverColor.substring(0, commaIndex);
+                    }
+                }
+
+
         const svgIconHighlight = svgIconTarget.cloneNode(true);
         svgIconHighlight.id = "icon_highlight";
-        svgIconHighlight.style.stroke = "yellow";
+        svgIconHighlight.style.stroke = hoverColor; //"yellow";
         svgIconHighlight.style.strokeWidth = "6";
         svgIcons.prepend(svgIconHighlight);
+            })
+
+
     }
 }
 

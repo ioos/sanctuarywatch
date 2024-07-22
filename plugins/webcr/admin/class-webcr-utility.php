@@ -41,6 +41,28 @@ class Webcr_Utility {
         return implode(array_slice($parts, 0, $last_part));
     }
 
+    //Get a list of all instances
+
+    public function returnAllInstances(){
+        $args = array(
+            'post_type'      => 'instance', // Custom post type name
+            'posts_per_page' => -1,         // Retrieve all posts
+            'orderby'        => 'title',    // Order by title
+            'order'          => 'ASC',      // Sort in ascending order
+            'fields'         => 'ids',      // Only retrieve IDs to minimize memory usage
+        );
+    
+        $query = new WP_Query($args);
+        $instance = array();
+        $instance[""] = "Instances";
+        if ($query->have_posts()) {
+            foreach ($query->posts as $post_id) {
+                $instance[$post_id]= get_the_title($post_id);
+            }
+        }
+        return $instance;
+    }
+
     /**
 	 * Get list of locations, which is returned as an array
 	 *
@@ -192,7 +214,8 @@ class Webcr_Utility {
 
     // Dropdown options for Scene in figure content type
     public function returnScenesFigure($location){
-        $potential_scenes = [];
+        $potential_scenes[""] = "Scenes";
+
         if ($location != ""){
             $args = array(
                 'post_type' => 'scene',  // Your custom post type
@@ -214,14 +237,14 @@ class Webcr_Utility {
                 $target_title = get_post_meta($target_id, "post_title", true);
                 $potential_scenes[$target_id] = $target_title;
             }
-            asort($potential_scenes);
+        //    asort($potential_scenes);
         }
         return $potential_scenes;
         
     }
 
     public function returnModalTabs($modal_id){
-        $potential_tabs = [];
+        $potential_tabs[""] = "Tabs";
         if ($modal_id != "") {
             for ($i = 1; $i < 7; $i++){
                 $target_field = "modal_tab_title" . $i;
@@ -230,14 +253,14 @@ class Webcr_Utility {
                     $potential_tabs[$target_title] = $target_title;
                 }
             }
-            asort($potential_tabs);
+        //    asort($potential_tabs);
         }
         return $potential_tabs;
     }
 
     //dropdown options for Icon in figure content type
     public function returnFigureIcons($scene_id){
-        $potential_icons = [];
+        $potential_icons[""] = "Icons";
         if ($scene_id != ""){
 
             $args = array(
@@ -268,9 +291,29 @@ class Webcr_Utility {
                 $target_title = get_post_meta($target_id, "post_title", true);
                 $potential_icons[$target_id] = $target_title;
             }
-            asort($potential_icons);
+          //  asort($potential_icons);
         }
+
         return $potential_icons;
+    }
+
+    // register rest fields for when rest api hook is called
+    public function register_custom_rest_fields($post_type, $rest_fields){
+        foreach($rest_fields as $target_field){
+            register_rest_field(
+                $post_type, // Custom post type name
+                $target_field, // Name of the custom field
+                array(
+                    'get_callback' => array($this, 'meta_get_callback'),
+                    'schema' => null,
+                )
+            );
+        }
+    }
+
+    // used by register_custon_rest_fields
+    public function meta_get_callback($object, $field_name, $request) {
+        return get_post_meta($object['id'], $field_name, true);
     }
 
 }

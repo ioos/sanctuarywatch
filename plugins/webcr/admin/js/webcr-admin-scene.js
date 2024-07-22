@@ -193,8 +193,26 @@
 				thirdRow.append(imageColumn);
 			} else {
 
-				// Fetch the remote SVG file
-				fetch(svgPath)
+				const protocol = window.location.protocol;
+				const host = window.location.host;
+				const sceneInstance = document.getElementsByName("scene_location")[0].value;
+				const restHoverColor = protocol + "//" + host  + "/wp-json/wp/v2/instance/" + sceneInstance;
+
+				fetch(restHoverColor)
+					.then(response => response.json())
+					.then(data => {
+						let hoverColor = "yellow"; 
+						const rawHoverColorString = data['instance_hover_color'];
+
+						if (rawHoverColorString) {
+							hoverColor = rawHoverColorString;
+							const commaIndex = hoverColor.indexOf(',');
+							if (commaIndex !== -1) {
+								hoverColor = hoverColor.substring(0, commaIndex);
+							}
+						}
+						return fetch(svgPath);
+					})
 				.then(response => response.text())
 				.then(svgContent => {
 					// Create a temporary div to hold the SVG content
@@ -240,7 +258,7 @@
 
 						sublayers.forEach (listElement => {
 						//	document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').classList.add("highlightIcons");
-							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.stroke = "yellow";
+							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.stroke = hoverColor; 
 							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.strokeWidth = "2";
 						})
 
@@ -274,15 +292,10 @@
 	displayEntries(opening_scene_photo_entries, ".text-class[data-depend-id='scene_photo_");	
 
 	function displayEntries (entry_number, string_prefix){
-		if (string_prefix == ".text-class[data-depend-id='photo_info_"){
-			console.log("entry_number " + entry_number);
-		}
+
 		for (let i = 6; i > entry_number; i--){
 			let target_text = string_prefix + "text" + i + "']";
 			let target_url = string_prefix + "url" + i + "']";
-			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
-				console.log(i + " " + target_text + " " + target_url);
-			}
 			$(target_text).parents().eq(6).css("display", "none");
 			$(target_text).val(function(){return  "";});
 			$(target_url).val(function(){return  "";});
@@ -291,9 +304,6 @@
 		for (let i = 1; i <= entry_number; i++){
 			let target = string_prefix + "text" + i + "']";
 			$(target).parents().eq(6).css("display", "block");
-			if (string_prefix == ".text-class[data-depend-id='photo_info_"){
-				console.log(i + " " + target);
-			}
 		}
 	}
 

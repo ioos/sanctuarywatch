@@ -175,6 +175,9 @@ class Webcr {
 		$plugin_admin_instance = new Webcr_Instance ( $this->get_plugin_name(), $this->get_version() );		
 		$this->loader->add_action( 'init', $plugin_admin_instance, 'custom_content_type_instance' ); //scene
 		$this->loader->add_action( 'admin_menu', $plugin_admin_instance, 'create_instance_fields', 1 );
+		$this->loader->add_action( 'manage_instance_posts_columns', $plugin_admin_instance, 'change_instance_columns' ); //scene
+		$this->loader->add_action( 'manage_instance_posts_custom_column', $plugin_admin_instance, 'custom_instance_column', 10, 2 ); //scene
+		$this->loader->add_filter( 'bulk_actions-edit-instance', $plugin_admin_instance, 'remove_bulk_actions' ); 
 
 		// Load  class and functions associated with Scene custom content type
 		$plugin_admin_scene = new Webcr_Scene( $this->get_plugin_name(), $this->get_version() );		
@@ -188,7 +191,7 @@ class Webcr {
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_orderby' ); //scene
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin_scene, 'scene_remove_quick_edit_link', 10, 2 ); //scene
 		$this->loader->add_action( 'init', $plugin_admin_scene, 'custom_content_type_scene' ); //scene
-		$this->loader->add_filter( 'bulk_actions-edit-scene', $plugin_admin_scene, 'remove_bulk_actions' ); 
+		$this->loader->add_filter( 'bulk_actions-edit-scene', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'wp_ajax_scene_preview', $plugin_admin_scene, 'scene_preview' ); //scene
 
 		// Load  class and functions associated with Modal custom content type
@@ -200,14 +203,18 @@ class Webcr {
 		$this->loader->add_action( 'manage_modal_posts_columns', $plugin_admin_modal, 'change_modal_columns' ); //scene
 		$this->loader->add_action( 'manage_modal_posts_custom_column', $plugin_admin_modal, 'custom_modal_column', 10, 2 ); //scene
 		$this->loader->add_action( 'init', $plugin_admin_modal, 'custom_content_type_modal' ); // scene 
-		$this->loader->add_filter( 'bulk_actions-edit-modal', $plugin_admin_scene, 'remove_bulk_actions' ); 
+		$this->loader->add_filter( 'bulk_actions-edit-modal', $plugin_admin_instance, 'remove_bulk_actions' ); 
 
 		// Load  class and functions associated with Figure custom content type
 		$plugin_admin_figure = new Webcr_Figure( $this->get_plugin_name());		
 		$this->loader->add_action( 'init', $plugin_admin_figure, 'custom_content_type_figure' ); //scene
 		$this->loader->add_action( 'admin_menu', $plugin_admin_figure, 'create_figure_fields', 1 );
-
-
+		$this->loader->add_action( 'manage_figure_posts_columns', $plugin_admin_figure, 'change_figure_columns' ); //scene
+		$this->loader->add_action( 'manage_figure_posts_custom_column', $plugin_admin_figure, 'custom_figure_column', 10, 2 ); //scene
+		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_figure, 'figure_filter_dropdowns' ); //scene 11
+		$this->loader->add_action( 'pre_get_posts', $plugin_admin_figure, 'figure_location_filter_results' ); //scene
+		$this->loader->add_action( 'admin_notices', $plugin_admin_figure, 'figure_admin_notice' ); // scene 
+		$this->loader->add_filter( 'bulk_actions-edit-figure', $plugin_admin_instance, 'remove_bulk_actions' ); 
 
 		// Load class and functions connected to custom taxonomies
 		$plugin_admin_taxonomy = new Webcr_Taxonomy( $this->get_plugin_name(), $this->get_version() );
@@ -236,174 +243,53 @@ class Webcr {
 		//Disable Screen Options in admin screens
 		add_filter('screen_options_show_screen', '__return_false');
 
-		function register_scene_rest_fields() {
-			register_rest_field(
-				'scene', // Custom post type name
-				'scene_location', // Name of the custom field
-				array(
-					'get_callback' => 'meta_get_callback',
-					'schema' => null,
-				)
-			);
+		function register_instance_rest_fields(){
 
-			register_rest_field(
-				'scene', // Custom post type name
-				'scene_infographic', // Name of the custom field
-				array(
-					'get_callback' => 'meta_get_callback',
-					'schema' => null,
-				)
-			);
-
-			register_rest_field(
-				'scene', // Custom post type name
-				'scene_tagline', // Name of the custom field
-				array(
-					'get_callback' => 'meta_get_callback',
-					'schema' => null,
-				)
-			);
-
-			register_rest_field(
-				'scene', // Custom post type name
-				'scene_info_entries', // Name of the custom field
-				array(
-					'get_callback' => 'meta_get_callback',
-					'schema' => null,
-				)
-			);
-
-			for ($i = 1; $i < 7; $i++){
-				$field_target = 'scene_info' . $i;
-				register_rest_field(
-					'scene', // Custom post type name
-					$field_target, // Name of the custom field
-					array(
-						'get_callback' => 'meta_get_callback',
-						'schema' => null,
-					)
-				);
-			}
-
-			register_rest_field(
-				'scene', // Custom post type name
-				'scene_photo_entries', // Name of the custom field
-				array(
-					'get_callback' => 'meta_get_callback',
-					'schema' => null,
-				)
-			);
-
-			for ($i = 1; $i < 7; $i++){
-				$field_target = 'scene_photo' . $i;
-				register_rest_field(
-					'scene', // Custom post type name
-					$field_target, // Name of the custom field
-					array(
-						'get_callback' => 'meta_get_callback',
-						'schema' => null,
-					)
-				);
-			}
+			$instance_rest_fields = array('instance_short_title', 'instance_slug',
+				'instance_type', 'instance_status', 'instance_tile', 'instance_toc_style',
+				'instance_colored_sections', 'instance_hover_color', 
+				'instance_full_screen_button', 'instance_text_toggle');
+	
+				$function_utilities = new Webcr_Utility();
+				$function_utilities -> register_custom_rest_fields("instance", $instance_rest_fields);
 		}
 
-		function meta_get_callback($object, $field_name, $request) {
-			return get_post_meta($object['id'], $field_name, true);
+		add_action('rest_api_init', 'register_instance_rest_fields');
+
+		function register_scene_rest_fields() {
+			$scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
+				'scene_info_entries', 'scene_photo_entries');
+
+			for ($i = 1; $i < 7; $i++){
+				array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i);
+			}
+			$function_utilities = new Webcr_Utility();
+			$function_utilities -> register_custom_rest_fields("scene", $scene_rest_fields);
 		}
 
 		add_action('rest_api_init', 'register_scene_rest_fields');
 
 		function register_modal_rest_fields() {
+			$modal_rest_fields = array('modal_scene','modal_tagline', 'icon_function','modal_info_entries', 
+				'modal_photo_entries', 'modal_tab_number');
 
-			register_rest_field(
-				'modal', // Custom post type name
-				'modal_tagline', // Name of the custom field
-				array(
-					'get_callback' => 'meta_get_callback',
-					'schema' => null,
-				)
-			);
-
-			register_rest_field(
-				'modal', // Custom post type name
-				'modal_info_entries', // Name of the custom field
-				array(
-					'get_callback' => 'meta_get_callback',
-					'schema' => null,
-				)
-			);
-
-			for ($i = 1; $i < 7; $i++){
-				$field_target = 'modal_info' . $i;
-				register_rest_field(
-					'modal', // Custom post type name
-					$field_target, // Name of the custom field
-					array(
-						'get_callback' => 'meta_get_callback',
-						'schema' => null,
-					)
-				);
-			}
-
-			register_rest_field(
-				'modal', // Custom post type name
-				'modal_photo_entries', // Name of the custom field
-				array(
-					'get_callback' => 'meta_get_callback',
-					'schema' => null,
-				)
-			);
-
-			for ($i = 1; $i < 7; $i++){
-				$field_target = 'modal_photo' . $i;
-				register_rest_field(
-					'modal', // Custom post type name
-					$field_target, // Name of the custom field
-					array(
-						'get_callback' => 'meta_get_callback',
-						'schema' => null,
-					)
-				);
-			}
-
-			register_rest_field(
-				'modal', // Custom post type name
-				'modal_tab_number', // Name of the custom field
-				array(
-					'get_callback' => 'meta_get_callback',
-					'schema' => null,
-				)
-			);
-
-			for ($i = 1; $i < 7; $i++){
-				$field_target = 'modal_tab_title' . $i;
-				register_rest_field(
-					'modal', // Custom post type name
-					$field_target, // Name of the custom field
-					array(
-						'get_callback' => 'meta_get_callback',
-						'schema' => null,
-					)
-				);
-			}
+				for ($i = 1; $i < 7; $i++){
+					array_push($modal_rest_fields,'modal_info' . $i, 'modal_photo' . $i, 'modal_tab_title' . $i );
+				}
+				$function_utilities = new Webcr_Utility();
+				$function_utilities -> register_custom_rest_fields("modal", $modal_rest_fields);
 		}
 
 		add_action('rest_api_init', 'register_modal_rest_fields');
 
 		function register_figure_rest_fields() {
-			$figure_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_caption_short', 'figure_caption_long');
-			foreach ($figure_fields as $target_field) {
-				register_rest_field(
-					'figure', // Custom post type name
-					$target_field, // Name of the custom field
-					array(
-						'get_callback' => 'meta_get_callback',
-						'schema' => null,
-					)
-				);
-			}
+			$figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_caption_short', 'figure_caption_long');
+			$function_utilities = new Webcr_Utility();
+			$function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
 		}
+
 		add_action('rest_api_init', 'register_figure_rest_fields');
+
 
 		// Add the filter to support filtering by "scene_location" in REST API queries
 		function filter_scene_by_scene_location($args, $request) {
