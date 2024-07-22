@@ -178,6 +178,7 @@ class Webcr {
 		$this->loader->add_action( 'manage_instance_posts_columns', $plugin_admin_instance, 'change_instance_columns' ); //scene
 		$this->loader->add_action( 'manage_instance_posts_custom_column', $plugin_admin_instance, 'custom_instance_column', 10, 2 ); //scene
 		$this->loader->add_filter( 'bulk_actions-edit-instance', $plugin_admin_instance, 'remove_bulk_actions' ); 
+		$this->loader->add_filter( 'post_row_actions', $plugin_admin_instance, 'custom_content_remove_quick_edit_link', 10, 2 ); //scene
 
 		// Load  class and functions associated with Scene custom content type
 		$plugin_admin_scene = new Webcr_Scene( $this->get_plugin_name(), $this->get_version() );		
@@ -189,7 +190,6 @@ class Webcr {
 		$this->loader->add_action( 'manage_scene_posts_custom_column', $plugin_admin_scene, 'custom_scene_column', 10, 2 ); //scene
 		$this->loader->add_filter( 'manage_edit-scene_sortable_columns', $plugin_admin_scene, 'scene_location_column_sortable' ); //scene
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_orderby' ); //scene
-		$this->loader->add_filter( 'post_row_actions', $plugin_admin_scene, 'scene_remove_quick_edit_link', 10, 2 ); //scene
 		$this->loader->add_action( 'init', $plugin_admin_scene, 'custom_content_type_scene' ); //scene
 		$this->loader->add_filter( 'bulk_actions-edit-scene', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'wp_ajax_scene_preview', $plugin_admin_scene, 'scene_preview' ); //scene

@@ -294,4 +294,21 @@ class Webcr_Instance {
         return $actions;
     }
 
+    /**
+	 * Remove Quick Edit links from all custom content admin screens.
+	 *
+     * @param string[] $actions An array of row action links.
+     * @param int $post The database id of the post.
+	 * @since    1.0.0
+	 */
+    function custom_content_remove_quick_edit_link($actions, $post) {
+        global $current_screen;
+        $current_post_type = $current_screen->post_type;
+        if ($current_post_type  == 'scene' || $current_post_type  == 'instance' || $current_post_type  == 'figure' ||$current_post_type  == 'mdoal') {
+            unset($actions['inline hide-if-no-js']);
+        }
+        return $actions;
+    }
+
+
 }
