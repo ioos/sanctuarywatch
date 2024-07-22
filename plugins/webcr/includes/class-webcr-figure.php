@@ -11,6 +11,124 @@ class Webcr_Figure {
 	}
 
     /**
+	 * Set columns in admin screen for Figure custom content type.
+	 *
+     * @link https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
+	 * @since    1.0.0
+	 */
+    function change_figure_columns( $columns ) {
+        $columns = array (
+            'title' => 'Title',
+            'figure_instance' => 'Instance',
+            'figure_scene' => 'Scene',		
+            'figure_modal' => 'Icon',	
+            'figure_tab' => 'Tab',		
+            'figure_order' => 'Order',			
+            'figure_image_location' => 'Image Location',	
+            'status' => 'Status',
+        );
+        return $columns;
+    }
+
+    /**
+	 * Populate custom fields for Figure content type in the admin screen.
+	 *
+     * @param string $column The name of the column.
+     * @param int $post_id The database id of the post.
+	 * @since    1.0.0
+	 */
+    public function custom_figure_column( $column, $post_id ) {  
+
+
+        if ( $column === 'figure_instance' ) {
+            $instance_id = get_post_meta( $post_id, 'location', true ); 
+            echo get_the_title($instance_id ); 
+        }
+
+        if ( $column === 'figure_scene' ) {
+            $scene_id = get_post_meta( $post_id, 'figure_scene', true );
+            $scene_title = get_the_title($scene_id);
+            echo $scene_title; 
+        }
+
+        if ( $column === 'figure_modal' ) {
+            $modal_id = get_post_meta( $post_id, 'figure_modal', true ); 
+            echo get_the_title($modal_id ); 
+        }
+
+        if ( $column === 'figure_tab' ) {
+            echo get_post_meta( $post_id, 'figure_tab', true ); 
+        }
+
+        if ( $column === 'figure_order' ) {
+            echo get_post_meta( $post_id, 'figure_order', true ); 
+        }
+
+        if ( $column === 'figure_image_location' ) {
+            echo get_post_meta( $post_id, 'figure_path', true ); 
+        }
+
+        if ($column === "status"){
+            date_default_timezone_set('America/Los_Angeles'); 
+            $last_modified_time = get_post_modified_time('g:i A', false, $post_id, true);
+            $last_modified_date = get_post_modified_time('F j, Y', false, $post_id, true);
+            $last_modified_user_id = get_post_field('post_author', $post_id);
+            $last_modified_user = get_userdata($last_modified_user_id);
+            $last_modified_name = $last_modified_user -> first_name . " " . $last_modified_user -> last_name; 
+
+            echo "Last updated at " . $last_modified_time . " Pacific Time on " . $last_modified_date . " by " . $last_modified_name;
+        }
+    }
+
+    /**
+	 * Add filter dropdowns, figure location, for the admin screen for the Figure content type.
+	 *
+	 * @since    1.0.0
+	 */
+    function figure_filter_dropdowns () {
+        $screen = get_current_screen();
+        if ( $screen->id == 'edit-figure' ){
+            // Instances dropdown 
+            global $wpdb;
+            $instances = $wpdb->get_results("
+                SELECT ID, post_title 
+                FROM {$wpdb->posts} 
+                WHERE post_type = 'instance' 
+                AND post_status = 'publish' 
+                ORDER BY post_title ASC");
+    
+            echo '<select name="figure_instance" id="figure_instance">';
+            echo '<option value="">All Instances</option>';
+            foreach ($instances as $instance) {
+                $selected = isset($_GET['figure_instance']) && $_GET['figure_instance'] == $instance->ID ? 'selected="selected"' : '';
+                echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
+            }
+            echo '</select>';
+        }
+    }
+
+    /**
+     * Filter the results for the Figure admin screen by the Figure Location dropdown field.
+     *
+     * @param WP_Query $query The WordPress Query instance that is passed to the function.
+     * @since    1.0.0
+     */
+    function figure_location_filter_results($query){
+        global $pagenow;
+        $type = 'figure';
+        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type && isset($_GET['figure_instance']) && $_GET['figure_instance'] != '') {
+            $meta_query = array(
+                array(
+                    'key' => 'location', // The custom field storing the instance ID
+                    'value' => $_GET['figure_instance'],
+                    'compare' => '='
+                )
+            );
+            $query->set('meta_query', $meta_query);
+        }
+    }
+
+    /**
 	 * Create Figure custom content type.
 	 *
 	 * @since    1.0.0
@@ -89,7 +207,7 @@ class Webcr_Figure {
 
         // get list of locations, which is saved as a taxonomy
         $function_utilities = new Webcr_Utility();
-        $locations = $function_utilities -> returnInstances();
+        $locations = $function_utilities -> returnAllInstances();
 
         $scene_titles = [];
         $modal_icons = [];
@@ -118,9 +236,7 @@ class Webcr_Figure {
                     'type'           => 'select',
                     'title'          => 'Instance',
                     'options'        => $locations,
-                    'default_option' => 'Figure Instance',
                     'description' => 'Figure Instance description',
-                    'default'     => ' ',
                     'class'      => 'chosen', 
                 ),
                 array(
@@ -384,6 +500,68 @@ class Webcr_Figure {
         );
 
     }  
+
+    public function figure_admin_notice() {
+        // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
+        // posts after it has been updated. The if statement is looking for three things: 1. Figure post type? 2. An individual post (as opposed to the scene
+        // admin screen)? 3. A new post
+
+        if (function_exists('get_current_screen')) {
+            $current_screen = get_current_screen();
+            if ($current_screen){
+                if ($current_screen->base == "post" && $current_screen->id =="figure" && !($current_screen->action =="add") ) { 
+                    if( isset( $_COOKIE["figure_post_status"] ) ) {
+                        $modal_post_status =  $_COOKIE["figure_post_status"];
+                        if ($modal_post_status == "post_good") {
+                            echo '<div class="notice notice-info is-dismissible"><p>Figure created or updated.</p></div>';
+                        } 
+                        else {
+                            if (isset($_COOKIE["figure_errors"])) {
+                                $error_message = "<p>Error or errors in figure</p>";
+                                $error_list_coded = stripslashes($_COOKIE["figure_errors"]);
+                                $error_list_array = json_decode($error_list_coded);
+                                $error_array_length = count($error_list_array);
+                                $error_message = $error_message . '<p><ul>';
+                                for ($i = 0; $i < $error_array_length; $i++){
+                                    $error_message = $error_message . '<li>' . $error_list_array[$i] . '</li>';
+                                }
+                                $error_message = $error_message . '</ul></p>';
+                            }
+                            echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
+
+      //                      if (isset($_COOKIE["modal_error_all_fields"])) {
+        //                        $modal_fields_coded = stripslashes($_COOKIE["modal_error_all_fields"]);
+          //                      $modal_fields_array = json_decode($modal_fields_coded, true);	
+            //                    $_POST['modal_location'] = $modal_fields_array['modal_location'];
+              //                  $_POST['modal_scene'] = $modal_fields_array['modal_scene'];
+                //                $_POST['modal_icons'] = $modal_fields_array['modal_icons'];
+                  //              $_POST['icon_function'] = $modal_fields_array['icon_function'];
+                    //            $_POST['icon_external_url'] = $modal_fields_array['icon_external_url'];
+                      //          $_POST['icon_scene_out'] = $modal_fields_array['icon_scene_out'];
+                        //        $_POST['modal_tagline'] = $modal_fields_array['modal_tagline'];
+                          //      $_POST['modal_info_entries'] = $modal_fields_array['modal_info_entries'];
+                     //           $_POST['modal_photo_entries'] = $modal_fields_array['modal_photo_entries'];
+                       //         $_POST['modal_tab_number'] = $modal_fields_array['modal_tab_number'];
+                       //     }
+                        }
+                    //   setcookie("scene_post_status", "", time() - 300, "/");
+                    }
+                    if (isset($_COOKIE["figure_warnings"])){
+                        $warning_message = "<p>Warning or warnings in figure</p>";
+                        $warning_list_coded = stripslashes($_COOKIE["figure_warnings"]);
+                        $warning_list_array = json_decode($warning_list_coded);
+                        $warning_array_length = count($warning_list_array);
+                        $warning_message = $warning_message . '<p><ul>';
+                        for ($i = 0; $i < $warning_array_length; $i++){
+                            $warning_message = $warning_message . '<li>' . $warning_list_array[$i] . '</li>';
+                        }
+                        $warning_message = $warning_message . '</ul></p>';
+                        echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
+                    }
+                }
+            }
+        }
+    }
 
 
 }

@@ -117,7 +117,7 @@ class Webcr_Modal {
 
         // get list of locations, which is saved as a taxonomy
         $function_utilities = new Webcr_Utility();
-        $locations = $function_utilities -> returnInstances();
+        $locations = $function_utilities -> returnAllInstances();
 
         $scene_titles =[];
         $modal_icons = [];
@@ -144,9 +144,7 @@ class Webcr_Modal {
                     'type'           => 'select',
                     'title'          => 'Instance',
                     'options'        => $locations,
-                    'default_option' => 'Modal Instance',
                     'description' => 'Modal Instance description',
-                    'default'     => ' ',
                     'class'      => 'chosen', 
                 ),
                 array(
@@ -537,6 +535,30 @@ class Webcr_Modal {
         // make several of the modal custom fields available to the REST API
         register_meta(
             'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'modal_scene', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'integer', // Data type of the meta value
+                'description' => 'The modal scene', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'icon_function', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The icon function', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );
+        
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
             'modal_tagline', // Meta key name
             array(
                 'show_in_rest' => true, // Make the field available in REST API
@@ -690,30 +712,22 @@ class Webcr_Modal {
 
             echo $field_length_dropdown;
             
-            $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
-            $locations = array(array("All Instances", ""));
-            foreach ( $locations_array as $locations_row ){
-                array_push($locations, array($locations_row -> name,"")); 
+            // Instances dropdown 
+            global $wpdb;
+            $instances = $wpdb->get_results("
+                SELECT ID, post_title 
+                FROM {$wpdb->posts} 
+                WHERE post_type = 'instance' 
+                AND post_status = 'publish' 
+                ORDER BY post_title ASC");
+    
+            echo '<select name="modal_instance" id="modal_instance">';
+            echo '<option value="">All Instances</option>';
+            foreach ($instances as $instance) {
+                $selected = isset($_GET['modal_instance']) && $_GET['modal_instance'] == $instance->ID ? 'selected="selected"' : '';
+                echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
             }
-
-            if (isset($_GET["modal_location"])) { 
-                $scene_location = str_replace("_", " ", $_GET["modal_location"]);
-                $i = 0;
-                foreach ($locations as $location_row) {
-                    if ($location_row[0] == $scene_location) {
-                        $locations[$i][1] = "selected ";
-                        break;
-                    }
-                    $i++;
-                }
-            }
-
-            $location_dropdown = '<select name="modal_location" id="modal_location">';
-            foreach ($locations as $location_row) {
-                $location_dropdown .= '<option ' . $location_row[1] . 'value="' . $location_row[0] .'">' . $location_row[0]  . '</option>';
-            }
-            $location_dropdown .= '</select>';
-            echo $location_dropdown;
+            echo '</select>';
         }
     }
 
@@ -747,23 +761,17 @@ class Webcr_Modal {
      * @since    1.0.0
      */
     function modal_location_filter_results($query){
-        if ( isset($_GET['post_type']) ) {
-            $post_type = $_GET['post_type'];
-            if ($post_type = "modal"){
-                if(isset($_GET['modal_location'])){
-                    $modal_location = str_replace("_", " ", $_GET['modal_location']);
-                    if($modal_location != "All Instances"){
-                        $meta_query = array( 'relation' => 'OR' );
-
-                        array_push( $meta_query, array(
-                            'key' => "modal_location",
-                            'value' => $modal_location,
-                            'compare' => 'LIKE'
-                        ));
-                        $query->set( 'meta_query', $meta_query );
-                    }
-                }
-            }
+        global $pagenow;
+        $type = 'modal';
+        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type && isset($_GET['modal_instance']) && $_GET['modal_instance'] != '') {
+            $meta_query = array(
+                array(
+                    'key' => 'modal_location', // The custom field storing the instance ID
+                    'value' => $_GET['modal_instance'],
+                    'compare' => '='
+                )
+            );
+            $query->set('meta_query', $meta_query);
         }
     }
 
@@ -784,7 +792,9 @@ class Webcr_Modal {
         }
 
         if ( $column === 'modal_location' ) {
-            echo get_post_meta( $post_id, 'modal_location', true ); 
+            $instance_id = get_post_meta( $post_id, 'modal_location', true ); 
+            echo get_the_title($instance_id ); 
+         //   echo get_post_meta( $post_id, 'modal_location', true ); 
         }
 
         if ( $column === 'modal_scene' ) {

@@ -135,31 +135,24 @@ class Webcr_Scene {
             $field_length_dropdown .= '</select>';
 
             echo $field_length_dropdown;
-            
-            $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
-            $locations = array(array("All Instances", ""));
-            foreach ( $locations_array as $locations_row ){
-                array_push($locations, array($locations_row -> name,"")); 
-            }
 
-            if (isset($_GET["scene_location"])) { 
-                $scene_location = str_replace("_", " ", $_GET["scene_location"]);
-                $i = 0;
-                foreach ($locations as $location_row) {
-                    if ($location_row[0] == $scene_location) {
-                        $locations[$i][1] = "selected ";
-                        break;
-                    }
-                    $i++;
-                }
+            // Instances dropdown 
+            global $wpdb;
+            $instances = $wpdb->get_results("
+                SELECT ID, post_title 
+                FROM {$wpdb->posts} 
+                WHERE post_type = 'instance' 
+                AND post_status = 'publish' 
+                ORDER BY post_title ASC");
+    
+            echo '<select name="scene_instance" id="scene_instance">';
+            echo '<option value="">All Instances</option>';
+            foreach ($instances as $instance) {
+                $selected = isset($_GET['scene_instance']) && $_GET['scene_instance'] == $instance->ID ? 'selected="selected"' : '';
+                echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
             }
+            echo '</select>';
 
-            $location_dropdown = '<select name="scene_location" id="scene_location">';
-            foreach ($locations as $location_row) {
-                $location_dropdown .= '<option ' . $location_row[1] . 'value="' . $location_row[0] .'">' . $location_row[0]  . '</option>';
-            }
-            $location_dropdown .= '</select>';
-            echo $location_dropdown;
         }
     }
 
@@ -170,23 +163,17 @@ class Webcr_Scene {
      * @since    1.0.0
      */
     function scene_location_filter_results($query){
-        if ( isset($_GET['post_type']) ) {
-            $post_type = $_GET['post_type'];
-            if ($post_type = "scene"){
-                if(isset($_GET['scene_location'])){
-                    $scene_location = str_replace("_", " ", $_GET['scene_location']);
-                    if($scene_location != "All Instances"){
-                        $meta_query = array( 'relation' => 'OR' );
-
-                        array_push( $meta_query, array(
-                            'key' => "scene_location",
-                            'value' => $scene_location,
-                            'compare' => 'LIKE'
-                        ));
-                        $query->set( 'meta_query', $meta_query );
-                    }
-                }
-            }
+        global $pagenow;
+        $type = 'scene';
+        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type && isset($_GET['scene_instance']) && $_GET['scene_instance'] != '') {
+            $meta_query = array(
+                array(
+                    'key' => 'scene_location', // The custom field storing the instance ID
+                    'value' => $_GET['scene_instance'],
+                    'compare' => '='
+                )
+            );
+            $query->set('meta_query', $meta_query);
         }
     }
 
@@ -228,7 +215,9 @@ class Webcr_Scene {
         }
 
         if ( $column === 'scene_location' ) {
-            echo get_post_meta( $post_id, 'scene_location', true ); 
+            $instance_id = get_post_meta( $post_id, 'scene_location', true ); 
+            echo get_the_title($instance_id ); 
+     //       echo get_post_meta( $post_id, 'scene_location', true ); 
         }
 
         if ( $column === 'scene_infographic' ) {
@@ -350,7 +339,7 @@ class Webcr_Scene {
     }
 
     /**
-	 * Remove Bulk Actions dropdown from Scene and Modal admin screens.
+	 * Remove Bulk Actions dropdown from Scene, Modal, Figure, and Instance admin screens.
 	 *
      * @param array $actions An array of the available bulk actions.
 	 * @since    1.0.0
@@ -358,7 +347,7 @@ class Webcr_Scene {
     function remove_bulk_actions($actions) {
         global $post_type;
     
-        if ($post_type === 'scene' || $post_type === 'modal' ) {
+        if ($post_type === 'scene' || $post_type === 'modal' || $post_type === 'figure' || $post_type === 'instance') {
             unset($actions['bulk-edit']);
             unset($actions['edit']);
             unset($actions['trash']);
@@ -461,12 +450,10 @@ class Webcr_Scene {
             'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
         );
 
-        // get list of locations, which is saved as a taxonomy
-        $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
-        $locations=[];
-        foreach ( $locations_array as $locations_row ){
-            $locations[$locations_row -> name] = $locations_row -> name;
-        }
+
+        $function_utilities = new Webcr_Utility();
+        $instances = $function_utilities ->  returnAllInstances();
+
 
         $fields[] = array(
             'name'   => 'basic',
@@ -478,10 +465,10 @@ class Webcr_Scene {
                     'id'             => 'scene_location',
                     'type'           => 'select',
                     'title'          => 'Instance',
-                    'options'        => $locations,
-                    'default_option' => 'Scene Instance',
+                    'options'        => $instances, //$locations,
+               //     'default_option' => 'Scene Instance',
                     'description' => 'Scene Instance',
-                     'default'     => ' ',
+                //     'default'     => ' ',
                      'class'      => 'chosen', 
                 ),
 
@@ -929,7 +916,7 @@ class Webcr_Scene {
         );        
 
         for ($i = 1; $i < 7; $i++ ) {
-            $target_field = 'scene_photo' . $i;
+            $target_field = 'scenew1_photo' . $i;
             $target_description = 'Photo link ' . $i;
             register_meta( 'post', 
                 $target_field,

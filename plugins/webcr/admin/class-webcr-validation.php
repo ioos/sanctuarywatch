@@ -34,6 +34,69 @@ class webcr_validation {
 
     public function validate_figure (){
         $save_figure_fields = true;
+
+        // Set the error list cookie expiration time to a past date in order to delete it, if it is there
+        setcookie("figure_errors", 0, time() - 3000, "/");
+
+        $figure_errors = [];
+        $figure_warnings = [];
+
+        $field_types = array("figure_science_", "figure_data_");
+
+        foreach ($field_types as $field_type){
+            $form_fieldset = $field_type .  "info";
+            $field_couplet = $_POST[$form_fieldset];
+
+            $field_text = $field_type . "link_text";
+            $field_url = $field_type . "link_url";
+            if (!$field_couplet[$field_url] == "" || !$field_couplet[$field_text] == "" ){
+                if ($field_couplet[$field_url] == "" || $field_couplet[$field_text] == "" ){
+                    $save_figure_fields = FALSE;
+                    array_push($figure_errors,  "The URL or Text is blank for Link " . $field_type);
+                }
+                if (!$field_couplet[$field_url] == "" ) {
+                    if ( $this -> url_check($field_couplet[$field_url]) == FALSE ) {
+                        $save_figure_fields = FALSE;
+                        array_push($figure_errors, "The URL for " . $field_type . " is not valid");
+                    } else {
+                        // Set cURL options
+                        $ch = curl_init($field_couplet[$field_url]);
+                        $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the transfer as a string
+                        curl_setopt($ch, CURLOPT_NOBODY, true);  // Exclude the body from the output
+                        curl_setopt($ch, CURLOPT_HEADER, true);  // Include the header in the output
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects
+                        curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  // Set User-Agent header
+
+                        // Execute cURL session
+                        curl_exec($ch);
+
+                        // Get the headers
+                        $headers = curl_getinfo($ch);
+
+                        // Close cURL session
+                        curl_close($ch);
+
+                        if ($headers["http_code"] != 200){
+                            array_push($figure_warnings, "The URL for " . $field_type . " cannot be accessed");                               
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!empty($figure_warnings)){
+            $warning_list_cookie_value = json_encode($figure_warnings);
+            setcookie("figure_warnings", $warning_list_cookie_value, time() + 10, "/");          
+        }
+        if ($save_figure_fields == FALSE) {
+            $error_list_cookie_value = json_encode($figure_errors);
+            setcookie("figure_errors", $error_list_cookie_value, time() + 10, "/");           
+            setcookie("figure_post_status", "post_error", time() + 10, "/");
+            $this->modal_fields_to_cookie();
+        } else {
+            setcookie("figure_post_status", "post_good", time() + 10, "/");
+        }
         return $save_figure_fields;
     }
     
@@ -64,7 +127,6 @@ class webcr_validation {
                             $save_modal_fields = FALSE;
                             array_push($modal_errors, "The URL for Modal " . ucfirst($field_type) . " Link " . $i . " is not valid");
                         } else {
-
                             // Set cURL options
                             $ch = curl_init($field_couplet[$field_url]);
                             $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
@@ -99,11 +161,10 @@ class webcr_validation {
             $error_list_cookie_value = json_encode($modal_errors);
             setcookie("modal_errors", $error_list_cookie_value, time() + 10, "/");           
             setcookie("modal_post_status", "post_error", time() + 10, "/");
-            $this->modal_fields_to_cookie();
+          //  $this->modal_fields_to_cookie();
         } else {
             setcookie("modal_post_status", "post_good", time() + 10, "/");
         }
-
 
         return $save_modal_fields;
     }

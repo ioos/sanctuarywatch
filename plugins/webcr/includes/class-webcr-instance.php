@@ -128,7 +128,7 @@ class Webcr_Instance {
                     'type'           => 'select',
                     'title'          => 'Status',
                     'options'        => array("Draft" => "Draft", "Published" => "Published"),
-                    'default_option' => 'Draft',
+                    'default' => 'Draft',
                     'description' => 'Is the instance live?',
                     'class'      => 'chosen', 
                 ),
@@ -136,7 +136,7 @@ class Webcr_Instance {
                     'id'    => 'instance_tile',
                     'type'  => 'image',
                     'title' => 'Tile Image',
-                    'description' => 'What is the instance image for the front page tile?'
+                    'description' => 'What is the instance image for the front page tile? The image should be 250 pixels wide and 200 pixels tall.'
                 ),
                 array(
                     'id'             => 'instance_toc_style',
@@ -157,7 +157,7 @@ class Webcr_Instance {
                     'id'          => 'instance_hover_color',
                     'type'        => 'text',
                     'title'       => 'Hover Color',
-                    'description' => 'What should the hover color or colors be? Any <a target="_blank" href="https://www.w3schools.com/colors/colors_names.asp">CSS-supported value</a> will do.',
+                    'description' => 'What should the hover color or colors be? Any <a target="_blank" href="https://www.w3schools.com/colors/colors_groups.asp">CSS-supported value</a> will do.',
                     "default"   => 'yellow',
                     'class'       => 'text-class',
                 ),
@@ -195,7 +195,103 @@ class Webcr_Instance {
         // instantiate the admin page
         $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
 
+        // make several of the instance custom fields available to the REST API
+        $instance_rest_fields = array(
+            array('instance_short_title', 'string'), 
+            array('instance_slug', 'string'), 
+            array('instance_type', 'string'), 
+            array('instance_status', 'string'), 
+            array('instance_tile', 'string'), 
+            array('instance_toc_style', 'string'), 
+            array('instance_colored_sections', 'string'), 
+            array('instance_hover_color', 'string'), 
+            array('instance_full_screen_button', 'string'), 
+            array('instance_text_toggle', 'string'));
+
+            $this->register_meta_nonarray_fields($instance_rest_fields);
     }  
 
+    function register_meta_nonarray_fields ($rest_fields){
+        foreach ($rest_fields as $target_field){
+            register_meta(
+                'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+                $target_field[0], // Meta key name
+                array(
+                    'show_in_rest' => true, // Make the field available in REST API
+                    'single' => true, // Indicates whether the meta key has one single value
+                    'type' => $target_field[1], // Data type of the meta value
+                    'auth_callback' => '__return_false' //Return false to disallow writing
+                )
+            );
+        }
+    }
+
+        /**
+	 * Set columns in admin screen for Scene custom content type.
+	 *
+     * @link https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
+	 * @since    1.0.0
+	 */
+    public function change_instance_columns( $columns ) {
+        $columns = array (
+            'title' => 'Title',
+            'tile' => 'Tile',
+            'type' => 'Type',
+            'state' => 'State',		
+            'status' => 'Status',
+        );
+        return $columns;
+    }
+
+    // Populate columns for admin screen for Instance custom content type
+    public function custom_instance_column( $column, $post_id ) {  
+
+        if ( $column === 'type' ) {
+            echo get_post_meta($post_id, 'instance_type', true);
+        }
+
+        if ( $column === 'tile' ) {
+            $instance_tile = get_post_meta($post_id, 'instance_tile', true);
+            if (!empty($instance_tile)) {
+                    echo '<img src="' . esc_url($instance_tile) . '" style="max-width:100px; max-height:100px;" /><br>';
+            }
+    }
+
+        if ( $column === 'state' ) {
+            echo get_post_meta($post_id, 'instance_status', true);
+        }
+
+        if ($column === "status"){
+            date_default_timezone_set('America/Los_Angeles'); 
+            $last_modified_time = get_post_modified_time('g:i A', false, $post_id, true);
+            $last_modified_date = get_post_modified_time('F j, Y', false, $post_id, true);
+            $last_modified_user_id = get_post_field('post_author', $post_id);
+            $last_modified_user = get_userdata($last_modified_user_id);
+            $last_modified_name = $last_modified_user -> first_name . " " . $last_modified_user -> last_name; 
+
+            echo "Last updated at " . $last_modified_time . " Pacific Time on " . $last_modified_date . " by " . $last_modified_name;
+        }
+    }
+
+
+    /**
+	 * Remove Bulk Actions dropdown from Scene, Modal, Figure, and Instance admin screens.
+	 *
+     * @param array $actions An array of the available bulk actions.
+	 * @since    1.0.0
+	 */
+    function remove_bulk_actions($actions) {
+        global $post_type;
+    
+        if ($post_type === 'scene' || $post_type === 'modal' || $post_type === 'figure' || $post_type === 'instance') {
+            unset($actions['bulk-edit']);
+            unset($actions['edit']);
+            unset($actions['trash']);
+            unset($actions['spam']);
+            unset($actions['unspam']);
+            unset($actions['delete']);
+        }
+        return $actions;
+    }
 
 }
