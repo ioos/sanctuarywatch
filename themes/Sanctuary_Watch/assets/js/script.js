@@ -278,7 +278,20 @@ async function loadSVG(url, containerId) {
                 //smaller image preview here for mobile
                 let fullImgCont = document.querySelector("#mobile-view-image");
                 let svgElementMobileDisplay = svgElement.cloneNode(true);
-                fullImgCont.setAttribute("style", "transform: scale(0.3); margin-right: 75%; margin-top: -70%; margin-bottom: -70%");
+                
+                setTimeout(() => {
+                    let bbox = svgElementMobileDisplay.getBBox(); //toggle -- key.firstElementChild
+                    console.log(bbox.width);
+                    if (bbox.width ==  827.25 && bbox.height == 615.989990234375){
+                        fullImgCont.setAttribute("style", "transform: scale(0.9)");
+                    } else {
+                        fullImgCont.setAttribute("style", "transform: scale(0.3); margin-right: 75%; margin-top: -70%; margin-bottom: -70%");
+                    }
+                }, 0);
+
+                
+                  
+                // fullImgCont.setAttribute("style", "transform: scale(0.3); margin-right: 75%; margin-top: -70%; margin-bottom: -70%");
                 fullImgCont.appendChild(svgElementMobileDisplay);
 
 
@@ -390,7 +403,7 @@ function highlight_icons(){
         // console.log(elem);
         elem.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
-            elem.style.stroke = "yellow";
+            elem.style.stroke = "yellow"; //this is no longer hard-coded
             elem.style.strokeWidth = "6";
         });
         elem.addEventListener('mouseout', function(){

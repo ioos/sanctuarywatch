@@ -388,4 +388,8 @@ input:checked + .slider:before {
 #myModal > div > div > div.modal-body{
   min-width: 300px;
 }
+
+#mobile-view-image{
+  transform: scale(0.9);
+}
 }

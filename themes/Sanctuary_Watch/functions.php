@@ -486,6 +486,17 @@
     );
 }
 add_action('wp_enqueue_scripts', 'enqueue_info_scripts');
+
+function enqueue_info_scripts2() {
+  wp_enqueue_script(
+      'index-js',
+      get_template_directory_uri() . '/assets/js/index.js',
+      array(),
+      null,
+      array('strategy' => 'defer') 
+  );
+}
+add_action('wp_enqueue_scripts', 'enqueue_info_scripts2');
 ?>
 
 

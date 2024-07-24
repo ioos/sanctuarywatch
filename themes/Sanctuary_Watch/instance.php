@@ -1,8 +1,8 @@
 <?php
 /**
- * Primary Page Template for Sanctuary Watch
+ * Primary instance Template for Sanctuary Watch
  *
- * This template is designed to display the main content area of the 'Sanctuary Watch' page within a WordPress theme.
+ * This template is designed to display the main content area for each instance within a WordPress theme.
  * It integrates the site header and footer and provides a central container that features an image and detailed text
  * components styled directly within the template. The key elements include:
  *
