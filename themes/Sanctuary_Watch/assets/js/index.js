@@ -30,18 +30,46 @@ async function getInstanceInfo() {
       console.log(testData);
 
       let elem = document.querySelector("#webcrs---ecosystem-tracking-tools-for-condition-reporting > div");
-      let list = document.createElement("ul");
-      for (let idx in testData){
+      let list = document.createElement("div");
+      list.classList.add("row");
+    for (let idx in testData) {
         let child = testData[idx];
-        let listItem = document.createElement('li');
+        
+        let col = document.createElement('div');
+        col.classList.add("col-xs-12", "col-sm-6", "col-md-4");
+        let card = document.createElement('div');
+        card.className = 'card';
+        // card.style.width = '16rem';
+        card.style.margin = '10px';
+    
+        let cardImg = document.createElement('img');
+        cardImg.className = 'card-img-top';
+        cardImg.setAttribute('src', child.instance_tile);
+        cardImg.setAttribute('alt', child.instance_short_title);
+    
+        let cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
+    
+        // let cardText = document.createElement('p');
+        // cardText.className = 'card-text';
+        // cardText.innerText = child.title.rendered;
+    
         let link = document.createElement('a');
-
         link.setAttribute('href', child.link);
         link.setAttribute('id', child.instance_slug);
-        link.innerText = child.instance_short_title;
-
-        listItem.appendChild(link);
-        list.appendChild(listItem);
+        link.className = 'btn btn-primary';
+        // link.innerText = child.instance_short_title;
+        link.innerText = child.title.rendered;
+        link.setAttribute("style", "display: flex; justify-content: center; align-items: center;");
+    
+        // cardBody.appendChild(cardText);
+        cardBody.appendChild(link);
+    
+        card.appendChild(cardImg);
+        card.appendChild(cardBody);
+        
+        col.appendChild(card);
+        list.appendChild(col);
       }
       elem.appendChild(list);
     } catch (error) {
@@ -49,7 +77,6 @@ async function getInstanceInfo() {
     }
   })();
   
-
-
+console.log(testData)
  
 

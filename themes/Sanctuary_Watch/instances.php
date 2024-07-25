@@ -1,7 +1,8 @@
 <?php
 /**
- * Primary instance Template for Sanctuary Watch
- *
+ * Template Name: instances.php
+ * Template Post Type: instance
+ * 
  * This template is designed to display the main content area for each instance within a WordPress theme.
  * It integrates the site header and footer and provides a central container that features an image and detailed text
  * components styled directly within the template. The key elements include:
@@ -39,17 +40,7 @@ get_header();
     </div>
     <div id="webcrs---ecosystem-tracking-tools-for-condition-reporting" class="section level2">
         <h2 style="color: #024880;">WebCRs - Ecosystem Tracking Tools for Condition Reporting</h2>
-        <p>The web-enabled Condition Reporting (WebCR) platform pairs artwork
-            with information to make it easy to explore and track how ecosystem
-            conditions are changing at a sanctuary. Select a sanctuary below to
-            start exploring that sanctuary’s ecosystem. Navigate by clicking on
-            icons representing major habitats, species of interest, climate and
-            ocean drivers, and human connections. Interactive icons and silhouettes
-            are linked to status and trend data, images, web stories and other
-            related content. The goal of WebCRs are to help us keep our finger on
-            the pulse of these dynamic ecosystems and to help us to better
-            understand and manage our sanctuaries together. Tiles for other
-            sanctuaries will be added below as those tools become available.</p>
+        <p>THIS IS A MF INSTANCE.</p>
         <div>AAHHAHAHAH</div>
         
     </div>
