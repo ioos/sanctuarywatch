@@ -23,17 +23,17 @@ async function getInstanceInfo() {
     }
   }
 
-  let testData;
+  let testDataIndex;
   (async () => {
     try {
-      testData = await getInstanceInfo();
-      console.log(testData);
+      testDataIndex = await getInstanceInfo();
+      console.log(testDataIndex);
 
       let elem = document.querySelector("#webcrs---ecosystem-tracking-tools-for-condition-reporting > div");
       let list = document.createElement("div");
       list.classList.add("row");
-    for (let idx in testData) {
-        let child = testData[idx];
+    for (let idx in testDataIndex) {
+        let child = testDataIndex[idx];
         
         let col = document.createElement('div');
         col.classList.add("col-xs-12", "col-sm-6", "col-md-4");
@@ -73,10 +73,10 @@ async function getInstanceInfo() {
       }
       elem.appendChild(list);
     } catch (error) {
-      console.error('Error:', error);
+    //   console.error('Error:', error);
     }
   })();
   
-console.log(testData)
+console.log(testDataIndex)
  
 

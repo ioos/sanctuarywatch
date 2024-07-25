@@ -7,10 +7,13 @@ console.log(child_obj);
 // console.log("this is the post id: ", post_id);//prob dont need this
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
-console.log(url1)
+console.log(url1);
+let hover_color;
+let testData;
+let thisInstance;
+
 
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
-
 function make_scene_elements(info, iText, iUrl, scene_data, type, name){
     let collapseListHTML = '<div>';
             for (let i = 1; i < 7; i++){
@@ -403,7 +406,9 @@ function highlight_icons(){
         // console.log(elem);
         elem.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
-            elem.style.stroke = "yellow"; //this is no longer hard-coded
+            // elem.style.stroke = "yellow"; //this is no longer hard-coded
+            elem.style.stroke = hover_color; //this is no longer hard-coded
+
             elem.style.strokeWidth = "6";
         });
         elem.addEventListener('mouseout', function(){
@@ -422,7 +427,9 @@ function flicker_highlight_icons() {
             elem.style.transition = 'stroke-opacity 1s ease-in-out';
             
             // Initial state
-            elem.style.stroke = "yellow";
+            // elem.style.stroke = "yellow";
+            elem.style.stroke = hover_color;
+
             elem.style.strokeWidth = "3";
             elem.style.strokeOpacity = "0";
 
@@ -1092,7 +1099,8 @@ function table_of_contents(){
 
         item.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
-            svg_elem.style.stroke = "yellow";
+            // svg_elem.style.stroke = "yellow";
+            svg_elem.style.stroke = hover_color;
             svg_elem.style.strokeWidth = "6";
         });
         item.addEventListener('mouseout', function(){
@@ -1181,11 +1189,47 @@ function add_modal(){
 
 
 
-loadSVG(url, "svg1");
+// loadSVG(url, "svg1");
+
+function get_instance(){
+
+}
 
 
+async function load_instance_details() {
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const fetchURL = `${protocol}//${host}/wp-json/wp/v2/instance?&order=asc`;
+  
+    try {
+        const response = await fetch(fetchURL);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+}
 
+async function init() {
+    try {
+        testData = await load_instance_details();
+        console.log("here is the global variable");
+        console.log(testData);
+        hover_color = "red";
+        console.log(hover_color);
+        loadSVG(url, "svg1"); // Call load_svg with the fetched data
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
 
+document.addEventListener("DOMContentLoaded", () => {
+    init(); 
+});
 
 
 
