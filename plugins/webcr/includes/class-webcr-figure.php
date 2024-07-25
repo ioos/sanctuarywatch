@@ -352,7 +352,7 @@ class Webcr_Figure {
                     'id'          => 'figure_preview',
                     'type'        => 'button',
                     'title'       => 'Preview Figure',
-                    'class'        => 'modal_preview',
+                    'class'        => 'figure_preview',
                     'options'     => array(
                         'href'  =>  '#nowhere',
                         'target' => '_self',

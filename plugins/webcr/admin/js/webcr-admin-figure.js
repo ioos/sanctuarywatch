@@ -173,4 +173,43 @@
     $( "select[name='location']" ).change(figureInstanceChange);
 
     
+    $('.figure_preview').click(function(){
+        // Let's remove the preview window if it already exists
+        var previewWindow = document.getElementById('preview_window');
+        // If the element exists
+        if (previewWindow) {
+            // Remove the scene window
+            previewWindow.parentNode.removeChild(previewWindow);
+        }
+
+    // Find element
+    const firstFigurePreview = document.querySelector('.figure_preview');
+
+    // Find the second parent element
+    const secondParent = firstFigurePreview.parentElement.parentElement;
+
+    // Create a new div element
+    let newDiv = document.createElement('div');
+    newDiv.id = "preview_window";
+    newDiv.classList.add("container", "figure_preview");
+
+    const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
+    const dataUrl = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
+
+    let txtOutput;
+    if (scienceUrl !="" || dataUrl != ""){
+        txtOutput = "TRUE";
+    } else {txtOutput = "FALSE";}
+
+    let modalTitle = document.createElement("div");
+        modalTitle.innerText = txtOutput;
+    newDiv.appendChild(modalTitle);
+
+    secondParent.appendChild(newDiv);
+
+
+     });
+
+
+    
 })( jQuery );
