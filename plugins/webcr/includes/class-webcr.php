@@ -170,6 +170,8 @@ class Webcr {
 		$this->loader->add_filter( 'months_dropdown_results', $plugin_admin, 'remove_all_dates');
 		$this->loader->add_filter( 'use_block_editor_for_post', $plugin_admin, 'remove_gutenberg');
 		$this->loader->add_filter( 'screen_options_show_screen', $plugin_admin, 'remove_screen_options'); 
+		$this->loader->add_filter( 'init', $plugin_admin, 'add_content_manager_custom_role'); 
+		$this->loader->add_filter( 'admin_menu', $plugin_admin, 'restrict_content_manager_admin_menu', 999); 
 
 		// Load  class and functions associated with Instance custom content type
 		$plugin_admin_instance = new Webcr_Instance ( $this->get_plugin_name(), $this->get_version() );		
@@ -258,7 +260,7 @@ class Webcr {
 
 		function register_scene_rest_fields() {
 			$scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
-				'scene_info_entries', 'scene_photo_entries');
+				'scene_info_entries', 'scene_photo_entries', 'scene_section_number');
 
 			for ($i = 1; $i < 7; $i++){
 				array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i);

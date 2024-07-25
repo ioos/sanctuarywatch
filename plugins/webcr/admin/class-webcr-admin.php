@@ -231,5 +231,38 @@ class Webcr_Admin {
         $favicon_url = plugin_dir_url( __FILE__ ) . 'images/onms-logo-80.png';
         echo '<link rel="shortcut icon" href="' . $favicon_url . '" />';
    }
+
+	/**
+	 * Add Content Manager as a role to  default favicon associated with site to Sanctuary Watch logo
+	 *
+	 * @since    1.0.0
+	 */
+	function add_content_manager_custom_role() {
+		//remove_role( 'webcr_content_manager');
+		$content_manager_role_exists = wp_roles()->is_role('webcr_content_manager');
+		if ($content_manager_role_exists == false) {
+			add_role('webcr_content_manager', __('Content Manager'),
+				get_role( 'editor' )->capabilities);
+		}
+	}
+
+	function restrict_content_manager_admin_menu() {
+		if (current_user_can('webcr_content_manager')) {
+		//	remove_menu_page('index.php');                  // Dashboard
+			remove_menu_page('edit.php');                   // Posts
+		//	remove_menu_page('upload.php');                 // Media
+			remove_menu_page('edit.php?post_type=page');    // Pages
+		//	remove_menu_page('edit-comments.php');          // Comments
+		//	remove_menu_page('themes.php');                 // Appearance
+		//	remove_menu_page('plugins.php');                // Plugins
+		//	remove_menu_page('users.php');                  // Users
+			remove_menu_page('tools.php');                  // Tools
+		//	remove_menu_page('options-general.php');        // Settings
+	
+			// Add more remove_menu_page or remove_submenu_page calls as needed
+		}
+	}
+
+
 }
 
