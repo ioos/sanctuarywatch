@@ -8,9 +8,10 @@ console.log(child_obj);
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
 console.log(url1);
-let hover_color;
+// let hover_color;
 let testData;
 let thisInstance;
+let sceneLoc;
 
 
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
@@ -31,8 +32,8 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 if ((scene_info_text == '') && (scene_info_url == '')){
                     continue;
                 }
-                console.log(scene_info_text);
-                console.log(scene_info_url);
+                // console.log(scene_info_text);
+                // console.log(scene_info_url);
                 let listItem = document.createElement('li');
                 let anchor = document.createElement('a');
                 anchor.setAttribute('href', 'test'); 
@@ -51,79 +52,75 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
     return acc;
 }
 
-function make_title(){
+async function make_title() {
     const protocol = window.location.protocol;
     const host = window.location.host;
-    const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/scene?&order=asc"
-    // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
-    fetch(fetchURL)
-        .then(response => response.json())
-        .then(data => {
-            // console.log(data);
-            // console.log(tab_label);
-            const currentUrl = window.location.href;
-            console.log(currentUrl);
+    const fetchURL = `${protocol}//${host}/wp-json/wp/v2/scene?&order=asc`;
 
-            console.log(data);
-            // figure_data = data.find(figure => figure.figure_tab === tab_label);
-            scene_data = data.find(scene => scene.link === currentUrl);
-            console.log(scene_data);
+    try {
+        let response = await fetch(fetchURL);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        let data = await response.json();
 
-            let title = scene_data.title.rendered;
-            // let titleDom = document.querySelector("body > h1");
-            let titleDom = document.getElementById("title-container");
-            let titleh1 = document.createElement("h1");
-            titleh1.innerHTML = title;
-            titleDom.appendChild(titleh1);
+        let currentUrl = window.location.href;
+        console.log(currentUrl);
+        console.log("all the scenes are here.")
+        console.log(data);
 
-            
-            // p.innerHTML = scene_data.
-            // titleDom.innerHTML = title;
-            // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
-            let acc = make_scene_elements( "scene_info", "scene_info_text","scene_info_url", scene_data, "more-info", "More Info");
-            let acc1 = make_scene_elements( "scene_photo", "scene_photo_text","scene_photo_url", scene_data, "images", "Images");
-            // let acc2 = make_scene_elements();
-            let accgroup = document.createElement("div");
-            if (!is_mobile()){
-                // accgroup.setAttribute("style", "max-width: 15%; margin-top: 2%");
-                accgroup.setAttribute("style", "margin-top: 2%");
+        let scene_data = data.find(scene => scene.link === currentUrl);
+        if (!scene_data) {
+            throw new Error('Scene data not found for the current URL');
+        }
+        console.log(scene_data);
 
-            } else {
-                accgroup.setAttribute("style", "max-width: 85%; margin-top: 2%");
-            }
-            // accgroup.setAttribute("style", "max-width: 15%; margin-top: 2%")
-            accgroup.classList.add("accordion");
+        let scene_location = scene_data["scene_location"];
+        let title = scene_data.title.rendered;
 
-            
-            accgroup.appendChild(acc);
-            accgroup.appendChild(acc1);
+        let titleDom = document.getElementById("title-container");
+        let titleh1 = document.createElement("h1");
+        titleh1.innerHTML = title;
+        titleDom.appendChild(titleh1);
 
-            let row = document.createElement("div");
-            row.classList.add("row");
+        let acc = make_scene_elements("scene_info", "scene_info_text", "scene_info_url", scene_data, "more-info", "More Info");
+        let acc1 = make_scene_elements("scene_photo", "scene_photo_text", "scene_photo_url", scene_data, "images", "Images");
 
-            let col1 = document.createElement("div");
-            col1.classList.add("col-md-2");
-            col1.appendChild(accgroup);
+        let accgroup = document.createElement("div");
+        if (!is_mobile()) {
+            accgroup.setAttribute("style", "margin-top: 2%");
+        } else {
+            accgroup.setAttribute("style", "max-width: 85%; margin-top: 2%");
+        }
+        accgroup.classList.add("accordion");
+        accgroup.appendChild(acc);
+        accgroup.appendChild(acc1);
 
-            let col2 = document.createElement("div");
-            col2.classList.add("col-md-10");
-            let titleTagline = document.createElement("p");
-            titleTagline.innerHTML = scene_data.scene_tagline;
-            col2.appendChild(titleTagline);
+        let row = document.createElement("div");
+        row.classList.add("row");
 
-            row.appendChild(col1);
-            row.appendChild(col2);
-            row.setAttribute("style", "margin-top: 2%");
+        let col1 = document.createElement("div");
+        col1.classList.add("col-md-2");
+        col1.appendChild(accgroup);
 
+        let col2 = document.createElement("div");
+        col2.classList.add("col-md-10");
+        let titleTagline = document.createElement("p");
+        titleTagline.innerHTML = scene_data.scene_tagline;
+        col2.appendChild(titleTagline);
 
-            // accgroup.append(acc2);
-            titleDom.append(row);
+        row.appendChild(col1);
+        row.appendChild(col2);
+        row.setAttribute("style", "margin-top: 2%");
 
-        })
-    .catch(error => console.error('Error fetching data:', error));
-        //new stuff here
-   
+        titleDom.append(row);
+        return scene_location;
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 }
+
 let mobileBool = false;
 
 //checks whether or not an icon has an associated mobile layer.
@@ -352,7 +349,7 @@ async function loadSVG(url, containerId) {
                 flicker_highlight_icons();
                 toggle_text();
                 full_screen_button('svg1');
-                table_of_contents();
+                // table_of_contents();
                 add_modal();
                 // make_title();
 
@@ -370,7 +367,7 @@ async function loadSVG(url, containerId) {
             
             container.appendChild(svgElement);
             highlight_icons();
-            table_of_contents();
+            // table_of_contents();
             toggle_text();
             full_screen_button('svg1');
             // table_of_contents();
@@ -385,10 +382,10 @@ async function loadSVG(url, containerId) {
         // make_title();
         // full_screen_button('svg1');
         // toggle_text();
-        window.addEventListener('load', function() {
-            make_title();
-            // console.log(child_obj);
-        });
+        // window.addEventListener('load', function() {
+        //     make_title();
+        //     // console.log(child_obj);
+        // });
 
 
 
@@ -407,7 +404,7 @@ function highlight_icons(){
         elem.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
             // elem.style.stroke = "yellow"; //this is no longer hard-coded
-            elem.style.stroke = hover_color; //this is no longer hard-coded
+            elem.style.stroke = thisInstance.instance_hover_color; //this is no longer hard-coded
 
             elem.style.strokeWidth = "6";
         });
@@ -428,7 +425,7 @@ function flicker_highlight_icons() {
             
             // Initial state
             // elem.style.stroke = "yellow";
-            elem.style.stroke = hover_color;
+            elem.style.stroke = thisInstance.instance_hover_color;
 
             elem.style.strokeWidth = "3";
             elem.style.strokeOpacity = "0";
@@ -622,7 +619,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
 }
 
 function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
-    let id = child_obj['infauna']['modal_id'];
+    // let id = child_obj['infauna']['id'];
     // console.log(id);
     // console.log(tab_label);
     // tab_label = "test";
@@ -728,17 +725,19 @@ function create_tabs(iter, tab_id, tab_label) {
 
 function render_modal(key){
     let id = child_obj[key]['modal_id'];
+    // console.log(child_obj[key]);
     const protocol = window.location.protocol;
     const host = window.location.host;
-    const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/modal?&order=asc"
+    const fetchURL  =  protocol + "//" + host  + `/wp-json/wp/v2/modal/${id}`;
     // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
             // console.log(data);
-            modal_data = data.find(modal => modal.id === id);
-            // console.log("modal data here:");
-            // console.log(modal_data); 
+            console.log(id);
+            modal_data = data //.find(modal => modal.id === id);
+            console.log("modal data here:");
+            console.log(modal_data); 
             //title stuff:
             let title = child_obj[key]['title'];  
             let modal_title = document.getElementById("modal-title");
@@ -748,6 +747,7 @@ function render_modal(key){
             //tagline container
             let tagline_container = document.getElementById('tagline-container');
             //add stuff for formatting here...
+            // console.log(modal_data);
             let modal_tagline = modal_data["modal_tagline"];
             tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
 
@@ -871,7 +871,9 @@ function full_screen_button(svgId){
     // button.setAttribute('class', `btn btn-info fa fa-arrows-alt btn-block`);
     // toc_container.prepend(button);
     // button.innerHTML = "Full Screen";
-
+    if (thisInstance.instance_full_screen_button != "yes"){
+        return;
+    }
 
     if ((document.fullscreenEnabled || document.webkitFullscreenEnabled)){ 
         let toc_container = document.querySelector("#toc-container");
@@ -933,6 +935,9 @@ function full_screen_button(svgId){
 
 }
 function toggle_text(){
+    if (thisInstance.instance_text_toggle === "none"){
+        return;
+    }
     let toc_container = document.querySelector("#toc-container");
 
     let button = document.createElement("label");
@@ -986,8 +991,8 @@ function toggle_text(){
         }
     });
 
-    
 }
+
 //should create sections and pertinent collapsible, implemented as accordion
 function toc_sections() {
     let sections = [];
@@ -1100,7 +1105,7 @@ function table_of_contents(){
         item.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
             // svg_elem.style.stroke = "yellow";
-            svg_elem.style.stroke = hover_color;
+            svg_elem.style.stroke = thisInstance.instance_hover_color;
             svg_elem.style.strokeWidth = "6";
         });
         item.addEventListener('mouseout', function(){
@@ -1195,6 +1200,9 @@ function get_instance(){
 
 }
 
+function set_attributes(){
+
+}
 
 async function load_instance_details() {
     const protocol = window.location.protocol;
@@ -1219,8 +1227,15 @@ async function init() {
         testData = await load_instance_details();
         console.log("here is the global variable");
         console.log(testData);
-        hover_color = "red";
-        console.log(hover_color);
+        // hover_color = "red";
+        // console.log(hover_color);
+        sceneLoc = await make_title();
+        console.log("scene location is ");
+        console.log(sceneLoc);
+
+        thisInstance = testData.find(data => data.id === Number(sceneLoc));
+        console.log(thisInstance);
+        
         loadSVG(url, "svg1"); // Call load_svg with the fetched data
     } catch (error) {
         console.error('Error:', error);
