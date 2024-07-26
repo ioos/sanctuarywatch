@@ -12,7 +12,9 @@ console.log(url1);
 let testData;
 let thisInstance;
 let sceneLoc;
-
+let colors;
+let sectionObj = {};
+let sectColors = {};
 
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
 function make_scene_elements(info, iText, iUrl, scene_data, type, name){
@@ -349,7 +351,13 @@ async function loadSVG(url, containerId) {
                 flicker_highlight_icons();
                 toggle_text();
                 full_screen_button('svg1');
-                // table_of_contents();
+                if (thisInstance.instance_toc_style == "accordion"){
+                    table_of_contents();
+                } else if (thisInstance.instance_toc_style == "list"){
+                    list_toc();
+                } else {
+
+                }               
                 add_modal();
                 // make_title();
 
@@ -368,9 +376,16 @@ async function loadSVG(url, containerId) {
             container.appendChild(svgElement);
             highlight_icons();
             // table_of_contents();
+            // list_toc();
             toggle_text();
             full_screen_button('svg1');
-            // table_of_contents();
+            if (thisInstance.instance_toc_style == "accordion"){
+                table_of_contents();
+            } else if (thisInstance.instance_toc_style == "list"){
+                list_toc();
+            } else {
+                
+            }
             add_modal();
             // make_title();
 
@@ -404,7 +419,16 @@ function highlight_icons(){
         elem.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
             // elem.style.stroke = "yellow"; //this is no longer hard-coded
-            elem.style.stroke = thisInstance.instance_hover_color; //this is no longer hard-coded
+            // elem.style.stroke = thisInstance.instance_hover_color; //this is no longer hard-coded; //ideally, make a dictionary mapping each  key to a section to a color
+            // elem.style.stroke = sectColors[sectionObj[key]];
+            if (thisInstance.instance_colored_sections === "yes"){
+                console.log("yes!");
+                elem.style.stroke = sectColors[sectionObj[key]];
+            } else{
+                elem.style.stroke = colors[0];
+            }
+            // console.log(thisInstance);
+            // elem.style.stroke = sectColors[sectionObj[key]];
 
             elem.style.strokeWidth = "6";
         });
@@ -425,7 +449,12 @@ function flicker_highlight_icons() {
             
             // Initial state
             // elem.style.stroke = "yellow";
-            elem.style.stroke = thisInstance.instance_hover_color;
+            // elem.style.stroke = sectColors[sectionObj[key]];
+            if (thisInstance.instance_colored_sections === "yes"){
+                elem.style.stroke = sectColors[sectionObj[key]];
+            } else{
+                elem.style.stroke = colors[0];
+            }
 
             elem.style.strokeWidth = "3";
             elem.style.strokeOpacity = "0";
@@ -1001,16 +1030,25 @@ function toc_sections() {
         if (!sections.includes(section)) {
             sections.push(section);
         }
+        sectionObj[key] = section;
     }
     sections.sort();
-    // console.log(sections);
+    console.log(sectionObj);
 
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("div");
     toc_group.classList.add("accordion");
     toc_group.setAttribute("id", "toc-group");
+    let colorIdx = 0;
 
     for (let i = 0; i < sections.length; i++) {
+        // if (sections[i] == "None"){
+        //     continue;
+        // }
+        sectColors[sections[i]] = colors[colorIdx]; 
+        colorIdx = (colorIdx + 1) % colors.length;
+
+
         let sect = document.createElement("div");
         sect.classList.add("accordion-item");
 
@@ -1052,9 +1090,11 @@ function toc_sections() {
         toc_group.appendChild(sect);
     }
     toc_container.appendChild(toc_group);
+    console.log(sectColors);
 }
 // toc_sections();
 //generates table of contents; modal table of contents open modal window, others go to external URLs
+//can either be: "accordion", "list", or "sectioned_list"
 function table_of_contents(){
     toc_sections();
     // let elem = document.getElementById("toc1");
@@ -1105,7 +1145,15 @@ function table_of_contents(){
         item.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
             // svg_elem.style.stroke = "yellow";
-            svg_elem.style.stroke = thisInstance.instance_hover_color;
+            // svg_elem.style.stroke = thisInstance.instance_hover_color;
+            // console.log(sectionObj);
+            // console.log(sectColors);
+            if (thisInstance.instance_colored_sections === "yes"){
+                svg_elem.style.stroke = sectColors[sectionObj[key]];
+            } else{
+                svg_elem.style.stroke = colors[0];
+            }
+            
             svg_elem.style.strokeWidth = "6";
         });
         item.addEventListener('mouseout', function(){
@@ -1123,6 +1171,62 @@ function table_of_contents(){
     
 }
 
+function list_toc(){
+    let toc_container = document.querySelector("#toc-container");
+    let toc_group = document.createElement("ul");
+    for (let key in child_obj) {
+        // let elem = document.getElementById(child_obj[key]['section_name']);
+        let item = document.createElement("li");
+    
+        let title = child_obj[key]['title'];  
+        let link = document.createElement("a");
+        let modal = child_obj[key]['modal'];
+    
+        if (modal) {
+            link.classList.add("modal-link");
+            link.innerHTML = title;
+            item.appendChild(link);
+    
+            item.addEventListener('click', function() {
+                let modal = document.getElementById("myModal");
+                modal.style.display = "block";
+                render_modal(key);
+            });
+    
+            let closeButton = document.getElementById("close");
+            closeButton.addEventListener('click', function() {
+                let modal = document.getElementById("myModal");
+                modal.style.display = "none";
+            });
+        } else {
+            link.href = child_obj[key]['external_url'];
+            link.innerHTML = title;
+            item.appendChild(link);
+        }
+    
+        let svg_elem = document.querySelector('g[id="' + key + '"]');
+    
+        item.addEventListener('mouseover', function() {
+            // svg_elem.style.stroke = thisInstance.instance_hover_color;
+            // svg_elem.style.stroke = sectColors[sectionObj[key]];
+            if (thisInstance.instance_colored_sections === "yes"){
+                svg_elem.style.stroke = sectColors[sectionObj[key]];
+            } else{
+                svg_elem.style.stroke = colors[0];
+            }
+
+            svg_elem.style.strokeWidth = "6";
+        });
+    
+        item.addEventListener('mouseout', function() {
+            svg_elem.style.stroke = "";
+            svg_elem.style.strokeWidth = "";
+        });
+    
+        toc_group.appendChild(item);
+    }
+    toc_container.appendChild(toc_group);
+}
 
 
 //generates modal window when SVG element is clicked. 
@@ -1235,6 +1339,9 @@ async function init() {
 
         thisInstance = testData.find(data => data.id === Number(sceneLoc));
         console.log(thisInstance);
+        colors = thisInstance.instance_hover_color.split(',');
+        // console.log(colors[0]);
+        // console.log(colors);
         
         loadSVG(url, "svg1"); // Call load_svg with the fetched data
     } catch (error) {
