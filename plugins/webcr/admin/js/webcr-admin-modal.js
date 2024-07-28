@@ -30,7 +30,6 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
     modalWindow();
     modal_scene_change();
     modal_location_change();
-    //modal_icons_change();
 
 	function createAccordion(accordionType, parentDiv, listElements){
 
@@ -499,7 +498,7 @@ $(".range[data-depend-id='modal_photo_entries']").change(function(){
 $('.modal_preview').click(function(){ 
 
     // Let's remove the preview window if it already exists
-    var previewWindow = document.getElementById('preview_window');
+    var previewWindow = document.getElementById('modal_preview');
     // If the element exists
     if (previewWindow) {
         // Remove the scene window
@@ -514,7 +513,7 @@ $('.modal_preview').click(function(){
 
     // Create a new div element
     let newDiv = document.createElement('div');
-    newDiv.id = "preview_window";
+    newDiv.id = "modal_preview";
     newDiv.classList.add("container", "modal_preview");
 
     let modalTitle = document.createElement("div");
