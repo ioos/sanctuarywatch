@@ -198,12 +198,98 @@
 
     let txtOutput;
     if (scienceUrl !="" || dataUrl != ""){
-        txtOutput = "TRUE";
-    } else {txtOutput = "FALSE";}
+        let firstRow = document.createElement("div");
+        firstRow.classList.add("grayFigureRow");
 
-    let modalTitle = document.createElement("div");
-        modalTitle.innerText = txtOutput;
-    newDiv.appendChild(modalTitle);
+
+        if (scienceUrl !=""){
+            let scienceA = document.createElement("a");
+            scienceA.classList.add("grayFigureRowLinks");
+            scienceA.href = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
+            scienceA.target="_blank";
+            let dataIcon = document.createElement("i");
+            dataIcon.classList.add("fa-solid", "fa-clipboard-list", "grayFigureRowIcon");
+            let urlText = document.createElement("span");
+            urlText.classList.add("grayFigureRowText");
+            urlText.innerHTML = document.getElementsByName("figure_science_info[figure_science_link_text]")[0].value;
+            scienceA.appendChild(dataIcon);
+            scienceA.appendChild(urlText);
+            firstRow.appendChild(scienceA);
+           // firstRow.appendChild(urlText);
+        }
+
+        if (dataUrl !=""){
+            let dataA = document.createElement("a");
+            dataA.classList.add("grayFigureRowLinks");//, "grayFigureRowRightLink");
+            dataA.href = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
+            dataA.target="_blank";
+            let dataIcon = document.createElement("i");
+            dataIcon.classList.add("fa-solid", "fa-database", "grayFigureRowIcon");
+            let urlText = document.createElement("span");
+            urlText.classList.add("grayFigureRowText");
+            urlText.innerHTML = document.getElementsByName("figure_data_info[figure_data_link_text]")[0].value;
+            dataA.appendChild(dataIcon);
+            dataA.appendChild(urlText);
+            firstRow.appendChild(dataA);
+           // firstRow.appendChild(urlText);
+        }
+
+        newDiv.appendChild(firstRow);
+    } 
+
+    let imageRow = document.createElement("div");
+    imageRow.classList.add("imageRow");
+    let figureImage = document.createElement("img");
+    figureImage.classList.add("figureImage");
+
+    const figurePath = document.getElementsByName("figure_path")[0].value;
+    let figureSrc;
+    if (figurePath == "Internal"){
+        figureSrc = document.getElementsByName("figure_image")[0].value;
+        if (figureSrc != ""){
+        figureImage.src = figureSrc;
+        } else {imageRow.textContent = "No figure image."}
+    } else {
+        figureSrc = document.getElementsByName("figure_external_url")[0].value;
+        if (figureSrc != ""){
+        figureImage.src = figureSrc;
+        } else {imageRow.textContent = "No figure image."}
+    }
+
+    const containerWidth = document.querySelector('[data-depend-id="figure_preview"]').parentElement.parentElement.parentElement.clientWidth;
+
+    if (containerWidth < 800){
+        figureImage.style.width = (containerWidth-88) + "px";
+    }
+    imageRow.appendChild(figureImage);
+    newDiv.appendChild(imageRow);
+
+    let captionRow = document.createElement("div");
+    captionRow.classList.add("captionRow");
+    let shortCaption = document.getElementById("figure_caption_short").value;
+    if (shortCaption == ""){
+        shortCaption = "No short caption";
+    }
+    let longCaption = document.getElementById("figure_caption_long").value;
+    if (longCaption == ""){
+        longCaption = "No long caption";
+    }
+
+    let shortCaptionElementContent = document.createElement("p");
+    shortCaptionElementContent.innerHTML = shortCaption;
+    shortCaptionElementContent.classList.add("captionOptions");
+    captionRow.appendChild(shortCaptionElementContent);
+    let longCaptionElement = document.createElement("details");
+    longCaptionElement.classList.add("captionOptions");
+    let longCaptionElementSummary = document.createElement("summary");
+    longCaptionElementSummary.textContent = "Click here for more details.";
+    let longCaptionElementContent = document.createElement("p");
+    longCaptionElementContent.classList.add("captionOptions");
+    longCaptionElementContent.innerHTML = longCaption;
+    longCaptionElement.appendChild(longCaptionElementSummary);
+    longCaptionElement.appendChild(longCaptionElementContent);
+    captionRow.appendChild(longCaptionElement);
+    newDiv.appendChild(captionRow);
 
     secondParent.appendChild(newDiv);
 
