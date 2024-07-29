@@ -1,4 +1,6 @@
 console.log("THIS IS A TEST");
+console.log(post_id);
+
 // console.log(child_ids);
 // access echoed JSON here for use. 
 //get all links from single-scene.php
@@ -15,7 +17,37 @@ let sceneLoc;
 let colors;
 let sectionObj = {};
 let sectColors = {};
+function process_child_obj(){
+    for (let key in child_obj){
+        if (child_obj[key]["scene"]["ID"] !== post_id){
+            delete child_obj[key];
+        }
+        else{
+           
+            let oldkey = String(key);
+            console.log(typeof(oldkey));
+            console.log(oldkey);
+            // child_obj[newkey] = child_obj[key];
+                // child_obj[newkey]["original_name"] = null;
+                // delete child_obj[key];
+            // }
+            let lastChar = oldkey.charAt(oldkey.length - 1);
 
+            let isNumeric = /\d/.test(lastChar);
+            console.log(lastChar);
+            console.log(isNumeric);
+            if (isNumeric){
+                let newkey = child_obj[key]["original_name"];
+                console.log(newkey);
+                child_obj[newkey] = child_obj[key];
+                delete child_obj[key];
+            }
+        }
+    }
+}
+process_child_obj();
+console.log("MODIFIED");
+console.log(child_obj);
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
 function make_scene_elements(info, iText, iUrl, scene_data, type, name){
     let collapseListHTML = '<div>';

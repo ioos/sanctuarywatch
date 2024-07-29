@@ -366,7 +366,7 @@
    * @param string $icon_name The value to be matched against the `modal_icons` meta key.
    * @return array The argument array to be used with a WordPress query.
    */
-  function postQuery($icon_name){
+  function postQuery($icon_name){ //maybe add a field named 'modal_scene'
     $args = array(
         'post_type' => 'any', 
         'meta_query' => array(
@@ -379,6 +379,57 @@
         'fields' => 'ids' 
     );
     return $args;
+  }
+
+
+
+
+  function modal_helper($child_post_id, $child_ids, $child_id, $idx = 0){
+          //get icon_type to check if modal
+          
+          $icon_type = get_post_meta($child_post_id, "icon_function");
+          $icon_title = get_post_meta($child_post_id, "post_title");
+          $modal = FALSE;
+          $external_url =  '';
+          $external_scene_id = '';
+          $is_modal = get_post_meta($child_post_id,"post_type" )[0]; //error here?
+          //create array/map from child id to different attributes (ie hyperlinks)
+          if($is_modal){
+            if ($icon_type[0] === "Modal"){
+              $modal = TRUE;
+            } else if ($icon_type[0] === "External URL"){
+              $external_url = get_post_meta( $child_post_id, "icon_external_url")[0];
+            } else if ($icon_type[0] === "Scene"){
+              $external_scene_id = get_post_meta( $child_post_id, "icon_scene_out");
+              $external_url = get_permalink($external_scene_id[0]);
+
+            } 
+          $scene_id = get_post_meta($child_post_id, "modal_scene");
+          $scenePost = get_post($scene_id[0]);
+          $sceneName = get_post_meta($scenePost, "post_title");
+
+          $section_name = get_post_meta($child_post_id, "icon_toc_section")[0];
+          $child = $child_id;
+          // if (in_array($child_id, $child_ids)){
+          //   $child = $child_id . $idx;
+          // } 
+          if (array_key_exists($child_id, $child_ids)){
+            $child = ($child_id . $idx);
+          }
+
+          $child_ids[$child] = [
+              "title" => $icon_title[0],
+              "modal_id" => $child_post_id,
+              "external_url" => $external_url,
+              "modal" => $modal,
+              "scene" => $scenePost,
+              "section_name" => $section_name, 
+              "original_name" => $child_id
+            ];
+          } 
+          return $child_ids;
+          //add to array
+          // $child_ids[$icon_title[0]] = $modal;
   }
   /**
    * Ideal behavior: create n-D array with element IDs and boolean indicating whether or not element has corresponding modal
@@ -412,7 +463,8 @@
       $xpath = new DOMXPath($dom);
 
       // Find the element with ID "icons"
-      $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
+      $icons_element = $xpath->query('//*[@id="icons"]')->item(0); //could 
+      // $icons_id = get_post_meta($icons_element);
 
       // If the element with ID "icons" is not found, terminate with an error message
       if($icons_element === null){
@@ -423,49 +475,37 @@
       // Get the child nodes of the "icons" element
       $child_elements = $icons_element->childNodes;
       $child_ids = array();
+      
       foreach($child_elements as $child){
+        // $needtocontinue = FALSE;
         if($child->nodeType === XML_ELEMENT_NODE && $child->hasAttribute('id')) {
           // Add the "id" attribute to the array
           $child_id = $child->getAttribute('id');
           //this is a WP_query object for the current child ID
-          $query = new WP_Query(postQuery($child_id));
+          $query = new WP_Query(postQuery($child_id)); //here, the query produces all the modals with that ID
 
-          $child_post_id = $query->posts[0]; //error here?
-          //get icon_type to check if modal
-          $icon_type = get_post_meta($child_post_id, "icon_function");
-          $icon_title = get_post_meta($child_post_id, "post_title");
-          $modal = FALSE;
-          $external_url =  '';
-          $external_scene_id = '';
-          $is_modal = get_post_meta($child_post_id,"post_type" )[0]; //error here?
-          //create array/map from child id to different attributes (ie hyperlinks)
-          if($is_modal){
-            if ($icon_type[0] === "Modal"){
-              $modal = TRUE;
-            } else if ($icon_type[0] === "External URL"){
-              $external_url = get_post_meta( $child_post_id, "icon_external_url")[0];
-            } else if ($icon_type[0] === "Scene"){
-              $external_scene_id = get_post_meta( $child_post_id, "icon_scene_out");
-              $external_url = get_permalink($external_scene_id[0]);
+          $child_post_id_list = $query->posts;
+          if (count($child_post_id_list) > 1) {
+            // $lastChild = $child_elements->item($child_elements->length - 1);
+            // // Get the parent node of the last item
+            // $parentNode = $lastChild->parentNode;
+            $idx = 1;
+            foreach ($child_post_id_list as $cid) {
+                // Create a new DOM element for each post ID
+                // Append the new element to the parent node of the current child
+                // $parentNode = $icon->parentNode;
+                // $child_elements->appendChild($newElement);
+                $child_ids = modal_helper($cid, $child_ids, $child_id, $idx);
+                $idx++;
 
-            } 
-          $scene_id = get_post_meta($child_post_id, "modal_scene");
-          $scenePost = get_post($scene_id[0]);
-          $sceneName = get_post_meta($scenePost, "post_title");
-
-          $section_name = get_post_meta($child_post_id, "icon_toc_section")[0];
-
-            $child_ids[$child_id] = [
-              "title" => $icon_title[0],
-              "modal_id" => $child_post_id,
-              "external_url" => $external_url,
-              "modal" => $modal,
-              "scene" => $scenePost,
-              "section_name" => $section_name
-            ];
-          } 
-          //add to array
-          // $child_ids[$icon_title[0]] = $modal;
+                
+            }
+            continue;
+        }
+      
+        $child_post_id = $query->posts[0]; //should not always be 0th index; want to loop through all the posts and select the one that is found on this scene
+        $child_ids = modal_helper($child_post_id, $child_ids, $child_id);
+          
         }
       }
       //reset global $Post object
