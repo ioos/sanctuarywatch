@@ -266,21 +266,46 @@
 
     let captionRow = document.createElement("div");
     captionRow.classList.add("captionRow");
-    let shortCaption = document.getElementById("figure_caption_short").value;
-    if (shortCaption == ""){
-        shortCaption = "No short caption";
-    }
-    let longCaption = document.getElementById("figure_caption_long").value;
-    if (longCaption == ""){
-        longCaption = "No long caption";
-    }
+
+    // Step 1: Access the iframe element
+    let iframeShort = document.getElementById('figure_caption_short_ifr');
+
+    // Step 2: Get the document inside the iframe
+    const iframeShortDocument = iframeShort.contentDocument || iframeShort.contentWindow.document;
+  
+    // Step 3: Select the <body> element with the specified data-id attribute
+    const bodyElementShort = iframeShortDocument.querySelector('body[data-id="figure_caption_short"]');
+  
+    // Step 4: Retrieve and store its contents
+    let shortCaption = bodyElementShort ? bodyElementShort.innerHTML : null;
+    //let shortCaption = document.getElementById("figure_caption_short").value;
+   // if (shortCaption == ""){
+   //     shortCaption = "No short caption";
+   // }
+
+    // Step 1: Access the iframe element
+    let iframeLong = document.getElementById('figure_caption_long_ifr');
+
+    // Step 2: Get the document inside the iframe
+    const iframeLongDocument = iframeLong.contentDocument || iframeLong.contentWindow.document;
+  
+    // Step 3: Select the <body> element with the specified data-id attribute
+    const bodyElementLong = iframeLongDocument.querySelector('body[data-id="figure_caption_long"]');
+  
+    // Step 4: Retrieve and store its contents
+    let longCaption = bodyElementLong ? bodyElementLong.innerHTML : null;
+   
+ //   let longCaption = document.getElementById("figure_caption_long").value;
+ //   if (longCaption == ""){
+ //       longCaption = "No long caption";
+ //   }
 
     let shortCaptionElementContent = document.createElement("p");
     shortCaptionElementContent.innerHTML = shortCaption;
     shortCaptionElementContent.classList.add("captionOptions");
     captionRow.appendChild(shortCaptionElementContent);
     let longCaptionElement = document.createElement("details");
-    longCaptionElement.classList.add("captionOptions");
+   // longCaptionElement.classList.add("captionOptions");
     let longCaptionElementSummary = document.createElement("summary");
     longCaptionElementSummary.textContent = "Click here for more details.";
     let longCaptionElementContent = document.createElement("p");

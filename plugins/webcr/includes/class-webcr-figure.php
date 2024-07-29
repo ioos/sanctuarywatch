@@ -236,7 +236,7 @@ class Webcr_Figure {
                     'type'           => 'select',
                     'title'          => 'Instance',
                     'options'        => $locations,
-                    'description' => 'Figure Instance description',
+                    'description' => 'What instance is this figure part of?',
                     'class'      => 'chosen', 
                 ),
                 array(
@@ -244,27 +244,27 @@ class Webcr_Figure {
                     'type'           => 'select',
                     'title'          => 'Scene',
                     'options'        => $scene_titles,
-                    'description' => 'Figure Scene description',
+                    'description' => 'What scene is this figure part of?',
                 ),
                 array(
                     'id'             => 'figure_modal',
                     'type'           => 'select',
                     'title'          => 'Icon',
                     'options'        => $modal_icons, // array (" " => "Modal Icons")
-                    'description' => 'Figure Icons description',
+                    'description' => 'What icon is this figure part of?',
                 ),
                 array(
                     'id'             => 'figure_tab',
                     'type'           => 'select',
                     'title'          => 'Tab',
                     'options'        => $modal_tabs, // array (" " => "Modal Icons")
-                    'description' => 'Modal tab description',
+                    'description' => 'What modal tab is this figure part of?',
                 ),
                 array(
                     'id'      => 'figure_order',
                     'type'    => 'number',
                     'title'   => 'Order',
-                    'description' => 'Add description',
+                    'description' => 'In what order in the nodal tab should this figure appear?',
                     'default' => '1',                               
                     'min'     => '1',                                    
                     'max'     => '4',      
@@ -273,8 +273,8 @@ class Webcr_Figure {
                 array(
                     'type' => 'fieldset',
                     'id' => 'figure_science_info',
-                    'title'   => 'More science link',
-                    'description' => 'More science description',
+                    'title'   => 'Monitoring program link',
+                    'description' => 'What should the monitoring program icon link to, if anything?',
                     'fields' => array(
                         array(
                             'id'          => 'figure_science_link_text',
@@ -293,8 +293,8 @@ class Webcr_Figure {
                 array(
                     'type' => 'fieldset',
                     'id' => 'figure_data_info',
-                    'title'   => 'More data link',
-                    'description' => 'More data description',
+                    'title'   => 'Data link',
+                    'description' => 'What should the data icon link to, if anything?',
                     'fields' => array(
                         array(
                             'id'          => 'figure_data_link_text',
@@ -314,7 +314,7 @@ class Webcr_Figure {
                     'id'    => 'interactive_image',
                     'type'  => 'checkbox',
                     'title' => 'Interactive image?',
-                    'description' => 'Static figure that needs to be converted to interactive',
+                    'description' => 'Is this a static figure that needs to be converted to interactive?',
                 ),
                 array(
                     'id'             => 'figure_path',
@@ -322,31 +322,33 @@ class Webcr_Figure {
                     'title'          => 'Path',
                     'options'        => array("Internal" => "Internal", "External" => "External"),
                     'default'        => "Internal",
-                    'description' => 'Figure path description',
+                    'description' => 'Is the figure image stored within this website or at some external location?',
                 ),
 
                 array(
                     'id'    => 'figure_image',
                     'type'  => 'image',
                     'title' => 'Figure image',
-                    'description' => 'Figure image description'
+                    'description' => 'What is the figure image?',
                 ),
                 array(
                     'id'          => 'figure_external_url',
                     'type'        => 'text',
                     'title'       => 'Figure External URL',
                     'class'       => 'text-class',
-                    'description' => 'Figure External URL description',
+                    'description' => 'This external URL should link just to the image itself (that is the URL should end in .png .jpeg .jpg or .tiff)',
                 ),
                 array(
                     'id'     => 'figure_caption_short',
                     'type'   => 'editor',
-                    'title'  => 'Short caption', 
+                    'title'  => 'Short figure caption', 
+                 //   'description' => 'What is the short version of the figure caption?'
                 ),
                 array(
                     'id'     => 'figure_caption_long',
                     'type'   => 'editor',
-                    'title'  => 'Long caption', 
+                    'title'  => 'Extended caption', 
+                  //  'description' => 'This caption appears in the "Click for Details" section under the short caption.'
                 ),
                 array(
                     'id'          => 'figure_preview',
