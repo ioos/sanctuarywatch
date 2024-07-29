@@ -351,12 +351,10 @@ async function loadSVG(url, containerId) {
                 flicker_highlight_icons();
                 toggle_text();
                 full_screen_button('svg1');
-                if (thisInstance.instance_toc_style == "accordion"){
-                    table_of_contents();
-                } else if (thisInstance.instance_toc_style == "list"){
+                if (thisInstance.instance_toc_style == "list"){
                     list_toc();
                 } else {
-
+                    table_of_contents();
                 }               
                 add_modal();
                 // make_title();
@@ -379,13 +377,11 @@ async function loadSVG(url, containerId) {
             // list_toc();
             toggle_text();
             full_screen_button('svg1');
-            if (thisInstance.instance_toc_style == "accordion"){
-                table_of_contents();
-            } else if (thisInstance.instance_toc_style == "list"){
+            if (thisInstance.instance_toc_style == "list"){
                 list_toc();
             } else {
-                
-            }
+                table_of_contents();
+            }               
             add_modal();
             // make_title();
 
@@ -1023,6 +1019,62 @@ function toggle_text(){
 }
 
 //should create sections and pertinent collapsible, implemented as accordion
+function sectioned_list(){
+    let sections = [];
+    for (let key in child_obj) {
+        let section = child_obj[key]['section_name'];
+        if (!sections.includes(section)) {
+            sections.push(section);
+        }
+        sectionObj[key] = section;
+    }
+    sections.sort();
+    console.log(sectionObj);
+
+    let toc_container = document.querySelector("#toc-container");
+    let toc_group = document.createElement("div");
+    // toc_group.classList.add("accordion");
+    toc_group.setAttribute("id", "toc-group");
+    let colorIdx = 0;
+
+    for (let i = 0; i < sections.length; i++) {
+        // if (sections[i] == "None"){
+        //     continue;
+        // }
+        sectColors[sections[i]] = colors[colorIdx]; 
+        colorIdx = (colorIdx + 1) % colors.length;
+
+
+        let sect = document.createElement("div");
+        // sect.classList.add("accordion-item");
+
+        let heading = document.createElement("h2");
+        // heading.classList.add("accordion-header");
+        heading.setAttribute("id", `heading${i}`);
+        heading.innerHTML = sections[i];
+        heading.setAttribute("style", `color: ${sectColors[sections[i]]}`);
+
+        sect.appendChild(heading);
+
+        let tocCollapse = document.createElement("div");
+
+        let tocbody = document.createElement("div");
+        // tocbody.classList.add("accordion-body");
+
+        let sectlist = document.createElement("ul");
+        sectlist.setAttribute("id", sections[i]);
+        sectlist.setAttribute("style", `color: ${sectColors[sections[i]]}`);
+        tocbody.appendChild(sectlist);
+        tocCollapse.appendChild(tocbody);
+
+        sect.appendChild(tocCollapse);
+        toc_group.appendChild(sect);
+    }
+    toc_container.appendChild(toc_group);
+    console.log(sectColors);
+}
+
+
 function toc_sections() {
     let sections = [];
     for (let key in child_obj) {
@@ -1096,7 +1148,14 @@ function toc_sections() {
 //generates table of contents; modal table of contents open modal window, others go to external URLs
 //can either be: "accordion", "list", or "sectioned_list"
 function table_of_contents(){
-    toc_sections();
+    // toc_sections();
+    // sectioned_list();
+    // console.log(thisInstance);
+    if (thisInstance.instance_toc_style == "accordion"){
+        toc_sections();
+    } else {
+        sectioned_list();
+    }               
     // let elem = document.getElementById("toc1");
     // let elem = document.createElement("ul")
     for (let key in child_obj){
@@ -1172,10 +1231,26 @@ function table_of_contents(){
 }
 
 function list_toc(){
+    let sections = [];
+    for (let key in child_obj) {
+        let section = child_obj[key]['section_name'];
+        if (!sections.includes(section)) {
+            sections.push(section);
+        }
+        sectionObj[key] = section;
+    }
+    sections.sort();
+
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("ul");
+    let colorIdx = 0;
+    let i = 0;
     for (let key in child_obj) {
         // let elem = document.getElementById(child_obj[key]['section_name']);
+        sectColors[sections[i]] = colors[colorIdx]; 
+        colorIdx = (colorIdx + 1) % colors.length;
+        i++;
+
         let item = document.createElement("li");
     
         let title = child_obj[key]['title'];  
