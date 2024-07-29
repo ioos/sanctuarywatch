@@ -1,3 +1,4 @@
+let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
 (function( $ ) {
     //	'use strict';
     
@@ -355,7 +356,7 @@ function modal_scene_change(){
             .then(response => response.json())
             .then(data => {
                 const rawHoverColorString = data['instance_hover_color'];
-                let hoverColor = "yellow"; 
+            //    let hoverColor = "yellow"; 
                 if (rawHoverColorString) {
                     hoverColor = rawHoverColorString;
                     const commaIndex = hoverColor.indexOf(',');
@@ -391,7 +392,7 @@ function modal_scene_change(){
                                     let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
                                     const svgIconHighlight = svgIconTarget.cloneNode(true);
                                     svgIconHighlight.id = "icon_highlight";
-                                    svgIconHighlight.style.stroke = hoverColor; // "yellow";
+                                    svgIconHighlight.style.stroke =  hoverColor; //"yellow";
                                     svgIconHighlight.style.strokeWidth = "6";
                                     svgIcons.prepend(svgIconHighlight);
                                 }
@@ -453,7 +454,7 @@ function modal_icons_change() {
             .then(response => response.json())
             .then(data => {
                 const rawHoverColorString = data['instance_hover_color'];
-                let hoverColor = "yellow"; 
+              //  let hoverColor = "yellow"; 
                 if (rawHoverColorString) {
                     hoverColor = rawHoverColorString;
                     const commaIndex = hoverColor.indexOf(',');
@@ -497,7 +498,7 @@ $(".range[data-depend-id='modal_photo_entries']").change(function(){
 $('.modal_preview').click(function(){ 
 
     // Let's remove the preview window if it already exists
-    var previewWindow = document.getElementById('preview_window');
+    var previewWindow = document.getElementById('modal_preview');
     // If the element exists
     if (previewWindow) {
         // Remove the scene window
@@ -512,7 +513,7 @@ $('.modal_preview').click(function(){
 
     // Create a new div element
     let newDiv = document.createElement('div');
-    newDiv.id = "preview_window";
+    newDiv.id = "modal_preview";
     newDiv.classList.add("container", "modal_preview");
 
     let modalTitle = document.createElement("div");

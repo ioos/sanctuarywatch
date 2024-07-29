@@ -144,7 +144,7 @@ class Webcr_Modal {
                     'type'           => 'select',
                     'title'          => 'Instance',
                     'options'        => $locations,
-                    'description' => 'Modal Instance description',
+                    'description' => 'In which instance is the modal located?',
                     'class'      => 'chosen', 
                 ),
                 array(
@@ -152,28 +152,28 @@ class Webcr_Modal {
                     'type'           => 'select',
                     'title'          => 'Scene',
                     'options'        => $scene_titles,
-                    'description' => 'Modal Scene description',
+                    'description' => 'In which scene is the modal located?',
                 ),
                 array(
                     'id'             => 'modal_icons',
                     'type'           => 'select',
                     'title'          => 'Icons',
                     'options'        => $modal_icons, // array (" " => "Modal Icons")
-                    'description' => 'Modal Icons description',
+                    'description' => 'Which infographic icon is the modal associated with?',
                 ),
                 array(
                     'id'             => 'icon_toc_section',
                     'type'           => 'select',
                     'title'          => 'Icon Section',
                     'options'        =>  $modal_section,
-                    'description' => 'Icon Section description',
+                    'description' => 'Which scene section is this modal associated with?',
                 ),
                 array(
                     'id'             => 'icon_function',
                     'type'           => 'select',
                     'title'          => 'Icon Function',
                     'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
-                    'description' => 'Icon Function description',
+                    'description' => 'What should happen when the user clicks on the icon?',
                     'default'     => 'Modal',
                     'class'      => 'chosen', 
                 ),
@@ -182,27 +182,27 @@ class Webcr_Modal {
                     'type'        => 'text',
                     'title'       => 'Icon External URL',
                     'class'       => 'text-class',   
-                    'description' => 'Icon External URL Description',  
+                    'description' => 'What is the external URL that the user should be taken to when the icon is clicked?',  
                 ),
                 array(
                     'id'             => 'icon_scene_out',
                     'type'           => 'select',
                     'title'          => 'Icon Scene Out',
                     'options'        => $icon_scene_out,  
-                    'description' => 'Icon Scene Out description',
+                    'description' => 'What is the scene that the user should be taken to when the icon is clicked?',
                 ),
 
                 array(
                     'id'          => 'modal_tagline',
                     'type'        => 'textarea',
                     'title'       => 'Modal Tagline',
-                    'description' => 'Modal Tagline description',
+                    'description' => 'What is the modal tagline?',
                 ),
                 array(
                     'id'      => 'modal_info_entries',
                     'type'    => 'range',
                     'title'   => 'Number of Modal Info Entries',
-                    'description' => 'Number of Modal Info Entries description',
+                    'description' => 'How many info links are there for the modal?',
                     'min'     => 0,    
                     'default' => 1,    
                     'max'     => 6,         
@@ -212,7 +212,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_info1',
                     'title'   => 'Modal Info Link 1',
-                    'description' => 'Modal Info Link 1 description',
+                  //  'description' => 'Modal Info Link 1 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_info_text1',
@@ -232,7 +232,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_info2',
                     'title'   => 'Modal Info Link 2',
-                    'description' => 'Modal Info Link 2 description',
+                  //  'description' => 'Modal Info Link 2 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_info_text2',
@@ -252,7 +252,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_info3',
                     'title'   => 'Modal Info Link 3',
-                    'description' => 'Modal Info Link 3 description',
+                 //   'description' => 'Modal Info Link 3 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_info_text3',
@@ -272,7 +272,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_info4',
                     'title'   => 'Modal Info Link 4',
-                    'description' => 'Modal Info Link 4 description',
+                 //   'description' => 'Modal Info Link 4 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_info_text4',
@@ -292,7 +292,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_info5',
                     'title'   => 'Modal Info Link 5',
-                    'description' => 'Modal Info Link 5 description',
+                  //  'description' => 'Modal Info Link 5 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_info_text5',
@@ -313,7 +313,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_info6',
                     'title'   => 'Modal Info Link 6',
-                    'description' => 'Modal Info Link 6 description',
+                 //   'description' => 'Modal Info Link 6 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_info_text6',
@@ -334,7 +334,7 @@ class Webcr_Modal {
                     'id'      => 'modal_photo_entries',
                     'type'    => 'range',
                     'title'   => 'Number of Modal Photo Entries',
-                    'description' => 'Number of Modal Photo Entries description',
+                    'description' => 'How many photo links are there for the modal?',
                     'min'     => 0,    
                     'default' => 1,    
                     'max'     => 6,         
@@ -344,7 +344,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_photo1',
                     'title'   => 'Modal Photo Link 1',
-                    'description' => 'Modal Photo 1 description',
+             //       'description' => 'Modal Photo 1 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_photo_text1',
@@ -364,7 +364,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_photo2',
                     'title'   => 'Modal Photo Link 2',
-                    'description' => 'Modal Photo Link 2 description',
+                //    'description' => 'Modal Photo Link 2 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_photo_text2',
@@ -384,7 +384,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_photo3',
                     'title'   => 'Modal Photo Link 3',
-                    'description' => 'Modal Photo Link 3 description',
+              //      'description' => 'Modal Photo Link 3 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_photo_text3',
@@ -404,7 +404,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_photo4',
                     'title'   => 'Modal Photo Link 4',
-                    'description' => 'Modal Photo Link 4 description',
+              //      'description' => 'Modal Photo Link 4 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_photo_text4',
@@ -424,7 +424,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_photo5',
                     'title'   => 'Modal Photo Link 5',
-                    'description' => 'Modal Photo Link 5 description',
+               //     'description' => 'Modal Photo Link 5 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_photo_text5',
@@ -445,7 +445,7 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_photo6',
                     'title'   => 'Modal Photo Link 6',
-                    'description' => 'Modal Photo Link 6 description',
+               //     'description' => 'Modal Photo Link 6 description',
                     'fields' => array(
                         array(
                             'id'          => 'modal_photo_text6',
@@ -466,7 +466,7 @@ class Webcr_Modal {
                     'id'      => 'modal_tab_number',
                     'type'    => 'range',
                     'title'   => 'Number of Modal Tabs',
-                    'description' => 'Number of Modal Tabs description',
+                    'description' => 'How many modal tabs are there?',
                     'min'     => 0,    
                     'default' => 1,    
                     'max'     => 6,         
@@ -477,42 +477,42 @@ class Webcr_Modal {
                     'type'        => 'text',
                     'title'       => 'Modal Tab Title 1',
                     'class'       => 'text-class',   
-                    'description' => 'Modal Tab Title 1 Description',  
+              //      'description' => 'Modal Tab Title 1 Description',  
                 ),
                 array(
                     'id'          => 'modal_tab_title2',
                     'type'        => 'text',
                     'title'       => 'Modal Tab Title 2',
                     'class'       => 'text-class',   
-                    'description' => 'Modal Tab Title 2 Description',  
+            //        'description' => 'Modal Tab Title 2 Description',  
                 ),
                 array(
                     'id'          => 'modal_tab_title3',
                     'type'        => 'text',
                     'title'       => 'Modal Tab Title 3',
                     'class'       => 'text-class',   
-                    'description' => 'Modal Tab Title 3 Description',  
+              //      'description' => 'Modal Tab Title 3 Description',  
                 ),
                 array(
                     'id'          => 'modal_tab_title4',
                     'type'        => 'text',
                     'title'       => 'Modal Tab Title 4',
                     'class'       => 'text-class',   
-                    'description' => 'Modal Tab Title 4 Description',  
+              //      'description' => 'Modal Tab Title 4 Description',  
                 ),                
                 array(
                     'id'          => 'modal_tab_title5',
                     'type'        => 'text',
                     'title'       => 'Modal Tab Title 5',
                     'class'       => 'text-class',   
-                    'description' => 'Modal Tab Title 5 Description',  
+             //       'description' => 'Modal Tab Title 5 Description',  
                 ),                
                 array(
                     'id'          => 'modal_tab_title6',
                     'type'        => 'text',
                     'title'       => 'Modal Tab Title 6',
                     'class'       => 'text-class',   
-                    'description' => 'Modal Tab Title 6 Description',  
+             //       'description' => 'Modal Tab Title 6 Description',  
                 ),
                 array(
                     'id'          => 'modal_preview',

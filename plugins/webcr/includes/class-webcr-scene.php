@@ -466,9 +466,7 @@ class Webcr_Scene {
                     'type'           => 'select',
                     'title'          => 'Instance',
                     'options'        => $instances, //$locations,
-               //     'default_option' => 'Scene Instance',
-                    'description' => 'Scene Instance',
-                //     'default'     => ' ',
+                    'description' => 'What instance is the scene part of? ',
                      'class'      => 'chosen', 
                 ),
 
@@ -476,19 +474,19 @@ class Webcr_Scene {
                     'id'    => 'scene_infographic',
                     'type'  => 'image',
                     'title' => 'Scene Infographic',
-                    'description' => 'Infographic description'
+                    'description' => 'What is the image for the scene?'
                 ),
                 array(
                     'id'          => 'scene_tagline',
                     'type'        => 'textarea',
                     'title'       => 'Scene Tagline',
-                    'description' => 'Tagline description',
+                    'description' => 'What is the tagline for the scene?',
                 ),
                 array(
                     'id'      => 'scene_info_entries',
                     'type'    => 'range',
                     'title'   => 'Number of Scene Info Entries',
-                    'description' => 'Number of Scene Info Entries description',
+                    'description' => 'How many info links are there for the scene?',
                     'min'     => 0,    
                      'default' => 1,    
                      'max'     => 6,         
@@ -498,7 +496,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_info1',
                     'title'   => 'Scene Info Link 1',
-                    'description' => 'Scene Info Link 1 description',
+                   // 'description' => 'Scene Info Link 1 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_info_text1',
@@ -518,7 +516,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_info2',
                     'title'   => 'Scene Info Link 2',
-                    'description' => 'Scene Info Link 2 description',
+                  //  'description' => 'Scene Info Link 2 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_info_text2',
@@ -538,7 +536,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_info3',
                     'title'   => 'Scene Info Link 3',
-                    'description' => 'Scene Info Link 3 description',
+                 //   'description' => 'Scene Info Link 3 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_info_text3',
@@ -558,7 +556,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_info4',
                     'title'   => 'Scene Info Link 4',
-                    'description' => 'Scene Info Link 4 description',
+                //    'description' => 'Scene Info Link 4 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_info_text4',
@@ -578,7 +576,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_info5',
                     'title'   => 'Scene Info Link 5',
-                    'description' => 'Scene Info Link 5 description',
+                 //   'description' => 'Scene Info Link 5 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_info_text5',
@@ -599,7 +597,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_info6',
                     'title'   => 'Scene Info Link 6',
-                    'description' => 'Scene Info Link 6 description',
+                 //   'description' => 'Scene Info Link 6 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_info_text6',
@@ -620,7 +618,7 @@ class Webcr_Scene {
                     'id'      => 'scene_photo_entries',
                     'type'    => 'range',
                     'title'   => 'Number of Scene Photo Entries',
-                    'description' => 'Number of Scene Photo Entries description',
+                    'description' => 'How many photo links are there for the scene?',
                     'min'     => 0,    
                      'default' => 1,    
                      'max'     => 6,         
@@ -630,7 +628,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_photo1',
                     'title'   => 'Scene Photo Link 1',
-                    'description' => 'Scene Photo 1 description',
+                //    'description' => 'Scene Photo 1 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_photo_text1',
@@ -650,7 +648,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_photo2',
                     'title'   => 'Scene Photo Link 2',
-                    'description' => 'Scene Photo Link 2 description',
+                //    'description' => 'Scene Photo Link 2 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_photo_text2',
@@ -670,7 +668,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_photo3',
                     'title'   => 'Scene Photo Link 3',
-                    'description' => 'Scene Photo Link 3 description',
+                 //   'description' => 'Scene Photo Link 3 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_photo_text3',
@@ -690,7 +688,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_photo4',
                     'title'   => 'Scene Photo Link 4',
-                    'description' => 'Scene Photo Link 4 description',
+                 //   'description' => 'Scene Photo Link 4 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_photo_text4',
@@ -710,7 +708,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_photo5',
                     'title'   => 'Scene Photo Link 5',
-                    'description' => 'Scene Photo Link 5 description',
+                //    'description' => 'Scene Photo Link 5 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_photo_text5',
@@ -731,7 +729,7 @@ class Webcr_Scene {
                     'type' => 'fieldset',
                     'id' => 'scene_photo6',
                     'title'   => 'Scene Photo Link 6',
-                    'description' => 'Scene Photo Link 6 description',
+                 //   'description' => 'Scene Photo Link 6 description',
                     'fields' => array(
                         array(
                             'id'          => 'scene_photo_text6',
@@ -752,7 +750,7 @@ class Webcr_Scene {
                     'id'      => 'scene_order',
                     'type'    => 'number',
                     'title'   => 'Scene Order',
-                    'description' => 'Add description',
+                    'description' => 'What is the order of the scene in the menu bar?',
                     'default' => '1',                               
                     'min'     => '1',                                    
                     'max'     => '10',      
@@ -762,7 +760,7 @@ class Webcr_Scene {
                     'id'      => 'scene_section_number',
                     'type'    => 'select',
                     'title'   => 'Number of Scene Sections',
-                    'description' => 'Number of Scene Sections description',
+                    'description' => 'How many scene sections are there?',
                     'options' => array(
                         0 => "0",
                         1 => "1",
@@ -779,42 +777,42 @@ class Webcr_Scene {
                     'type'        => 'text',
                     'title'       => 'Scene Section 1',
                     'class'       => 'text-class',   
-                    'description' => 'Scene Section 1 Description',  
+             //       'description' => 'Scene Section 1 Description',  
                 ),
                 array(
                     'id'          => 'scene_section2',
                     'type'        => 'text',
                     'title'       => 'Scene Section 2',
                     'class'       => 'text-class',   
-                    'description' => 'Scene Section 2 Description',  
+            //        'description' => 'Scene Section 2 Description',  
                 ),
                 array(
                     'id'          => 'scene_section3',
                     'type'        => 'text',
                     'title'       => 'Scene Section 3',
                     'class'       => 'text-class',   
-                    'description' => 'Scene Section 3 Description',  
+              //      'description' => 'Scene Section 3 Description',  
                 ),
                 array(
                     'id'          => 'scene_section4',
                     'type'        => 'text',
                     'title'       => 'Scene Section 4',
                     'class'       => 'text-class',   
-                    'description' => 'Scene Section 4 Description',  
+             //       'description' => 'Scene Section 4 Description',  
                 ),              
                 array(
                     'id'          => 'scene_section5',
                     'type'        => 'text',
                     'title'       => 'Scene Section 5',
                     'class'       => 'text-class',   
-                    'description' => 'Scene Section 5 Description',  
+              //      'description' => 'Scene Section 5 Description',  
                 ),
                 array(
                     'id'          => 'scene_section6',
                     'type'        => 'text',
                     'title'       => 'Scene Section 6',
                     'class'       => 'text-class',   
-                    'description' => 'Scene Section 6 Description',  
+              //      'description' => 'Scene Section 6 Description',  
                 ),
                 array(
                     'id'          => 'scene_preview',
@@ -881,6 +879,18 @@ class Webcr_Scene {
                 'auth_callback' => '__return_false' //Return false to disallow writing
             )
         );        
+
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'scene_section_number', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'integer', // Data type of the meta value
+                'description' => 'The number of scene sections', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );  
 
         for ($i = 1; $i < 7; $i++ ) {
             $target_field = 'scene_info' . $i;

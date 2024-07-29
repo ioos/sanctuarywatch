@@ -105,14 +105,14 @@ class Webcr_Instance {
                     'id'          => 'instance_short_title',
                     'type'        => 'text',
                     'title'       => 'Short Title',
-                    'description' => 'Instance Short Title',
+                    'description' => 'What should the instance short title be?',
                     'class'       => 'text-class',
                 ),
                 array(
                     'id'          => 'instance_slug',
                     'type'        => 'text',
                     'title'       => 'Slug',
-                    'description' => 'Instance Slug',
+                    'description' => 'What should the instance slug be? The slug is used to determine the url of the instance.',
                     'class'       => 'text-class',
                 ),
                 array(
@@ -182,6 +182,7 @@ class Webcr_Instance {
                     'type'        => 'button',
                     'title'       => 'Check Instance for Errors',
                     'class'        => 'instance_check',
+                    'description' => 'This button is not functional yet.',
                     'options'     => array(
                         'href'  =>  '#nowhere',
                         'target' => '_self',

@@ -136,3 +136,48 @@
   #mceu_64,  #mceu_65, #mceu_66, #mceu_67, #mceu_68, #mceu_69, #mceu_71, #mceu_72, #mceu_73 {
     display: none;
   }
+
+    /* Formatting for figure preview */
+
+.figure_preview {
+  margin-top: 10px;
+  max-width: 800px;
+}
+
+.grayFigureRow {
+  background-color: LightGray;
+  padding: 10px;
+ /*  color: #158cba;*/
+ display: flex;
+ justify-content: space-between;
+}
+
+.grayFigureRowText {
+  margin-left: 8px;
+  text-decoration: none;
+  font-size:120%;
+}
+
+.grayFigureRowIcon {
+  font-size:x-large;
+}
+
+.grayFigureRowLinks {
+  text-decoration: none;
+  color: #158cba;
+}
+
+.imageRow{
+  margin-top: 10px;
+}
+.figureImage {
+  max-width: 770px;
+}
+
+.captionRow{
+  margin-top: 10px;
+}
+
+.captionOptions{
+  font-size: 15px;
+}

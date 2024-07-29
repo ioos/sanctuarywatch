@@ -11,16 +11,16 @@ class webcr_validation {
     public function master_validate($validate_content_type){
         switch ($validate_content_type) {
             case "scene":
-                return $this->validate_scene();
+                return true;// $this->validate_scene();
                 break;
             case "modal":
-                return $this->validate_modal();
+                return true;// $this->validate_modal();
                 break;
             case "figure":
-                return $this->validate_figure();
+                return true;// $this->validate_figure();
                 break;
             case "instance":
-                return $this->validate_instance();
+                return true;// $this->validate_instance();
                 break;
             case "default":
                 return false;
