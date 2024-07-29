@@ -972,6 +972,15 @@ function toggle_text(){
     let checkbox = document.createElement("input");
     checkbox.setAttribute("type", "checkbox");
     checkbox.setAttribute("id", "tocWrapper");
+    let initialState = thisInstance.instance_text_toggle === "toggle_on";
+    checkbox.checked = initialState;
+    let svgText = document.querySelector("#text");
+    if (initialState) {
+        svgText.setAttribute("display", "none");
+    } else {
+        svgText.setAttribute("display", "");
+    }
+
 
     // Create a span element for the slider
     let slider = document.createElement("span");
@@ -1375,13 +1384,7 @@ function add_modal(){
 
 // loadSVG(url, "svg1");
 
-function get_instance(){
 
-}
-
-function set_attributes(){
-
-}
 
 async function load_instance_details() {
     const protocol = window.location.protocol;
