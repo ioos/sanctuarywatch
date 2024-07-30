@@ -117,9 +117,6 @@ class Webcr {
 		// JAI The class that defines the metaboxes used for field entry
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/exopite-simple-options/exopite-simple-options-framework-class.php';
 
-		// The class that defines custom taxonomies
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-taxonomy.php';
-
 		// The class that defines the functions used to alter the WordPress login screen
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-login.php';
 
@@ -217,10 +214,6 @@ class Webcr {
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_figure, 'figure_location_filter_results' ); //scene
 		$this->loader->add_action( 'admin_notices', $plugin_admin_figure, 'figure_admin_notice' ); // scene 
 		$this->loader->add_filter( 'bulk_actions-edit-figure', $plugin_admin_instance, 'remove_bulk_actions' ); 
-
-		// Load class and functions connected to custom taxonomies
-		$plugin_admin_taxonomy = new Webcr_Taxonomy( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'init', $plugin_admin_taxonomy, 'custom_location_taxonomy', 0);
 
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );

@@ -89,12 +89,14 @@ class Webcr_Instance {
 
         // get list of locations, which is saved as a taxonomy
         $function_utilities = new Webcr_Utility();
-        $locations = $function_utilities -> returnInstances();
 
-        $scene_titles = [];
-        $modal_icons = [];
-        $modal_tabs = [];
+        $scene_titles = array("" => "Scenes");
 
+        // used by both scene and icon dropdowns
+        if (array_key_exists("post", $_GET)) {
+            $instance_id = intval($_GET["post"]);
+            $scene_titles = $function_utilities -> returnInstanceScenes($instance_id );
+        }
 
         $fields[] = array(
             'name'   => 'basic',
@@ -122,6 +124,13 @@ class Webcr_Instance {
                     'options'        => array("Designation" => "Designation", "Issue" => "Issue", "Sanctuary" => "Sanctuary"),
                     'description' => 'What is the instance type?',
                     'class'      => 'chosen', 
+                ),
+                array(
+                    'id'             => 'instance_overview_scene',
+                    'type'           => 'select',
+                    'title'          => 'Overview Scene',
+                    'options'        => $scene_titles,
+                    'description' => 'What is the overview scene for the Instance?',
                 ),
                 array(
                     'id'             => 'instance_status',

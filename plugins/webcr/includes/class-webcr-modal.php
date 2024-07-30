@@ -145,7 +145,7 @@ class Webcr_Modal {
                     'title'          => 'Instance',
                     'options'        => $locations,
                     'description' => 'In which instance is the modal located?',
-                    'class'      => 'chosen width-150', 
+                    'class'      => 'chosen', 
                 ),
                 array(
                     'id'             => 'modal_scene',
@@ -153,7 +153,6 @@ class Webcr_Modal {
                     'title'          => 'Scene',
                     'options'        => $scene_titles,
                     'description' => 'In which scene is the modal located?',
-                 //   'class'      => 'chosen', 
                 ),
                 array(
                     'id'             => 'modal_icons',

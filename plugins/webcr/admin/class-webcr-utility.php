@@ -42,7 +42,6 @@ class Webcr_Utility {
     }
 
     //Get a list of all instances
-
     public function returnAllInstances(){
         $args = array(
             'post_type'      => 'instance', // Custom post type name
@@ -63,20 +62,33 @@ class Webcr_Utility {
         return $instance;
     }
 
-    /**
-	 * Get list of locations, which is returned as an array
-	 *
-     * @return  An array containing the list of locations of the instances
-	 * @since    1.0.0
-	 */
-    public function returnInstances() {
-        // get list of locations, which is saved as a taxonomy
-        $locations_array = get_terms(array('taxonomy' => 'location', 'hide_empty' => false));
-        $locations=[];
-        foreach ( $locations_array as $locations_row ){
-            $locations[$locations_row -> name] = $locations_row -> name;
+    //Get a list of all scenes associated with an instance
+    public function returnInstanceScenes($instance_id){
+
+        $scene_titles = array();
+        $args = array(
+            'post_type' => 'scene',  // Your custom post type
+            'meta_query' => array(
+                array(
+                    'key' => 'scene_location',      // The custom field key
+                    'value' => $instance_id, // The value you are searching for
+                    'compare' => '='         // Comparison operator
+                )
+            ),
+            'fields' => 'ids'            // Only return post IDs
+        );
+        
+        // Execute the query
+        $query = new WP_Query($args);
+        
+        // Get the array of post IDs
+        $scene_post_ids = $query->posts;
+        foreach ($scene_post_ids as $target_id){
+            $target_title = get_post_meta($target_id, "post_title", true);
+            $scene_titles[$target_id] = $target_title;
         }
-        return $locations;
+        asort($scene_titles);
+        return $scene_titles;
     }
 
     public function returnSceneTitles($scene_id, $modal_id){
