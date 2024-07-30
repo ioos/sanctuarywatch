@@ -307,7 +307,52 @@ class Webcr {
 
 		add_filter('rest_scene_query', 'filter_scene_by_scene_location', 10, 2);
 
-		
+		// Hook into init to add rewrite rules
+		add_action('init', 'custom_scene_rewrite_rules');
+
+		function custom_scene_rewrite_rules() {
+			add_rewrite_rule(
+				'^([^/]+)/([^/]+)/?$',
+				'index.php?scene=$matches[2]',
+				'top'
+			);
+		}
+
+		// Hook into post_type_link to customize the permalink for Scene posts
+		add_filter('post_type_link', 'custom_scene_permalink', 10, 2);
+
+		function custom_scene_permalink($post_link, $post) {
+			if ($post->post_type !== 'scene') {
+				return $post_link;
+			}
+
+			$instance_id = get_post_meta($post->ID, 'scene_location', true);
+
+			if (!$instance_id) {
+				return $post_link;
+			}
+
+			$instance = get_post($instance_id);
+			$web_slug = get_post_meta($instance_id, 'instance_slug', true);
+
+			if (!$instance || !$web_slug) {
+				return $post_link;
+			}
+
+			$post_title = strtolower($post->post_title);
+			$post_title = str_replace(' ', '_', $post_title);
+
+			return home_url('/' . $web_slug . '/' . $post_title . '/');
+		}
+
+		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated
+		register_activation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
+		register_deactivation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
+
+		function custom_scene_flush_rewrite_rules() {
+			custom_scene_rewrite_rules();
+			flush_rewrite_rules();
+}
 	}
 
 	/**

@@ -37,7 +37,6 @@ class Webcr_Scene {
 
 	}
 
-
     /**
 	 * Provide warning messages for user entry errors with posts of the Scene content type.
 	 *
