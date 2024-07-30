@@ -821,7 +821,9 @@ function render_modal(key){
                 console.log("is mobile");
                 tagline_container.classList.add("col-6");
                 accordion_container.classList.add("col-6");
-                tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
+                // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
+                tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%");
+
                 accordion_container.setAttribute("style", "min-width: 300px;  max-width: 20%;");
             } else{
                 tagline_container.classList.add("col-9");
@@ -1092,7 +1094,9 @@ function sectioned_list(){
         let heading = document.createElement("h2");
         // heading.classList.add("accordion-header");
         heading.setAttribute("id", `heading${i}`);
-        heading.innerHTML = sections[i];
+        if (sections[i] != "None"){
+            heading.innerHTML = sections[i];
+        }
         heading.setAttribute("style", `color: ${sectColors[sections[i]]}`);
 
         sect.appendChild(heading);

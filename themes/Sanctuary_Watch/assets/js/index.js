@@ -34,6 +34,10 @@ async function getInstanceInfo() {
       list.classList.add("row");
     for (let idx in testDataIndex) {
         let child = testDataIndex[idx];
+        console.log(child);
+        if (child.instance_status != "Published"){
+            continue;
+        }
         
         let col = document.createElement('div');
         col.classList.add("col-xs-12", "col-sm-6", "col-md-4");

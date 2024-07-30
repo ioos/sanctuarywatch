@@ -134,5 +134,5 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
   <!-- </body> -->
 
 <?php
-get_footer();
+// get_footer();
 ?>

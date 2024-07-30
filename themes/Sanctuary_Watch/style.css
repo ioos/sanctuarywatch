@@ -351,7 +351,7 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
-@media (min-width: 576px) {
+@media (min-width: 900px) {
   .modal-dialog {
     min-width: 30%;
     max-width: 50%;
@@ -363,7 +363,7 @@ input:checked + .slider:before {
   }
   #accordion-container{
     max-width: 40%;
-    min-width: 200px;
+    /* min-width: 200px; */
     /* margin-left: -15% */
   }
 }
@@ -393,3 +393,39 @@ input:checked + .slider:before {
   transform: scale(0.9);
 }
 }
+
+
+#more-info-header-1 > button{
+  max-height: 40px;
+}
+
+#images-header-1 > button{
+  max-height: 40px;
+}
+
+#more-info-collapse-1{
+  margin-top: -4%;
+  margin-bottom: -4%;
+}
+#images-collapse-1{
+  margin-top: -4%;
+  margin-bottom: -4%;
+}
+
+#accordion-header-1 > button{
+  max-height: 40px;
+}
+#accordion-header-2 > button{
+  max-height: 40px;
+}
+
+#accordion-collapse-1{
+  margin-top: -4%;
+  margin-bottom: -4%;
+
+}
+#accordion-collapse-2{
+  margin-top: -4%;
+  margin-bottom: -4%;
+}
+
