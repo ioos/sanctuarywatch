@@ -308,7 +308,7 @@ class Webcr {
 		add_filter('rest_scene_query', 'filter_scene_by_scene_location', 10, 2);
 
 		// Hook into init to add rewrite rules
-		add_action('init', 'custom_scene_rewrite_rules');
+//		add_action('init', 'custom_scene_rewrite_rules');
 
 		function custom_scene_rewrite_rules() {
 			add_rewrite_rule(
@@ -318,7 +318,7 @@ class Webcr {
 			);
 		}
 
-		// Hook into post_type_link to customize the permalink for Scene posts
+		// Hook into post_type_link to customize the permalink for Scene posts - SKANDA COMMENT OUT NEXT LINE
 		add_filter('post_type_link', 'custom_scene_permalink', 10, 2);
 
 		function custom_scene_permalink($post_link, $post) {
