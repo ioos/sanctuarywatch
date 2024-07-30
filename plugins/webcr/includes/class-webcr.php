@@ -319,7 +319,7 @@ class Webcr {
 		}
 
 		// Hook into post_type_link to customize the permalink for Scene posts - SKANDA COMMENT OUT NEXT LINE
-		add_filter('post_type_link', 'custom_scene_permalink', 10, 2);
+		// add_filter('post_type_link', 'custom_scene_permalink', 10, 2);
 
 		function custom_scene_permalink($post_link, $post) {
 			if ($post->post_type !== 'scene') {

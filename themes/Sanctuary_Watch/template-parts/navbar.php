@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-	<div class="container-fluid" id="navbar-container" style="margin-left: 10%">
+	<div class="container-fluid" id="navbar-container" style="margin-left: 30%; margin-right: 25%">
         <?php
         //Get the post ID of the page and the scene location of the postID
         $postMeta = get_post_meta(get_the_ID());

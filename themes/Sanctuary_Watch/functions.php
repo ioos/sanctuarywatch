@@ -87,7 +87,16 @@
     
     register_post_type( 'scene', $args);
   }
-  //add_action('init', 'register_scene_post_type' );
+  // add_action('init', 'register_scene_post_type' );
+  function add_custom_rewrite_rules() {
+    add_rewrite_rule(
+        '^channel-islands/([^/]+)/?$',
+        'index.php?scene=$matches[1]',
+        'top'
+    );
+}
+  add_action('init', 'add_custom_rewrite_rules');
+
 
   /**
    * Adds rewrite rules for custom 'scene' post type URLs.
@@ -100,14 +109,14 @@
    * @return void
    */
   // Add custom rewrite rules
-  function scene_rewrite_rules() {
-    add_rewrite_rule(
-        '^([^/]+)/([^/]+)/?$',
-        'index.php?post_type=scene&scene_location=$matches[1]&name=$matches[2]',
-        'top'
-    );
-  }
-  add_action('init', 'scene_rewrite_rules');
+  // function scene_rewrite_rules() {
+  //   add_rewrite_rule(
+  //       '^([^/]+)/([^/]+)/?$',
+  //       'index.php?post_type=scene&scene_location=$matches[1]&name=$matches[2]',
+  //       'top'
+  //   );
+  // }
+  // add_action('init', 'scene_rewrite_rules');
 
   /**
    * Filters the permalink for a 'scene' custom post type.
@@ -123,26 +132,26 @@
    * @return string Modified permalink URL if the post type is 'scene', original URL otherwise.
    */
   //changing the scene url
-  function scene_post_type_permalink($post_link, $post) {
-    if (is_object($post) && $post->post_type == 'scene') {
-        $postMeta = get_post_meta($post->ID);
-        //Undefined array key "scene_location"
-        $sceneLocation = $postMeta['scene_location'][0];
-        if ($sceneLocation) {
-            $scene_base_url = 'webcr-';
-            $sceneArr = explode(' ', strtolower($sceneLocation));
-            $scene_letters = '';
-            for ($i = 0; $i < count($sceneArr) - 1; $i++) {
-                $scene_base_url = $scene_base_url . $sceneArr[$i];
-                $scene_letters = $scene_letters . substr( $sceneArr[$i], 0, 1);
-            }
-            //$post_title_url = $scene_letters . str_replace(" ", "-", strtolower($post->post_title));
-            $post_link = home_url("/$scene_base_url/{$post->post_name}/");
-        }
-    }
-    return $post_link;
-  }
-  //add_filter('post_type_link', 'scene_post_type_permalink', 10, 2);
+  // function scene_post_type_permalink($post_link, $post) {
+  //   if (is_object($post) && $post->post_type == 'scene') {
+  //       $postMeta = get_post_meta($post->ID);
+  //       //Undefined array key "scene_location"
+  //       $sceneLocation = $postMeta['scene_location'][0];
+  //       if ($sceneLocation) {
+  //           $scene_base_url = 'channel-islands';
+  //           $sceneArr = explode(' ', strtolower($sceneLocation));
+  //           $scene_letters = '';
+  //           for ($i = 0; $i < count($sceneArr) - 1; $i++) {
+  //               $scene_base_url = $scene_base_url . $sceneArr[$i];
+  //               $scene_letters = $scene_letters . substr( $sceneArr[$i], 0, 1);
+  //           }
+  //           //$post_title_url = $scene_letters . str_replace(" ", "-", strtolower($post->post_title));
+  //           $post_link = home_url("/$scene_base_url/{$post->post_name}/");
+  //       }
+  //   }
+  //   return $post_link;
+  // }
+  // add_filter('post_type_link', 'scene_post_type_permalink', 10, 2);
 
   /**
    * Sets up and flushes rewrite rules on plugin activation.
@@ -160,12 +169,12 @@
   // Flush rewrite rules on activation
 
   //TODO ensures the custom post type and rewrite rules are registered and applied, which affects URL handling in WordPress.
-  function scene_rewrite_flush() {
-    register_scene_post_type();
-    scene_rewrite_rules();
-    flush_rewrite_rules();
-  }
-  register_activation_hook(__FILE__, 'scene_rewrite_flush');
+  // function scene_rewrite_flush() {
+  //   register_scene_post_type();
+  //   scene_rewrite_rules();
+  //   flush_rewrite_rules();
+  // }
+  // register_activation_hook(__FILE__, 'scene_rewrite_flush');
 
 
   /**

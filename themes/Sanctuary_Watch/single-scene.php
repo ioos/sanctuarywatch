@@ -96,6 +96,13 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
     </div>
   </div>
 </div>
+
+<div id="entire_thing" style="
+    max-width: 80%;
+    /* justify-content: center; */
+    margin-left: 10%;
+    margin-right: 10%;
+">
 <div id="title-container" style="margin-left: 9%" ></div>
 <div id="mobile-view-image"></div>
 <div class="container-fluid" id="scene-fluid">
@@ -127,6 +134,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
   </script>
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+</div>
 </div>
  </body>
     
