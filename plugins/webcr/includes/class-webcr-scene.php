@@ -464,7 +464,7 @@ class Webcr_Scene {
                     'id'             => 'scene_location',
                     'type'           => 'select',
                     'title'          => 'Instance',
-                    'options'        => $instances, //$locations,
+                    'options'        => $instances, 
                     'description' => 'What instance is the scene part of? ',
                      'class'      => 'chosen', 
                 ),
