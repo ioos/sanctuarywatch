@@ -107,7 +107,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 <div id="mobile-view-image"></div>
 <div class="container-fluid" id="scene-fluid">
   <div class="row" id="scene-row">
-    <div class="col-md-9">
+    <div class="col-md-9" style="margin-left: -4%;">
       <div id="svg1" class="responsive-image-container">
         <?php
           $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
@@ -116,7 +116,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
       </div>
     </div>
 
-    <div class="col-md-3" id="toc-container">
+    <div class="col-md-3" id="toc-container" style="margin-left: -6%">
     <!-- <button style="margin-bottom: 5px; font-size: large;" class="btn btn-info fa fa-arrows-alt btn-block" id="top-button"> Full Screen</button> -->
 
       <!-- temporary, make the above a dropdown -->

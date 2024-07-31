@@ -546,6 +546,8 @@ function enqueue_info_scripts2() {
   );
 }
 add_action('wp_enqueue_scripts', 'enqueue_info_scripts2');
+
+
 ?>
 
 

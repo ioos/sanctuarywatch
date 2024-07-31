@@ -430,7 +430,7 @@ input:checked + .slider:before {
 }
 
 #title-container > div > div.col-md-10 > p{
-  max-width: 85%;
+  max-width: 75%;
 }
 
 #toc-group{
