@@ -237,7 +237,7 @@ class Webcr_Figure {
                     'title'          => 'Instance',
                     'options'        => $locations,
                     'description' => 'What instance is this figure part of?',
-                    'class'      => 'chosen', 
+                 //   'class'      => 'chosen', 
                 ),
                 array(
                     'id'             => 'figure_scene',

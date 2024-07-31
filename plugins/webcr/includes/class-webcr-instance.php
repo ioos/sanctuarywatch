@@ -123,7 +123,7 @@ class Webcr_Instance {
                     'title'          => 'Type',
                     'options'        => array("Designation" => "Designation", "Issue" => "Issue", "Sanctuary" => "Sanctuary"),
                     'description' => 'What is the instance type?',
-                    'class'      => 'chosen', 
+                   // 'class'      => 'chosen', 
                 ),
                 array(
                     'id'             => 'instance_overview_scene',
@@ -139,7 +139,7 @@ class Webcr_Instance {
                     'options'        => array("Draft" => "Draft", "Published" => "Published"),
                     'default' => 'Draft',
                     'description' => 'Is the instance live?',
-                    'class'      => 'chosen', 
+                //    'class'      => 'chosen', 
                 ),
                 array(
                     'id'    => 'instance_tile',
@@ -154,7 +154,7 @@ class Webcr_Instance {
                     'options'        => array("accordion" => "Accordion", "list" => "List", "sectioned_list" => "Sectioned List"),
                     'default' => 'list',
                     'description' => 'What should the table of contents look like?',
-                    'class'      => 'chosen', 
+                 //   'class'      => 'chosen', 
                 ),
                 array(
                     'id'    => 'instance_colored_sections',
@@ -184,7 +184,7 @@ class Webcr_Instance {
                     'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
                     'default'        => 'none',
                     'description' => 'Should there be a text toggle button?',
-                    'class'      => 'chosen', 
+                 //   'class'      => 'chosen', 
                 ),
                 array(
                     'id'          => 'instance_check',

@@ -145,7 +145,7 @@ class Webcr_Modal {
                     'title'          => 'Instance',
                     'options'        => $locations,
                     'description' => 'In which instance is the modal located?',
-                    'class'      => 'chosen', 
+                 //   'class'      => 'chosen', 
                 ),
                 array(
                     'id'             => 'modal_scene',
@@ -175,7 +175,7 @@ class Webcr_Modal {
                     'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
                     'description' => 'What should happen when the user clicks on the icon?',
                     'default'     => 'Modal',
-                    'class'      => 'chosen', 
+                 //   'class'      => 'chosen', 
                 ),
                 array(
                     'id'          => 'icon_external_url',
