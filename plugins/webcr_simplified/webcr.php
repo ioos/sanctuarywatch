@@ -13,7 +13,7 @@
  * @package           Webcr
  *
  * @wordpress-plugin
- * Plugin Name:       Webenized Condition Reports
+ * Plugin Name:       Simplified Webenized Condition Reports
  * Plugin URI:        https://sanctuarywatch.ioos.us
  * Description:       This plugin customizes a Wordpress installation for the requirements of the Webenized Condition Reports.
  * Version:           1.0.0
@@ -22,7 +22,6 @@
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       webcr
- * Requires Plugins:  svg-support
  * Domain Path:       /languages
  */
 

@@ -453,16 +453,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework' ) ) :
 			// JAI - add validation to (potentially) saving metaboxes
 
 			if ( isset($_POST["post_type"]) ){
-				$check_fields = new webcr_validation();
-				$custom_post_type = $_POST["post_type"];
-				$fields_good = $check_fields->master_validate($custom_post_type);
-				if ($fields_good == True) {
 					add_action( 'save_post', array( $this, 'save' ) );
-
-				} else {
-				//	 add_filter( 'post_updated_messages', array($this,'remove_all_messages_so_16015959' ) );
-				}
-
 			}
 		}
 
