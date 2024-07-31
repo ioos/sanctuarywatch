@@ -1,0 +1,183 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+ /* get rid of "content updated box" */
+ .notice-success {
+    display: none;
+ }
+
+  /* increase font size for error box - MAYBE TO BE DELETED?*/
+  .error > p {
+    font-size:20px;
+  }
+
+  /* increase font size of error box */
+  .notice > p {
+    font-size:20px;
+  }
+
+  /* show bullets in list */
+  .notice ul {
+    list-style-type: disc;
+    margin-left: 50px; 
+    font-size:16px;
+  }
+
+  h4 {
+    font-weight: 500;
+    font-size: 15px;
+  }
+
+  body {
+    background: #f0f0f1;
+  }
+
+  .previewSvg {
+    max-width: 100%; /* Set SVG width to 100% of container */
+    height: auto; /* Allow height to adjust proportionally */
+  }
+
+  .sceneTagline {
+    font-style: italic;
+    font-size: larger;
+  }
+
+  .thirdPreviewRow {
+    padding-top: 10px;
+  }
+
+  .previewSceneTOC {
+    text-decoration: underline;
+    color: blue;
+    font-size:larger;
+  }
+
+  .previewAccordionElements {
+    font-size: larger;
+    padding-top: 10px;
+  }
+
+  .accordionTitle {
+    font-size:15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .accordionTitle:not(.collapsed){
+    background-color: white !important;
+  }
+
+  /* This is a hacky way of hiding the Screen Options tab in admin screens. 
+  The more recommended method of using a server-side filter to do this is not working for some reason */
+  #show-settings-link {
+    display:none;
+  }
+
+    /* This is a hacky way of hiding the tag line in the custom content admin screens.  */
+  .hide-if-no-js {
+    display:none;
+  }
+
+  /* Formatting for modal preview */
+
+.modal_preview {
+  border-color: black;
+  border-style: solid;
+  margin-top: 10px;
+}
+
+.modal_preview h4 {
+  color: #317EAC;
+  font-weight: 500;
+  font-size: 18px;
+  padding: 15px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.modalSecondRow {
+  padding-bottom: 10px;
+}
+
+.modalThirdRow {
+  padding-left: 10px;
+}
+
+  /* Override Bootstrap tab styles */
+  .nav-tabs .nav-link.active {
+    font-weight: bold; /* Make active tab bold */
+  }
+
+  .nav-tabs .nav-link {
+    text-decoration: none; /* Remove all text decorations from tabs */
+    color: black;
+    border-color: #dee2e6;
+  }
+
+  /* Hide some TinyMCE button options within Figure editing screens. VERY HACKY - FIX   */
+  .mce-toolbar .mce-btn-group .mce-btn.mce-listbox {
+    display: none;
+  }
+
+  /* Hide some TinyMCE button options within Figure editing screens - short caption. VERY HACKY - FIX   */
+ #mceu_3,  #mceu_4, #mceu_5, #mceu_6, #mceu_7, #mceu_8, #mceu_10, #mceu_11, #mceu_12 {
+  display: none;
+}
+
+  /* Hide some TinyMCE button options within Figure editing screens - long caption. VERY HACKY - FIX   */
+  #mceu_64,  #mceu_65, #mceu_66, #mceu_67, #mceu_68, #mceu_69, #mceu_71, #mceu_72, #mceu_73 {
+    display: none;
+  }
+
+    /* Formatting for figure preview */
+
+.figure_preview {
+  margin-top: 10px;
+  max-width: 800px;
+}
+
+.grayFigureRow {
+  background-color: LightGray;
+  padding: 10px;
+ /*  color: #158cba;*/
+ display: flex;
+ justify-content: space-between;
+}
+
+.grayFigureRowText {
+  margin-left: 8px;
+  text-decoration: none;
+  font-size:120%;
+}
+
+.grayFigureRowIcon {
+  font-size:x-large;
+}
+
+.grayFigureRowLinks {
+  text-decoration: none;
+  color: #158cba;
+}
+
+.imageRow{
+  margin-top: 10px;
+}
+.figureImage {
+  max-width: 770px;
+}
+
+.captionRow{
+  margin-top: 10px;
+}
+
+.captionOptions{
+  font-size: 15px;
+}
