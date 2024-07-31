@@ -88,14 +88,14 @@
     register_post_type( 'scene', $args);
   }
   // add_action('init', 'register_scene_post_type' );
-  function add_custom_rewrite_rules() {
-    add_rewrite_rule(
-        '^channel-islands/([^/]+)/?$',
-        'index.php?scene=$matches[1]',
-        'top'
-    );
-}
-  add_action('init', 'add_custom_rewrite_rules');
+//   function add_custom_rewrite_rules() {
+//     add_rewrite_rule(
+//         '^channel-islands/([^/]+)/?$',
+//         'index.php?scene=$matches[1]',
+//         'top'
+//     );
+// }
+//   add_action('init', 'add_custom_rewrite_rules');
 
 
   /**

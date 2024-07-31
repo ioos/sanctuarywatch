@@ -242,7 +242,7 @@ body > h1{
 .row {
   display: flex;
   justify-content: center; /* Center columns horizontally */
-  margin-bottom: 20px; /* Space between rows */
+  /* margin-bottom: 20px;  */
 }
 
 /* Style each column */
@@ -429,3 +429,10 @@ input:checked + .slider:before {
   margin-bottom: -4%;
 }
 
+#title-container > div > div.col-md-10 > p{
+  max-width: 85%;
+}
+
+#toc-group{
+  padding-top: 5%;
+}

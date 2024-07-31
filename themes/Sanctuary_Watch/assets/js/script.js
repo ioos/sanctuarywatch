@@ -139,8 +139,13 @@ async function make_title() {
 
         let col2 = document.createElement("div");
         col2.classList.add("col-md-10");
+        if (is_mobile()){
+            col2.setAttribute("style", "padding-top: 5%; align-content: center; margin-left: 7%;");
+        }
+
         let titleTagline = document.createElement("p");
         titleTagline.innerHTML = scene_data.scene_tagline;
+        titleTagline.style.fontStyle = 'italic';
         col2.appendChild(titleTagline);
 
         row.appendChild(col1);
@@ -162,6 +167,7 @@ function has_mobile_layer(mob_icons, elemname){
     // console.log("mobile icons here:");
     // console.log(mob_icons);
     if (mob_icons == null){
+        console.log("uh oh");
         return false;
     }
     for (let i = 0; i < mob_icons.children.length; i++) {
@@ -170,10 +176,11 @@ function has_mobile_layer(mob_icons, elemname){
         // console.log(child); 
         let label = child.getAttribute('inkscape:label');
         if (label === elemname){
-            // console.log(`found ${label}`);
+            console.log(`found ${label}`);
             return true;
         }             
     }
+    console.log("uh oh");
     return false;
 }
 
@@ -193,9 +200,19 @@ function get_mobile_layer(mob_icons, elemname){
     return null;
 }
 
+function remove_outer_div(){
+    let container =  document.querySelector("#entire_thing");
+    while (container.firstChild) {
+        document.body.insertBefore(container.firstChild, container);
+    }
+    container.remove();
+
+}
+
 //helper function for creating mobile grid for loadSVG:
 function mobile_helper(svgElement, iconsArr, mobile_icons){
     // console.log(svgElement);
+    remove_outer_div();
     let defs = svgElement.firstElementChild;
     // console.log(defs);
     // let mob_icons = svgElement.querySelector("#mobile");
@@ -304,6 +321,7 @@ async function loadSVG(url, containerId) {
         // console.log(svgElement);
         // checking if user device is touchscreen
         if (is_touchscreen()){
+            console.log("this is touchscreen");
             // flicker_highlight_icons();
             // console.log("touchscreen recognized");
             if (is_mobile() && (deviceDetector.device != 'tablet')){ //a phone and not a tablet; screen will be its own UI here
@@ -319,7 +337,7 @@ async function loadSVG(url, containerId) {
                     if (bbox.width ==  827.25 && bbox.height == 615.989990234375){
                         fullImgCont.setAttribute("style", "transform: scale(0.9)");
                     } else {
-                        fullImgCont.setAttribute("style", "transform: scale(0.3); margin-right: 75%; margin-top: -70%; margin-bottom: -70%");
+                        fullImgCont.setAttribute("style", "transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%");
                     }
                 }, 0);
 
@@ -371,6 +389,9 @@ async function loadSVG(url, containerId) {
                 
             } else{ //if it gets here, device is a tablet
                 //hide mobile icons
+                
+                console.log("tablet");
+                remove_outer_div();
                 window.addEventListener('load', function() {
                     let mob_icons = document.querySelector("#mobile");
                     if (mob_icons) {
@@ -380,7 +401,7 @@ async function loadSVG(url, containerId) {
                 
                 
                 container.appendChild(svgElement);
-                flicker_highlight_icons();
+                // flicker_highlight_icons();
                 toggle_text();
                 full_screen_button('svg1');
                 if (thisInstance.instance_toc_style == "list"){
@@ -389,6 +410,7 @@ async function loadSVG(url, containerId) {
                     table_of_contents();
                 }               
                 add_modal();
+                flicker_highlight_icons();
                 // make_title();
 
 
@@ -473,6 +495,8 @@ function flicker_highlight_icons() {
         let elem = document.querySelector('g[id="' + key + '"]');
         if (elem) {
             // Add transition for smooth fading
+            // console.log("elem here is: ");
+            // console.log(elem);
             elem.style.transition = 'stroke-opacity 1s ease-in-out';
             
             // Initial state
@@ -480,6 +504,7 @@ function flicker_highlight_icons() {
             // elem.style.stroke = sectColors[sectionObj[key]];
             if (thisInstance.instance_colored_sections === "yes"){
                 elem.style.stroke = sectColors[sectionObj[key]];
+                // console.log("yes here");
             } else{
                 elem.style.stroke = colors[0];
             }
@@ -654,6 +679,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const caption = document.createElement('p');
     caption.classList.add('caption');
     caption.innerHTML = info_obj['shortCaption'];
+
     figureDiv.appendChild(caption);
     tabContentElement.appendChild(figureDiv);
 
@@ -1091,7 +1117,7 @@ function sectioned_list(){
         let sect = document.createElement("div");
         // sect.classList.add("accordion-item");
 
-        let heading = document.createElement("h2");
+        let heading = document.createElement("h5");
         // heading.classList.add("accordion-header");
         heading.setAttribute("id", `heading${i}`);
         if (sections[i] != "None"){

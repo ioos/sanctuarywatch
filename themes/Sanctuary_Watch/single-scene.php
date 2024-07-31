@@ -102,7 +102,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
     /* justify-content: center; */
     margin-left: 10%;
     margin-right: 10%;
-">
+">  
 <div id="title-container" style="margin-left: 9%" ></div>
 <div id="mobile-view-image"></div>
 <div class="container-fluid" id="scene-fluid">
