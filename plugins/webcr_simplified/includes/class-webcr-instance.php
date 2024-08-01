@@ -50,7 +50,7 @@ class Webcr_Instance {
             'show_in_menu'       => true,
             'show_in_rest'       => true,
             'query_var'          => true,
-            'rewrite'            => array( 'slug' => 'instances' ),
+            // 'rewrite'            => array( 'slug' => 'instances' ),
             'capability_type'    => 'post',
             'menu_icon'          => 'dashicons-admin-site',
             'has_archive'        => true,

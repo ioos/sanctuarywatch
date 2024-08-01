@@ -78,7 +78,7 @@ class Webcr_Scene {
             'show_in_menu'       => true,
             'show_in_rest'       => true,
             'query_var'          => true,
-            'rewrite'            => array( 'slug' => 'scenes' ),
+            // 'rewrite'            => array( 'slug' => 'scenes' ),
             'capability_type'    => 'post',
             'menu_icon'          => 'dashicons-tag',
             'has_archive'        => true,

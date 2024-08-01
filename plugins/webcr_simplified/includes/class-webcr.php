@@ -154,35 +154,7 @@ class Webcr {
 		add_filter( 'xmlrpc_enabled', '__return_false' );
 
 		// Hook into post_type_link to customize the permalink for Scene posts - SKANDA COMMENT OUT NEXT LINE
-		// Add custom rewrite rules to handle scene URLs without the 'scene' slug
-		// function add_scene_rewrite_rules($rules) {
-		// 	$new_rules = array(
-		// 		'([^/]+)/?$' => 'index.php?post_type=scene&name=$matches[1]' // Map URL structure to scene post type
-		// 	);
-		// 	return $new_rules + $rules;
-		// }
-		// add_filter('rewrite_rules_array', 'add_scene_rewrite_rules');
-
-		// // Modify the post type link to remove the 'scene' slug
-		// function remove_scene_slug($post_link, $post, $leavename) {
-		// 	if ('scene' != $post->post_type || 'publish' != $post->post_status) {
-		// 		return $post_link;
-		// 	}
-
-		// 	// $instance_id = get_post_meta($post->ID, 'scene_location', true);
-		// 	// $instance = get_post($instance_id);
-		// 	// $web_slug = get_post_meta($instance_id, 'instance_slug', true);
-		// 	// // echo $instance;
-		// 	// echo $web_slug;
-
-		// 	// if (!$instance || !$web_slug) {
-		// 	// 	return $post_link;
-		// 	// }
-
-		// 	return home_url('/' . $post->post_name . '/');
-		// }
-		// add_filter('post_type_link', 'remove_scene_slug', 10, 3);
-		
+		//THIS IS FOR SCENES PERMALINKS
 		function add_scene_rewrite_rules($rules) {
 			$new_rules = array(
 				'([^/]+)/([^/]+)/?$' => 'index.php?post_type=scene&name=$matches[2]&instance_slug=$matches[1]' // Map URL structure to scene post type
@@ -214,6 +186,31 @@ class Webcr {
 		}
 		add_filter('query_vars', 'add_instance_query_var');
 		
+
+		//THIS IS FOR INSTANCES:
+		function add_instance_rewrite_rules($rules) {
+			$new_rules = array(
+				'([^/]+)/?$' => 'index.php?post_type=instance&name=$matches[1]' // Map URL structure to instance post type
+			);
+			return $new_rules + $rules;
+		}
+		add_filter('rewrite_rules_array', 'add_instance_rewrite_rules');
+
+		function remove_instance_slug($post_link, $post, $leavename) {
+			if ('instance' != $post->post_type || 'publish' != $post->post_status) {
+				return $post_link;
+			}
+		
+			$instance_slug = $post->post_name; // Use the post slug for the permalink
+		
+			return home_url('/' . $instance_slug . '/');
+		}
+		add_filter('post_type_link', 'remove_instance_slug', 10, 3);
+
+		
+
+		
+
 
 		// add_filter('post_type_link', 'custom_scene_permalink', 10, 2);
 
