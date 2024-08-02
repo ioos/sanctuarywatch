@@ -240,7 +240,7 @@ class Webcr_Admin {
    }
 
 	/**
-	 * Add Content Manager as a role to  default favicon associated with site to Sanctuary Watch logo
+	 * Add Content Manager as a role
 	 *
 	 * @since    1.0.0
 	 */
@@ -253,6 +253,11 @@ class Webcr_Admin {
 		}
 	}
 
+	/**
+	 * Edit what the Content Manager can see on the dashboard
+	 *
+	 * @since    1.0.0
+	 */
 	function restrict_content_manager_admin_menu() {
 		if (current_user_can('webcr_content_manager')) {
 		//	remove_menu_page('index.php');                  // Dashboard
@@ -265,9 +270,14 @@ class Webcr_Admin {
 		//	remove_menu_page('users.php');                  // Users
 			remove_menu_page('tools.php');                  // Tools
 		//	remove_menu_page('options-general.php');        // Settings
-	
-			// Add more remove_menu_page or remove_submenu_page calls as needed
+
 		}
+	}
+
+	// Function to add SVG support
+	function allow_svg_uploads($mimes) {
+		$mimes['svg'] = 'image/svg+xml';
+		return $mimes;
 	}
 
 
