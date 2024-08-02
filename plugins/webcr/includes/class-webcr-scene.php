@@ -264,10 +264,13 @@ class Webcr_Scene {
             $url_count = 0;
             for ($i = 1; $i < 7; $i++){
                 $search_fieldset = "scene_info" . $i;
-                $search_field = "scene_info_url" . $i;
-                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
-                if ($database_value != ""){
-                    $url_count++;
+                $field_value = get_post_meta( $post_id, $search_fieldset, true );
+                if ($field_value != ""){
+                    $search_field = "scene_info_url" . $i;
+                    $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
+                    if ($database_value != ""){
+                        $url_count++;
+                    } 
                 }
             }
             echo $url_count; 

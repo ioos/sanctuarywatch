@@ -301,43 +301,41 @@ class Webcr {
 
 		add_filter('rest_scene_query', 'filter_scene_by_scene_location', 10, 2);
 
-		// Hook into init to add rewrite rules
-//		add_action('init', 'custom_scene_rewrite_rules');
+// begin skanda code
 
-		function custom_scene_rewrite_rules() {
-			add_rewrite_rule(
-				'^([^/]+)/([^/]+)/?$',
-				'index.php?scene=$matches[2]',
-				'top'
+		//THIS IS FOR SCENES PERMALINKS
+		function add_scene_rewrite_rules($rules) {
+			$new_rules = array(
+				'([^/]+)/([^/]+)/?$' => 'index.php?post_type=scene&name=$matches[2]&instance_slug=$matches[1]' // Map URL structure to scene post type
 			);
+			return $new_rules + $rules;
 		}
+		add_filter('rewrite_rules_array', 'add_scene_rewrite_rules');
 
-		// Hook into post_type_link to customize the permalink for Scene posts - SKANDA COMMENT OUT NEXT LINE
-		// add_filter('post_type_link', 'custom_scene_permalink', 10, 2);
-
-		function custom_scene_permalink($post_link, $post) {
-			if ($post->post_type !== 'scene') {
+		function remove_scene_slug($post_link, $post, $leavename) {
+			if ('scene' != $post->post_type || 'publish' != $post->post_status) {
 				return $post_link;
 			}
-
+		
 			$instance_id = get_post_meta($post->ID, 'scene_location', true);
-
-			if (!$instance_id) {
-				return $post_link;
-			}
-
 			$instance = get_post($instance_id);
 			$web_slug = get_post_meta($instance_id, 'instance_slug', true);
-
+		
 			if (!$instance || !$web_slug) {
 				return $post_link;
 			}
-
-			$post_title = strtolower($post->post_title);
-			$post_title = str_replace(' ', '_', $post_title);
-
-			return home_url('/' . $web_slug . '/' . $post_title . '/');
+		
+			return home_url('/' . $web_slug . '/' . $post->post_name . '/');
 		}
+		add_filter('post_type_link', 'remove_scene_slug', 10, 3);
+
+		function add_instance_query_var($vars) {
+			$vars[] = 'instance_slug';
+			return $vars;
+		}
+		add_filter('query_vars', 'add_instance_query_var');
+
+// end skanda code
 
 		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated
 		register_activation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
