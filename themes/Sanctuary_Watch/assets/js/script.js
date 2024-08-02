@@ -240,7 +240,13 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                 //3 columns/row no matter what
                 let cont = document.createElement("div");
                 cont.classList.add("col-4");
-                // let svgClone = svgElement.cloneNode(true);
+                cont.style.paddingBottom = '10px';
+                cont.style.paddingTop = '5px';
+                cont.style.fontWeight = 'bold'; 
+                cont.style.border = '2px solid black';
+                // cont.style.backgroundColor = '#e0f4ff';
+                cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
+               
                 let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
                 svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
@@ -764,6 +770,7 @@ function create_tabs(iter, tab_id, tab_label) {
     let navItem = document.createElement("li");
     navItem.classList.add("nav-item");
     navItem.setAttribute("role", "presentation");
+    navItem.style.color = 'black';
     
     const button = document.createElement('button');
     button.classList.add('nav-link');
@@ -779,6 +786,7 @@ function create_tabs(iter, tab_id, tab_label) {
     button.setAttribute('type', 'button');
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', tab_controls);
+    button.style.color = 'black';
     button.textContent = tab_label;
 
     navItem.appendChild(button);
