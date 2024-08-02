@@ -105,7 +105,6 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
             fetch(restURL)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
                     data.forEach( element => {
                         if (element.id != modalScene){
                             let option = document.createElement('option');
@@ -218,10 +217,7 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
 
     function modalSceneDropdown (dropdownElements=[]){
 
-
         const sceneDropdown = document.getElementsByName("modal_scene")[0];
-        console.log("sceneDropdown: "+ sceneDropdown.value);
-        console.log(!(sceneDropdown.value > 0));
      //   if (!(sceneDropdown.value > 0)) {
 
             sceneDropdown.innerHTML ='';
@@ -230,7 +226,6 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
             optionScene.value = "";
             sceneDropdown.add(optionScene);
             const elementNumber = dropdownElements.length;
-            console.log("elementNumber: "+ elementNumber);
             if (elementNumber > 0) {
                 for (let i = 0; i <= elementNumber -1; i++){
                     let option = document.createElement('option');
@@ -273,7 +268,6 @@ function urlifyRecursiveFunc(str) {
 } 
 
 function modal_location_change(){
-
     if (isPageLoad == false){
         // Let's remove the preview window if it already exists
 		const previewWindow = document.getElementById('preview_window');
@@ -282,15 +276,13 @@ function modal_location_change(){
 			// Remove the scene window
 			previewWindow.parentNode.removeChild(previewWindow);
 		}
-
-        const modal_location = $('.chosen').first().val();
+        const modal_location =  $('select[name="modal_location"]').val();
         if (modal_location != ""){
 
             const modal_location_no_space = urlifyRecursiveFunc(modal_location);
             const protocol = window.location.protocol;
             const host = window.location.host;
             const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=" + modal_location_no_space;
-    console.log(restURL);
             fetch(restURL)
                 .then(response => response.json())
                 .then(data => {
@@ -304,7 +296,6 @@ function modal_location_change(){
                         newRow = [element["id"], element["title"]["rendered"]];
                         sceneArray.push(newRow)
                     });
-                    console.log(sceneArray);
                     modalSceneDropdown(sceneArray);
 
                     const iconsDropdown = document.getElementsByName("modal_icons")[0];
@@ -475,7 +466,7 @@ function modal_icons_change() {
     }
 }
 
-$('.chosen').first().change(modal_location_change);
+$('select[name="modal_location"]').change(modal_location_change);
 $( "select[name='modal_scene']" ).change(modal_scene_change);
 $( "select[name='modal_icons']" ).change(modal_icons_change);
 $( "select[name='icon_function']" ).change(iconFunction);

@@ -5,7 +5,6 @@
     displayCorrectImageField ();
 
     function figureInstanceChange(){
-        console.log("hello");
         const protocol = window.location.protocol;
         const host = window.location.host;
         const figureInstance = document.getElementsByName("location")[0].value;
