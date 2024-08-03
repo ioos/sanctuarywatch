@@ -170,6 +170,8 @@ class Webcr {
 		$this->loader->add_filter( 'init', $plugin_admin, 'add_content_manager_custom_role'); 
 		$this->loader->add_filter( 'admin_menu', $plugin_admin, 'restrict_content_manager_admin_menu', 999); 
 		$this->loader->add_filter( 'upload_mimes', $plugin_admin, 'allow_svg_uploads'); 
+		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
+		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
 
 		// Load  class and functions associated with Instance custom content type
 		$plugin_admin_instance = new Webcr_Instance ( $this->get_plugin_name(), $this->get_version() );		
@@ -233,11 +235,7 @@ class Webcr {
 			wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
 		}
 
-		//Disable Xlmrpc.php file
-		add_filter( 'xmlrpc_enabled', '__return_false' );
 
-		//Disable Screen Options in admin screens
-		add_filter('screen_options_show_screen', '__return_false');
 
 		function register_instance_rest_fields(){
 
@@ -328,12 +326,6 @@ class Webcr {
 			return home_url('/' . $web_slug . '/' . $post->post_name . '/');
 		}
 		add_filter('post_type_link', 'remove_scene_slug', 10, 3);
-
-		function add_instance_query_var($vars) {
-			$vars[] = 'instance_slug';
-			return $vars;
-		}
-		add_filter('query_vars', 'add_instance_query_var');
 
 // end skanda code
 
