@@ -242,8 +242,7 @@ class Webcr {
 			$instance_rest_fields = array('instance_short_title', 'instance_slug',
 				'instance_type', 'instance_status', 'instance_tile', 'instance_toc_style',
 				'instance_colored_sections', 'instance_hover_color', 
-				'instance_full_screen_button', 'instance_text_toggle');
-	
+				'instance_full_screen_button', 'instance_text_toggle', 'instance_overview_scene');
 				$function_utilities = new Webcr_Utility();
 				$function_utilities -> register_custom_rest_fields("instance", $instance_rest_fields);
 		}
