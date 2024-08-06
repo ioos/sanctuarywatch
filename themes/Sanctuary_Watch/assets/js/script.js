@@ -1,5 +1,7 @@
 console.log("THIS IS A TEST");
 console.log(post_id);
+// screen.orientation.lock('landscape');
+
 
 // console.log(child_ids);
 // access echoed JSON here for use. 
@@ -119,6 +121,7 @@ async function make_title() {
 
         let acc = make_scene_elements("scene_info", "scene_info_text", "scene_info_url", scene_data, "more-info", "More Info");
         let acc1 = make_scene_elements("scene_photo", "scene_photo_text", "scene_photo_url", scene_data, "images", "Images");
+        // let acc2 = make_scene_elements("scene_tagline", "scene_tagline_text", "scene_tagline_url", scene_data, "tagline", "tagline");
 
         let accgroup = document.createElement("div");
         if (!is_mobile()) {
@@ -129,7 +132,7 @@ async function make_title() {
         accgroup.classList.add("accordion");
         accgroup.appendChild(acc);
         accgroup.appendChild(acc1);
-
+     
         let row = document.createElement("div");
         row.classList.add("row");
 
@@ -146,7 +149,13 @@ async function make_title() {
         let titleTagline = document.createElement("p");
         titleTagline.innerHTML = scene_data.scene_tagline;
         titleTagline.style.fontStyle = 'italic';
-        col2.appendChild(titleTagline);
+        if (is_mobile()){
+            let item = createAccordionItem("taglineAccId", "taglineHeaderId", "taglineCollapseId", "Tagline", scene_data.scene_tagline);
+            accgroup.append(item);
+
+        } else {
+            col2.appendChild(titleTagline);
+        }
 
         row.appendChild(col1);
         row.appendChild(col2);
@@ -222,6 +231,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
     // console.log("length of arr is: ");
     // console.log(iconsArr.length);
     let numRows = Math.ceil((iconsArr.length/3));
+        
     // console.log("num of rows in grid:");
     // console.log(numRows);
     //this is the outer fluid container that will hold all the rows/columns
@@ -234,7 +244,14 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
         let row_cont = document.createElement("div");
         row_cont.classList.add("row");
         row_cont.setAttribute("id", `row-${i}`);
-
+        let numcols = 3;
+        // window.addEventListener('resize', function() {
+        //     if (window.innerWidth > window.innerHeight){
+        //         numcols = 5;
+        //     } else {
+        //         numcols = 3;
+        //     }
+        // });
         for (let j = 0; j < 3; j++){
             if (idx < iconsArr.length){
                 //3 columns/row no matter what
@@ -294,6 +311,37 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                 continue;
             }
         }
+        let mobViewImage = document.querySelector("#mobile-view-image");
+        console.log(mobViewImage.style);
+        // let ogMobViewImage = mobViewImage.getAttribute("style");
+        let ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%'
+        // console.log(ogMobViewImage);
+        let sceneFluid = document.querySelector("#scene-fluid");
+        let ogSceneFluid = sceneFluid.getAttribute("style");
+        // let ogSceneFluid = window.getComputedStyle(sceneFluid);
+        // console.log(ogSceneFluid);
+        let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
+        let ogColmd2 = colmd2.getAttribute("style");
+                
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > window.innerHeight){ //means landscape
+                console.log("landscapeee");  
+                mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%")
+                sceneFluid.setAttribute("style", "display: block; transform:scale(1.5); margin-top: -7%; margin-left: -4%");
+                colmd2.setAttribute("style", "width: 100%")
+                
+            } else {
+                let mobViewImage = document.querySelector("#mobile-view-image");
+                console.log("Portrait mode");
+                mobViewImage.setAttribute("style", '');
+                mobViewImage.setAttribute("style", ogMobViewImage);
+                sceneFluid.setAttribute("style", '');
+                sceneFluid.setAttribute("style", ogSceneFluid);
+                colmd2.setAttribute("style", '');
+                colmd2.setAttribute("style", ogColmd2);
+            }
+        });
+        
         outer_cont.appendChild(row_cont);
     }    
    
@@ -397,7 +445,7 @@ async function loadSVG(url, containerId) {
                 //hide mobile icons
                 
                 console.log("tablet");
-                remove_outer_div();
+                // remove_outer_div();
                 window.addEventListener('load', function() {
                     let mob_icons = document.querySelector("#mobile");
                     if (mob_icons) {
@@ -545,9 +593,13 @@ function is_touchscreen(){
 }
 
 //check operating system
-function is_mobile(){
-    return (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+// function is_mobile(){
+//     return (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
         
+// }
+function is_mobile() {
+    return (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) 
+           && (window.innerWidth < 512);
 }
 
 //helper function from the internet; using it to check if device is a tablet or not. 

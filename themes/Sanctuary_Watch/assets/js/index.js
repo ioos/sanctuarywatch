@@ -1,5 +1,5 @@
-console.log("here is the post id");
-console.log(post_id);
+// console.log("here is the post id");
+// console.log(post_id);
 
 // let test = document.querySelector("body > div.container-fluid.main-container");
 // test.innerHTML = '';
@@ -27,7 +27,7 @@ async function getInstanceInfo() {
   (async () => {
     try {
       testDataIndex = await getInstanceInfo();
-    //   console.log(testDataIndex);
+      console.log(testDataIndex);
 
       let elem = document.querySelector("#webcrs---ecosystem-tracking-tools-for-condition-reporting > div");
       let list = document.createElement("div");
