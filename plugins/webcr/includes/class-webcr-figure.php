@@ -264,7 +264,7 @@ class Webcr_Figure {
                     'id'      => 'figure_order',
                     'type'    => 'number',
                     'title'   => 'Order',
-                    'description' => 'In what order in the nodal tab should this figure appear?',
+                    'description' => 'If there are multiple figures in this modal tab, in what order should this figure appear?',
                     'default' => '1',                               
                     'min'     => '1',                                    
                     'max'     => '4',      

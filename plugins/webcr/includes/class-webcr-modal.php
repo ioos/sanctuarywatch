@@ -159,7 +159,7 @@ class Webcr_Modal {
                     'type'           => 'select',
                     'title'          => 'Icons',
                     'options'        => $modal_icons, // array (" " => "Modal Icons")
-                    'description' => 'Which infographic icon is the modal associated with?',
+                    'description' => 'Which icon from the above scene is the modal associated with?',
                 ),
                 array(
                     'id'             => 'icon_toc_section',

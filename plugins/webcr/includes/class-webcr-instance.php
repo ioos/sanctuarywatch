@@ -216,6 +216,7 @@ class Webcr_Instance {
             array('instance_colored_sections', 'string'), 
             array('instance_hover_color', 'string'), 
             array('instance_full_screen_button', 'string'), 
+            array('instance_overview_scene', 'integer'),
             array('instance_text_toggle', 'string'));
 
             $this->register_meta_nonarray_fields($instance_rest_fields);
