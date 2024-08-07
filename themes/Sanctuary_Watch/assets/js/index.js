@@ -3,7 +3,7 @@
 
 // let test = document.querySelector("body > div.container-fluid.main-container");
 // test.innerHTML = '';
-
+console.log(is_logged_in);
 
 async function getInstanceInfo() {
     const protocol = window.location.protocol;
@@ -35,7 +35,7 @@ async function getInstanceInfo() {
     for (let idx in testDataIndex) {
         let child = testDataIndex[idx];
         console.log(child);
-        if (child.instance_status != "Published"){
+        if (child.instance_status != "Published" && !is_logged_in){
             continue;
         }
         
@@ -57,9 +57,19 @@ async function getInstanceInfo() {
         // let cardText = document.createElement('p');
         // cardText.className = 'card-text';
         // cardText.innerText = child.title.rendered;
-    
+       
         let link = document.createElement('a');
-        link.setAttribute('href', child.link);
+        // link.setAttribute('href', )
+        // ?post_type=scene&p=10
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        const postType = 'scene'; 
+        const postId = child.instance_overview_scene; 
+        const url = `${protocol}//${host}/?post_type=${postType}&p=${postId}`;
+        console.log(url);
+
+        link.setAttribute('href', url);
+        // link.setAttribute('href', child.link)
         link.setAttribute('id', child.instance_slug);
         link.className = 'btn btn-primary';
         // link.innerText = child.instance_short_title;

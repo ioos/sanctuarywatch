@@ -68,8 +68,14 @@
                         $post_titles = array();
                         while($query->have_posts()) {
                             $query->the_post();
+                            // echo get_post_meta(get_the_ID());
+                            // echo get_the_ID();
+                            $scene_loc = get_post_meta(get_the_ID(), 'scene_location')[0];
+                            // echo $scene_loc;
+                            $inst_overview_scene = get_post_meta($scene_loc, 'instance_overview_scene')[0];
+
                             $scene_order = get_post_meta(get_the_ID(), 'scene_order');
-                            if(get_the_title() !== 'Overview'){
+                            if(get_the_ID() != $inst_overview_scene){
                                 $post_titles[] = [get_the_title(), $scene_order[0], get_the_ID()];
                             }
                         }
