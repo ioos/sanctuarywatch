@@ -1,7 +1,7 @@
 console.log("THIS IS A TEST");
 console.log(post_id);
 // screen.orientation.lock('landscape');
-
+console.log("new wp")
 
 // console.log(child_ids);
 // access echoed JSON here for use. 
