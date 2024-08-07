@@ -159,7 +159,7 @@ async function make_title() {
 
         row.appendChild(col1);
         row.appendChild(col2);
-        row.setAttribute("style", "margin-top: 2%");
+        row.setAttribute("style", "margin-top: 1%");
 
         titleDom.append(row);
         return scene_location;
@@ -223,127 +223,115 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
     // console.log(svgElement);
     remove_outer_div();
     let defs = svgElement.firstElementChild;
-    // console.log(defs);
-    // let mob_icons = svgElement.querySelector("#mobile");
-    // console.log(mob_icons);
-    //just some checks to make sure the variables are right
-    // console.log(iconsArr[1].id);
-    // console.log("length of arr is: ");
-    // console.log(iconsArr.length);
-    let numRows = Math.ceil((iconsArr.length/3));
-        
-    // console.log("num of rows in grid:");
-    // console.log(numRows);
-    //this is the outer fluid container that will hold all the rows/columns
-    let outer_cont = document.querySelector("body > div.container-fluid");
-    outer_cont.innerHTML = '';
-
-    let idx = 0;
-    for (let i = 0; i < numRows; i++){
-        //each row has 3 columns, so number of rows is ceiling of number of icons/3
-        let row_cont = document.createElement("div");
-        row_cont.classList.add("row");
-        row_cont.setAttribute("id", `row-${i}`);
-        let numcols = 3;
-        // window.addEventListener('resize', function() {
-        //     if (window.innerWidth > window.innerHeight){
-        //         numcols = 5;
-        //     } else {
-        //         numcols = 3;
-        //     }
-        // });
-        for (let j = 0; j < 3; j++){
-            if (idx < iconsArr.length){
-                //3 columns/row no matter what
-                let cont = document.createElement("div");
-                cont.classList.add("col-4");
-                cont.style.paddingBottom = '10px';
-                cont.style.paddingTop = '5px';
-                cont.style.fontWeight = 'bold'; 
-                cont.style.border = '2px solid black';
-                // cont.style.backgroundColor = '#e0f4ff';
-                cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
-               
-                let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-                // console.log(svgClone);
-                // svgClone.setAttributeNS("")
-                cont.appendChild(svgClone);
-                    // svgElement.removeChild("cls-3");
-                let currIcon = iconsArr[idx].id;
-                let key  ='';
-                if (!has_mobile_layer(mobile_icons, currIcon)){
-                    key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+   
+    function updateLayout(numCols, numRows) {
+        let outer_cont = document.querySelector("body > div.container-fluid");
+        outer_cont.innerHTML = '';
+    
+        let idx = 0;
+        for (let i = 0; i < numRows; i++) {
+            let row_cont = document.createElement("div");
+            row_cont.classList.add("row");
+            row_cont.setAttribute("id", `row-${i}`);
+            
+            for (let j = 0; j < numCols; j++) {
+                if (idx < iconsArr.length) {
+                    let cont = document.createElement("div");
+                    cont.classList.add("col-4");
+                    cont.style.paddingBottom = '10px';
+                    cont.style.paddingTop = '5px';
+                    cont.style.fontWeight = 'bold'; 
+                    cont.style.border = '2px solid black';
+                    cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
+                   
+                    let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                    svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+                    cont.appendChild(svgClone);
+                    let currIcon = iconsArr[idx].id;
+                    let key  ='';
+                    if (!has_mobile_layer(mobile_icons, currIcon)){
+                        key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                    } else {
+                        key = get_mobile_layer(mobile_icons, currIcon);
+                        let temp = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                        let tempId = temp.getAttribute("id");
+                        key.setAttribute("id",  tempId);
+                    }
+                    cont.setAttribute("id", `${currIcon}-container`);
+                    svgClone.append(defs);
+                    svgClone.append(key);
                     
-                } else {
-                    key = get_mobile_layer(mobile_icons, currIcon);
-                    let temp = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
-                    let tempId = temp.getAttribute("id");
-                    key.setAttribute("id",  tempId);
-                }
-                // console.log(`this is the key: ${key}`);
-                // console.log(key);
-                cont.setAttribute("id", `${currIcon}-container`);
-                svgClone.append(defs);
-                svgClone.append(key);
-                
-                
-                let caption = document.createElement("div");
-                if (child_obj[currIcon]){
-                    caption.innerText = child_obj[currIcon].title;
-                } else {
-                    caption.innerText = "not in wp yet, have to add";
+                    let caption = document.createElement("div");
+                    if (child_obj[currIcon]){
+                        caption.innerText = child_obj[currIcon].title;
+                    } else {
+                        caption.innerText = "not in wp yet, have to add";
+                    }
                     
+                    caption.setAttribute("style", "font-size: 15px")
+                    cont.appendChild(caption);
+                    row_cont.appendChild(cont);
+                    setTimeout(() => {
+                        let bbox = key.getBBox(); 
+                        svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+                    }, 0);
+    
+                    idx += 1;
+                } else {
+                    continue;
                 }
-                
-                caption.setAttribute("style", "font-size: 15px")
-                cont.appendChild(caption);
-                row_cont.appendChild(cont);
-                setTimeout(() => {
-                    let bbox = key.getBBox(); //toggle -- key.firstElementChild
-                    svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
-                }, 0);
-
-                idx+=1;
-            } else{
-                
-                continue;
             }
+            
+            outer_cont.appendChild(row_cont);
         }
+    }
+
+    function updateNumCols() {
+        let numCols;
+        let numRows;
         let mobViewImage = document.querySelector("#mobile-view-image");
         console.log(mobViewImage.style);
-        // let ogMobViewImage = mobViewImage.getAttribute("style");
         let ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%'
-        // console.log(ogMobViewImage);
         let sceneFluid = document.querySelector("#scene-fluid");
-        let ogSceneFluid = sceneFluid.getAttribute("style");
-        // let ogSceneFluid = window.getComputedStyle(sceneFluid);
-        // console.log(ogSceneFluid);
+        // let ogSceneFluid = sceneFluid.getAttribute("style");
         let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
         let ogColmd2 = colmd2.getAttribute("style");
-                
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > window.innerHeight){ //means landscape
-                console.log("landscapeee");  
-                mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%")
-                sceneFluid.setAttribute("style", "display: block; transform:scale(1.5); margin-top: -7%; margin-left: -4%");
-                colmd2.setAttribute("style", "width: 100%")
-                
-            } else {
-                let mobViewImage = document.querySelector("#mobile-view-image");
-                console.log("Portrait mode");
-                mobViewImage.setAttribute("style", '');
-                mobViewImage.setAttribute("style", ogMobViewImage);
-                sceneFluid.setAttribute("style", '');
-                sceneFluid.setAttribute("style", ogSceneFluid);
-                colmd2.setAttribute("style", '');
-                colmd2.setAttribute("style", ogColmd2);
-            }
-        });
-        
-        outer_cont.appendChild(row_cont);
-    }    
+
+        if (window.innerWidth > window.innerHeight) {
+            numCols = 4;
+            console.log("landscapeee");  
+            mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%")
+            sceneFluid.setAttribute("style", "display: block; transform:scale(1.5); margin-top: -7%; margin-left: -4%");
+            colmd2.setAttribute("style", "width: 100%")
+        //   updateLayout();
+
+        } else  {
+          numCols = 3;
+            let mobViewImage = document.querySelector("#mobile-view-image");
+            console.log("Portrait mode");
+            mobViewImage.setAttribute("style", '');
+            mobViewImage.setAttribute("style", ogMobViewImage);
+            sceneFluid.setAttribute("style", '');
+            // sceneFluid.setAttribute("style", ogSceneFluid);
+            colmd2.setAttribute("style", '');
+            colmd2.setAttribute("style", ogColmd2);
+        //   updateLayout();
+
+        }
+        // updateLayout();
+        numRows = Math.ceil((iconsArr.length/numCols));
+        console.log(`Number of columns: ${numCols}`);
+        console.log("number of rows: ");
+        console.log(numRows);
+
+        updateLayout(numCols, numRows);
+        add_modal();
+
+      }
+    updateNumCols();
+    window.addEventListener("resize", updateNumCols);
+
    
 }
 
@@ -432,7 +420,7 @@ async function loadSVG(url, containerId) {
                 mobile_helper(svgElement, iconsArr, mobileIcons);
                 // mobile_icons_helper(mobileIcons);
 
-                add_modal();
+                // add_modal();
                 // window.addEventListener('load', function() {
                 //     make_title();
                 // });
@@ -639,11 +627,12 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
 
     // Create Accordion Button
     let accordionButton = document.createElement('button');
-    accordionButton.classList.add('accordion-button');
+    // accordionButton.classList.add('accordion-button');
+    accordionButton.classList.add('accordion-button', 'collapsed'); // Add 'collapsed' class
     accordionButton.setAttribute("type", "button");
     accordionButton.setAttribute("data-bs-toggle", "collapse");
     accordionButton.setAttribute("data-bs-target", `#${collapseId}`);
-    accordionButton.setAttribute("aria-expanded", "true");
+    accordionButton.setAttribute("aria-expanded", "false");
     accordionButton.setAttribute("aria-controls", collapseId);
     accordionButton.innerHTML = buttonText;
 
@@ -652,7 +641,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
 
     // Create Accordion Collapse
     let accordionCollapse = document.createElement('div');
-    accordionCollapse.classList.add("accordion-collapse", "collapse", "show");
+    accordionCollapse.classList.add("accordion-collapse", "collapse");
     accordionCollapse.setAttribute("id", collapseId);
     accordionCollapse.setAttribute("aria-labelledby", headerId);
 
@@ -1240,11 +1229,12 @@ function toc_sections() {
         heading.setAttribute("id", `heading${i}`);
 
         let button = document.createElement("button");
-        button.classList.add("accordion-button");
+        // button.classList.add("accordion-button");
+        button.classList.add("accordion-button", "collapsed");
         button.setAttribute("type", "button");
         button.setAttribute("data-bs-toggle", "collapse");
         button.setAttribute("data-bs-target", `#toccollapse${i}`);
-        button.setAttribute("aria-expanded", "true");
+        button.setAttribute("aria-expanded", "false");
         button.setAttribute("aria-controls", `toccollapse${i}`);
         button.innerHTML = sections[i];
 
@@ -1257,7 +1247,7 @@ function toc_sections() {
 
         let tocCollapse = document.createElement("div");
         tocCollapse.setAttribute("id", `toccollapse${i}`);
-        tocCollapse.classList.add("accordion-collapse", "collapse", "show");
+        tocCollapse.classList.add("accordion-collapse", "collapse");
         tocCollapse.setAttribute("aria-labelledby", `heading${i}`);
         // tocCollapse.setAttribute("data-bs-parent", "#toc-group");
 

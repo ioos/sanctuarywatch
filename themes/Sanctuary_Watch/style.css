@@ -128,7 +128,8 @@ body > h1{
 }
 
 /* Apply flexbox layout only for PC/tablet views */
-@media (min-width: 768px) {
+/* changed from 768 to 1000, change back if it gets screwed up */
+@media (min-width: 768px) { 
   .container-fluid {
     display: flex;
     flex-wrap: nowrap;
@@ -458,9 +459,9 @@ input:checked + .slider:before {
       flex-direction: row;
   }
 
-  .nav-item {
+  /* .nav-item {
       padding: 0 10px;
-  }
+  } */
 }
 
 /* @media (max-width: 768px){
