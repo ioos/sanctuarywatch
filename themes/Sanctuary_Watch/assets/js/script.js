@@ -1105,13 +1105,13 @@ function toggle_text(){
     row.setAttribute("id", "switchRow");
     // let col = document.createElement("div");
     let col1 = document.createElement("div");
-    col1.classList.add("col");
+    col1.classList.add("col-sm-3");
     col1.appendChild(button);
 
     let col2 = document.createElement("div");
     col2.classList.add("col");
-    let toggleText = document.createElement("h5");
-    toggleText.innerHTML = "Toggle Text in Image: "
+    let toggleText = document.createElement("p");
+    toggleText.innerHTML = "<em> Toggle Image Text: </em>";
     col2.appendChild(toggleText);
 
     row.appendChild(col2);
@@ -1169,9 +1169,9 @@ function sectioned_list(){
         let heading = document.createElement("h5");
         // heading.classList.add("accordion-header");
         heading.setAttribute("id", `heading${i}`);
-        if (sections[i] != "None"){
-            heading.innerHTML = sections[i];
-        }
+        // if (sections[i] != "None"){
+        //     heading.innerHTML = sections[i];
+        // }
         heading.setAttribute("style", `color: ${sectColors[sections[i]]}`);
 
         sect.appendChild(heading);
@@ -1236,7 +1236,12 @@ function toc_sections() {
         button.setAttribute("data-bs-target", `#toccollapse${i}`);
         button.setAttribute("aria-expanded", "false");
         button.setAttribute("aria-controls", `toccollapse${i}`);
-        button.innerHTML = sections[i];
+        if (sections[i]!="None"){
+            button.innerHTML = sections[i];
+        } else {
+            button.innerHTML = "Table of Contents";
+        }
+        
 
         let arrowSpan = document.createElement("span");
         arrowSpan.classList.add("arrow");

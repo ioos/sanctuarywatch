@@ -24,9 +24,8 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 ?>
-<!-- Main container with Bootstrap styling for fluid layout -->
-<div class="container-fluid main-container" style="margin-top: 0px;">
-    <div class="image-center" style="padding-bottom: 20px;">
+<div class="container-fluid">
+<div class="image-center" style="padding-bottom: 20px;">
         <span>
             <?php 
                 echo '<img width="10%" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Sanctuary Watch Navbar Emblem">';
@@ -37,6 +36,11 @@ get_header();
             <div style="color: #008da8; font-size: 1.5vw; font-style: italic; font-weight: bold;">Web-Enabled Information for Sanctuary Management</div>
         </span>
     </div>
+</div>
+
+<!-- Main container with Bootstrap styling for fluid layout -->
+<div class="container-fluid main-container" style="margin-top: 0px;">
+    
     <div id="webcrs---ecosystem-tracking-tools-for-condition-reporting" class="section level2">
         <h2 style="color: #024880;">WebCRs - Ecosystem Tracking Tools for Condition Reporting</h2>
         <p>The web-enabled Condition Reporting (WebCR) platform pairs artwork

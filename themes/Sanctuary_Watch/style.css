@@ -334,17 +334,24 @@ body > h1{
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #033c73;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #033c73;
 }
 
 input:checked + .slider:before {
   transform: translateX(26px);
 }
 
+#switchRow{
+  padding-top: 5%;
+}
+
+#switchRow > div.col > p{
+  font-size: 20px;
+}
 /* Rounded sliders */
 .slider.round {
   border-radius: 34px;
@@ -431,6 +438,11 @@ input:checked + .slider:before {
   margin-bottom: -4%;
 } */
 
+#title-container > h1{
+  color: #008da8;
+
+}
+
 #title-container > div > div.col-md-10 > p{
   max-width: 75%;
 }
@@ -469,3 +481,4 @@ input:checked + .slider:before {
     margin-left: 220px;
   }
 } */
+
