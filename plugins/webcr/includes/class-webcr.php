@@ -235,7 +235,26 @@ class Webcr {
 			wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
 		}
 
-
+		//START HERE
+		function remove_quick_edit_fields( $column_name, $post_type ) {
+			if ( $column_name === 'title' && $post_type === 'scene' ) { // Adjust 'post' to your custom post type if needed
+				?>
+				<script type="text/javascript">
+					document.addEventListener('DOMContentLoaded', function() {
+						// Hide all other quick edit fields
+						document.querySelectorAll('.inline-edit-post .inline-edit-group').forEach(function(group) {
+							group.style.display = 'none';
+						});
+		
+						// Only show title and slug fields
+						document.querySelector('.inline-edit-post #title').parentElement.style.display = '';
+						document.querySelector('.inline-edit-post #slug').parentElement.style.display = '';
+					});
+				</script>
+				<?php
+			}
+		}
+		add_action( 'quick_edit_custom_box', 'remove_quick_edit_fields', 10, 2 );
 
 		function register_instance_rest_fields(){
 

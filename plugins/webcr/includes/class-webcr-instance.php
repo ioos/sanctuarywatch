@@ -315,7 +315,7 @@ class Webcr_Instance {
     function custom_content_remove_quick_edit_link($actions, $post) {
         global $current_screen;
         $current_post_type = $current_screen->post_type;
-        if ($current_post_type  == 'scene' || $current_post_type  == 'instance' || $current_post_type  == 'figure' ||$current_post_type  == 'mdoal') {
+        if ($current_post_type  == 'instance' || $current_post_type  == 'figure' ||$current_post_type  == 'modal') {
             unset($actions['inline hide-if-no-js']);
         }
         return $actions;
