@@ -241,7 +241,9 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     cont.style.paddingBottom = '10px';
                     cont.style.paddingTop = '5px';
                     cont.style.fontWeight = 'bold'; 
-                    cont.style.border = '2px solid black';
+                    cont.style.border = '2px solid #000';
+                    // cont.style.color = '#008da8';
+                    // cont.style.background = 'white';
                     cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
                    
                     let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -282,7 +284,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     continue;
                 }
             }
-            
+            outer_cont.style.marginTop = '70%';
+            outer_cont.style.marginLeft = '-1.5%';
             outer_cont.appendChild(row_cont);
         }
     }
@@ -308,7 +311,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
 
         } else  {
           numCols = 3;
-            let mobViewImage = document.querySelector("#mobile-view-image");
+            // let mobViewImage = document.querySelector("#mobile-view-image");
             console.log("Portrait mode");
             mobViewImage.setAttribute("style", '');
             mobViewImage.setAttribute("style", ogMobViewImage);
@@ -326,6 +329,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
         console.log(numRows);
 
         updateLayout(numCols, numRows);
+        // mobViewImage.remove();
         add_modal();
 
       }
@@ -371,24 +375,54 @@ async function loadSVG(url, containerId) {
 
                 //smaller image preview here for mobile
                 let fullImgCont = document.querySelector("#mobile-view-image");
+
+                
+                // fullImgCont.setAttribute("style", "");
+
+                console.log(fullImgCont);
+                
+                let titleRowCont = document.querySelector("#title-container > div");
+                let sceneButton = document.createElement("button");
+                sceneButton.innerHTML = "<strong>View Full Scene</strong>";
+                // sceneButton.setAttribute("style", "margin-left: -13%; max-width: 80%; border-radius: 10px");
+                sceneButton.setAttribute("style", "margin-left: -13%; max-width: 80%; border-radius: 10px; background-color: #008da8; color: white;");
+
+                sceneButton.setAttribute("class", "btn ");
+                sceneButton.setAttribute("data-toggle", "modal");
+                // sceneButton.setAttribute("data-target", "#exampleModal");
+
+                titleRowCont.appendChild(sceneButton);
                 let svgElementMobileDisplay = svgElement.cloneNode(true);
-                
-                setTimeout(() => {
-                    let bbox = svgElementMobileDisplay.getBBox(); //toggle -- key.firstElementChild
-                    console.log(bbox.width);
-                    if (bbox.width ==  827.25 && bbox.height == 615.989990234375){
-                        fullImgCont.setAttribute("style", "transform: scale(0.9)");
-                    } else {
-                        fullImgCont.setAttribute("style", "transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%");
-                    }
-                }, 0);
+                svgElementMobileDisplay.style.height = '10%';
+                svgElementMobileDisplay.style.width = '100%';
 
-                
+              
+                let modal = document.getElementById("mobileModal");
+                // let modalContent = document.querySelector("#mobileModal > div > div");
+                let modalBody = document.querySelector("#mobileModal > div > div > div.modal-body")
+                modalBody.appendChild(svgElementMobileDisplay);
+                // let span = document.getElementsByClassName("close")[0];
+
+                sceneButton.onclick = function() {
+                    modal.style.display = "block";
+                  }
                   
-                // fullImgCont.setAttribute("style", "transform: scale(0.3); margin-right: 75%; margin-top: -70%; margin-bottom: -70%");
-                fullImgCont.appendChild(svgElementMobileDisplay);
-
-
+                  
+                  // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                      modal.style.display = "none";
+                    }
+                  }
+                // let closeButton = document.querySelector("#mobileModal > div > div > div.modal-footer > button");
+                let closeButton = document.querySelector("#close1");
+                closeButton.onclick = function() {
+                    // if (event.target == modal) {
+                      modal.style.display = "none";
+                    // }
+                  }
+        
+        
                 mobileBool = true;
                 const iconsElement = svgElement.getElementById("icons");
                 //fix here
