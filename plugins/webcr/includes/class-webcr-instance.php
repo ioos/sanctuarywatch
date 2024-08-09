@@ -113,7 +113,7 @@ class Webcr_Instance {
                 array(
                     'id'          => 'instance_slug',
                     'type'        => 'text',
-                    'title'       => 'Slug',
+                    'title'       => 'URL',
                     'description' => 'What should the instance slug be? The slug is used to determine the url of the instance.',
                     'class'       => 'text-class',
                 ),

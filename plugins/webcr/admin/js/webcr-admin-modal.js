@@ -7,6 +7,8 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
     // script.src='https://code.jquery.com/jquery-latest.min.js';
     // document.getElementsByTagName('head')[0].appendChild(script);
 
+console.log("hello");
+
 	let opening_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
 	displayEntries(opening_scene_info_entries, ".text-class[data-depend-id='modal_info_");
 	let opening_scene_photo_entries = $(".range[data-depend-id='modal_photo_entries']").val();

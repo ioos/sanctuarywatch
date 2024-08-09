@@ -1,0 +1,7 @@
+/**
+ * The CSS for the scene admin columns screen that knocks out most of the Quick Edit options 
+ */
+
+ .inline-edit-col-right, .inline-edit-date, .inline-edit-group, .inline-edit-legend {
+    display: none;
+ }

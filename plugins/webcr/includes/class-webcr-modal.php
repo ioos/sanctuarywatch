@@ -728,6 +728,10 @@ class Webcr_Modal {
                 echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
             }
             echo '</select>';
+            echo '<select name="modal_scene" id="modal_scene">';
+            echo '<option value="">All Scenes</option>';
+            echo '</select>';
+
         }
     }
 
