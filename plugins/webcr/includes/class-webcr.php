@@ -148,6 +148,8 @@ class Webcr {
 	 */
 	private function define_admin_hooks() {
 
+
+
 		// Load class and functions to change overall look and function of admin screens
 		$plugin_admin = new Webcr_Admin( $this->get_plugin_name(), $this->get_version() );
 
@@ -234,8 +236,6 @@ class Webcr {
 			// Enqueue Bootstrap JavaScript
 			wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
 		}
-
-
 
 		function register_instance_rest_fields(){
 
