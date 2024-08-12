@@ -284,7 +284,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     continue;
                 }
             }
-            outer_cont.style.marginTop = '70%';
+            // outer_cont.style.marginTop = '70%';
             outer_cont.style.marginLeft = '-1.5%';
             outer_cont.appendChild(row_cont);
         }
@@ -293,32 +293,49 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
     function updateNumCols() {
         let numCols;
         let numRows;
-        let mobViewImage = document.querySelector("#mobile-view-image");
-        console.log(mobViewImage.style);
+        // let mobViewImage = document.querySelector("#mobile-view-image");
+        // console.log(mobViewImage.style);
         let ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%'
         let sceneFluid = document.querySelector("#scene-fluid");
-        // let ogSceneFluid = sceneFluid.getAttribute("style");
+        let ogSceneFluid = 'margin-top: 70%; margin-left: -1.5%;'
         let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
-        let ogColmd2 = colmd2.getAttribute("style");
+        let ogColmd2 = colmd2.getAttribute("style", "");
 
         if (window.innerWidth > window.innerHeight) {
+            let mobViewImage = document.querySelector("#mobile-view-image");
+            let sceneFluid = document.querySelector("#scene-fluid");
+            let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
+            let mobModalDialog = document.querySelector("#mobileModal > div");
+            let modalDialogInfo = document.querySelector("#myModal > div");
+
+            console.log("aaahahaha");
             numCols = 4;
             console.log("landscapeee");  
             mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%")
-            sceneFluid.setAttribute("style", "display: block; transform:scale(1.5); margin-top: -7%; margin-left: -4%");
+            sceneFluid.setAttribute("style", "margin-top: 25%;margin-left: -1.5%; display: block");
             colmd2.setAttribute("style", "width: 100%")
+            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
+            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
         //   updateLayout();
 
         } else  {
           numCols = 3;
-            // let mobViewImage = document.querySelector("#mobile-view-image");
+            let mobViewImage = document.querySelector("#mobile-view-image");
+            let sceneFluid = document.querySelector("#scene-fluid");
+            let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
+            let mobModalDialog = document.querySelector("#mobileModal > div");
+            let modalDialogInfo = document.querySelector("#myModal > div");
+
             console.log("Portrait mode");
             mobViewImage.setAttribute("style", '');
             mobViewImage.setAttribute("style", ogMobViewImage);
             sceneFluid.setAttribute("style", '');
-            // sceneFluid.setAttribute("style", ogSceneFluid);
+            sceneFluid.setAttribute("style", ogSceneFluid);
             colmd2.setAttribute("style", '');
             colmd2.setAttribute("style", ogColmd2);
+            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
+            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
+
         //   updateLayout();
 
         }
@@ -556,7 +573,7 @@ function highlight_icons(){
             // console.log(thisInstance);
             // elem.style.stroke = sectColors[sectionObj[key]];
 
-            elem.style.strokeWidth = "6";
+            elem.style.strokeWidth = "3px";
         });
         elem.addEventListener('mouseout', function(){
             // console.log('mousing out: ', key); 
@@ -934,6 +951,11 @@ function render_modal(key){
                 tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%");
 
                 accordion_container.setAttribute("style", "min-width: 300px;  max-width: 20%;");
+
+
+                let modalDialog = document.querySelector("#myModal > div");
+                modalDialog.setAttribute("style", "z-index: 9999; margin-top: 55%;max-width: 90%;margin-left: 17px;");
+
             } else{
                 tagline_container.classList.add("col-9");
                 accordion_container.classList.add("col-3");
@@ -1373,7 +1395,7 @@ function table_of_contents(){
                 svg_elem.style.stroke = colors[0];
             }
             
-            svg_elem.style.strokeWidth = "6";
+            svg_elem.style.strokeWidth = "3";
         });
         item.addEventListener('mouseout', function(){
             // console.log('mousing out: ', key); 
@@ -1450,7 +1472,7 @@ function list_toc(){
                 svg_elem.style.stroke = colors[0];
             }
 
-            svg_elem.style.strokeWidth = "6";
+            svg_elem.style.strokeWidth = "3";
         });
     
         item.addEventListener('mouseout', function() {
@@ -1523,6 +1545,8 @@ function add_modal(){
                 window.location.href = link;
 
         });
+        // let modalDialog = document.querySelector("#myModal > div");
+        // modalDialog.setAttribute("style", "z-index: 9999;/* margin: 10% auto; */margin-top: 65%;max-width: 90%;margin-left: 17px;");
         }
         }
     }

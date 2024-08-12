@@ -482,3 +482,10 @@ input:checked + .slider:before {
   }
 } */
 
+body > nav > div > div > button{
+  position: absolute;
+  left: 80%;
+}
+body > nav > div > div{
+  margin-left: 7%;
+}

@@ -49,7 +49,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
     <div class="modal-content">
 
     <div class="modal-header">
-        <h4 id = "modal-title" class="modal-title"> Full Scene Image</h4>
+        <h4 id = "modal-title1" class="modal-title"> Full Scene Image</h4>
         <button id="close1" type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
