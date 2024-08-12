@@ -98,6 +98,37 @@ class Webcr_Scene {
         }
     }
 
+    //change Quick Edit link name in admin columns for Scene post type
+    function modify_scene_quick_edit_link($actions, $post) {
+        // Check if the post type is 'scene'.
+        if ($post->post_type === 'scene') {
+            // Check if the 'quick edit' action exists.
+            if (isset($actions['inline hide-if-no-js'])) {
+                // Modify the link text to "Edit Scene Name".
+                $actions['inline hide-if-no-js'] = str_replace(
+                    __('Quick&nbsp;Edit'), // The original "Quick Edit" text.
+                    __('Edit Scene Slug'), // The new text.
+                    $actions['inline hide-if-no-js'] // The existing action link.
+                );
+            }
+        }
+        return $actions;
+    }
+
+    // enqueue the scene admin columns css, if we're on the admin columns page for the scene custom post type 
+    function enqueue_scene_admin_columns_css($hook) {
+        // Get the current screen object.
+        $screen = get_current_screen();
+    
+        // Check if we are on the edit screen for the custom post type 'scene'.
+        if ($screen->post_type === 'scene' && $screen->base === 'edit') {
+            // Enqueue your CSS file.
+            wp_enqueue_style(
+                'scene-admin-columns-css', // Handle of the CSS file.
+                plugin_dir_url( __DIR__ ) . 'admin/css/scene-admin-columns.css');
+        }
+    }
+
     /**
 	 * Add two filter dropdowns, field length and scene location, for the admin screen for the Scene content type.
 	 *

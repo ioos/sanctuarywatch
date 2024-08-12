@@ -197,6 +197,9 @@ class Webcr {
 		$this->loader->add_action( 'init', $plugin_admin_scene, 'custom_content_type_scene' ); //scene
 		$this->loader->add_filter( 'bulk_actions-edit-scene', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'wp_ajax_scene_preview', $plugin_admin_scene, 'scene_preview' ); //scene
+		$this->loader->add_action( 'post_row_actions', $plugin_admin_scene, 'modify_scene_quick_edit_link', 10, 2 ); //scene
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin_scene, 'enqueue_scene_admin_columns_css'); //scene
+
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		
@@ -236,6 +239,7 @@ class Webcr {
 			// Enqueue Bootstrap JavaScript
 			wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
 		}
+
 
 		function register_instance_rest_fields(){
 

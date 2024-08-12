@@ -2,7 +2,6 @@
 (function( $ ) {
 	'use strict';
 
-
 	let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
 	displaySceneEntries(openingSceneSections);
 
