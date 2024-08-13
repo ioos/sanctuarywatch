@@ -1,5 +1,5 @@
 /*
-Theme Name: Sanctuary Watch 
+Theme Name: Sanctuary Watch
 Description: Sanctuary Watch is an interactive theme that visualizes and webenizes National Marine Sanctuary condition reports, helping display valuable information with a user-friendly experience. 
 */
 
@@ -488,4 +488,11 @@ body > nav > div > div > button{
 }
 body > nav > div > div{
   margin-left: 7%;
+}
+
+
+#title-container > div > div.col-md-2 > div{
+  margin-top: 2%;
+  margin-bottom: 2%;
+  max-width: 87%;
 }

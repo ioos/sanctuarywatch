@@ -3,7 +3,7 @@
 
 // let test = document.querySelector("body > div.container-fluid.main-container");
 // test.innerHTML = '';
-console.log(is_logged_in);
+// console.log(is_logged_in);
 
 async function getInstanceInfo() {
     const protocol = window.location.protocol;
