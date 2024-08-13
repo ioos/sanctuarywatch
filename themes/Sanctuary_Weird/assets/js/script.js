@@ -1161,14 +1161,13 @@ function toggle_text(){
     row.setAttribute("id", "switchRow");
     // let col = document.createElement("div");
     let col1 = document.createElement("div");
-    col1.classList.add("col-5");
+    col1.classList.add("col-sm-3");
     col1.appendChild(button);
 
     let col2 = document.createElement("div");
     col2.classList.add("col");
     let toggleText = document.createElement("p");
     toggleText.innerHTML = "<em> Toggle Image Text: </em>";
-    toggleText.style.fontSize = "16px";
     col2.appendChild(toggleText);
 
     row.appendChild(col2);
@@ -1372,13 +1371,6 @@ function table_of_contents(){
                 tagline_container.innerHTML = '';
 
         });
-        window.onclick = function(event) {
-            if (event.target === modal) { // Check if the click is outside the modal content
-                // modal.style.display = "none";
-                document.getElementById('accordion-container').innerHTML = '';
-                document.getElementById('tagline-container').innerHTML = '';
-            }
-        };
         }
         
         else{
@@ -1463,11 +1455,6 @@ function list_toc(){
                 let modal = document.getElementById("myModal");
                 modal.style.display = "none";
             });
-            window.onclick = function(event) {
-                if (event.target === modal) { 
-                    modal.style.display = "none";
-                }
-            };
         } else {
             link.href = child_obj[key]['external_url'];
             link.innerHTML = title;
@@ -1545,16 +1532,6 @@ function add_modal(){
                     let tabContentContainer = document.getElementById("myTabContent");
                     tabContentContainer.innerHTML = '';
             });
-            window.onclick = function(event) {
-                if (event.target === modal) { // Check if the click is outside the modal content
-                    modal.style.display = "none";
-                    document.getElementById('accordion-container').innerHTML = '';
-                    document.getElementById('tagline-container').innerHTML = '';
-                    document.getElementById('myTab').innerHTML = '';
-                    document.getElementById('myTabContent').innerHTML = '';
-                }
-            };
-    
         } else {
             elem.addEventListener('click', function() {
                 let link =  child_obj[key]['external_url'];
