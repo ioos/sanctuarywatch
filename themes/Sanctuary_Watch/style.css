@@ -496,3 +496,35 @@ body > nav > div > div{
   margin-bottom: 2%;
   max-width: 87%;
 }
+
+
+@media (min-width: 512px) and (max-width: 768px) {
+  #toc-container{
+    margin-left: 0px !important;
+
+  }
+  #scene-row > div.col-md-9{
+    margin-left: 0px !important;
+  }
+  #title-container{
+    margin-left: 0px !important;
+  }
+  #title-container > div > div.col-md-2 > div{
+    max-width: 96% !important;
+  }
+
+  #top-button{
+    margin-bottom: 5px;
+    font-size: large;
+    z-index: 1;
+    margin-top: 2%;
+  }
+  #toggleButton{
+    margin-bottom: 0px;
+    font-size: large;
+    z-index: 1;
+  }
+  #toc-group{
+    padding-top: 2%;
+  }
+}

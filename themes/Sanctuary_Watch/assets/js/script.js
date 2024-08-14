@@ -1124,73 +1124,116 @@ function full_screen_button(svgId){
     }
 
 }
-function toggle_text(){
-    if (thisInstance.instance_text_toggle === "none"){
+// function toggle_text(){
+//     if (thisInstance.instance_text_toggle === "none"){
+//         return;
+//     }
+//     let toc_container = document.querySelector("#toc-container");
+
+//     let button = document.createElement("label");
+//     button.setAttribute("class", "switch");
+
+//     // Create a checkbox input element
+//     let checkbox = document.createElement("input");
+//     checkbox.setAttribute("type", "checkbox");
+//     checkbox.setAttribute("id", "tocWrapper");
+//     let initialState = thisInstance.instance_text_toggle === "toggle_on";
+//     checkbox.checked = initialState;
+//     let svgText = document.querySelector("#text");
+//     if (initialState) {
+//         svgText.setAttribute("display", "none");
+//     } else {
+//         svgText.setAttribute("display", "");
+//     }
+
+
+//     // Create a span element for the slider
+//     let slider = document.createElement("span");
+//     slider.setAttribute("class", "slider round");
+
+//     // Append the checkbox and slider to the label (button)
+//     button.appendChild(checkbox);
+//     button.appendChild(slider);
+//     // button.innerHTML = "Toggle Image Text";
+
+//     let row = document.createElement("div");
+//     row.classList.add("row");
+//     row.setAttribute("id", "switchRow");
+//     // let col = document.createElement("div");
+//     let col1 = document.createElement("div");
+//     col1.classList.add("col-5");
+//     col1.appendChild(button);
+
+//     let col2 = document.createElement("div");
+//     col2.classList.add("col");
+//     let toggleText = document.createElement("p");
+//     toggleText.innerHTML = "<em> Toggle Image Text: </em>";
+//     toggleText.style.fontSize = "16px";
+//     col2.appendChild(toggleText);
+
+//     row.appendChild(col2);
+//     row.appendChild(col1);
+    
+
+//     // row.innerText = "Toggle image text:      ";
+//     // row.appendChild(button);
+
+//     toc_container.prepend(row);
+
+//     checkbox.addEventListener('change', function() {
+//         let svgText = document.querySelector("#text");
+//         if (this.checked) {
+//             svgText.setAttribute("display", "none");
+//             // Add your logic for when the toggle switch is ON
+//         } else {
+//             svgText.setAttribute("display", "");
+//             // Add your logic for when the toggle switch is OFF
+//         }
+//     });
+
+// }
+function toggle_text() {
+    if (thisInstance.instance_text_toggle === "none") {
         return;
     }
+
     let toc_container = document.querySelector("#toc-container");
 
-    let button = document.createElement("label");
-    button.setAttribute("class", "switch");
+    let button = document.createElement("button");
+    button.setAttribute("class", "btn btn-info fa fa-arrows-alt btn-block"); // w-100 makes the button full width
+    button.setAttribute("id", "toggleButton");
+    button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1;");
 
-    // Create a checkbox input element
-    let checkbox = document.createElement("input");
-    checkbox.setAttribute("type", "checkbox");
-    checkbox.setAttribute("id", "tocWrapper");
     let initialState = thisInstance.instance_text_toggle === "toggle_on";
-    checkbox.checked = initialState;
     let svgText = document.querySelector("#text");
+    button.innerHTML = initialState ? "Hide Image Text" : "Show Image Text";
+
     if (initialState) {
         svgText.setAttribute("display", "none");
     } else {
         svgText.setAttribute("display", "");
     }
 
-
-    // Create a span element for the slider
-    let slider = document.createElement("span");
-    slider.setAttribute("class", "slider round");
-
-    // Append the checkbox and slider to the label (button)
-    button.appendChild(checkbox);
-    button.appendChild(slider);
-    // button.innerHTML = "Toggle Image Text";
-
     let row = document.createElement("div");
     row.classList.add("row");
-    row.setAttribute("id", "switchRow");
+    row.setAttribute("id", "buttonRow");
+
     // let col = document.createElement("div");
-    let col1 = document.createElement("div");
-    col1.classList.add("col-5");
-    col1.appendChild(button);
+    // col.classList.add("col");
+    // col.appendChild(button);
 
-    let col2 = document.createElement("div");
-    col2.classList.add("col");
-    let toggleText = document.createElement("p");
-    toggleText.innerHTML = "<em> Toggle Image Text: </em>";
-    toggleText.style.fontSize = "16px";
-    col2.appendChild(toggleText);
+    row.appendChild(button);
+    toc_container.append(row);
 
-    row.appendChild(col2);
-    row.appendChild(col1);
-    
-
-    // row.innerText = "Toggle image text:      ";
-    // row.appendChild(button);
-
-    toc_container.prepend(row);
-
-    checkbox.addEventListener('change', function() {
-        let svgText = document.querySelector("#text");
-        if (this.checked) {
-            svgText.setAttribute("display", "none");
-            // Add your logic for when the toggle switch is ON
-        } else {
+    button.addEventListener('click', function() {
+        if (svgText.getAttribute("display") === "none") {
             svgText.setAttribute("display", "");
-            // Add your logic for when the toggle switch is OFF
+            button.innerHTML = "Hide Image Text";
+        } else {
+            svgText.setAttribute("display", "none");
+            button.innerHTML = "Show Image Text";
         }
     });
-
 }
 
 //should create sections and pertinent collapsible, implemented as accordion

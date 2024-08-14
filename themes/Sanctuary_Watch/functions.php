@@ -401,7 +401,7 @@
           $modal = FALSE;
           $external_url =  '';
           $external_scene_id = '';
-          $is_modal = get_post_meta($child_post_id,"post_type" ); //[0]; //error here?
+          $is_modal = get_post_meta($child_post_id,"post_type" );//[0]; //error here?
           //create array/map from child id to different attributes (ie hyperlinks)
           if($is_modal){
             if ($icon_type[0] === "Modal"){
