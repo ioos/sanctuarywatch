@@ -19,6 +19,45 @@ let sceneLoc;
 let colors;
 let sectionObj = {};
 let sectColors = {};
+
+if (!is_mobile()) {
+    // Create a new style element
+    const style = document.createElement('style');
+    // style.type = 'text/css';
+    style.innerHTML = `
+        @media (min-width: 512px) and (max-width: 768px) {
+            #toc-container{
+                margin-left: 0px !important;
+            }
+            #scene-row > div.col-md-9{
+                margin-left: 0px !important;
+            }
+            #title-container{
+                margin-left: 0px !important;
+            }
+            #title-container > div > div.col-md-2 > div{
+                max-width: 96% !important;
+            }
+            #top-button{
+                margin-bottom: 5px;
+                font-size: large;
+                z-index: 1;
+                margin-top: 2%;
+            }
+            #toggleButton{
+                margin-bottom: 0px;
+                font-size: large;
+                z-index: 1;
+            }
+            #toc-group{
+                padding-top: 2%;
+            }
+        }
+    `;
+    // Append the style to the head of the document
+    document.head.appendChild(style);
+}
+
 function process_child_obj(){
     for (let key in child_obj){
         if (child_obj[key]["scene"]["ID"] !== post_id){
@@ -136,12 +175,34 @@ async function make_title() {
         let row = document.createElement("div");
         row.classList.add("row");
 
+       
+
         let col1 = document.createElement("div");
-        col1.classList.add("col-md-2");
+        // col1.classList.add("col-md-2");
         col1.appendChild(accgroup);
 
         let col2 = document.createElement("div");
-        col2.classList.add("col-md-10");
+        // col2.classList.add("col-md-10");
+
+        if (!is_mobile()) {
+            col1.classList.add("col-md-3");
+            col2.classList.add("col-md-9");
+            // document.querySelector("#title-container").style.marginLeft = '0%';
+            function adjustTitleContainerMargin() {
+                if (window.innerWidth < 512) {
+                    document.querySelector("#title-container").style.marginLeft = '0%';
+                } else {
+                    document.querySelector("#title-container").style.marginLeft = '9%'; // Reset or apply other styles if needed
+                }
+            }
+            adjustTitleContainerMargin();
+            window.addEventListener('resize', adjustTitleContainerMargin);
+
+        } else {
+            col1.classList.add("col-md-2");
+            col2.classList.add("col-md-10");
+        }
+
         if (is_mobile()){
             col2.setAttribute("style", "padding-top: 5%; align-content: center; margin-left: 7%;");
         }
