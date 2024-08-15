@@ -1485,6 +1485,7 @@ function table_of_contents(){
         let link = document.createElement("a");
         let modal = child_obj[key]['modal'];
         if (modal) {
+            link.setAttribute("href", '#'); //just added
             link.classList.add("modal-link"); 
             link.innerHTML = title;
             item.appendChild(link);
@@ -1583,6 +1584,7 @@ function list_toc(){
         let modal = child_obj[key]['modal'];
     
         if (modal) {
+            link.setAttribute("href", '#'); //just added
             link.classList.add("modal-link");
             link.innerHTML = title;
             item.appendChild(link);
@@ -1763,6 +1765,3 @@ async function init() {
 document.addEventListener("DOMContentLoaded", () => {
     init(); 
 });
-
-
-
