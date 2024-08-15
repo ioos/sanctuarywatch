@@ -25,6 +25,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 <div class="container-fluid">
+<!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->
 <div class="image-center" style="padding-bottom: 20px;">
         <span>
             <?php 
