@@ -6,6 +6,87 @@ console.log("new wp")
 // console.log(child_ids);
 // access echoed JSON here for use. 
 //get all links from single-scene.php
+
+
+//helper for modal focus trap
+// function trapFocus(modalElement) {
+//     // var focusableEls = modalElement.querySelectorAll('*');
+//     var focusableEls = modalElement.querySelectorAll(
+//         'a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled]), nav:not([disabled]), div:not([disabled]), ul:not([disabled]), li:not([disabled]), summary:not([disabled])'
+//     );
+//     // let focusableEls = modalElement.querySelectorAll('button, [href], input, select, textarea, div, [tabindex]:not([tabindex="-1"])');
+    
+//     console.log(focusableEls);
+//     let firstFocusableEl = focusableEls[0];
+//     console.log(firstFocusableEl);
+
+//     let lastFocusableEl = focusableEls[focusableEls.length - 1];
+//     console.log(lastFocusableEl);
+//     let KEYCODE_TAB = 9;
+
+//     modalElement.addEventListener('keydown', function(e) {
+//         let isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB);
+
+//         if (!isTabPressed) {
+//             return;
+//         }
+
+//         if (e.shiftKey) /* shift + tab */ {
+//             if (document.activeElement === firstFocusableEl) {
+//                 lastFocusableEl.focus();
+//                 e.preventDefault();
+//             }
+//         } else /* tab */ {
+//             if (document.activeElement === lastFocusableEl) {
+//                 firstFocusableEl.focus();
+//                 e.preventDefault();
+//             }
+//         }
+//     });
+// }
+function trapFocus(modalElement) {
+    function getFocusableElements() {
+        return Array.from(modalElement.querySelectorAll(
+            'button, [href], input, select, textarea, summary, [tabindex]:not([tabindex="-1"])'
+        )).filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null);
+    }
+
+    function handleKeydown(e) {
+        if (e.key === 'Tab' || e.keyCode === 9) {
+            const focusableElements = getFocusableElements();
+            const firstFocusableElement = focusableElements[0];
+            const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+            if (e.shiftKey) { // shift + tab
+                if (document.activeElement === firstFocusableElement) {
+                    lastFocusableElement.focus();
+                    e.preventDefault();
+                }
+            } else { // tab
+                if (document.activeElement === lastFocusableElement) {
+                    firstFocusableElement.focus();
+                    e.preventDefault();
+                }
+            }
+        }
+    }
+
+    document.addEventListener('keydown', handleKeydown);
+    const initialFocusableElement = getFocusableElements()[0];
+    if (initialFocusableElement) initialFocusableElement.focus();
+
+    return function cleanup() {
+        document.removeEventListener('keydown', handleKeydown);
+    };
+}
+// trapFocus(document.querySelector('#myModal'));
+// trapFocus(document.querySelector('#myModal > div'));
+
+// trapFocus(document.querySelector("#myTabContent"));
+// trapFocus(document.querySelector("#modal_tab_title1-pane"));
+
+
+
 let child_obj = JSON.parse(JSON.stringify(child_ids));
 console.log(child_obj);
 // console.log("this is the post id: ", post_id);//prob dont need this
@@ -814,7 +895,9 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     secondLink.target = '_blank';
     let icon2 = `<i class="fa fa-database" role="presentation" aria-label="database icon"></i>`;
     secondLink.appendChild(document.createTextNode(info_obj['dataText']));
-    secondLink.innerHTML = secondLink.innerHTML + `  ` + icon2;
+    // secondLink.innerHTML = secondLink.innerHTML + `  ` + icon2;
+    secondLink.innerHTML = icon2 + `  ` + secondLink.innerHTML;
+
     secondLink.style.textDecoration = 'none';
 
 
@@ -1133,6 +1216,16 @@ function render_modal(key){
                 // let tabContentContainer = document.getElementById("myTabContent");
                 // tabContentContainer.innerHTML = '';
                 // document.querySelector("#myModal > div > div>div").innerHTML = '';
+                // let myModal = document.querySelector("#myModal");
+                let mdialog =document.querySelector("#myModal > div");
+                // trapFocus(myModal);
+                trapFocus(mdialog);
+                // trapFocus(document.querySelector("#modal_tab_title1-pane"));
+                // trapFocus(document.querySelector("#myModal > div > div"));
+                // trapFocus(document.querySelector("#modal_tab_title1-pane > div:nth-child(1)"));
+                // trapFocus(document.querySelector("#modal_tab_title1-pane"));
+                 
+                // trapFocus(document.querySelectorAll("#myTabContent"));
             }
         // });
             

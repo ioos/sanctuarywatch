@@ -576,3 +576,13 @@ button:focus,
   outline: 4px solid yellow;
   outline-offset: 4px;
 }
+
+.btn-primary:focus {
+  outline: 4px solid yellow;
+  outline-offset: 4 px;
+}
+
+#toc-container > ul{
+  font-size: large;
+  padding-left: 0.5rem;
+}
