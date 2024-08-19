@@ -71,6 +71,7 @@ if ( get_header_textcolor() ) : ?>
 			$sceneArr = explode(' ', $sceneLocation);
 			if (!empty($sceneLocation)){
 				// Loop through each word in the 'sceneLocation' array except the last one.
+				$scene_loc_webcr = '';
 				for($i = 0; $i < count($sceneArr)-1; $i++){
 					$scene_loc_webcr = $scene_loc_webcr.$sceneArr[$i].' ';
 				}

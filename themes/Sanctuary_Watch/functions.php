@@ -60,10 +60,20 @@ add_action('wp_enqueue_scripts', 'enqueue_font_awesome');
    *
    * @return void
    */
+  // function enqueue_bootstrap_scripts() {
+  //   wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', array('jquery'), null, array('strategy' => 'defer,'));
+  // }
+  // add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
   function enqueue_bootstrap_scripts() {
-    wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', array('jquery'), null, array('strategy' => 'defer,'));
-  }
-  add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
+    wp_enqueue_script(
+        'bootstrap-js', 
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', 
+        array('jquery'), 
+        null, 
+        array('strategy' => 'defer') // Corrected the 'strategy' syntax
+    );
+}
+add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
 
   function enqueue_api_script(){
     wp_enqueue_script( 'wp-api' );
@@ -524,9 +534,11 @@ add_action('wp_enqueue_scripts', 'enqueue_font_awesome');
             }
             continue;
         }
-      
-        $child_post_id = $query->posts[0]; //should not always be 0th index; want to loop through all the posts and select the one that is found on this scene
-        $child_ids = modal_helper($child_post_id, $child_ids, $child_id);
+        if (!empty($query->posts)){
+          $child_post_id = $query->posts[0]; //should not always be 0th index; want to loop through all the posts and select the one that is found on this scene
+          $child_ids = modal_helper($child_post_id, $child_ids, $child_id);
+        }
+          
           
         }
       }
