@@ -58,6 +58,7 @@ if (!is_mobile()) {
     document.head.appendChild(style);
 }
 
+
 function process_child_obj(){
     for (let key in child_obj){
         if (child_obj[key]["scene"]["ID"] !== post_id){
@@ -699,7 +700,7 @@ function is_touchscreen(){
 // }
 function is_mobile() {
     return (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) 
-           && (window.innerWidth < 512);
+           && (window.innerWidth < 512 || window.innerHeight < 512);
 }
 
 //helper function from the internet; using it to check if device is a tablet or not. 
@@ -797,6 +798,9 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     firstLink.href = info_obj['scienceLink'];
     firstLink.target = '_blank';
     firstLink.appendChild(document.createTextNode(info_obj['scienceText']));
+    let icon1 = `<i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon" style=""></i> `;
+    firstLink.innerHTML = icon1 + firstLink.innerHTML;
+    firstLink.style.textDecoration = 'none';
     leftCellDiv.appendChild(firstLink);
 
     // Create the right cell div
@@ -808,7 +812,11 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const secondLink = document.createElement('a');
     secondLink.href = info_obj['dataLink'];
     secondLink.target = '_blank';
+    let icon2 = `<i class="fa fa-database" role="presentation" aria-label="database icon"></i>`;
     secondLink.appendChild(document.createTextNode(info_obj['dataText']));
+    secondLink.innerHTML = secondLink.innerHTML + `  ` + icon2;
+    secondLink.style.textDecoration = 'none';
+
 
     // Add the second link to the right cell div
     rightCellDiv.appendChild(secondLink);
@@ -1006,18 +1014,41 @@ function render_modal(key){
 
             if (is_mobile()){
                 console.log("is mobile");
+                tagline_container.setAttribute("class", "");
+                accordion_container.setAttribute("class", "");
+
                 tagline_container.classList.add("col-6");
                 accordion_container.classList.add("col-6");
                 // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
-                tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%");
+                tagline_container.setAttribute("style", "min-width: 300px");
 
-                accordion_container.setAttribute("style", "min-width: 300px;  max-width: 20%;");
-
+                // accordion_container.setAttribute("style", "max-width: 20%;");
+                // function handleOrientationChange() {
+                //     let tagline_container = document.getElementById('tagline-container');
+                //     let accordion_container = document.getElementById('accordion-container');
+                //     if ((window.innerWidth < window.innerHeight)) {
+                //         accordion_container.style.minWidth = '300px';
+                //         accordion_container.style.maxWidth = '20%';
+                //         tagline_container.style.width = '85% !important'
+                //     } else {
+                //         print("landscape mf");
+                //         accordion_container.style.minWidth = ''; 
+                //         accordion_container.style.maxWidth = '';
+                //         accordion_container.style.width = '0 !important';
+                //         tagline_container.style.width = '0 !important';
+                //     }
+                // }
+                
+                // handleOrientationChange();
+                // window.addEventListener('resize', handleOrientationChange);
 
                 let modalDialog = document.querySelector("#myModal > div");
-                modalDialog.setAttribute("style", "z-index: 9999; margin-top: 55%;max-width: 90%;margin-left: 17px;");
+                // modalDialog.setAttribute("style", "z-index: 9999; margin-top: 55%;max-width: 90%;margin-left: 17px;");
+                // modalDialog.setAttribute("style", "z-index: 9999; margin-top: 35%;max-width: 90%;margin-left: 4.5%;");
 
             } else{
+                tagline_container.setAttribute("class", "");
+                accordion_container.setAttribute("class", "");
                 tagline_container.classList.add("col-9");
                 accordion_container.classList.add("col-3");
                 // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
@@ -1133,7 +1164,7 @@ function full_screen_button(svgId){
         // Button attributes
         button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1");
         button.setAttribute("id", "top-button");
-        button.setAttribute('class', 'btn btn-info fa fa-arrows-alt btn-block');
+        button.setAttribute('class', 'btn btn-info btn-block');
         button.innerHTML = "Full Screen";
         
         // let row = document.createElement("div");
@@ -1261,7 +1292,7 @@ function toggle_text() {
     let toc_container = document.querySelector("#toc-container");
 
     let button = document.createElement("button");
-    button.setAttribute("class", "btn btn-info fa fa-arrows-alt btn-block"); // w-100 makes the button full width
+    button.setAttribute("class", "btn btn-info btn-block"); // w-100 makes the button full width
     button.setAttribute("id", "toggleButton");
     button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1;");
 
@@ -1454,6 +1485,7 @@ function table_of_contents(){
         let link = document.createElement("a");
         let modal = child_obj[key]['modal'];
         if (modal) {
+            link.setAttribute("href", '#'); //just added
             link.classList.add("modal-link"); 
             link.innerHTML = title;
             item.appendChild(link);
@@ -1552,6 +1584,7 @@ function list_toc(){
         let modal = child_obj[key]['modal'];
     
         if (modal) {
+            link.setAttribute("href", '#'); //just added
             link.classList.add("modal-link");
             link.innerHTML = title;
             item.appendChild(link);
@@ -1732,6 +1765,3 @@ async function init() {
 document.addEventListener("DOMContentLoaded", () => {
     init(); 
 });
-
-
-

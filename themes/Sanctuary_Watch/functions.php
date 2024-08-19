@@ -9,6 +9,18 @@
    * aiming to extend the functionality of WordPress themes without modifying core files.
    */
 
+   function enqueue_font_awesome() {
+    wp_enqueue_style(
+        'font-awesome', 
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css', 
+        array(), 
+        '6.6.0', 
+        'all' 
+    );
+}
+
+add_action('wp_enqueue_scripts', 'enqueue_font_awesome');
+
   /**
    * Enqueues the theme's main stylesheet.
    *
@@ -57,6 +69,7 @@
     wp_enqueue_script( 'wp-api' );
   }
   add_action('wp_enqueue_scripts', 'enqueue_api_script');
+
 
 
   /**

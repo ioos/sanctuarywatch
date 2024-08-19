@@ -449,6 +449,7 @@ input:checked + .slider:before {
 
 #toc-group{
   padding-top: 5%;
+  font-size: large;
 }
 
 
@@ -528,3 +529,50 @@ body > nav > div > div{
     padding-top: 2%;
   }
 } */
+
+
+/* Universal focus style */
+:focus {
+  outline: 2px solid yellow;
+  outline-offset: 2px; /* Optional: Adds space between the element and the outline */
+}
+
+/* Ensure the same focus style for specific elements */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus,
+nav:focus,
+div:focus,
+li:focus,
+ul:focus,
+span:focus, 
+h1:focus,
+h2:focus,
+h3:focus,
+h4:focus {
+  outline: 2px solid yellow;
+  outline-offset: 2px; /* Optional: Adds space between the element and the outline */
+}
+.nav-link:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem yellow;
+}
+.button:focus-visible {
+  outline: 0 !important;
+  box-shadow: 0 0 0 0.25rem yellow !important;
+}
+button:focus,
+.accordion-button:focus {
+  outline: 4px solid yellow;
+  outline-offset: 4px;
+}
+#top-button:focus {
+  outline: 4px solid yellow;
+  outline-offset: 4px;
+}
+#toggleButton:focus {
+  outline: 4px solid yellow;
+  outline-offset: 4px;
+}
