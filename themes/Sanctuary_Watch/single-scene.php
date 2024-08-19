@@ -46,7 +46,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
   <!-- for the mobile image stuff -->
   <div class="modal" id="mobileModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
   <div class="modal-dialog modal-lg" style="z-index: 9999;margin-top: 60%;max-width: 88%;/* margin-right: 10%; */">
-    <div class="modal-content">
+    <div class="modal-content" >
 
     <div class="modal-header">
         <h4 id = "modal-title1" class="modal-title"> Full Scene Image</h4>
@@ -69,7 +69,7 @@ $scene_url = get_post_meta($post_id, 'scene_infographic');
 <!-- <body class="p-3 m-0 border-0 bd-example m-0 border-0"> -->
 <div class="modal" id="myModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
   <div class="modal-dialog modal-lg" style="z-index: 9999; margin: 10% auto;   ">
-    <div class="modal-content" >
+    <div class="modal-content" aria-labelledby="modal-title">
 
       <!-- Modal Header -->
       <div class="modal-header">

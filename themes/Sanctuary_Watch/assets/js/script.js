@@ -9,41 +9,6 @@ console.log("new wp")
 
 
 //helper for modal focus trap
-// function trapFocus(modalElement) {
-//     // var focusableEls = modalElement.querySelectorAll('*');
-//     var focusableEls = modalElement.querySelectorAll(
-//         'a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled]), nav:not([disabled]), div:not([disabled]), ul:not([disabled]), li:not([disabled]), summary:not([disabled])'
-//     );
-//     // let focusableEls = modalElement.querySelectorAll('button, [href], input, select, textarea, div, [tabindex]:not([tabindex="-1"])');
-    
-//     console.log(focusableEls);
-//     let firstFocusableEl = focusableEls[0];
-//     console.log(firstFocusableEl);
-
-//     let lastFocusableEl = focusableEls[focusableEls.length - 1];
-//     console.log(lastFocusableEl);
-//     let KEYCODE_TAB = 9;
-
-//     modalElement.addEventListener('keydown', function(e) {
-//         let isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB);
-
-//         if (!isTabPressed) {
-//             return;
-//         }
-
-//         if (e.shiftKey) /* shift + tab */ {
-//             if (document.activeElement === firstFocusableEl) {
-//                 lastFocusableEl.focus();
-//                 e.preventDefault();
-//             }
-//         } else /* tab */ {
-//             if (document.activeElement === lastFocusableEl) {
-//                 firstFocusableEl.focus();
-//                 e.preventDefault();
-//             }
-//         }
-//     });
-// }
 function trapFocus(modalElement) {
     function getFocusableElements() {
         return Array.from(modalElement.querySelectorAll(
@@ -79,11 +44,7 @@ function trapFocus(modalElement) {
         document.removeEventListener('keydown', handleKeydown);
     };
 }
-// trapFocus(document.querySelector('#myModal'));
-// trapFocus(document.querySelector('#myModal > div'));
 
-// trapFocus(document.querySelector("#myTabContent"));
-// trapFocus(document.querySelector("#modal_tab_title1-pane"));
 
 
 
@@ -1678,6 +1639,8 @@ function list_toc(){
     
         if (modal) {
             link.setAttribute("href", '#'); //just added
+            // link.setAttribute("role", "button");
+
             link.classList.add("modal-link");
             link.innerHTML = title;
             item.appendChild(link);
@@ -1691,11 +1654,13 @@ function list_toc(){
             let closeButton = document.getElementById("close");
             closeButton.addEventListener('click', function() {
                 let modal = document.getElementById("myModal");
+
                 modal.style.display = "none";
             });
             window.onclick = function(event) {
                 if (event.target === modal) { 
                     modal.style.display = "none";
+
                 }
             };
         } else {
