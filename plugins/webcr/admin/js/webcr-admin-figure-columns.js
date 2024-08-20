@@ -24,6 +24,7 @@ function figure_instance_change(){
                     optionScene.text = targetRow['title']['rendered'];
                     figure_scene.appendChild(optionScene);
             });
+            figure_scene_change();
         })
         .catch((err) => {console.error(err)});
     }
@@ -41,8 +42,8 @@ function figure_scene_change(){
     if (figure_scene_value != ""){
         const protocol = window.location.protocol;
         const host = window.location.host;
-        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/modal?_fields=id,title&icon_function='Modal'&scene_location=" +figure_scene_value;
-        console.log(restURL);
+        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/modal?_fields=id,title&icon_function=Modal&modal_scene=" +figure_scene_value;
+     //   console.log(restURL);
         fetch(restURL)
         .then(response => response.json())
         .then(data => {        
