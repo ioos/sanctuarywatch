@@ -104,11 +104,52 @@ class Webcr_Figure {
                 echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
             }
             echo '</select>';
+
+            //Scene dropdown
+            echo '<select name="figure_scene" id="figure_scene">';
+            echo '<option value="">All Scenes</option>';
+            if (isset($_GET['figure_instance']) && $_GET['figure_instance'] != ""){
+                $scenes = $wpdb->get_results("
+                SELECT p.ID, p.post_title 
+                FROM $wpdb->posts p
+                INNER JOIN $wpdb->postmeta pm ON p.ID = pm.post_id
+                WHERE p.post_type = 'scene' 
+                AND p.post_status = 'publish'
+                AND pm.meta_key = 'scene_location' 
+                AND pm.meta_value = " . $_GET['figure_instance']);
+
+                foreach ($scenes as $scene) {
+                    $selected = $_GET['figure_scene'] == $scene->ID ? 'selected="selected"' : '';
+                    echo '<option value="' . $scene->ID . '" ' . $selected . '>' . $scene->post_title . '</option>';
+                }
+            }
+            echo '</select>';
+
+            //Icon dropdown
+            echo '<select name="figure_icon" id="figure_icon">';
+            echo '<option value="">All Icons</option>';
+            if (isset($_GET['figure_scene']) && $_GET['figure_scene'] != ""){
+                $icons = $wpdb->get_results("
+                SELECT p.ID, p.post_title 
+                FROM $wpdb->posts p
+                INNER JOIN $wpdb->postmeta pm1 ON p.ID = pm1.post_id
+                INNER JOIN $wpdb->postmeta pm2 ON p.ID = pm2.post_id
+                WHERE p.post_type = 'modal'  
+                AND p.post_status = 'publish' 
+                AND pm1.meta_key = 'modal_scene' AND pm1.meta_value = " . $_GET['figure_scene'] . 
+                " AND pm2.meta_key = 'icon_function' AND pm2.meta_value = 'Modal'");
+
+                foreach ($icons as $icon) {
+                    $selected = $_GET['figure_icon'] == $icon->ID ? 'selected="selected"' : '';
+                    echo '<option value="' . $icon->ID . '" ' . $selected . '>' . $icon->post_title . '</option>';
+                }
+            }
+            echo '</select>';
         }
     }
 
     /**
-     * Filter the results for the Figure admin screen by the Figure Location dropdown field.
+     * Filter the results for the Figure admin screen by the Figure Location, Figure Scene, and Figure Icons dropdown fields
      *
      * @param WP_Query $query The WordPress Query instance that is passed to the function.
      * @since    1.0.0
@@ -117,6 +158,23 @@ class Webcr_Figure {
         global $pagenow;
         $type = 'figure';
         if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type && isset($_GET['figure_instance']) && $_GET['figure_instance'] != '') {
+            if ( isset($_GET['figure_icon']) && $_GET['figure_icon'] != '') {
+                $meta_query = array(
+                    array(
+                        'key' => 'figure_modal', // The custom field storing the instance ID
+                        'value' => $_GET['figure_icon'],
+                        'compare' => '='
+                    )
+                );
+            } elseif ( isset($_GET['figure_scene']) && $_GET['figure_scene'] != '') {
+                $meta_query = array(
+                    array(
+                        'key' => 'figure_scene', // The custom field storing the instance ID
+                        'value' => $_GET['figure_scene'],
+                        'compare' => '='
+                    )
+                );
+            } else {
             $meta_query = array(
                 array(
                     'key' => 'location', // The custom field storing the instance ID
@@ -124,6 +182,7 @@ class Webcr_Figure {
                     'compare' => '='
                 )
             );
+            }
             $query->set('meta_query', $meta_query);
         }
     }

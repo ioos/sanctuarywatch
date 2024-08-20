@@ -122,6 +122,16 @@ class Webcr_Admin {
 		if ($current_post_type == "figure" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
 			wp_enqueue_script( "webcr-admin-figure", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
 		}
+
+		// Load Modal-specific Javascript only for admin columns screen 
+		if ($current_post_type == "modal" && $hook_suffix == "edit.php" ){
+			wp_enqueue_script( "webcr-admin-modal_columns", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-modal-columns.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+		}
+
+		// Load Figure-specific Javascript only for admin columns screen 
+		if ($current_post_type == "figure" && $hook_suffix == "edit.php" ){
+			wp_enqueue_script( "webcr-admin-figure_columns", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure-columns.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+		}
 	}
 
     /**

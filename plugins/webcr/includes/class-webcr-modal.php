@@ -728,8 +728,25 @@ class Webcr_Modal {
                 echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
             }
             echo '</select>';
+
+            //Scene dropdown
             echo '<select name="modal_scene" id="modal_scene">';
             echo '<option value="">All Scenes</option>';
+            if (isset($_GET['modal_instance']) && $_GET['modal_instance'] != ""){
+                $scenes = $wpdb->get_results("
+                SELECT p.ID, p.post_title 
+                FROM $wpdb->posts p
+                INNER JOIN $wpdb->postmeta pm ON p.ID = pm.post_id
+                WHERE p.post_type = 'scene' 
+                AND p.post_status = 'publish'
+                AND pm.meta_key = 'scene_location' 
+                AND pm.meta_value = " . $_GET['modal_instance']);
+
+                foreach ($scenes as $scene) {
+                    $selected = $_GET['modal_scene'] == $scene->ID ? 'selected="selected"' : '';
+                    echo '<option value="' . $scene->ID . '" ' . $selected . '>' . $scene->post_title . '</option>';
+                }
+            }
             echo '</select>';
 
         }
@@ -759,7 +776,7 @@ class Webcr_Modal {
     }
 
     /**
-     * Filter the results for the Modal admin screen by the Modal Location dropdown field.
+     * Filter the results for the Modal admin screen by the Modal Location and Modal Scene dropdown fields.
      *
      * @param WP_Query $query The WordPress Query instance that is passed to the function.
      * @since    1.0.0
@@ -768,6 +785,15 @@ class Webcr_Modal {
         global $pagenow;
         $type = 'modal';
         if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type && isset($_GET['modal_instance']) && $_GET['modal_instance'] != '') {
+            if ( isset($_GET['modal_scene']) && $_GET['modal_scene'] != '') {
+                $meta_query = array(
+                    array(
+                        'key' => 'modal_scene', // The custom field storing the instance ID
+                        'value' => $_GET['modal_scene'],
+                        'compare' => '='
+                    )
+                );
+            } else {
             $meta_query = array(
                 array(
                     'key' => 'modal_location', // The custom field storing the instance ID
@@ -775,6 +801,7 @@ class Webcr_Modal {
                     'compare' => '='
                 )
             );
+            }
             $query->set('meta_query', $meta_query);
         }
     }
