@@ -507,7 +507,7 @@ class Webcr_Scene {
                     'id'    => 'scene_infographic',
                     'type'  => 'image',
                     'title' => 'Scene Infographic',
-                    'description' => 'What is the image for the scene?'
+                    'description' => 'What is the image for the scene? Only properly-formatted SVG-type images are allowed.'
                 ),
                 array(
                     'id'          => 'scene_tagline',
