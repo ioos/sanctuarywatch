@@ -34,6 +34,8 @@
             $scene_base_url = 'webcr-';
             $nameMeta = get_post($sceneLocation);
             $post = $nameMeta->post_title;
+            $inst_overview_scene = get_post_meta($sceneLocation, 'instance_overview_scene')[0];
+            $link =  get_post_meta($inst_overview_scene, 'post_name')[0];
             // echo $nameMeta;
             // $name = get_post_title($nameMeta);
             for($i=0; $i < count($sceneArr)-1; $i++){
@@ -41,7 +43,10 @@
                 echo $scene_base_url;
             }
             if($sceneLocation){
-                echo "<a class='navbar-brand' href='/$nameMeta->instance_slug/'>$post</a>";
+
+                // echo "<a class='navbar-brand' href='/$nameMeta->instance_slug/'>$post</a>";
+                echo "<a class='navbar-brand' href='/$link/'>$post</a>";
+
             }else {
                 echo '<a class="navbar-brand" href=""><img class="navbar-emblem" width="32p" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Sanctuary Watch Navbar Emblem"> Sanctuary Watch</a>';
             }
@@ -73,10 +78,13 @@
                             $scene_loc = get_post_meta(get_the_ID(), 'scene_location')[0];
                             // echo $scene_loc;
                             $inst_overview_scene = get_post_meta($scene_loc, 'instance_overview_scene')[0];
+                            //echo $inst_overview_scene;
 
                             $scene_order = get_post_meta(get_the_ID(), 'scene_order');
                             if(get_the_ID() != $inst_overview_scene){
                                 $post_titles[] = [get_the_title(), $scene_order[0], get_the_ID()];
+                                // echo get_the_title();
+                                // echo " ";
                             }
                         }
                         wp_reset_postdata();

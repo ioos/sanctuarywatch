@@ -533,7 +533,7 @@ body > nav > div > div{
 
 /* Universal focus style */
 :focus {
-  outline: 2px solid yellow;
+  outline: 2px solid red;
   outline-offset: 2px; /* Optional: Adds space between the element and the outline */
 }
 
@@ -552,33 +552,33 @@ h1:focus,
 h2:focus,
 h3:focus,
 h4:focus {
-  outline: 2px solid yellow;
+  outline: 2px solid red;
   outline-offset: 2px; /* Optional: Adds space between the element and the outline */
 }
 .nav-link:focus-visible {
   outline: 0;
-  box-shadow: 0 0 0 0.25rem yellow;
+  box-shadow: 0 0 0 0.25rem red;
 }
 .button:focus-visible {
   outline: 0 !important;
-  box-shadow: 0 0 0 0.25rem yellow !important;
+  box-shadow: 0 0 0 0.25rem red !important;
 }
 button:focus,
 .accordion-button:focus {
-  outline: 4px solid yellow;
+  outline: 4px solid red;
   outline-offset: 4px;
 }
 #top-button:focus {
-  outline: 4px solid yellow;
+  outline: 4px solid red;
   outline-offset: 4px;
 }
 #toggleButton:focus {
-  outline: 4px solid yellow;
+  outline: 4px solid red;
   outline-offset: 4px;
 }
 
 .btn-primary:focus {
-  outline: 4px solid yellow;
+  outline: 4px solid red;
   outline-offset: 4 px;
 }
 

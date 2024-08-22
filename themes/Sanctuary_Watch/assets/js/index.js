@@ -71,10 +71,10 @@ async function getInstanceInfo() {
         link.setAttribute('href', url);
         // link.setAttribute('href', child.link)
         link.setAttribute('id', child.instance_slug);
-        link.className = 'btn btn-primary';
+        link.className = 'btn ';
         // link.innerText = child.instance_short_title;
         link.innerText = child.title.rendered;
-        link.setAttribute("style", "display: flex; justify-content: center; align-items: center;");
+        link.setAttribute("style", "display: flex; justify-content: center; align-items: center; color: white !important; background-color: #00467F !important");
     
         // cardBody.appendChild(cardText);
         cardBody.appendChild(link);

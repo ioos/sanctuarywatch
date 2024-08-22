@@ -533,6 +533,7 @@ async function loadSVG(url, containerId) {
                 window.onclick = function(event) {
                     if (event.target == modal) {
                       modal.style.display = "none";
+                      history.pushState("", document.title, window.location.pathname + window.location.search);
                     }
                   }
                 // let closeButton = document.querySelector("#mobileModal > div > div > div.modal-footer > button");
@@ -540,6 +541,7 @@ async function loadSVG(url, containerId) {
                 closeButton.onclick = function() {
                     // if (event.target == modal) {
                       modal.style.display = "none";
+                      history.pushState("", document.title, window.location.pathname + window.location.search);
                     // }
                   }
         
@@ -669,7 +671,7 @@ function highlight_icons(){
             // elem.style.stroke = thisInstance.instance_hover_color; //this is no longer hard-coded; //ideally, make a dictionary mapping each  key to a section to a color
             // elem.style.stroke = sectColors[sectionObj[key]];
             if (thisInstance.instance_colored_sections === "yes"){
-                console.log("yes!");
+                // console.log("yes!");
                 elem.style.stroke = sectColors[sectionObj[key]];
             } else{
                 elem.style.stroke = colors[0];
@@ -963,15 +965,18 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
         //new stuff here
    
 }
-//create tabs here
-function create_tabs(iter, tab_id, tab_label) {
-    // console.log(tab_id);
+
+//create tabs
+function create_tabs(iter, tab_id, tab_label, title = "") {
+    tab_id = tab_label.replace(/\s+/g, '_'); 
+    title = title.replace(/\s+/g, '_');
+    console.log(tab_id);
     console.log("creating a tab");
-    let tab_target = `#${tab_id}-pane`;
-    let tab_controls = `${tab_id}-pane`;
+
+    let tab_target = `#${title}-${tab_id}-pane`;
+    let tab_controls = `${title}-${tab_id}-pane`;
 
     let myTab = document.getElementById('myTab');
-    // myTab.innerHTML = '';
     let navItem = document.createElement("li");
     navItem.classList.add("nav-item");
     navItem.setAttribute("role", "presentation");
@@ -985,7 +990,7 @@ function create_tabs(iter, tab_id, tab_label) {
     } else {
         button.setAttribute('aria-selected', 'false');
     }
-    button.id = `${tab_id}`;
+    button.id = `${title}-${tab_id}`;
     button.setAttribute('data-bs-toggle', 'tab');
     button.setAttribute('data-bs-target', tab_target);
     button.setAttribute('type', 'button');
@@ -1000,22 +1005,25 @@ function create_tabs(iter, tab_id, tab_label) {
     let tabContentContainer = document.getElementById("myTabContent");
     const tabContentElement = document.createElement('div');
     tabContentElement.classList.add('tab-pane', 'fade');
+    
     if (iter === 1) {
         tabContentElement.classList.add('show', 'active');
     }
+    
     tabContentElement.id = tab_controls;
     tabContentElement.setAttribute('role', 'tabpanel');
-    tabContentElement.setAttribute('aria-labelledby', tab_id);
+    tabContentElement.setAttribute('aria-labelledby', `${title}-${tab_id}`);
     tabContentElement.setAttribute('tabindex', '0');
 
-    // tabContentElement.textContent = tab_content;
     tabContentContainer.appendChild(tabContentElement);
-    // console.log("tab content container");
-    // console.log(tabContentContainer);
 
+    button.addEventListener('click', function() {
+        window.location.hash = `${title}/${tab_id}`; 
+    });
 
     fetch_tab_info(tabContentElement, tabContentContainer, tab_label);
- }
+}
+
 
 
 
@@ -1035,7 +1043,7 @@ function render_modal(key){
             console.log("modal data here:");
             console.log(modal_data); 
             //title stuff:
-            let title = child_obj[key]['title'];  
+            let title = child_obj[key]['title'];  //importat! pass as argument
             let modal_title = document.getElementById("modal-title");
             
             modal_title.innerHTML = title;
@@ -1169,7 +1177,7 @@ function render_modal(key){
                 let tab_title = modal_data[tab_key];
 
                
-                create_tabs(i, tab_key, tab_title);
+                create_tabs(i, tab_key, tab_title, title);
                 console.log(`iteration ${i}, tab key ${tab_key} tab title ${tab_title}`);
                 if (i === num_tabs){
                     break;
@@ -1270,74 +1278,7 @@ function full_screen_button(svgId){
     }
 
 }
-// function toggle_text(){
-//     if (thisInstance.instance_text_toggle === "none"){
-//         return;
-//     }
-//     let toc_container = document.querySelector("#toc-container");
 
-//     let button = document.createElement("label");
-//     button.setAttribute("class", "switch");
-
-//     // Create a checkbox input element
-//     let checkbox = document.createElement("input");
-//     checkbox.setAttribute("type", "checkbox");
-//     checkbox.setAttribute("id", "tocWrapper");
-//     let initialState = thisInstance.instance_text_toggle === "toggle_on";
-//     checkbox.checked = initialState;
-//     let svgText = document.querySelector("#text");
-//     if (initialState) {
-//         svgText.setAttribute("display", "none");
-//     } else {
-//         svgText.setAttribute("display", "");
-//     }
-
-
-//     // Create a span element for the slider
-//     let slider = document.createElement("span");
-//     slider.setAttribute("class", "slider round");
-
-//     // Append the checkbox and slider to the label (button)
-//     button.appendChild(checkbox);
-//     button.appendChild(slider);
-//     // button.innerHTML = "Toggle Image Text";
-
-//     let row = document.createElement("div");
-//     row.classList.add("row");
-//     row.setAttribute("id", "switchRow");
-//     // let col = document.createElement("div");
-//     let col1 = document.createElement("div");
-//     col1.classList.add("col-5");
-//     col1.appendChild(button);
-
-//     let col2 = document.createElement("div");
-//     col2.classList.add("col");
-//     let toggleText = document.createElement("p");
-//     toggleText.innerHTML = "<em> Toggle Image Text: </em>";
-//     toggleText.style.fontSize = "16px";
-//     col2.appendChild(toggleText);
-
-//     row.appendChild(col2);
-//     row.appendChild(col1);
-    
-
-//     // row.innerText = "Toggle image text:      ";
-//     // row.appendChild(button);
-
-//     toc_container.prepend(row);
-
-//     checkbox.addEventListener('change', function() {
-//         let svgText = document.querySelector("#text");
-//         if (this.checked) {
-//             svgText.setAttribute("display", "none");
-//             // Add your logic for when the toggle switch is ON
-//         } else {
-//             svgText.setAttribute("display", "");
-//             // Add your logic for when the toggle switch is OFF
-//         }
-//     });
-
-// }
 function toggle_text() {
     if (thisInstance.instance_text_toggle === "none") {
         return;
@@ -1537,6 +1478,8 @@ function table_of_contents(){
         
         let title = child_obj[key]['title'];  
         let link = document.createElement("a");
+        link.setAttribute("id", title.replace(/\s+/g, '_'));
+
         let modal = child_obj[key]['modal'];
         if (modal) {
             link.setAttribute("href", '#'); //just added
@@ -1560,13 +1503,14 @@ function table_of_contents(){
 
                 let tagline_container = document.getElementById('tagline-container');
                 tagline_container.innerHTML = '';
-
+                history.pushState("", document.title, window.location.pathname + window.location.search);
         });
         window.onclick = function(event) {
             if (event.target === modal) { // Check if the click is outside the modal content
                 // modal.style.display = "none";
                 document.getElementById('accordion-container').innerHTML = '';
                 document.getElementById('tagline-container').innerHTML = '';
+                history.pushState("", document.title, window.location.pathname + window.location.search);
             }
         };
         }
@@ -1639,6 +1583,8 @@ function list_toc(){
     
         if (modal) {
             link.setAttribute("href", '#'); //just added
+            link.setAttribute("id", title.replace(/\s+/g, '_'));
+          
             // link.setAttribute("role", "button");
 
             link.classList.add("modal-link");
@@ -1654,12 +1600,16 @@ function list_toc(){
             let closeButton = document.getElementById("close");
             closeButton.addEventListener('click', function() {
                 let modal = document.getElementById("myModal");
+                // link.setAttribute("href", ''); //just added
 
                 modal.style.display = "none";
+                history.pushState("", document.title, window.location.pathname + window.location.search);
             });
             window.onclick = function(event) {
                 if (event.target === modal) { 
+                    // link.setAttribute("href", ''); //just added
                     modal.style.display = "none";
+                    history.pushState("", document.title, window.location.pathname + window.location.search);
 
                 }
             };
@@ -1739,6 +1689,7 @@ function add_modal(){
 
                     let tabContentContainer = document.getElementById("myTabContent");
                     tabContentContainer.innerHTML = '';
+                    history.pushState("", document.title, window.location.pathname + window.location.search);
             });
             window.onclick = function(event) {
                 if (event.target === modal) { // Check if the click is outside the modal content
@@ -1747,6 +1698,7 @@ function add_modal(){
                     document.getElementById('tagline-container').innerHTML = '';
                     document.getElementById('myTab').innerHTML = '';
                     document.getElementById('myTabContent').innerHTML = '';
+                    history.pushState("", document.title, window.location.pathname + window.location.search);
                 }
             };
     
@@ -1776,6 +1728,45 @@ function add_modal(){
 
 
 // loadSVG(url, "svg1");
+
+async function handleHashNavigation() {
+    if (window.location.hash) {
+        let tabId = window.location.hash.substring(1);
+        console.log(tabId);
+
+        let modalName = tabId.split('/')[0];
+        console.log(modalName);
+
+        tabId = tabId.replace(/\//g, '-');
+
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+
+        // let modalButton = document.querySelector("#toc-container > ul > li:nth-child(2) > a");
+        let modalButton = document.querySelector(`#${modalName}`);
+
+        console.log(modalButton);
+
+        if (modalButton) {
+            modalButton.click();
+
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            let tabButton = document.querySelector(`#${tabId}`);
+            console.log(tabButton);
+            if (tabButton) {
+                tabButton.click();
+            }
+        }
+    } else {
+        console.log("nope");
+    }
+}
+
+
+
 
 
 
@@ -1815,6 +1806,7 @@ async function init() {
         // console.log(colors);
         
         loadSVG(url, "svg1"); // Call load_svg with the fetched data
+
     } catch (error) {
         console.error('Error:', error);
     }
@@ -1822,4 +1814,6 @@ async function init() {
 
 document.addEventListener("DOMContentLoaded", () => {
     init(); 
+    handleHashNavigation();
+
 });
