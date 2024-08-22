@@ -17,11 +17,11 @@ function trapFocus(modalElement) {
     }
 
     function handleKeydown(e) {
-        if (e.key === 'Tab' || e.keyCode === 9) {
-            const focusableElements = getFocusableElements();
-            const firstFocusableElement = focusableElements[0];
-            const lastFocusableElement = focusableElements[focusableElements.length - 1];
+        const focusableElements = getFocusableElements();
+        const firstFocusableElement = focusableElements[0];
+        const lastFocusableElement = focusableElements[focusableElements.length - 1];
 
+        if (e.key === 'Tab' || e.keyCode === 9) {
             if (e.shiftKey) { // shift + tab
                 if (document.activeElement === firstFocusableElement) {
                     lastFocusableElement.focus();
@@ -33,15 +33,27 @@ function trapFocus(modalElement) {
                     e.preventDefault();
                 }
             }
+        } 
+    }
+
+    function handleFocus(e) {
+        if (!modalElement.contains(e.target)) {
+            const focusableElements = getFocusableElements();
+            if (focusableElements.length > 0) {
+                focusableElements[0].focus();
+            }
         }
     }
 
     document.addEventListener('keydown', handleKeydown);
+    document.addEventListener('focus', handleFocus, true);
+
     const initialFocusableElement = getFocusableElements()[0];
     if (initialFocusableElement) initialFocusableElement.focus();
 
     return function cleanup() {
         document.removeEventListener('keydown', handleKeydown);
+        document.removeEventListener('focus', handleFocus, true);
     };
 }
 
@@ -1186,15 +1198,10 @@ function render_modal(key){
                 // tabContentContainer.innerHTML = '';
                 // document.querySelector("#myModal > div > div>div").innerHTML = '';
                 // let myModal = document.querySelector("#myModal");
-                let mdialog =document.querySelector("#myModal > div");
+                let mdialog = document.querySelector("#myModal > div"); //document.querySelector("#myModal");
                 // trapFocus(myModal);
                 trapFocus(mdialog);
-                // trapFocus(document.querySelector("#modal_tab_title1-pane"));
-                // trapFocus(document.querySelector("#myModal > div > div"));
-                // trapFocus(document.querySelector("#modal_tab_title1-pane > div:nth-child(1)"));
-                // trapFocus(document.querySelector("#modal_tab_title1-pane"));
-                 
-                // trapFocus(document.querySelectorAll("#myTabContent"));
+              
             }
         // });
             
