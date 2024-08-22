@@ -302,6 +302,30 @@ class Webcr {
 
 		add_filter('rest_scene_query', 'filter_scene_by_scene_location', 10, 2);
 
+		// Add the filter to support filtering by "scene_location" in REST API queries
+		function filter_modal_by_modal_scene($args, $request) {
+			if (isset($request['modal_scene'])) {
+				$args['meta_query'][] = array(
+					'key' => 'modal_scene',
+					'value' => $request['modal_scene'],
+					'compare' => 'LIKE', // Change comparison method as needed
+				);
+			}
+			// Filter by icon_function if set
+			if (isset($request['icon_function'])) {
+				$args['meta_query'][] = array(
+					'key'     => 'icon_function',
+					'value'   => $request['icon_function'],
+					'compare' => '='
+				);
+			}
+			$args['orderby'] = 'title';
+			$args['order'] = 'ASC';
+			return $args;
+		}
+
+		add_filter('rest_modal_query', 'filter_modal_by_modal_scene', 10, 2);
+
 // begin skanda code
 
 		//THIS IS FOR SCENES PERMALINKS
