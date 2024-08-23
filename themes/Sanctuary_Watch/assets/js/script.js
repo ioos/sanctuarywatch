@@ -938,38 +938,45 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
-            // console.log(data);
-            // console.log(tab_label);
-            figure_data = data.find(figure => figure.figure_tab === tab_label);
-            if (!figure_data){
+            console.log(data);
+            console.log(tab_label);
+            // figure_data = data.find(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
+            all_figure_data = data.filter(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
+
+            
+            if (!all_figure_data){
                 //we don't create anything here...
                 //don't have to render any of the info
                 // tabContentContainer.setAttribute("display", "hidden");
                 return;
                 
             } else{
-                console.log(figure_data); 
+                console.log(all_figure_data); 
                 // tabContentContainer.setAttribute("display", "");
 
             // console.log(figure_data['figure_caption_long']);
             //title stuff:
-                let img = '';
-                if (figure_data['figure_path']==='External'){
-                    img = figure_data['figure_external_url'];
-                } else {
-                    img = figure_data['figure_image'];
+                for (let idx in all_figure_data){
+                    figure_data = all_figure_data[idx];
+                    console.log(all_figure_data[idx]);
+                    let img = '';
+                    if (figure_data['figure_path']==='External'){
+                        img = figure_data['figure_external_url'];
+                    } else {
+                        img = figure_data['figure_image'];
+                    }
+                    info_obj = {
+                    "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
+                    "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
+                    "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
+                    "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
+                    "imageLink" : img,
+                    "shortCaption" : figure_data["figure_caption_short"],
+                    "longCaption": figure_data["figure_caption_long"]
+                    };
+                    // console.log(info_obj);
+                    render_tab_info(tabContentElement, tabContentContainer, info_obj);
                 }
-                info_obj = {
-                "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
-                "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
-                "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
-                "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
-                "imageLink" : img,
-                "shortCaption" : figure_data["figure_caption_short"],
-                "longCaption": figure_data["figure_caption_long"]
-                };
-                // console.log(info_obj);
-                render_tab_info(tabContentElement, tabContentContainer, info_obj);
             }
 
         })
@@ -980,8 +987,10 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
 
 //create tabs
 function create_tabs(iter, tab_id, tab_label, title = "") {
-    tab_id = tab_label.replace(/\s+/g, '_'); 
-    title = title.replace(/\s+/g, '_');
+    // tab_id = tab_label.replace(/\s+/g, '_').replace(/[()]/g, '_');
+    // title = title.replace(/\s+/g, '_').replace(/[()]/g, '_');
+    tab_id = tab_label.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_');
+    title = title.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_');
     console.log(tab_id);
     console.log("creating a tab");
 
@@ -1749,7 +1758,7 @@ async function handleHashNavigation() {
         history.pushState("", document.title, window.location.pathname + window.location.search);
 
         await new Promise(resolve => setTimeout(resolve, 200));
-
+    
 
         // let modalButton = document.querySelector("#toc-container > ul > li:nth-child(2) > a");
         let modalButton = document.querySelector(`#${modalName}`);
