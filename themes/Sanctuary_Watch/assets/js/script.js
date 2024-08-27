@@ -853,11 +853,18 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const firstLink = document.createElement('a');
     firstLink.href = info_obj['scienceLink'];
     firstLink.target = '_blank';
-    firstLink.appendChild(document.createTextNode(info_obj['scienceText']));
-    let icon1 = `<i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon" style=""></i> `;
-    firstLink.innerHTML = icon1 + firstLink.innerHTML;
-    firstLink.style.textDecoration = 'none';
-    leftCellDiv.appendChild(firstLink);
+    if (info_obj['scienceText']!=''){
+        firstLink.appendChild(document.createTextNode(info_obj['scienceText']));
+        let icon1 = `<i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon" style=""></i> `;
+        firstLink.innerHTML = icon1 + firstLink.innerHTML;
+        firstLink.style.textDecoration = 'none';
+        leftCellDiv.appendChild(firstLink);
+    }
+    // firstLink.appendChild(document.createTextNode(info_obj['scienceText']));
+    // let icon1 = `<i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon" style=""></i> `;
+    // firstLink.innerHTML = icon1 + firstLink.innerHTML;
+    // firstLink.style.textDecoration = 'none';
+    // leftCellDiv.appendChild(firstLink);
 
     // Create the right cell div
     const rightCellDiv = document.createElement('div');
@@ -865,23 +872,28 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     rightCellDiv.style.display = 'table-cell';
 
     // Create the second link
-    const secondLink = document.createElement('a');
-    secondLink.href = info_obj['dataLink'];
-    secondLink.target = '_blank';
-    let icon2 = `<i class="fa fa-database" role="presentation" aria-label="database icon"></i>`;
-    secondLink.appendChild(document.createTextNode(info_obj['dataText']));
-    // secondLink.innerHTML = secondLink.innerHTML + `  ` + icon2;
-    secondLink.innerHTML = icon2 + `  ` + secondLink.innerHTML;
+    if (info_obj['dataLink']!=''){
+        const secondLink = document.createElement('a');
+        secondLink.href = info_obj['dataLink'];
+        secondLink.target = '_blank';
+        let icon2 = `<i class="fa fa-database" role="presentation" aria-label="database icon"></i>`;
+        secondLink.appendChild(document.createTextNode(info_obj['dataText']));
+        // secondLink.innerHTML = secondLink.innerHTML + `  ` + icon2;
+        secondLink.innerHTML = icon2 + `  ` + secondLink.innerHTML;
+        secondLink.style.textDecoration = 'none';
+        rightCellDiv.appendChild(secondLink);
+    }
 
-    secondLink.style.textDecoration = 'none';
+    
 
 
-    // Add the second link to the right cell div
-    rightCellDiv.appendChild(secondLink);
     tableRowDiv.appendChild(leftCellDiv);
     tableRowDiv.appendChild(rightCellDiv);
     containerDiv.appendChild(tableRowDiv);
-    tabContentElement.appendChild(containerDiv);
+    if (info_obj['dataLink']!='' && info_obj['scienceText']!=''){
+        tabContentElement.appendChild(containerDiv);
+    }
+    // tabContentElement.appendChild(containerDiv);
 
     const figureDiv = document.createElement('div');
     figureDiv.classList.add('figure');
@@ -1037,10 +1049,49 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
     tabContentElement.setAttribute('tabindex', '0');
 
     tabContentContainer.appendChild(tabContentElement);
+    let link = document.createElement("a");
+            // link.href = `#${title}/${tab_id}`;
+            // link.target = "_blank";
+    link.classList.add('clipboard-icon'); 
+    
+    let icon = document.createElement("i");
+    icon.classList.add("fas", "fa-clipboard");
+    
+    // link.appendChild(icon);
+    link.style.marginLeft = "10px"; 
+    link.style.cursor = "pointer";
+    link.innerHTML += " Copy Tab Link";
+    
+            
+            // mtitle.appendChild(link);
+    tabContentElement.prepend(link);
 
     button.addEventListener('click', function() {
         window.location.hash = `${title}/${tab_id}`; 
+        // let mtitle = document.querySelector("#modal-title");
+        // let link = document.createElement("a");
+        link.href = `#${title}/${tab_id}`;
+        link.target = "_blank";
+        // link.textContent = mtitle.textContent;
+        // // mtitle.textContent = '';
+        // mtitle.innerHTML = '';
+        // mtitle.appendChild(link);
+        link.addEventListener("click", (e) => {
+            e.preventDefault(); // Prevent the link from opening
+            writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
+        });        
+        
     });
+    async function writeClipboardText(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            alert('Link copied to clipboard!');
+        } catch (error) {
+            console.error('Failed to copy: ', error);
+            alert('Failed to copy link. Please try again.');
+        }
+    }
+    
 
     fetch_tab_info(tabContentElement, tabContentContainer, tab_label);
 }
