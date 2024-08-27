@@ -1066,16 +1066,20 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
             // mtitle.appendChild(link);
     tabContentElement.prepend(link);
 
-    button.addEventListener('click', function() {
+    if (iter === 1) {
         window.location.hash = `${title}/${tab_id}`; 
-        // let mtitle = document.querySelector("#modal-title");
-        // let link = document.createElement("a");
         link.href = `#${title}/${tab_id}`;
         link.target = "_blank";
-        // link.textContent = mtitle.textContent;
-        // // mtitle.textContent = '';
-        // mtitle.innerHTML = '';
-        // mtitle.appendChild(link);
+        link.addEventListener("click", (e) => {
+            e.preventDefault(); // Prevent the link from opening
+            writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
+        });
+    }
+
+    button.addEventListener('click', function() {
+        window.location.hash = `${title}/${tab_id}`; 
+        link.href = `#${title}/${tab_id}`;
+        link.target = "_blank";
         link.addEventListener("click", (e) => {
             e.preventDefault(); // Prevent the link from opening
             writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
@@ -1796,6 +1800,24 @@ function add_modal(){
 
 // loadSVG(url, "svg1");
 
+async function waitForElement(selector) {
+    return new Promise(resolve => {
+        const element = document.querySelector(selector);
+        if (element) {
+            resolve(element);
+        } else {
+            const observer = new MutationObserver(() => {
+                const element = document.querySelector(selector);
+                if (element) {
+                    observer.disconnect();
+                    resolve(element);
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    });
+}
+
 async function handleHashNavigation() {
     if (window.location.hash) {
         let tabId = window.location.hash.substring(1);
@@ -1808,29 +1830,19 @@ async function handleHashNavigation() {
 
         history.pushState("", document.title, window.location.pathname + window.location.search);
 
-        await new Promise(resolve => setTimeout(resolve, 200));
-    
-
-        // let modalButton = document.querySelector("#toc-container > ul > li:nth-child(2) > a");
-        let modalButton = document.querySelector(`#${modalName}`);
-
+        let modalButton = await waitForElement(`#${modalName}`);
         console.log(modalButton);
 
-        if (modalButton) {
-            modalButton.click();
+        modalButton.click();
 
-            await new Promise(resolve => setTimeout(resolve, 200));
-
-            let tabButton = document.querySelector(`#${tabId}`);
-            console.log(tabButton);
-            if (tabButton) {
-                tabButton.click();
-            }
-        }
+        let tabButton = await waitForElement(`#${tabId}`);
+        console.log(tabButton);
+        tabButton.click();
     } else {
         console.log("nope");
     }
 }
+
 
 
 
