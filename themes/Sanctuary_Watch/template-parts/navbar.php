@@ -30,22 +30,39 @@
             <?php
             $postMeta = get_post_meta(get_the_ID());
             $sceneLocation = $postMeta['scene_location'][0];
-            $sceneArr = explode(' ', $sceneLocation);
-            $scene_base_url = 'webcr-';
-            $nameMeta = get_post($sceneLocation);
-            $post = $nameMeta->post_title;
+            // $sceneArr = explode(' ', $sceneLocation);
+            // $scene_base_url = 'webcr-';
+            // $nameMeta = get_post_meta($sceneLocation);
+            // $post = $nameMeta->post_title;
             $inst_overview_scene = get_post_meta($sceneLocation, 'instance_overview_scene')[0];
-            $link =  get_post_meta($inst_overview_scene, 'post_name')[0];
+            // $inst_overview_details = get_post_meta($inst_overview_scene);
+            // $inst_overview_link = $inst_overview_details['post_name'][0];
+            // $link =  get_post_meta($inst_overview_scene, 'post_name');
+            // $link = $nameMeta['post_name'][0];
             // echo $nameMeta;
             // $name = get_post_title($nameMeta);
-            for($i=0; $i < count($sceneArr)-1; $i++){
-                $scene_base_url = $scene_base_url.strtolower($sceneArr[$i]);
-                echo $scene_base_url;
-            }
+            // for($i=0; $i < count($sceneArr)-1; $i++){
+            //     $scene_base_url = $scene_base_url.strtolower($sceneArr[$i]);
+            //     echo $scene_base_url;
+            // }
+            // echo "<script>
+            //     console.log('postMeta:', " . json_encode($postMeta) . ");
+            //     console.log('sceneLocation:', '$sceneLocation');
+            //     console.log('sceneArr:', " . json_encode($sceneArr) . ");
+            //     console.log('scene_base_url:', '$scene_base_url');
+            //     console.log('nameMeta:', " . json_encode($nameMeta) . ");
+            //     // console.log('post:', '$post');
+            //     console.log('inst_overview_details:', " . json_encode($inst_overview_details) . ");
+            //     console.log('inst_overview_scene:', '$inst_overview_scene');
+            //     console.log('nameMeta:', " . json_encode($link) . ");
+            // </script>";
+
             if($sceneLocation){
 
                 // echo "<a class='navbar-brand' href='/$nameMeta->instance_slug/'>$post</a>";
-                echo "<a class='navbar-brand' href='/$link/'>$post</a>";
+                // echo "<script>console.log('Link:', '/$link/$inst_overview_link');</script>";
+                // echo "<a class='navbar-brand' href='/$link/$inst_overview_link'>Temp</a>";
+                echo "<a class='navbar-brand' href='/?post_type=scene&p=" . $inst_overview_scene . "'>Temp</a>";
 
             }else {
                 echo '<a class="navbar-brand" href=""><img class="navbar-emblem" width="32p" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Sanctuary Watch Navbar Emblem"> Sanctuary Watch</a>';

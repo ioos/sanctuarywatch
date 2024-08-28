@@ -66,7 +66,9 @@ get_header();
 </div>
 <script>
     let post_id =  <?php echo $post_id; ?>;
-    let is_logged_in = <?php echo is_user_logged_in(); ?>;
+    // let is_logged_in = <?php echo is_user_logged_in(); ?>;
+    let is_logged_in = <?php echo json_encode(is_user_logged_in()); ?>;
+
 
 </script>
 <?php
