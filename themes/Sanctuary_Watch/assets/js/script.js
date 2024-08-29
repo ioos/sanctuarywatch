@@ -8,6 +8,8 @@ console.log("new wp")
 //get all links from single-scene.php
 
 
+
+
 //helper for modal focus trap
 function trapFocus(modalElement) {
     function getFocusableElements() {

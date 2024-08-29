@@ -36,12 +36,41 @@ get_header();
 $post_id = get_the_ID();
 $scene_url = get_post_meta($post_id, 'scene_infographic');
 
-// Fetches scene information and photos based on the current post ID
-//array structure(triple nested arrays): arr = [[text1, url1],[text2, url2], ....]
-// $total_arr = get_scene_info_photo($post_id);
-// $scene_info_arr = $total_arr[0];
-// $scene_photo_arr = $total_arr[1];
+$instance = get_post_meta($post_id, 'scene_location', true);
+$instance_slug = get_post_meta($instance, 'instance_slug', true);
+$overview = get_post_meta($instance, 'instance_overview_scene', true);
+
 ?>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const postId = <?php echo json_encode($post_id); ?>;
+    const instanceSlug = <?php echo json_encode($instance_slug); ?>;
+    const overviewSceneId = <?php echo json_encode($overview); ?>;
+
+    function changeUrl() {
+        if (Number(postId) === Number(overviewSceneId)) {
+            const newUrl = `/${instanceSlug}/`;
+            history.pushState(null, '', newUrl);
+            console.log('URL changed to:', newUrl);
+        }
+    }
+
+    const observer = new MutationObserver(function(mutations, obs) {
+        if (document.readyState === 'complete') {
+            changeUrl();
+            obs.disconnect(); 
+            console.log('Page fully loaded, URL updated');
+        }
+    });
+
+    const config = { childList: true, subtree: true };
+
+    observer.observe(document.body, config);
+});
+</script>
+
+
 <body>
   <!-- for the mobile image stuff -->
   <div class="modal" id="mobileModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">

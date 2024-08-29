@@ -23,7 +23,58 @@
 defined( 'ABSPATH' ) || exit;
 
 get_header();
+
+$args = array(
+    'post_type'      => 'instance',
+    'posts_per_page' => -1, 
+);
+
+$instances_query = new WP_Query($args);
+
+$instance_slugs = array(); 
+
+if ($instances_query->have_posts()) {
+    while ($instances_query->have_posts()) {
+        $instances_query->the_post();
+        
+        $instance_id = get_the_ID();
+        $instance_slug = get_post_meta($instance_id, 'instance_slug', true); 
+        $instance_overview_scene = get_post_meta($instance_id, 'instance_overview_scene', true); 
+
+        if ($instance_slug) {
+            $instance_slugs[] = [$instance_slug, $instance_overview_scene]; 
+        }
+    }
+    wp_reset_postdata();
+} else {
+    // echo 'No instances found.';
+}
+
 ?>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let currentUrl = window.location.href;
+        let instanceSlugs = <?php echo json_encode($instance_slugs); ?>; 
+    
+            instanceSlugs.forEach(function(slugScenePair) {
+            let slug = slugScenePair[0];
+            let overviewScene = slugScenePair[1];
+            
+            let slugPattern = new RegExp(slug + '\/?$'); 
+            if (currentUrl.match(slugPattern)) {
+                const protocol = window.location.protocol;
+                const host = window.location.host;
+                const postType = 'scene'; 
+                const postId = overviewScene; 
+                const url = `${protocol}//${host}/?post_type=${postType}&p=${postId}`;
+                window.location.href = url;
+            }
+        });
+    });
+</script>
+
+
 <div class="container-fluid">
 <!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->
 <div class="image-center" style="padding-bottom: 20px;">
