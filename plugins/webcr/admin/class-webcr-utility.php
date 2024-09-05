@@ -262,7 +262,7 @@ class Webcr_Utility {
                 $target_field = "modal_tab_title" . $i;
                 $target_title = get_post_meta($modal_id, $target_field, true);
                 if ($target_title != "" && $target_title != null ){
-                    $potential_tabs[$target_title] = $target_title;
+                    $potential_tabs[$i] = $target_title;
                 }
             }
         //    asort($potential_tabs);
