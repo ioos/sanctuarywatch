@@ -10,7 +10,17 @@ console.log("new wp")
 
 
 
-//helper for modal focus trap
+/**
+ * Traps the focus within a specified modal element, ensuring that the user cannot tab out of it.
+ *
+ * This function ensures that accessibility keyboard navigation (specifically tabbing) is confined within the modal,
+ * and if the user tries to tab past the last focusable element, focus will loop back to the first focusable element.
+ * It also brings focus back to the modal if the user attempts to focus on an element outside of it.
+ *
+ * @param {HTMLElement} modalElement - The modal element within which focus should be trapped.
+ * @returns {Function} cleanup - A function that removes the event listeners and deactivates the focus trap.
+ */
+
 function trapFocus(modalElement) {
     function getFocusableElements() {
         return Array.from(modalElement.querySelectorAll(
@@ -114,7 +124,14 @@ if (!is_mobile()) {
     document.head.appendChild(style);
 }
 
-
+/**
+ 
+ * This function pre-processes the `child_obj` dictionary to ensure that each element (scene icon) belongs to the 
+ * current scene by checking if its scene ID matches the post ID.
+ * This ensures that elements from other scenes are excluded, and keys are updated as needed to avoid duplicates.
+ *
+ * @returns {void} Modifies child_obj dictionary in place
+ */
 function process_child_obj(){
     for (let key in child_obj){
         if (child_obj[key]["scene"]["ID"] !== post_id){
@@ -147,6 +164,28 @@ process_child_obj();
 console.log("MODIFIED");
 console.log(child_obj);
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
+
+/**
+ * Creates HTML elements that represent collapsible sections with links to additional scene information.
+ * This function generates a list of scene information items (like text and URLs) and wraps them in an accordion component.
+ * 
+ * @param {string} info - The base name of the field in `scene_data` representing scene information. 
+ *                        This value will be concatenated with a number (1 to 6) to create the full field name.
+ * @param {string} iText - The base name of the field in `scene_data` representing the text information for the scene. 
+ *                         This will be concatenated with a number (1 to 6) to fetch the corresponding text.
+ * @param {string} iUrl - The base name of the field in `scene_data` representing the URL information for the scene. 
+ *                        This will be concatenated with a number (1 to 6) to fetch the corresponding URL.
+ * @param {object} scene_data - The dataset containing information about the scene, which includes fields for text and URL.
+ * @param {string} type - The type identifier, used to generate unique HTML element IDs.
+ * @param {string} name - The display name for the accordion section header.
+ * 
+ * @returns {HTMLElement} - Returns an accordion item element (generated via `createAccordionItem`) containing the list of scene links.
+ *
+ * This function is typically used in `make_title` to generate the "More Info" and "Images" sections for each scene. It iterates through 
+ * a predefined set of numbered fields (from 1 to 6) in the `scene_data`, checking for non-empty text and URLs. If valid data is found, 
+ * it creates a collapsible accordion section with the relevant links and displays them.
+ */
+
 function make_scene_elements(info, iText, iUrl, scene_data, type, name){
     let collapseListHTML = '<div>';
             for (let i = 1; i < 7; i++){
@@ -475,7 +514,17 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
 }
 
 // Below is the function that will be used to include SVGs within each scene
-//based on link_svg from infographiq.js
+
+/**
+ * Accesses the SVG image for the scene, checks type of device, renders appropriate scene layout by calling other helper functions. 
+ * all of the top-level helper functions that render different elements of the DOM are called within here. 
+ * based on link_svg from infographiq.js
+ *
+ * @param {string} url - The URL of the SVG to be fetched, provided from the PHP backend.
+ * @param {string} containerId - The ID of the DOM element to which the SVG will be appended.
+ * @returns {void} `void` - Modifies the DOM but does not return any value.
+ * @throws {Error} - Throws an error if the network response is not OK or if the SVG cannot be fetched or parsed.
+ */
 
 async function loadSVG(url, containerId) {
     try {
@@ -675,6 +724,14 @@ async function loadSVG(url, containerId) {
 
 //highlight items on mouseover, remove highlight when off; 
 //CHANGE HERE FOR TABLET STUFF
+
+/**
+ * Adds hover effects to SVG elements based on `child_obj` keys, meant for PC layout. 
+ * Highlights the icon by changing its stroke color and width on mouseover, 
+ * using section-specific colors if enabled, and resets the style on mouseout.
+ *
+ * @returns {void} - `void` Modifies DOM element styles in place.
+ */
 function highlight_icons(){
     for (let key in child_obj){
         let elem = document.querySelector('g[id="' + key + '"]');
@@ -702,7 +759,13 @@ function highlight_icons(){
         });
     }  
 }
-//flicker highlight on and off, for tablets
+/**
+ * Adds flicker effects to SVG elements based on `child_obj` keys, meant for tablet layout. 
+ * Icons flicker their corresponding color on a short time interval
+ * using section-specific colors if enabled
+ * 
+ * @returns {void} - `void` Modifies DOM element styles in place.
+ */
 function flicker_highlight_icons() {
     for (let key in child_obj) {
         let elem = document.querySelector('g[id="' + key + '"]');
@@ -742,7 +805,10 @@ function flicker_highlight_icons() {
 
 
 
-//check if touchscreen
+/**
+ * Checks if the device being used is touchscreen or not. 
+ * @returns {boolean} `True` if touchscreen else `False`.
+ */
 function is_touchscreen(){
     //check multiple things here: type of device, screen width, 
     return ( 'ontouchstart' in window ) || 
@@ -751,17 +817,29 @@ function is_touchscreen(){
     
 }
 
-//check operating system
-// function is_mobile(){
-//     return (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
-        
-// }
+
+/**
+ * Checks if the device being used is a mobile device or not.
+ * Checks operating system and screen dimensions
+ * @returns {boolean} `True` if mobile else `False`.
+ */
 function is_mobile() {
     return (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) 
            && (window.innerWidth < 512 || window.innerHeight < 512);
 }
 
-//helper function from the internet; using it to check if device is a tablet or not. 
+/**
+ * A utility object from the internet for detecting the user's device type based on the user agent string.
+ * Helper function from the internet; using it to check type of device. 
+ * Properties:
+ * - `device` {string}: The detected device type ('tablet', 'phone', or 'desktop').
+ * - `isMobile` (boolean): Indicates if the device is mobile (true for 'tablet' or 'phone', false for 'desktop').
+ * - `userAgent` (string): The user agent string in lowercase.
+ * 
+ * Methods:
+ * - `detect(s)`: Detects the device type from the user agent string `s` (or the current user agent if not provided).
+ *     - @returns {string} - The detected device type ('tablet', 'phone', or 'desktop').
+ */
 var deviceDetector = (function ()
 {
   var ua = navigator.userAgent.toLowerCase();
@@ -784,7 +862,20 @@ var deviceDetector = (function ()
     };
 }());
  
+
 //creates an accordion item w/custom IDs based on input
+/**
+ * Creates and returns a fully structured Bootstrap accordion item with a header, button, and collapsible content.
+ * Called in scenarios where accordion needs to be created - within `render_modal` (for modal info and modal images), `make_scene_elements` (for scene info and scene photo accordions), and `make_title' (for mobile tagline)
+ *
+ * @param {string} accordionId - The unique ID for the accordion item.
+ * @param {string} headerId - The unique ID for the accordion header.
+ * @param {string} collapseId - The unique ID for the collapsible section.
+ * @param {string} buttonText - The text to display on the accordion button.
+ * @param {string} collapseContent - The content to display within the collapsible section.
+ * 
+ * @returns {HTMLElement} `accordionItem` The complete accordion item containing the header, button, and collapsible content.
+ */
 function createAccordionItem(accordionId, headerId, collapseId, buttonText, collapseContent) {
     // Create Accordion Item
     let accordionItem = document.createElement("div");
@@ -830,6 +921,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
 
     return accordionItem;
 }
+
 function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const containerDiv = document.createElement('div');
     containerDiv.style.background = 'LightGrey';
@@ -1054,7 +1146,6 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
     let link = document.createElement("a");
             // link.href = `#${title}/${tab_id}`;
             // link.target = "_blank";
-    link.classList.add('clipboard-icon'); 
     
     let icon = document.createElement("i");
     icon.classList.add("fas", "fa-clipboard");
@@ -1062,11 +1153,22 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
     // link.appendChild(icon);
     link.style.marginLeft = "10px"; 
     link.style.cursor = "pointer";
-    link.innerHTML += " Copy Tab Link";
+    // link.innerHTML += " Copy Tab Link";
+    link.innerHTML = '<i class="fa-solid fa-copy"></i> Copy Tab Link';
+    link.style.textDecoration = "none";
     
-            
+
+    let linkbutton = document.createElement("button");
+    linkbutton.classList.add("btn", "btn-primary");
+    linkbutton.textContent = "Copy Tab Link";
+    linkbutton.type = "button"; 
+    linkbutton.marginBottom = '10px';
+
+
             // mtitle.appendChild(link);
     tabContentElement.prepend(link);
+    tabContentElement.prepend(linkbutton);
+
 
     if (iter === 1) {
         window.location.hash = `${title}/${tab_id}`; 
@@ -1076,16 +1178,25 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
             e.preventDefault(); // Prevent the link from opening
             writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
         });
+        linkbutton.addEventListener("click", (e) => {
+            e.preventDefault(); // Prevent the link from opening
+            writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
+        });
     }
 
     button.addEventListener('click', function() {
         window.location.hash = `${title}/${tab_id}`; 
+        console.log(`${title}/${tab_id}`);
         link.href = `#${title}/${tab_id}`;
         link.target = "_blank";
         link.addEventListener("click", (e) => {
             e.preventDefault(); // Prevent the link from opening
             writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
-        });        
+        });  
+        linkbutton.addEventListener("click", (e) => {
+            e.preventDefault(); // Prevent the link from opening
+            writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
+        });      
         
     });
     async function writeClipboardText(text) {
@@ -1821,7 +1932,9 @@ async function waitForElement(selector) {
 }
 
 async function handleHashNavigation() {
+    //maybe in here check that the scene is/is not an overview
     if (window.location.hash) {
+        console.log(window.location.hash)
         let tabId = window.location.hash.substring(1);
         console.log(tabId);
 
@@ -1829,8 +1942,12 @@ async function handleHashNavigation() {
         console.log(modalName);
 
         tabId = tabId.replace(/\//g, '-');
-
+        console.log(window.location.pathname + window.location.search);
         history.pushState("", document.title, window.location.pathname + window.location.search);
+        // window.location.href = window.location.href;
+
+        
+        
 
         let modalButton = await waitForElement(`#${modalName}`);
         console.log(modalButton);
@@ -1895,6 +2012,7 @@ async function init() {
 
 document.addEventListener("DOMContentLoaded", () => {
     init(); 
+    
     handleHashNavigation();
 
 });

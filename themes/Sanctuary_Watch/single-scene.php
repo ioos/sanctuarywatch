@@ -43,31 +43,34 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 ?>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const postId = <?php echo json_encode($post_id); ?>;
-    const instanceSlug = <?php echo json_encode($instance_slug); ?>;
-    const overviewSceneId = <?php echo json_encode($overview); ?>;
+//   document.addEventListener('DOMContentLoaded', function() {
+//     const postId = <?php echo json_encode($post_id); ?>;
+//     const instanceSlug = <?php echo json_encode($instance_slug); ?>;
+//     const overviewSceneId = <?php echo json_encode($overview); ?>;
 
-    function changeUrl() {
-        if (Number(postId) === Number(overviewSceneId)) {
-            const newUrl = `/${instanceSlug}/`;
-            history.pushState(null, '', newUrl);
-            console.log('URL changed to:', newUrl);
-        }
-    }
+//     function changeUrl() {
+//       const currentHash = window.location.hash;
+//       if (Number(postId) === Number(overviewSceneId)) {
 
-    const observer = new MutationObserver(function(mutations, obs) {
-        if (document.readyState === 'complete') {
-            changeUrl();
-            obs.disconnect(); 
-            console.log('Page fully loaded, URL updated');
-        }
-    });
+//             const newUrl = `/${instanceSlug}/`;
+//             history.pushState(null, '', newUrl);
+//             console.log('URL changed to:', newUrl);
+//         }
+//     }
 
-    const config = { childList: true, subtree: true };
+//     const observer = new MutationObserver(function(mutations, obs) {
+//         if (document.readyState === 'complete') {
+//             changeUrl();
+//             obs.disconnect(); 
+//             console.log('Page fully loaded, URL updated');
+//         }
+//     });
 
-    observer.observe(document.body, config);
-});
+//     const config = { childList: true, subtree: true };
+
+//     observer.observe(document.body, config);
+// });
+
 </script>
 
 
