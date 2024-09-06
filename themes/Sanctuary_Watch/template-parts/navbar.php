@@ -30,22 +30,18 @@
             <?php
             $postMeta = get_post_meta(get_the_ID());
             $sceneLocation = $postMeta['scene_location'][0];
-            $sceneArr = explode(' ', $sceneLocation);
-            $scene_base_url = 'webcr-';
-            $nameMeta = get_post($sceneLocation);
-            $post = $nameMeta->post_title;
             $inst_overview_scene = get_post_meta($sceneLocation, 'instance_overview_scene')[0];
-            $link =  get_post_meta($inst_overview_scene, 'post_name')[0];
-            // echo $nameMeta;
-            // $name = get_post_title($nameMeta);
-            for($i=0; $i < count($sceneArr)-1; $i++){
-                $scene_base_url = $scene_base_url.strtolower($sceneArr[$i]);
-                echo $scene_base_url;
-            }
+            $title = get_post_meta($sceneLocation, 'post_title')[0];
+
+            echo "<script>
+                    console.log('Post Meta: ', " . json_encode($postMeta) . ");
+                    console.log('Scene Location: ', " . json_encode($sceneLocation) . ");
+                    console.log('Instance Overview Scene: ', " . json_encode($title) . ");
+                </script>";
+
             if($sceneLocation){
 
-                // echo "<a class='navbar-brand' href='/$nameMeta->instance_slug/'>$post</a>";
-                echo "<a class='navbar-brand' href='/$link/'>$post</a>";
+                echo "<a class='navbar-brand' href='/?post_type=scene&p=" . $inst_overview_scene . "'>$title</a>";
 
             }else {
                 echo '<a class="navbar-brand" href=""><img class="navbar-emblem" width="32p" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Sanctuary Watch Navbar Emblem"> Sanctuary Watch</a>';

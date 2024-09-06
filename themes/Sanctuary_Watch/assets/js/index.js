@@ -19,7 +19,7 @@ async function getInstanceInfo() {
       return data;
     } catch (error) {
       console.error('Error fetching data:', error);
-      throw error; // Re-throw the error if needed
+      throw error; 
     }
   }
 
@@ -35,7 +35,9 @@ async function getInstanceInfo() {
     for (let idx in testDataIndex) {
         let child = testDataIndex[idx];
         console.log(child);
-        if (child.instance_status != "Published" && !is_logged_in){
+        console.log(child.instance_status);
+        console.log(is_logged_in);
+        if (child.instance_status == "Draft" && !is_logged_in){
             continue;
         }
         
