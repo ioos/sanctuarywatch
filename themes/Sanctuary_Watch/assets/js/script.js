@@ -188,7 +188,7 @@ console.log(child_obj);
 
 function make_scene_elements(info, iText, iUrl, scene_data, type, name){
     let collapseListHTML = '<div>';
-            for (let i = 1; i < 7; i++){
+    for (let i = 1; i < 7; i++){
                 // let info_field = "scene_info" + i;
                 let info_field = info + i;
 
@@ -215,7 +215,7 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 // collapseList.appendChild(listItem);
                 collapseListHTML += `<div> <a href="${scene_info_url}">${scene_info_text}</a> </div>`;
                 collapseListHTML += '</div>';
-            }
+    }
     // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
     let acc = createAccordionItem(`${type}-item-1`, `${type}-header-1`, `${type}-collapse-1`, name, collapseListHTML);
 
@@ -254,10 +254,6 @@ async function make_title() {
         titleh1.innerHTML = title;
         titleDom.appendChild(titleh1);
 
-        let acc = make_scene_elements("scene_info", "scene_info_text", "scene_info_url", scene_data, "more-info", "More Info");
-        let acc1 = make_scene_elements("scene_photo", "scene_photo_text", "scene_photo_url", scene_data, "images", "Images");
-        // let acc2 = make_scene_elements("scene_tagline", "scene_tagline_text", "scene_tagline_url", scene_data, "tagline", "tagline");
-
         let accgroup = document.createElement("div");
         if (!is_mobile()) {
             accgroup.setAttribute("style", "margin-top: 2%");
@@ -265,8 +261,28 @@ async function make_title() {
             accgroup.setAttribute("style", "max-width: 85%; margin-top: 2%");
         }
         accgroup.classList.add("accordion");
-        accgroup.appendChild(acc);
-        accgroup.appendChild(acc1);
+
+        if (scene_data["scene_info_entries"]!=0){
+            let acc = make_scene_elements("scene_info", "scene_info_text", "scene_info_url", scene_data, "more-info", "More Info");
+            accgroup.appendChild(acc);
+        }
+        if (scene_data["scene_photo_entries"] != 0){
+            let acc1 = make_scene_elements("scene_photo", "scene_photo_text", "scene_photo_url", scene_data, "images", "Images");
+            accgroup.appendChild(acc1); 
+        }
+        // let acc = make_scene_elements("scene_info", "scene_info_text", "scene_info_url", scene_data, "more-info", "More Info");
+        // let acc1 = make_scene_elements("scene_photo", "scene_photo_text", "scene_photo_url", scene_data, "images", "Images");
+        // let acc2 = make_scene_elements("scene_tagline", "scene_tagline_text", "scene_tagline_url", scene_data, "tagline", "tagline");
+
+        // let accgroup = document.createElement("div");
+        // if (!is_mobile()) {
+        //     accgroup.setAttribute("style", "margin-top: 2%");
+        // } else {
+        //     accgroup.setAttribute("style", "max-width: 85%; margin-top: 2%");
+        // }
+        // accgroup.classList.add("accordion");
+        // accgroup.appendChild(acc);
+        // accgroup.appendChild(acc1);
      
         let row = document.createElement("div");
         row.classList.add("row");
@@ -281,8 +297,10 @@ async function make_title() {
         // col2.classList.add("col-md-10");
 
         if (!is_mobile()) {
-            col1.classList.add("col-md-3");
-            col2.classList.add("col-md-9");
+            col1.classList.add("col-md-4");
+            col2.classList.add("col-md-8");
+            // col2.style.marginLeft =  `-12%`;
+            // col1.style.marginLeft = '-12%';
             // document.querySelector("#title-container").style.marginLeft = '0%';
             function adjustTitleContainerMargin() {
                 if (window.innerWidth < 512) {
@@ -313,9 +331,10 @@ async function make_title() {
         } else {
             col2.appendChild(titleTagline);
         }
-
-        row.appendChild(col1);
+        // row.setAttribute("style", "display: flex; justify-content: center; margin-right: -15px; margin-left: -15px; margin-top: 1%");
         row.appendChild(col2);
+        row.appendChild(col1);
+        // row.appendChild(col2);
         row.setAttribute("style", "margin-top: 1%");
 
         titleDom.append(row);
@@ -1000,7 +1019,10 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // figureDiv.style.display = "flex";
     figureDiv.style.justifyContent = "center"; // Center horizontally
     figureDiv.style.alignItems = "center";
-    img.setAttribute("style", "max-width: 100%;margin-top: 3%; justify-content: center");
+    // img.setAttribute("style", "max-width: 100%;margin-top: 3%; justify-content: center");
+    figureDiv.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
+    img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
+
     // img.setAttribute("style", "margin-top: 2px;");
 
     
@@ -1032,7 +1054,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // console.log(tabContentContainer);
 }
 
-function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
+function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id){
     // let id = child_obj['infauna']['id'];
     // console.log(id);
     // console.log(tab_label);
@@ -1045,10 +1067,10 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            console.log(tab_label);
+            // console.log(tab_label);
             // figure_data = data.find(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
-            all_figure_data = data.filter(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
-
+            // all_figure_data = data.filter(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
+            all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id))
             
             if (!all_figure_data){
                 //we don't create anything here...
@@ -1095,8 +1117,9 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label){
 function create_tabs(iter, tab_id, tab_label, title = "") {
     // tab_id = tab_label.replace(/\s+/g, '_').replace(/[()]/g, '_');
     // title = title.replace(/\s+/g, '_').replace(/[()]/g, '_');
-    tab_id = tab_label.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_');
+    tab_id = tab_label.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_'); //instead of tab id, it should just be the index (figure_data)
     title = title.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_');
+    tab_id = iter;
     console.log(tab_id);
     console.log("creating a tab");
 
@@ -1210,7 +1233,7 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
     }
     
 
-    fetch_tab_info(tabContentElement, tabContentContainer, tab_label);
+    fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id);
 }
 
 
@@ -1263,29 +1286,6 @@ function render_modal(key){
                 // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
                 tagline_container.setAttribute("style", "min-width: 300px");
 
-                // accordion_container.setAttribute("style", "max-width: 20%;");
-                // function handleOrientationChange() {
-                //     let tagline_container = document.getElementById('tagline-container');
-                //     let accordion_container = document.getElementById('accordion-container');
-                //     if ((window.innerWidth < window.innerHeight)) {
-                //         accordion_container.style.minWidth = '300px';
-                //         accordion_container.style.maxWidth = '20%';
-                //         tagline_container.style.width = '85% !important'
-                //     } else {
-                //         print("landscape mf");
-                //         accordion_container.style.minWidth = ''; 
-                //         accordion_container.style.maxWidth = '';
-                //         accordion_container.style.width = '0 !important';
-                //         tagline_container.style.width = '0 !important';
-                //     }
-                // }
-                
-                // handleOrientationChange();
-                // window.addEventListener('resize', handleOrientationChange);
-
-                let modalDialog = document.querySelector("#myModal > div");
-                // modalDialog.setAttribute("style", "z-index: 9999; margin-top: 55%;max-width: 90%;margin-left: 17px;");
-                // modalDialog.setAttribute("style", "z-index: 9999; margin-top: 35%;max-width: 90%;margin-left: 4.5%;");
 
             } else{
                 tagline_container.setAttribute("class", "");
@@ -1361,6 +1361,7 @@ function render_modal(key){
             // window.addEventListener('load', function() {
             
             let num_tabs = Number(modal_data["modal_tab_number"]);
+            console.log(num_tabs);
             for (let i =1; i <= num_tabs; i++){
                 let tab_key = "modal_tab_title" + i;
                 let tab_title = modal_data[tab_key];
