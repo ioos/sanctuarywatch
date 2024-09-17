@@ -138,22 +138,43 @@
         // Select the img tag within the class "exopite-sof-image-preview"
         let imagePreviewImg = imagePreviewContainer.querySelector('img');
 
-        imagePreviewImg.src
-        'http://nov9.local/wp-admin/post-new.php?post_type=figure'
-        imagePreviewImg.src
-        'http://nov9.local/wp-content/uploads/2023/11/Svg_example3.svg'
+        let figureJsonContainer = document.querySelector('[data-depend-id="figure_json"]');
+
+        // Select the nested container with class "exopite-sof-image-preview"
+        let jsonPreviewContainer = figureJsonContainer.querySelector('.exopite-sof-image-preview');
+        // Select the img tag within the class "exopite-sof-image-preview"
+        let jsonPreviewImg = jsonPreviewContainer.querySelector('img');
+
 
         switch (imageType) {
             case "Internal":
+                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json")[0].value = "";
+
+                // Add the "hidden" class to the nested container
+                jsonPreviewContainer.classList.add('hidden');
+                jsonPreviewImg.src ="";
+
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "block";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].value = "";
+
+                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json_arguments")[0].value = "";
+
                 // Add the "hidden" class to the nested container
                 if (imagePreviewImg.src.includes("uploads")) {
                     imagePreviewContainer.classList.remove('hidden');
                 }
                 break;
             case "External":
+                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json")[0].value = "";
+
+                // Add the "hidden" class to the nested container
+                jsonPreviewContainer.classList.add('hidden');
+                jsonPreviewImg.src ="";
+
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
 
@@ -161,8 +182,29 @@
                 imagePreviewContainer.classList.add('hidden');
                 imagePreviewImg.src ="";
 
+                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json_arguments")[0].value = "";
+
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "block";
-                break;            
+                break;         
+            case "Interactive":   
+                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "block";
+                // Add the "hidden" class to the nested container
+                if (jsonPreviewImg.src.includes("uploads")) {
+                    jsonPreviewContainer.classList.remove('hidden');
+                }
+
+                document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_image")[0].value = "";
+                document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_external_url")[0].value = "";
+                // Add the "hidden" class to the nested container
+                if (imagePreviewImg.src.includes("uploads")) {
+                    imagePreviewContainer.classList.remove('hidden');
+                }
+                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "block";
+
+                break; 
         } 
     }
 

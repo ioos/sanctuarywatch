@@ -378,8 +378,8 @@ class Webcr_Figure {
                 array(
                     'id'             => 'figure_path',
                     'type'           => 'select',
-                    'title'          => 'Path',
-                    'options'        => array("Internal" => "Internal", "External" => "External"),
+                    'title'          => 'Figure Type',
+                    'options'        => array("Internal" => "Internal", "External" => "External", "Interactive" => "Interactive"),
                     'default'        => "Internal",
                     'description' => 'Is the figure image stored within this website or at some external location?',
                 ),
@@ -396,6 +396,19 @@ class Webcr_Figure {
                     'title'       => 'Figure External URL',
                     'class'       => 'text-class',
                     'description' => 'This external URL should link just to the image itself (that is the URL should end in .png .jpeg .jpg or .tiff)',
+                ),
+                array(
+                    'id'    => 'figure_json',
+                    'type'  => 'image',
+                    'title' => 'Figure Json',
+                    'description' => 'What is the figure json?',
+                ),
+                array(
+                    'id'          => 'figure_json_arguments',
+                    'type'        => 'text',
+                    'title'       => 'Arguments for Creating Interactive Figure',
+                    'class'       => 'text-class',
+                    'description' => 'This should be a comma-delimited list of arguments',
                 ),
                 array(
                     'id'     => 'figure_caption_short',
