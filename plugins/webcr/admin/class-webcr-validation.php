@@ -11,16 +11,16 @@ class webcr_validation {
     public function master_validate($validate_content_type){
         switch ($validate_content_type) {
             case "scene":
-                return true;// $this->validate_scene();
+                return $this->validate_scene();
                 break;
             case "modal":
-                return true;// $this->validate_modal();
+                return $this->validate_modal();
                 break;
             case "figure":
-                return true;// $this->validate_figure();
+                return $this->validate_figure();
                 break;
             case "instance":
-                return true;// $this->validate_instance();
+                return $this->validate_instance();
                 break;
             case "default":
                 return false;
@@ -208,7 +208,14 @@ class webcr_validation {
         $scene_infographic = $_POST["scene_infographic"];
 
         if (!(is_null($scene_infographic)) && !($scene_infographic == "") ){
-            $content = file_get_contents( $scene_infographic );
+            // Parse the URL to extract the path
+            $parsed_url = parse_url($scene_infographic);
+
+            // Get the path from the parsed URL
+            $path_url = $parsed_url['path'];
+            $content_path = rtrim(get_home_path(), '/') . $path_url;
+            $content = file_get_contents( $content_path);
+            //$content = file_get_contents( $scene_infographic );
             if ($content == false) {
                 array_push($scene_errors,  "The infographic does not exist.");
                 $save_scene_fields = FALSE;

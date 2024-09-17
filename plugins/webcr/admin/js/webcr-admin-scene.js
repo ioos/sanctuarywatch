@@ -2,6 +2,8 @@
 (function( $ ) {
 	'use strict';
 
+	//displayPhotoPath(1);
+
 	let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
 	displaySceneEntries(openingSceneSections);
 
@@ -17,6 +19,28 @@
 		for (let i = 1; i <= entry_number; i++){
 			target_element = "scene_section" + i;
 			document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "block";
+		}
+	}
+
+	// Function to display either URL or image under scene image link
+	function displayPhotoPath (fieldNumber){
+		const targetElement = "scene_photo" + fieldNumber + "[scene_photo_location" + fieldNumber + "]";
+		console.log(fieldNumber);
+		console.log(targetElement);
+		const targetLocation = document.getElementsByName(targetElement)[0];
+		const imageElement = '[data-depend-id="scene_photo_internal' + fieldNumber + '"]';
+		const imageField = document.querySelector(imageElement);
+		const urlElement = "scene_photo" + fieldNumber + "[scene_photo_url" + fieldNumber + "]";
+		const urlField = document.getElementsByName(urlElement)[0];
+		if (targetLocation.value == "Internal"){
+			urlField.value = "";
+			urlField.parentElement.parentElement.style.display = "none";
+			imageField.parentElement.parentElement.style.display="block";
+		} else if (targetLocation.value == "External"){
+			imageField.value = "";
+			imageField.parentElement.parentElement.style.display = "none";
+			urlField.parentElement.parentElement.style.display="block";
+
 		}
 	}
 
@@ -277,8 +301,6 @@
 		newDiv.appendChild(thirdRow);
 		// Append the new div to the second parent element
 		secondParent.appendChild(newDiv);
-
-
 	});
 
 // Run jquery from console 
@@ -307,11 +329,26 @@
 		}
 	}
 
-  $('select[name="scene_section_number"]').change(function(){
-      let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
-      displaySceneEntries(openingSceneSections);
-  });
+	//initialize photopath six times and also set it for onchange of dropdown
+	for (let i = 1; i < 7; i++){
+		displayPhotoPath(i);
+		let targetPhotoElement = 'select[name="scene_photo' + i + '[scene_photo_location' + i + ']"]';
+		$(targetPhotoElement).change(function(){
+			displayPhotoPath(i);
+		});
+	}
 
+
+
+	$('select[name="scene_section_number"]').change(function(){
+		let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
+		displaySceneEntries(openingSceneSections);
+	});
+
+	$('select[name="scene_section_number"]').change(function(){
+		let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
+		displaySceneEntries(openingSceneSections);
+	});
 
 	$(".range[data-depend-id='scene_info_entries']").change(function(){ 
 		let number_of_scene_info_entries = $(".range[data-depend-id='scene_info_entries']").val();

@@ -171,7 +171,7 @@ class Webcr_Modal {
                 array(
                     'id'             => 'icon_function',
                     'type'           => 'select',
-                    'title'          => 'Icon Function',
+                    'title'          => 'Icon Action',
                     'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
                     'description' => 'What should happen when the user clicks on the icon?',
                     'default'     => 'Modal',
