@@ -500,9 +500,7 @@ class Webcr_Scene {
                     'title'          => 'Instance',
                     'options'        => $instances, 
                     'description' => 'What instance is the scene part of? ',
-                  //   'class'      => 'chosen', 
                 ),
-
                 array(
                     'id'    => 'scene_infographic',
                     'type'  => 'image',
@@ -650,8 +648,8 @@ class Webcr_Scene {
                 array(
                     'id'      => 'scene_photo_entries',
                     'type'    => 'range',
-                    'title'   => 'Number of Scene Photo Entries',
-                    'description' => 'How many photo links are there for the scene?',
+                    'title'   => 'Number of Scene Image Entries',
+                    'description' => 'How many image links are there for the scene?',
                     'min'     => 0,    
                      'default' => 1,    
                      'max'     => 6,         
@@ -660,13 +658,20 @@ class Webcr_Scene {
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo1',
-                    'title'   => 'Scene Photo Link 1',
+                    'title'   => 'Scene Image Link 1',
                 //    'description' => 'Scene Photo 1 description',
                     'fields' => array(
                         array(
+                            'id'             => 'scene_photo_location1',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
+                        array(
                             'id'          => 'scene_photo_text1',
                             'type'        => 'text',
-                            'title'       => 'Text',
+                            'title'       => 'Link Text',
                             'class'       => 'text-class',
                         ),
                         array(
@@ -675,14 +680,26 @@ class Webcr_Scene {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'scene_photo_internal1',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo2',
-                    'title'   => 'Scene Photo Link 2',
+                    'title'   => 'Scene Image Link 2',
                 //    'description' => 'Scene Photo Link 2 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'scene_photo_location2',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'scene_photo_text2',
                             'type'        => 'text',
@@ -695,14 +712,26 @@ class Webcr_Scene {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'scene_photo_internal2',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo3',
-                    'title'   => 'Scene Photo Link 3',
+                    'title'   => 'Scene Image Link 3',
                  //   'description' => 'Scene Photo Link 3 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'scene_photo_location3',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'scene_photo_text3',
                             'type'        => 'text',
@@ -715,14 +744,26 @@ class Webcr_Scene {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'scene_photo_internal3',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo4',
-                    'title'   => 'Scene Photo Link 4',
+                    'title'   => 'Scene Image Link 4',
                  //   'description' => 'Scene Photo Link 4 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'scene_photo_location4',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'scene_photo_text4',
                             'type'        => 'text',
@@ -735,14 +776,26 @@ class Webcr_Scene {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'scene_photo_internal4',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo5',
-                    'title'   => 'Scene Photo Link 5',
+                    'title'   => 'Scene Image Link 5',
                 //    'description' => 'Scene Photo Link 5 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'scene_photo_location5',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'scene_photo_text5',
                             'type'        => 'text',
@@ -755,15 +808,27 @@ class Webcr_Scene {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'scene_photo_internal5',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
 
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo6',
-                    'title'   => 'Scene Photo Link 6',
+                    'title'   => 'Scene Image Link 6',
                  //   'description' => 'Scene Photo Link 6 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'scene_photo_location6',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'scene_photo_text6',
                             'type'        => 'text',
@@ -775,6 +840,11 @@ class Webcr_Scene {
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'    => 'scene_photo_internal',
+                            'type'  => 'image',
+                            'title' => 'Image',
                         ),
                     ),
                 ),
@@ -959,7 +1029,7 @@ class Webcr_Scene {
         );        
 
         for ($i = 1; $i < 7; $i++ ) {
-            $target_field = 'scenew1_photo' . $i;
+            $target_field = 'scene_photo' . $i;
             $target_description = 'Photo link ' . $i;
             register_meta( 'post', 
                 $target_field,
