@@ -223,6 +223,13 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
     return acc;
 }
 
+/**
+ * Creates and renders the scene title, tagline, more information/photo dropdowns after scene API call. Called asynchronously within init function
+ * @returns {String} `String` - Numerical location of the scene (which instance its found in) but still a string, returned so scene location can be used within init
+ * @throws {Error} - Throws an error if the network response is not OK or if the SVG cannot be fetched or parsed.
+ *  @throws {Error} - Throws an error if scene data not found or error fetching data
+ */
+
 async function make_title() {
     const protocol = window.location.protocol;
     const host = window.location.host;
@@ -270,20 +277,7 @@ async function make_title() {
             let acc1 = make_scene_elements("scene_photo", "scene_photo_text", "scene_photo_url", scene_data, "images", "Images");
             accgroup.appendChild(acc1); 
         }
-        // let acc = make_scene_elements("scene_info", "scene_info_text", "scene_info_url", scene_data, "more-info", "More Info");
-        // let acc1 = make_scene_elements("scene_photo", "scene_photo_text", "scene_photo_url", scene_data, "images", "Images");
-        // let acc2 = make_scene_elements("scene_tagline", "scene_tagline_text", "scene_tagline_url", scene_data, "tagline", "tagline");
-
-        // let accgroup = document.createElement("div");
-        // if (!is_mobile()) {
-        //     accgroup.setAttribute("style", "margin-top: 2%");
-        // } else {
-        //     accgroup.setAttribute("style", "max-width: 85%; margin-top: 2%");
-        // }
-        // accgroup.classList.add("accordion");
-        // accgroup.appendChild(acc);
-        // accgroup.appendChild(acc1);
-     
+   
         let row = document.createElement("div");
         row.classList.add("row");
 
@@ -347,7 +341,13 @@ async function make_title() {
 
 let mobileBool = false;
 
-//checks whether or not an icon has an associated mobile layer.
+
+/**
+ * Checks whether or not an icon has an associated mobile layer. Looks at mob_icons elementm
+ * @returns {Boolean} `Boolean` - Numerical location of the scene (which instance its found in) but still a string, returned so scene location can be used within init
+ * @throws {Error} - Throws an error if the network response is not OK or if the SVG cannot be fetched or parsed.
+ * * @throws {Error} - Throws an error if scene data not found or error fetching data
+ */
 function has_mobile_layer(mob_icons, elemname){
     // console.log("mobile icons here:");
     // console.log(mob_icons);
@@ -370,6 +370,15 @@ function has_mobile_layer(mob_icons, elemname){
 }
 
 //returns DOM elements for mobile layer
+/**
+ * Retrieves the DOM element corresponding to a specific layer in a mobile SVG structure based on its label.
+ * 
+ * @param {HTMLElement} mob_icons - The parent DOM element that contains all child elements (icons) to search through.
+ * @param {string} elemname - The name of the layer or icon to search for. It matches the 'inkscape:label' attribute of the child element.
+ * 
+ * @returns {HTMLElement|null} - Returns the DOM element that matches the given `elemname` in the 'inkscape:label' attribute.
+ *                                If no match is found, it returns `null`.
+ */
 function get_mobile_layer(mob_icons, elemname){
     for (let i = 0; i < mob_icons.children.length; i++) {
         let child = mob_icons.children[i];
@@ -385,6 +394,15 @@ function get_mobile_layer(mob_icons, elemname){
     return null;
 }
 
+/**
+ * Removes the outer container with the ID 'entire_thing' and promotes its child elements to the body. 
+ * This is because we want to get rid of entire_thing if we are on pc/tablet view, and keep it otherwise (ie mobile)
+ * 
+ * This function locates the container element with the ID 'entire_thing', moves all its child elements 
+ * directly to the `document.body`, and then removes the container itself from the DOM.
+ * 
+ * @returns {void}
+ */
 function remove_outer_div(){
     let container =  document.querySelector("#entire_thing");
     while (container.firstChild) {
@@ -395,6 +413,19 @@ function remove_outer_div(){
 }
 
 //helper function for creating mobile grid for loadSVG:
+/**
+ * Creates a mobile grid layout for displaying icons in an SVG element.
+ * 
+ * This function removes the outer container (using `remove_outer_div`), clones icons from an SVG element, 
+ * and organizes them into a responsive grid based on the screen's width and height. It adjusts the layout
+ * when the window is resized, dynamically setting the number of columns and rows.
+ * 
+ * @param {SVGElement} svgElement - The main SVG element that contains the icons to be displayed.
+ * @param {Array} iconsArr - An array of icon objects containing the icon IDs and their metadata.
+ * @param {HTMLElement} mobile_icons - A DOM element containing specific mobile versions of icons, if available.
+ * 
+ * @returns {void}
+ */
 function mobile_helper(svgElement, iconsArr, mobile_icons){
     // console.log(svgElement);
     remove_outer_div();
@@ -941,6 +972,40 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     return accordionItem;
 }
 
+/**
+ * Renders tab content into the provided container element based on the information passed in the `info_obj` object. 
+ * This function creates a styled layout that includes links, an image with a caption, and an expandable details section.
+ * 
+ * @param {HTMLElement} tabContentElement - The HTML element where the content for the tab will be inserted.
+ * @param {HTMLElement} tabContentContainer - The container element that holds the tab content and allows appending the tab content element.
+ * @param {Object} info_obj - An object containing information used to populate the tab content.
+ *     @property {string} scienceLink - URL for the "More Science" link.
+ *     @property {string} scienceText - Text displayed for the "More Science" link. This text is prepended with a clipboard icon.
+ *     @property {string} dataLink - URL for the "More Data" link.
+ *     @property {string} dataText - Text displayed for the "More Data" link. This text is prepended with a database icon.
+ *     @property {string} imageLink - URL of the image to be displayed in the figure section.
+ *     @property {string} shortCaption - Short description that serves as the image caption.
+ *     @property {string} longCaption - Detailed text that is revealed when the user clicks on the expandable 'Click for Details' section.
+ * @returns {void} Modifies dom
+ * Function Workflow:
+ * 1. A container `div` element is created with custom styling, including background color, padding, and border-radius.
+ * 2. Inside this container, a `table-row`-like structure is created using `div` elements that display two links:
+ *      a. A "More Science" link on the left, prepended with a clipboard icon.
+ *      b. A "More Data" link on the right, prepended with a database icon.
+ * 3. The function appends the container to `tabContentElement` only if both the science link text and data link exist.
+ * 4. An image with a caption is added to `tabContentElement`, using the URL and caption provided in `info_obj`.
+ * 5. A `details` element is created, which reveals more information (the long caption) when the user clicks the 'Click for Details' summary.
+ * 6. The function appends the entire tab content (container with links, figure with image, caption, and details) to `tabContentContainer`.
+ *
+ * Styling and Layout:
+ * - The function uses a `table-row` and `table-cell` approach for laying out the links side by side.
+ * - Links are decorated with icons, styled to remove the underline, and open in a new tab.
+ * - The image is styled to be responsive (100% width) and centered within the figure.
+ * - The `details` element is collapsible, providing a clean way to show the long caption when needed.
+ *
+ * Usage:
+ * This function is called for each tab, populating one or more figures (and other corresponding info)
+ */
 function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const containerDiv = document.createElement('div');
     containerDiv.style.background = 'LightGrey';
@@ -1054,6 +1119,32 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // console.log(tabContentContainer);
 }
 
+/**
+ * Fetches tab information from a WordPress REST API endpoint and renders it into the specified tab content element and container.
+ * This function retrieves figure data associated with a specific tab label and ID, and then processes and displays the data using the `render_tab_info` function.
+ * 
+ * @param {HTMLElement} tabContentElement - The HTML element where the individual tab content will be rendered.
+ * @param {HTMLElement} tabContentContainer - The container element that holds all tab contents.
+ * @param {string} tab_label - The label of the tab used to filter data. This parameter is currently unused
+ * @param {string} tab_id - The ID of the tab, used to filter the figure data from the fetched results. Is a number but type is string, type casted when used
+ *
+ * Function Workflow:
+ * 1. Constructs the API URL to fetch figure data using the current page's protocol and host.
+ * 2. Makes a fetch request to the constructed URL to retrieve figure data in JSON format.
+ * 3. Filters the retrieved data based on the provided `tab_id`, looking for figures that match this ID.
+ * 4. If no figures match the `tab_id`, the function exits early without rendering any content.
+ * 5. If matching figures are found:
+ *      a. Iterates through the filtered figure data.
+ *      b. Constructs an `info_obj` for each figure, containing URLs, text, image links, and captions.
+ *      c. Calls the `render_tab_info` function to render each figure's information into the specified tab content element.
+ *
+ * Error Handling:
+ * - If the fetch request fails, an error message is logged to the console.
+ *
+ * Usage:
+ * Called at the end of the create_tabs function
+ */
+
 function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id){
     // let id = child_obj['infauna']['id'];
     // console.log(id);
@@ -1114,6 +1205,33 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
 }
 
 //create tabs
+/**
+ * Creates and adds a new tab within modal window. Each tab is associated with specific content that is displayed when the tab is active.
+ * The function also sets up event listeners for copying the tab link to the clipboard (modified permalink structure)
+ *
+ * @param {number} iter - The index of the tab being created. This determines the order of the tabs. From render_modal, when iterating through all tabs
+ * @param {string} tab_id - The unique identifier for the tab, generated from the `tab_label`. It is sanitized to replace spaces and special characters.
+ * @param {string} tab_label - The label displayed on the tab, which the user clicks to activate the tab content.
+ * @param {string} [title=""] - An optional title used to construct the IDs and classes associated with the tab. It is sanitized similarly to `tab_id`.
+ *
+ * Function Workflow:
+ * 1. Sanitizes `tab_id` and `title` by replacing spaces and special characters with underscores to create valid HTML IDs.
+ * 2. Constructs the target ID for the tab content and controls using the sanitized `title` and `tab_id`.
+ * 3. Creates a new navigation item for the tab, including setting the necessary attributes for Bootstrap styling and functionality.
+ * 4. Appends the new tab button to modal window
+ * 5. Creates a corresponding tab content pane and sets its attributes for proper display and accessibility.
+ * 6. Adds a "Copy Tab Link" button and link to the tab content that allows users to copy the tab's URL to the clipboard.
+ * 7. Sets event listeners for the tab button and link/button to handle copying the URL to the clipboard when clicked.
+ * 8. Updates the browser's hash in the URL to reflect the currently active tab when it is clicked based on what tab/figure is currently being displayed
+ * 9. Calls the `fetch_tab_info` function to fetch and display data relevant to the newly created tab.
+ *
+ * Error Handling:
+ * - The function handles potential errors during clipboard writing by providing user feedback through alerts.
+ *
+ * Usage:
+ * Called within render_modal -- each modal has a certain amount of tabs, iterate through each tab and create/render tab info, fix tab permalink
+ *
+ */
 function create_tabs(iter, tab_id, tab_label, title = "") {
     // tab_id = tab_label.replace(/\s+/g, '_').replace(/[()]/g, '_');
     // title = title.replace(/\s+/g, '_').replace(/[()]/g, '_');
@@ -1238,7 +1356,28 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
 
 
 
-
+/**
+ * Renders a modal dialog for corresponding icon with data fetched from a WordPress REST API endpoint.
+ * The modal displays a title, tagline, and two sections of content (more info and images) 
+ * using accordions, along with dynamic tab content based on the modal's data.
+ *
+ * @param {string} key - The key used to access specific child data in the `child_obj` object,
+ *                       which contains modal configuration and content details.
+ *
+ * This function performs the following steps:
+ * 1. Constructs the URL to fetch modal data based on the `modal_id` associated with the provided `key`.
+ * 2. Fetches modal data from the WordPress REST API.
+ * 3. Updates the modal title and tagline based on the fetched data.
+ * 4. Generates two accordion sections:
+ *    - A "More Info" section containing a list of items linked to URLs.
+ *    - An "Images" section containing a list of image links.
+ * 5. Dynamically creates tabs based on the number of tabs specified in the modal data.
+ * 6. Adjusts layout and classes for mobile and desktop views.
+ * 7. Traps focus within the modal dialog to improve accessibility.
+ *
+ * Usage:
+ * Called in add_modal and table_of_contents; those functions iterate through keys of child_obj(which has all the icons in a scene )
+ */
 function render_modal(key){
     let id = child_obj[key]['modal_id'];
     // console.log(child_obj[key]);
@@ -1391,6 +1530,21 @@ function render_modal(key){
     
 }
 
+/**
+ * Creates and displays a full-screen button for the scene SVG element.
+ * This button allows users to view scene in full screen (and escape to leave)
+ *
+ * @param {string} svgId - The ID of the SVG element to be made full-screen.
+ * 
+ * The function performs the following:
+ * 1. Checks if the instance allows a full-screen button (within WP) and if the browser supports full-screen functionality.
+ * 2. If supported, creates a button with appropriate attributes and prepends it to the container (`#toc-container`).
+ * 3. Sets up an event listener on the SVG element to adjust its dimensions when entering or exiting full-screen mode.
+ * 4. Defines the `openFullScreen` function to trigger full-screen mode for the SVG and appends a modal to it.
+ * 5. Adds a click event to the button that calls the `openFullScreen` function.
+ * 
+ * Usage: called within load_svg
+ */
 function full_screen_button(svgId){
     // let toc_container = document.querySelector("#toc-container");
     // let button = document.createElement("button");
@@ -1464,6 +1618,17 @@ function full_screen_button(svgId){
 
 }
 
+/**
+ * Creates a toggle button that lets user toggle on/off the text within the scene.
+ * 
+ * The function performs the following:
+ * 1. Checks if the instance wants the toggle button or not (within WP)
+ * 2. If supported, creates a button with appropriate attributes and prepends it to the container (`#toc-container`).
+ * 3. Based on the user-defined initial state of the toggle (again in WP), either sets toggle to on or off. 
+ * 4. Adds a click event to the button that shows/hides text from element
+ * 
+ * Usage: called within load_svg
+ */
 function toggle_text() {
     if (thisInstance.instance_text_toggle === "none") {
         return;
@@ -1509,6 +1674,21 @@ function toggle_text() {
 }
 
 //should create sections and pertinent collapsible, implemented as accordion
+/**
+ * Creates a sectioned list table of contents that is organized based on the user-defined sections in WP for any given scene.
+ * This function generates sections dynamically and organizes them in a color-coded way
+ * 
+ * The function:
+ * 1. Extracts unique section names from the `section_name` property of each object in `child_obj`.
+ * 2. Sorts the sections and assigns each section a color from the `colors` array. Ensures that consecutive sections don't have the same color.
+ * 3. Builds a sectioned table of contents, where each section name is a header and below are its icons,  styled with its assigned color.
+ * 4. Appends the generated TOC structure to the `#toc-container` element in the DOM.
+ * 
+ * @returns {void} - The function modifies the DOM by adding a dynamically generated TOC.
+ * 
+ * Usage: 
+ * called in table_of_contents, if user has selected sectioned list option in WP
+ */
 function sectioned_list(){
     let sections = [];
     for (let key in child_obj) {
@@ -1566,7 +1746,21 @@ function sectioned_list(){
     console.log(sectColors);
 }
 
-
+/**
+ * Creates a collapsible table of contents that is organized based on the user-defined sections in WP for any given scene.
+ * This function generates sections dynamically and organizes them in an accordion-style layout.
+ * 
+ * The function:
+ * 1. Extracts unique section names from the `section_name` property of each object in `child_obj`.
+ * 2. Sorts the sections and assigns each section a color from the `colors` array. Ensures that consecutive sections don't have the same color.
+ * 3. Builds an accordion-style TOC, where each section is collapsible and styled with its assigned color.
+ * 4. Appends the generated TOC structure to the `#toc-container` element in the DOM.
+ * 
+ * @returns {void} - The function modifies the DOM by adding a dynamically generated TOC.
+ * 
+ * Usage: 
+ * called in table_of_contents, if user has selected sectioned list option in WP
+ */
 function toc_sections() {
     let sections = [];
     for (let key in child_obj) {
@@ -1642,9 +1836,29 @@ function toc_sections() {
     toc_container.appendChild(toc_group);
     console.log(sectColors);
 }
-// toc_sections();
-//generates table of contents; modal table of contents open modal window, others go to external URLs
-//can either be: "accordion", "list", or "sectioned_list"
+
+
+/**
+ * Generates a Table of Contents (TOC) for a document, with links that either open modal windows or redirect to external URLs.
+ * The TOC style is determined by `thisInstance.instance_toc_style`, which can be:
+ *  - "accordion": Generates sections in an accordion layout.
+ *  - "list": Uses a simple list layout.
+ *  - "sectioned_list": Organizes content in sections based on their grouping.
+ * 
+ * For each TOC item:
+ * - If `child_obj[key]['modal']` is true, the item will open a modal window and trigger `render_modal(key)` to load content.
+ * - If `child_obj[key]['external_url']` is present, the item will link to an external URL.
+ * 
+ * Additional functionality includes:
+ * - Mouse hover effects on associated SVG elements, highlighting sections.
+ * - Event listeners for closing the modal window when clicking outside or on the close button.
+ * 
+ * @returns {void} - Modifies the DOM by generating TOC elements and attaching event listeners.
+ * 
+ * Usage:
+ * Called in load_svg if user wants to show the sections
+ */
+
 function table_of_contents(){
     // toc_sections();
     // sectioned_list();
@@ -1739,6 +1953,25 @@ function table_of_contents(){
     
 }
 
+/**
+ * Generates a simple list-based Table of Contents (TOC), where items either open modal windows or link to external URLs.
+ * The sections are not explicitly displayed, but their colors are used for highlighting.
+ * 
+ * Each TOC item:
+ * - If `child_obj[key]['modal']` is true, the item will open a modal window and trigger `render_modal(key)` to load content.
+ * - If `child_obj[key]['external_url']` is present, the item will link to an external URL.
+ * 
+ * Additional functionality:
+ * - Mouse hover effects highlight associated SVG elements, using section colors if `thisInstance.instance_colored_sections` is set to "yes".
+ * - Modal close event handling, including clicking outside the modal window to close it.
+ * 
+ * @returns {void} - Modifies the DOM by generating TOC list items and attaching event listeners.
+ * 
+ * Usage:
+ * called in load_svg if user wants a list with no sections displayed/no sections exist
+ * 
+ */
+
 function list_toc(){
     let sections = [];
     for (let key in child_obj) {
@@ -1829,7 +2062,29 @@ function list_toc(){
 }
 
 
-//generates modal window when SVG element is clicked. 
+/**
+ * Generates and handles modal windows or external URL redirects when SVG elements are clicked.
+ * 
+ * This function adds click event listeners to SVG elements (identified by `g[id="key"]`) from `child_obj`.
+ * 
+ * - If the `child_obj[key]['modal']` value is true:
+ *   - Clicking the SVG element or corresponding mobile container (`#key-container`) opens a modal window.
+ *   - The `render_modal(key)` function is triggered to load modal content.
+ *   - Clicking outside the modal or on the close button hides the modal and clears the content.
+ * 
+ * - If `child_obj[key]['modal']` is false:
+ *   - Clicking the SVG element redirects to the external URL specified in `child_obj[key]['external_url']`.
+ *   - For mobile devices, a similar event is added to the container element (`#key-container`).
+ * 
+ * Modal close behavior:
+ * - The modal is closed when the close button is clicked or when a click occurs outside the modal.
+ * - Upon closing, various content containers are cleared, and the URL is changed back to the original scene URL
+ * 
+ * @returns {void} - Directly manipulates the DOM by attaching event listeners for modal display or external URL redirection.
+ * 
+ * Usage: 
+ * Called in mobile helper, load_svg to actually add modal capabilities to scene element
+ */
 function add_modal(){
     for (let key in child_obj){
         let elem = document.querySelector('g[id="' + key + '"]');
@@ -1913,7 +2168,19 @@ function add_modal(){
 
 
 // loadSVG(url, "svg1");
-
+/**
+ * Waits for a DOM element matching the provided selector to become available.
+ * 
+ * This function returns a Promise that resolves when the DOM element matching the given `selector` is found.
+ * If the element is already present, it resolves immediately. If not, it uses a `MutationObserver` to detect when
+ * the element is added to the DOM and then resolves the Promise.
+ * 
+ * @param {string} selector - The CSS selector of the DOM element to wait for.
+ * @returns {Promise<Element>} - A Promise that resolves with the found DOM element.
+ * 
+ * Usage:
+ * called within handleHashNavigation, used to wait for the rendering of the modal button. 
+ */
 async function waitForElement(selector) {
     return new Promise(resolve => {
         const element = document.querySelector(selector);
@@ -1932,6 +2199,19 @@ async function waitForElement(selector) {
     });
 }
 
+
+/**
+ * Handles hash-based URL navigation. This is for when someone goes to the link for a certain figure (.../#CASheephead/1)
+ * 
+ * 1. First checks if the URL has a hash, making it a figure link
+ * 2. Does some string parsing stuff to clean up the URL, from which we can extract information about the scene, icon, and tab
+ * 3. Updates new URL, gets necessary DOM elements through waitForElement and fires event handlers to open up figure
+ * 
+ * @returns {Promise<void>} - A Promise that resolves when navigation handling is complete.
+ * 
+ * Usage:
+ * Called after init when DOMcontent loaded. 
+ */
 async function handleHashNavigation() {
     //maybe in here check that the scene is/is not an overview
     if (window.location.hash) {
@@ -1946,10 +2226,6 @@ async function handleHashNavigation() {
         console.log(window.location.pathname + window.location.search);
         history.pushState("", document.title, window.location.pathname + window.location.search);
         // window.location.href = window.location.href;
-
-        
-        
-
         let modalButton = await waitForElement(`#${modalName}`);
         console.log(modalButton);
 
@@ -1965,10 +2241,19 @@ async function handleHashNavigation() {
 
 
 
-
-
-
-
+/**
+ * Fetches instance details from the WordPress REST API.
+ *
+ * This asynchronous function retrieves data from the WordPress REST API endpoint for instances (`/wp-json/wp/v2/instance`)
+ * using the current protocol and host. The results are fetched in ascending order.
+ * It handles network errors and returns the data as a JSON object.
+ *
+ * @returns {Promise<Object[]>} - A Promise that resolves to an array of instance objects retrieved from the API.
+ * 
+ * @throws {Error} - Throws an error if the fetch request fails or the response is not successful (i.e., not OK).
+ * 
+ * Usage: called in init function to set to global variable testData, which is used to get information about current instance, section/color information
+ */
 async function load_instance_details() {
     const protocol = window.location.protocol;
     const host = window.location.host;
@@ -1987,6 +2272,26 @@ async function load_instance_details() {
     }
 }
 
+/**
+ * Initializes the application by loading instance details, setting up the scene location, 
+ * defining instance-specific settings, and rendering the SVG element.
+ *
+ * This asynchronous function serves as the driver for the script. It performs the following tasks:
+ * 1. Fetches instance details by calling `load_instance_details()` and stores the data in a global variable.
+ * 2. Determines the scene location by calling `make_title()` (which also makes the title, other scene elemsnts) and stores the result in `sceneLoc`, which is also a global variable.
+ * 3. Finds the instance object corresponding to the scene location and assigns it to `thisInstance`.
+ * 4. Extracts the hover colors for the instance and assigns them to a global variable `colors`.
+ * 5. Calls `loadSVG(url, "svg1")` to load and render an SVG based on the provided URL.
+ *
+ * If any errors occur during these steps, they are caught and logged to the console.
+ * 
+ * @async
+ * @function init
+ * 
+ * @throws {Error} - If fetching instance details, determining the scene location, or loading the SVG fails, an error is caught and logged.
+ *
+ * Usage: right below; this is essentially the driver function for the entire file, as it pretty much calls every other function inside here. 
+ */
 async function init() {
     try {
         testData = await load_instance_details();
