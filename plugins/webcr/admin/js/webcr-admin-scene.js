@@ -27,9 +27,7 @@
 		const targetElement = "scene_photo" + fieldNumber + "[scene_photo_location" + fieldNumber + "]";
 		const targetLocation = document.getElementsByName(targetElement)[0];
 		const imageElement = '[data-depend-id="scene_photo_internal' + fieldNumber + '"]';
-		console.log(imageElement);
 		const imageField = document.querySelector(imageElement);
-		console.log(imageField);
 		const urlElement = "scene_photo" + fieldNumber + "[scene_photo_url" + fieldNumber + "]";
 		const urlField = document.getElementsByName(urlElement)[0];
 		if (targetLocation.value == "Internal"){
