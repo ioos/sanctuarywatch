@@ -258,7 +258,7 @@ class Webcr {
 				'scene_info_entries', 'scene_photo_entries', 'scene_section_number');
 
 			for ($i = 1; $i < 7; $i++){
-				array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i);
+				array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i);
 			}
 			$function_utilities = new Webcr_Utility();
 			$function_utilities -> register_custom_rest_fields("scene", $scene_rest_fields);
