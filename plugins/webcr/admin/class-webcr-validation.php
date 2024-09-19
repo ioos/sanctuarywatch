@@ -246,10 +246,11 @@ class webcr_validation {
                 $field_couplet = $_POST[$form_fieldset];
                 $field_text = "scene_" . $field_type . "_text" . $i;
                 $field_url = "scene_" . $field_type . "_url" . $i;
+                $field_photo_internal = "scene_photo_internal" . $i;
                 if (!$field_couplet[$field_url] == "" || !$field_couplet[$field_text] == "" ){
-                    if ($field_couplet[$field_url] == "" || $field_couplet[$field_text] == "" ){
+                    if ( ($field_type == "info" && ($field_couplet[$field_url] == "" || $field_couplet[$field_text] == "")) || ($field_type == "photo" && ( ($field_couplet[$field_url] == "" && $field_couplet[$field_photo_internal]  == "")  || $field_couplet[$field_text] == ""))   ){
                         $save_scene_fields = FALSE;
-                        array_push($scene_errors,  "The URL or Text is blank for Scene " . ucfirst($field_type) . " Link " . $i);
+                        array_push($scene_errors,  "Error in Scene " . ucfirst($field_type) . " Link " . $i);
                     }
                     if (!$field_couplet[$field_url] == "" ) {
                         if ( $this -> url_check($field_couplet[$field_url]) == FALSE ) {

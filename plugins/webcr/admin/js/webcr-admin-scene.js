@@ -25,11 +25,11 @@
 	// Function to display either URL or image under scene image link
 	function displayPhotoPath (fieldNumber){
 		const targetElement = "scene_photo" + fieldNumber + "[scene_photo_location" + fieldNumber + "]";
-		console.log(fieldNumber);
-		console.log(targetElement);
 		const targetLocation = document.getElementsByName(targetElement)[0];
 		const imageElement = '[data-depend-id="scene_photo_internal' + fieldNumber + '"]';
+		console.log(imageElement);
 		const imageField = document.querySelector(imageElement);
+		console.log(imageField);
 		const urlElement = "scene_photo" + fieldNumber + "[scene_photo_url" + fieldNumber + "]";
 		const urlField = document.getElementsByName(urlElement)[0];
 		if (targetLocation.value == "Internal"){
@@ -37,7 +37,9 @@
 			urlField.parentElement.parentElement.style.display = "none";
 			imageField.parentElement.parentElement.style.display="block";
 		} else if (targetLocation.value == "External"){
-			imageField.value = "";
+			imageField.children[1].value = "";
+			imageField.children[0].children[0].children[1].src="";
+			imageField.children[0].classList.add("hidden");
 			imageField.parentElement.parentElement.style.display = "none";
 			urlField.parentElement.parentElement.style.display="block";
 

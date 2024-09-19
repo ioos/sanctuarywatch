@@ -842,7 +842,7 @@ class Webcr_Scene {
                             'class'       => 'text-class',
                         ),
                         array(
-                            'id'    => 'scene_photo_internal',
+                            'id'    => 'scene_photo_internal6',
                             'type'  => 'image',
                             'title' => 'Image',
                         ),
@@ -1028,15 +1028,20 @@ class Webcr_Scene {
             )
         );        
 
+
+
+        
+
         for ($i = 1; $i < 7; $i++ ) {
-            $target_field = 'scene_photo' . $i;
-            $target_description = 'Photo link ' . $i;
+            $first_target_field = 'scene_photo' . $i;
+            $first_target_description = 'Photo link ' . $i;
+            
             register_meta( 'post', 
-                $target_field,
+                $first_target_field,
                 array(
                     'auth_callback'     => '__return_false' ,
                     'single'            => true, // The field contains a single array
-                    'description' => $target_description, // Description of the meta key
+                    'description' => $first_target_description, // Description of the meta key
                     'show_in_rest'      => array(
                         'schema' => array(
                             'type'  => 'array', // The meta field is an array
@@ -1047,6 +1052,27 @@ class Webcr_Scene {
                     ),
                 ) 
             );
+
+            $second_target_field = 'scene_photo_internal' . $i;
+            $second_target_description = 'Internal photo link ' . $i;
+
+            register_meta( 'post', 
+                $second_target_field,
+                array(
+                    'auth_callback'     => '__return_false' ,
+                    'single'            => true, // The field contains a single array
+                    'description' => $second_target_description, // Description of the meta key
+                    'show_in_rest'      => array(
+                        'schema' => array(
+                            'type'  => 'array', // The meta field is an array
+                            'items' => array(
+                                'type' => 'string', // Each item in the array is a string
+                            ),
+                        ),
+                    ),
+                ) 
+            );
+
         }
 
     }
