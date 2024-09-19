@@ -31,6 +31,38 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
     modal_scene_change();
     modal_location_change();
 
+	// Function to display either URL or image under scene image link
+	function displayPhotoPath (fieldNumber){
+		const targetElement = "modal_photo" + fieldNumber + "[modal_photo_location" + fieldNumber + "]";
+		const targetLocation = document.getElementsByName(targetElement)[0];
+		const imageElement = '[data-depend-id="modal_photo_internal' + fieldNumber + '"]';
+        console.log(imageElement);
+		const imageField = document.querySelector(imageElement);
+		const urlElement = "modal_photo" + fieldNumber + "[modal_photo_url" + fieldNumber + "]";
+		const urlField = document.getElementsByName(urlElement)[0];
+		if (targetLocation.value == "Internal"){
+			urlField.value = "";
+			urlField.parentElement.parentElement.style.display = "none";
+			imageField.parentElement.parentElement.style.display="block";
+		} else if (targetLocation.value == "External"){
+			imageField.children[1].value = "";
+			imageField.children[0].children[0].children[1].src="";
+			imageField.children[0].classList.add("hidden");
+			imageField.parentElement.parentElement.style.display = "none";
+			urlField.parentElement.parentElement.style.display="block";
+
+		}
+	}
+
+	//initialize photopath six times and also set it for onchange of dropdown
+	for (let i = 1; i < 7; i++){
+		displayPhotoPath(i);
+		let targetPhotoElement = 'select[name="modal_photo' + i + '[modal_photo_location' + i + ']"]';
+		$(targetPhotoElement).change(function(){
+			displayPhotoPath(i);
+		});
+	}
+
 	function createAccordion(accordionType, parentDiv, listElements){
 
 		let accordionItem = document.createElement("div");

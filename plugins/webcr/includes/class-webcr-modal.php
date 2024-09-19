@@ -347,6 +347,13 @@ class Webcr_Modal {
              //       'description' => 'Modal Photo 1 description',
                     'fields' => array(
                         array(
+                            'id'             => 'modal_photo_location1',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
+                        array(
                             'id'          => 'modal_photo_text1',
                             'type'        => 'text',
                             'title'       => 'Text',
@@ -358,6 +365,11 @@ class Webcr_Modal {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'modal_photo_internal1',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
                 array(
@@ -366,6 +378,13 @@ class Webcr_Modal {
                     'title'   => 'Modal Photo Link 2',
                 //    'description' => 'Modal Photo Link 2 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'modal_photo_location2',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'modal_photo_text2',
                             'type'        => 'text',
@@ -378,6 +397,11 @@ class Webcr_Modal {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'modal_photo_internal2',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
                 array(
@@ -386,6 +410,13 @@ class Webcr_Modal {
                     'title'   => 'Modal Photo Link 3',
               //      'description' => 'Modal Photo Link 3 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'modal_photo_location3',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'modal_photo_text3',
                             'type'        => 'text',
@@ -398,6 +429,11 @@ class Webcr_Modal {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'modal_photo_internal3',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
                 array(
@@ -406,6 +442,13 @@ class Webcr_Modal {
                     'title'   => 'Modal Photo Link 4',
               //      'description' => 'Modal Photo Link 4 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'modal_photo_location4',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'modal_photo_text4',
                             'type'        => 'text',
@@ -418,6 +461,11 @@ class Webcr_Modal {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'modal_photo_internal4',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
                 array(
@@ -426,6 +474,13 @@ class Webcr_Modal {
                     'title'   => 'Modal Photo Link 5',
                //     'description' => 'Modal Photo Link 5 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'modal_photo_location5',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'modal_photo_text5',
                             'type'        => 'text',
@@ -438,6 +493,11 @@ class Webcr_Modal {
                             'title'       => 'URL',
                             'class'       => 'text-class',
                         ),
+                        array(
+                            'id'    => 'modal_photo_internal5',
+                            'type'  => 'image',
+                            'title' => 'Image',
+                        ),
                     ),
                 ),
 
@@ -447,6 +507,13 @@ class Webcr_Modal {
                     'title'   => 'Modal Photo Link 6',
                //     'description' => 'Modal Photo Link 6 description',
                     'fields' => array(
+                        array(
+                            'id'             => 'modal_photo_location6',
+                            'type'           => 'select',
+                            'title'          => 'Image Location',
+                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                            'default'     => 'External',
+                        ),
                         array(
                             'id'          => 'modal_photo_text6',
                             'type'        => 'text',
@@ -458,6 +525,11 @@ class Webcr_Modal {
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'    => 'modal_photo_internal6',
+                            'type'  => 'image',
+                            'title' => 'Image',
                         ),
                     ),
                 ),

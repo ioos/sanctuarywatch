@@ -117,10 +117,11 @@ class webcr_validation {
                 $field_couplet = $_POST[$form_fieldset];
                 $field_text = "modal_" . $field_type . "_text" . $i;
                 $field_url = "modal_" . $field_type . "_url" . $i;
+                $field_photo_internal = "modal_photo_internal" . $i;
                 if (!$field_couplet[$field_url] == "" || !$field_couplet[$field_text] == "" ){
-                    if ($field_couplet[$field_url] == "" || $field_couplet[$field_text] == "" ){
+                    if ( ($field_type == "info" && ($field_couplet[$field_url] == "" || $field_couplet[$field_text] == "")) || ($field_type == "photo" && ( ($field_couplet[$field_url] == "" && $field_couplet[$field_photo_internal]  == "")  || $field_couplet[$field_text] == ""))   ){
                         $save_modal_fields = FALSE;
-                        array_push($modal_errors,  "The URL or Text is blank for Modal " . ucfirst($field_type) . " Link " . $i);
+                        array_push($modal_errors,  "Error in Modal " . ucfirst($field_type) . " Link " . $i);
                     }
                     if (!$field_couplet[$field_url] == "" ) {
                         if ( $this -> url_check($field_couplet[$field_url]) == FALSE ) {
