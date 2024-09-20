@@ -402,6 +402,7 @@ class Webcr_Figure {
                     'type'  => 'image',
                     'title' => 'Figure Json',
                     'description' => 'What is the figure json?',
+                    'options' => array('filecount' => '1',),
                 ),
                 array(
                     'id'          => 'figure_json_arguments',
