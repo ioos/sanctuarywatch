@@ -1,3 +1,5 @@
+// import { make_plots } from './plots.js';
+
 console.log("THIS IS A TEST");
 console.log(post_id);
 // screen.orientation.lock('landscape');
@@ -198,8 +200,21 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 // let info_url = "scene_info_url" + i;
                 let info_url = iUrl + i;
 
+                let scene_info_url;
+                if (iUrl == "scene_photo_url"){
+                    let photoLoc = "scene_photo_location" + i;
+                    if (scene_data[info_field][photoLoc] == "External"){
+                        scene_info_url = scene_data[info_field][info_url];
+                    } else {
+                        let internal = "scene_photo_internal" + i;
+                        scene_info_url = scene_data[info_field][internal];
+                    }
+                }
+
                 let scene_info_text = scene_data[info_field][info_text];
-                let scene_info_url = scene_data[info_field][info_url];
+                
+                // console.log(scene_info_text)
+                // console.log(scene_info_url)
                 if ((scene_info_text == '') && (scene_info_url == '')){
                     continue;
                 }
@@ -1076,9 +1091,19 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const figureDiv = document.createElement('div');
     figureDiv.classList.add('figure');
 
-    const img = document.createElement('img');
-    img.src = info_obj['imageLink'];
-    img.alt = '';
+    let img;
+    let interactiveBool = false;
+    if (info_obj["interactive"] != "Interactive" ){
+        img = document.createElement('img');
+        img.src = info_obj['imageLink'];
+        img.alt = '';
+
+    }  else {  
+        img = document.createElement('div'); // Create a div to hold the plot
+        img.id = 'plotly-plot'; 
+        interactiveBool = true;
+    }
+   
     figureDiv.appendChild(img);
     figureDiv.setAttribute("display","flex");
     // figureDiv.style.display = "flex";
@@ -1086,7 +1111,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     figureDiv.style.alignItems = "center";
     // img.setAttribute("style", "max-width: 100%;margin-top: 3%; justify-content: center");
     figureDiv.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
-    img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
+    // img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
 
     // img.setAttribute("style", "margin-top: 2px;");
 
@@ -1117,6 +1142,12 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
 
     // console.log("tab content container");
     // console.log(tabContentContainer);
+    if (interactiveBool){
+        make_plots(img);
+    }
+    img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
+
+    
 }
 
 /**
@@ -1183,7 +1214,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                         img = figure_data['figure_external_url'];
                     } else {
                         img = figure_data['figure_image'];
-                    }
+                    } // add smth here for external
                     info_obj = {
                     "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
                     "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
@@ -1191,7 +1222,8 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
                     "imageLink" : img,
                     "shortCaption" : figure_data["figure_caption_short"],
-                    "longCaption": figure_data["figure_caption_long"]
+                    "longCaption": figure_data["figure_caption_long"],
+                    "interactive": figure_data["figure_path"]
                     };
                     // console.log(info_obj);
                     render_tab_info(tabContentElement, tabContentContainer, info_obj);
@@ -1461,11 +1493,20 @@ function render_modal(key){
                 collapseListHTML += '</div>';
             }
             //for photos:
+            console.log(modal_data)
             let collapsePhotoHTML = '<div>';
             for (let i = 1; i < 7; i++){
                 let info_field = "modal_photo" + i;
                 let info_text = "modal_photo_text" + i;
-                let info_url = "modal_photo_url" + i;
+
+                // let info_url = "modal_photo_url" + i;
+                let info_url;
+                let loc = "modal_photo_location" + i;
+                if (modal_data[info_field][loc] === "External"){
+                    info_url = "modal_photo_url" + i;
+                } else {
+                    info_url = "modal_photo_internal" + i;
+                }
 
                 let modal_info_text = modal_data[info_field][info_text];
                 let modal_info_url = modal_data[info_field][info_url];
@@ -1546,14 +1587,6 @@ function render_modal(key){
  * Usage: called within load_svg
  */
 function full_screen_button(svgId){
-    // let toc_container = document.querySelector("#toc-container");
-    // let button = document.createElement("button");
-    // // <button style="margin-bottom: 5px; font-size: large;" class="btn btn-info fa fa-arrows-alt btn-block" id="top-button"> Full Screen</button>
-    // button.setAttribute("style", "margin-botton: 5px; font-size: large");
-    // button.setAttribute("id", "top-button");
-    // button.setAttribute('class', `btn btn-info fa fa-arrows-alt btn-block`);
-    // toc_container.prepend(button);
-    // button.innerHTML = "Full Screen";
     if (thisInstance.instance_full_screen_button != "yes"){
         return;
     }

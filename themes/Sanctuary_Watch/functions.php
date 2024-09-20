@@ -21,6 +21,10 @@
 
 add_action('wp_enqueue_scripts', 'enqueue_font_awesome');
 
+
+
+
+
   /**
    * Enqueues the theme's main stylesheet.
    *
@@ -571,6 +575,28 @@ function enqueue_info_scripts2() {
   );
 }
 add_action('wp_enqueue_scripts', 'enqueue_info_scripts2');
+
+function enqueue_info_scripts3() {
+  wp_enqueue_script(
+      'plots-js',
+      get_template_directory_uri() . '/assets/js/plots.js',
+      array(),
+      null,
+      array('strategy' => 'defer') 
+  );
+}
+add_action('wp_enqueue_scripts', 'enqueue_info_scripts3');
+
+// function enqueue_plotly_script() {
+//   wp_enqueue_script(
+//       'plotly-js', // Handle name
+//       'https://cdn.plot.ly/plotly-latest.min.js', // CDN URL
+//       array(), 
+//       null, 
+//       true // Load in footer
+//   );
+// }
+// add_action('wp_enqueue_scripts', 'enqueue_plotly_script');
 
 
 ?>
