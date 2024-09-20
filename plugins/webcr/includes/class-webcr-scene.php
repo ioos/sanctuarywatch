@@ -648,8 +648,8 @@ class Webcr_Scene {
                 array(
                     'id'      => 'scene_photo_entries',
                     'type'    => 'range',
-                    'title'   => 'Number of Scene Image Entries',
-                    'description' => 'How many image links are there for the scene?',
+                    'title'   => 'Number of Scene Photo Entries',
+                    'description' => 'How many photo links are there for the scene?',
                     'min'     => 0,    
                      'default' => 1,    
                      'max'     => 6,         
@@ -658,7 +658,7 @@ class Webcr_Scene {
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo1',
-                    'title'   => 'Scene Image Link 1',
+                    'title'   => 'Scene Photo Link 1',
                 //    'description' => 'Scene Photo 1 description',
                     'fields' => array(
                         array(
@@ -690,7 +690,7 @@ class Webcr_Scene {
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo2',
-                    'title'   => 'Scene Image Link 2',
+                    'title'   => 'Scene Photo Link 2',
                 //    'description' => 'Scene Photo Link 2 description',
                     'fields' => array(
                         array(
@@ -722,7 +722,7 @@ class Webcr_Scene {
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo3',
-                    'title'   => 'Scene Image Link 3',
+                    'title'   => 'Scene Photo Link 3',
                  //   'description' => 'Scene Photo Link 3 description',
                     'fields' => array(
                         array(
@@ -754,7 +754,7 @@ class Webcr_Scene {
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo4',
-                    'title'   => 'Scene Image Link 4',
+                    'title'   => 'Scene Photo Link 4',
                  //   'description' => 'Scene Photo Link 4 description',
                     'fields' => array(
                         array(
@@ -786,7 +786,7 @@ class Webcr_Scene {
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo5',
-                    'title'   => 'Scene Image Link 5',
+                    'title'   => 'Scene Photo Link 5',
                 //    'description' => 'Scene Photo Link 5 description',
                     'fields' => array(
                         array(
@@ -819,7 +819,7 @@ class Webcr_Scene {
                 array(
                     'type' => 'fieldset',
                     'id' => 'scene_photo6',
-                    'title'   => 'Scene Image Link 6',
+                    'title'   => 'Scene Photo Link 6',
                  //   'description' => 'Scene Photo Link 6 description',
                     'fields' => array(
                         array(

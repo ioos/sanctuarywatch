@@ -2,8 +2,6 @@
 (function( $ ) {
 	'use strict';
 
-	//displayPhotoPath(1);
-
 	let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
 	displaySceneEntries(openingSceneSections);
 
