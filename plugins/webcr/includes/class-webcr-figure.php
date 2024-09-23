@@ -39,6 +39,7 @@ class Webcr_Figure {
 	 */
     public function custom_figure_column( $column, $post_id ) {  
 
+        $modal_id = get_post_meta( $post_id, 'figure_modal', true ); 
 
         if ( $column === 'figure_instance' ) {
             $instance_id = get_post_meta( $post_id, 'location', true ); 
@@ -52,12 +53,13 @@ class Webcr_Figure {
         }
 
         if ( $column === 'figure_modal' ) {
-            $modal_id = get_post_meta( $post_id, 'figure_modal', true ); 
             echo get_the_title($modal_id ); 
         }
 
         if ( $column === 'figure_tab' ) {
-            echo get_post_meta( $post_id, 'figure_tab', true ); 
+            $tab_number = get_post_meta( $post_id, 'figure_tab', true ); 
+            $tab_meta_key = "modal_tab_title" . $tab_number;
+            echo get_post_meta( $modal_id, $tab_meta_key , true ); 
         }
 
         if ( $column === 'figure_order' ) {
