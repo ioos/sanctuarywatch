@@ -344,7 +344,6 @@ class Webcr_Modal {
                     'type' => 'fieldset',
                     'id' => 'modal_photo1',
                     'title'   => 'Modal Photo Link 1',
-             //       'description' => 'Modal Photo 1 description',
                     'fields' => array(
                         array(
                             'id'             => 'modal_photo_location1',
