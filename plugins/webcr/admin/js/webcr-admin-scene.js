@@ -4,21 +4,40 @@
 
 	let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
 	displaySceneEntries(openingSceneSections);
+	displayHoverColor();
 
 	   // function to display Scene Section fields
 	function displaySceneEntries (entry_number){
-		let target_element = "";
+		let target_title_element = "";
+		let target_color_element = "";
+//		document.getElementsByName("scene_section1[scene_section_title1]")[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
+
+
 		for (let i = 6; i > entry_number; i--){
-			target_element = "scene_section" + i;
-			document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "none";
-			document.getElementsByName(target_element)[0].value = "";
+			target_title_element = "scene_section" + i + "[scene_section_title" + i + "]";
+			target_color_element = "scene_section" + i + "[scene_section_hover_color" + i + "]";
+			document.getElementsByName(target_title_element)[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display = "none";
+			document.getElementsByName(target_title_element)[0].value = "";
 		}
 
 		for (let i = 1; i <= entry_number; i++){
-			target_element = "scene_section" + i;
-			document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "block";
+			target_title_element = "scene_section" + i + "[scene_section_title" + i + "]";
+			target_color_element = "scene_section" + i + "[scene_section_hover_color" + i + "]";
+			document.getElementsByName(target_title_element)[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display = "block";
+
 		}
 	}
+
+	// function to show hover color field, based on table of contents type
+	function displayHoverColor(){
+		const tocStyle = document.getElementsByName("scene_toc_style")[0].value;
+		if (tocStyle == "list"){
+			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "block";
+		} else {
+			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "none";
+		}
+	}
+
 
 	// Function to display either URL or image under scene image link
 	function displayPhotoPath (fieldNumber){
@@ -336,7 +355,9 @@
 		});
 	}
 
-
+	$('select[name="scene_toc_style"]').change(function(){
+		displayHoverColor();
+	});
 
 	$('select[name="scene_section_number"]').change(function(){
 		let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
