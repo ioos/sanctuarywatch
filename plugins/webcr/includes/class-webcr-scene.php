@@ -1105,6 +1105,18 @@ class Webcr_Scene {
             )
         );  
 
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'scene_hover_color', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The hover color for the icons', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );  
+        
         for ($i = 1; $i < 7; $i++ ) {
             $target_field = 'scene_info' . $i;
             $target_description = 'Info link ' . $i;
@@ -1138,10 +1150,6 @@ class Webcr_Scene {
             )
         );        
 
-
-
-        
-
         for ($i = 1; $i < 7; $i++ ) {
             $first_target_field = 'scene_photo' . $i;
             $first_target_description = 'Photo link ' . $i;
@@ -1172,6 +1180,26 @@ class Webcr_Scene {
                     'auth_callback'     => '__return_false' ,
                     'single'            => true, // The field contains a single array
                     'description' => $second_target_description, // Description of the meta key
+                    'show_in_rest'      => array(
+                        'schema' => array(
+                            'type'  => 'array', // The meta field is an array
+                            'items' => array(
+                                'type' => 'string', // Each item in the array is a string
+                            ),
+                        ),
+                    ),
+                ) 
+            );
+
+            $third_target_field = 'scene_section' . $i;
+            $third_target_description = 'Scene section ' . $i;
+
+            register_meta( 'post', 
+                $second_target_field,
+                array(
+                    'auth_callback'     => '__return_false' ,
+                    'single'            => true, // The field contains a single array
+                    'description' => $third_target_description, // Description of the meta key
                     'show_in_rest'      => array(
                         'schema' => array(
                             'type'  => 'array', // The meta field is an array
