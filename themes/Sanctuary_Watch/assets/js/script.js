@@ -1324,41 +1324,18 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
     tabContentElement.setAttribute('tabindex', '0');
 
     tabContentContainer.appendChild(tabContentElement);
-    let link = document.createElement("a");
-            // link.href = `#${title}/${tab_id}`;
-            // link.target = "_blank";
     
-    let icon = document.createElement("i");
-    icon.classList.add("fas", "fa-clipboard");
-    
-    // link.appendChild(icon);
-    link.style.marginLeft = "10px"; 
-    link.style.cursor = "pointer";
-    // link.innerHTML += " Copy Tab Link";
-    link.innerHTML = '<i class="fa-solid fa-copy"></i> Copy Tab Link';
-    link.style.textDecoration = "none";
-    
-
     let linkbutton = document.createElement("button");
     linkbutton.classList.add("btn", "btn-primary");
-    linkbutton.textContent = "Copy Tab Link";
+    linkbutton.innerHTML = '<i class="fa-solid fa-copy"></i> Copy Tab Link';
     linkbutton.type = "button"; 
-    linkbutton.marginBottom = '10px';
-
-
-            // mtitle.appendChild(link);
-    tabContentElement.prepend(link);
+    linkbutton.setAttribute('style', 'margin-bottom: 7px');
     tabContentElement.prepend(linkbutton);
 
 
     if (iter === 1) {
         window.location.hash = `${title}/${tab_id}`; 
-        link.href = `#${title}/${tab_id}`;
-        link.target = "_blank";
-        link.addEventListener("click", (e) => {
-            e.preventDefault(); // Prevent the link from opening
-            writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
-        });
+    
         linkbutton.addEventListener("click", (e) => {
             e.preventDefault(); // Prevent the link from opening
             writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
@@ -1368,12 +1345,7 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
     button.addEventListener('click', function() {
         window.location.hash = `${title}/${tab_id}`; 
         console.log(`${title}/${tab_id}`);
-        link.href = `#${title}/${tab_id}`;
-        link.target = "_blank";
-        link.addEventListener("click", (e) => {
-            e.preventDefault(); // Prevent the link from opening
-            writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
-        });  
+       
         linkbutton.addEventListener("click", (e) => {
             e.preventDefault(); // Prevent the link from opening
             writeClipboardText(`${window.location.origin}${window.location.pathname}#${title}/${tab_id}`);
