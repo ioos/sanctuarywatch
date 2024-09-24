@@ -1143,7 +1143,9 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // console.log("tab content container");
     // console.log(tabContentContainer);
     if (interactiveBool){
-        make_plots(img);
+        let fetchLink = 'http://sanctuarywatch.local/wp-content/uploads/2024/09/test.json';
+        let plotType = 'markers';
+        make_plots(img, fetchLink, plotType);
     }
     img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
 
