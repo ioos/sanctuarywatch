@@ -216,7 +216,11 @@ class Webcr_Utility {
             $field_target = 'scene_section' . $i;
             $target_section = get_post_meta($scene_id, $field_target, true);
             if ($target_section != null && $target_section != ""){
-                $modal_sections[$target_section] = $target_section;
+                $target_title = $target_section["scene_section_title" . $i];
+                if ($target_title != null && $target_title != ""){
+                    $modal_sections[$target_title] = $target_title;
+                }
+
             }
         }
         asort($modal_sections);

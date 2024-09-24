@@ -937,9 +937,12 @@ class Webcr_Modal {
             for ($i = 1; $i < 7; $i++){
                 $search_fieldset = "modal_photo" . $i;
                 $search_field = "modal_photo_url" . $i;
-                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
-                if ($database_value != ""){
-                    $url_count++;
+                $fieldset_value = get_post_meta( $post_id, $search_fieldset, true ); 
+                if ($fieldset_value != "" ){
+                    $database_value = $fieldset_value[$search_field]; 
+                    if ($database_value != ""){
+                        $url_count++;
+                    }
                 }
             }
             echo $url_count; 
@@ -950,9 +953,12 @@ class Webcr_Modal {
             for ($i = 1; $i < 7; $i++){
                 $search_fieldset = "modal_info" . $i;
                 $search_field = "modal_info_url" . $i;
-                $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
-                if ($database_value != ""){
-                    $url_count++;
+                $fieldset_value = get_post_meta( $post_id, $search_fieldset, true ); 
+                if ($fieldset_value != "" ){
+                    $database_value = $fieldset_value[$search_field]; 
+                    if ($database_value != ""){
+                        $url_count++;
+                    }
                 }
             }
             echo $url_count; 
