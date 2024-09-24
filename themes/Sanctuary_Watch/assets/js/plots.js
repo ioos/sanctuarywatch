@@ -89,8 +89,8 @@ class Plot {
 }
 
 //usage, ideally, the parameters that we pass to initialize the object are extracted from WP meta
-x = ['Year']; //have to make sure this is in the data
-y = ['Whales', 'Fish']; //have to make sure this is in the data
-colors = ['blue', 'green'];
-let plotInstance = new Plot('plot', 'test.json', x, y, colors);
-plotInstance.execute('lines');
+// x = ['Year']; //have to make sure this is in the data
+// y = ['Whales', 'Fish']; //have to make sure this is in the data
+// colors = ['blue', 'green'];
+// let plotInstance = new Plot('plot', 'test.json', x, y, colors);
+// plotInstance.execute('lines');

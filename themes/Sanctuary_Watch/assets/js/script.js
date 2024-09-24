@@ -1144,8 +1144,14 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // console.log(tabContentContainer);
     if (interactiveBool){
         let fetchLink = 'http://sanctuarywatch.local/wp-content/uploads/2024/09/test.json';
-        let plotType = 'markers';
-        make_plots(img, fetchLink, plotType);
+        // let plotType = 'markers';
+        // make_plots(img, fetchLink, plotType);
+        x = ['Year']; //have to make sure this is in the data
+        y = ['Whales', 'Fish']; //have to make sure this is in the data
+        colors = ['blue', 'red'];
+        let plotInstance = new Plot(img, fetchLink, x, y, colors);
+        plotInstance.execute('lines');
+
     }
     img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
 
