@@ -244,9 +244,7 @@ class Webcr {
 		function register_instance_rest_fields(){
 
 			$instance_rest_fields = array('instance_short_title', 'instance_slug',
-				'instance_type', 'instance_status', 'instance_tile', 'instance_toc_style',
-				'instance_colored_sections', 'instance_hover_color', 
-				'instance_full_screen_button', 'instance_text_toggle', 'instance_overview_scene');
+				'instance_type', 'instance_status', 'instance_tile', 'instance_overview_scene');
 				$function_utilities = new Webcr_Utility();
 				$function_utilities -> register_custom_rest_fields("instance", $instance_rest_fields);
 		}
@@ -255,10 +253,10 @@ class Webcr {
 
 		function register_scene_rest_fields() {
 			$scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
-				'scene_info_entries', 'scene_photo_entries', 'scene_section_number');
+				'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color');
 
 			for ($i = 1; $i < 7; $i++){
-				array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i);
+				array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i, 'scene_section' . $i);
 			}
 			$function_utilities = new Webcr_Utility();
 			$function_utilities -> register_custom_rest_fields("scene", $scene_rest_fields);
