@@ -1199,8 +1199,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
  * Usage:
  * Called at the end of the create_tabs function
  */
-
-function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id){
+function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id){
     // let id = child_obj['infauna']['id'];
     // console.log(id);
     // console.log(tab_label);
@@ -1216,12 +1215,14 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
             // console.log(tab_label);
             // figure_data = data.find(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
             // all_figure_data = data.filter(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
-            all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id))
+            all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
+            all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
             
             if (!all_figure_data){
                 //we don't create anything here...
                 //don't have to render any of the info
                 // tabContentContainer.setAttribute("display", "hidden");
+                console.log("womp womp");
                 return;
                 
             } else{
@@ -1288,7 +1289,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
  * Called within render_modal -- each modal has a certain amount of tabs, iterate through each tab and create/render tab info, fix tab permalink
  *
  */
-function create_tabs(iter, tab_id, tab_label, title = "") {
+function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
     // tab_id = tab_label.replace(/\s+/g, '_').replace(/[()]/g, '_');
     // title = title.replace(/\s+/g, '_').replace(/[()]/g, '_');
     tab_id = tab_label.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_'); //instead of tab id, it should just be the index (figure_data)
@@ -1379,7 +1380,7 @@ function create_tabs(iter, tab_id, tab_label, title = "") {
     }
     
 
-    fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id);
+    fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
 }
 
 
@@ -1490,6 +1491,7 @@ function render_modal(key){
             }
             //for photos:
             console.log(modal_data)
+            let modal_id = modal_data.id;
             let collapsePhotoHTML = '<div>';
             for (let i = 1; i < 7; i++){
                 let info_field = "modal_photo" + i;
@@ -1541,9 +1543,10 @@ function render_modal(key){
             for (let i =1; i <= num_tabs; i++){
                 let tab_key = "modal_tab_title" + i;
                 let tab_title = modal_data[tab_key];
+                console.log(tab_title);
 
                
-                create_tabs(i, tab_key, tab_title, title);
+                create_tabs(i, tab_key, tab_title, title, modal_id);
                 console.log(`iteration ${i}, tab key ${tab_key} tab title ${tab_title}`);
                 if (i === num_tabs){
                     break;
@@ -1976,6 +1979,7 @@ function table_of_contents(){
                 accordion_container.innerHTML = '';
 
                 let tagline_container = document.getElementById('tagline-container');
+                document.getElementById("myTabContent").innerHTML = '';
                 tagline_container.innerHTML = '';
                 history.pushState("", document.title, window.location.pathname + window.location.search);
         });
@@ -1984,6 +1988,7 @@ function table_of_contents(){
                 // modal.style.display = "none";
                 document.getElementById('accordion-container').innerHTML = '';
                 document.getElementById('tagline-container').innerHTML = '';
+                document.getElementById("myTabContent").innerHTML = '';
                 history.pushState("", document.title, window.location.pathname + window.location.search);
             }
         };
