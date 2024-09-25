@@ -169,7 +169,25 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
       <div id="svg1" class="responsive-image-container">
         <?php
           $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
+          $num_sections = get_post_meta($post_id, 'scene_section_number', true); 
+          $scene_sections = [];
+          for ($i = 1; $i <= $num_sections; $i++) {
+              $curr = 'scene_section' . $i;
+              $curr_section = get_post_meta($post_id, $curr, true); 
+              $hov_color = 'scene_section_hover_color' . $i;
+              $scene_title = 'scene_section_title' . $i;
+
+              $scene_sections[$curr_section[$scene_title]] = $curr_section[$hov_color];
+          }
+          
+          //a bunch of scene meta fields:
+          $scene_default_hover_color = get_post_meta($post_id, 'scene_hover_color', true); 
+          $scene_text_toggle = get_post_meta($post_id, 'scene_text_toggle', true); 
+          $scene_toc_style = get_post_meta($post_id, 'scene_toc_style', true); 
+          $scene_full_screen_button = get_post_meta($post_id, 'scene_full_screen_button', true); 
+
           $child_ids = get_modal_array($svg_url);
+        
         ?>
       </div>
     </div>
@@ -189,6 +207,22 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     let child_ids = <?php echo json_encode($child_ids); ?>;
     let post_id =  <?php echo $post_id; ?>;
     let svg_url =  <?php echo json_encode($scene_url); ?>;
+    let num_sections =  <?php echo json_encode($num_sections); ?>;
+    let scene_sections =  <?php echo json_encode($scene_sections); ?>;
+    console.log("the SECTIONS")
+    console.log(scene_sections);
+
+    let scene_default_hover_color =  <?php echo json_encode($scene_default_hover_color); ?>;
+    let scene_text_toggle =  <?php echo json_encode($scene_text_toggle); ?>;
+    let scene_toc_style =  <?php echo json_encode($scene_toc_style); ?>;
+    let scene_full_screen_button  = <?php echo json_encode($scene_full_screen_button); ?>;
+
+    console.log(scene_default_hover_color);
+    console.log(scene_text_toggle);
+    console.log(scene_toc_style);
+    console.log(scene_full_screen_button);
+    
+    
   </script>
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->

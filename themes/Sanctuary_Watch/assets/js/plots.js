@@ -1,10 +1,10 @@
 class Plot {
-    constructor(img, fetchLink, xAxis, yAxis, colors) {
+    constructor(img, fetchLink, xAxis, yAxis, cols) {
         this.img = img;
         this.plotData = null;  
         this.xAxis = xAxis;
         this.yAxis = yAxis;
-        this.colors = colors;
+        this.cols = cols;
         
         this.dataPromise = new Promise((resolve, reject) => {  
             fetch(fetchLink)
@@ -35,7 +35,7 @@ class Plot {
                 y: data.map(item => item[this.yAxis[i]]),
                 mode: plotType,
                 name: this.yAxis[i], 
-                line: {color: colors[i]}
+                line: {color: cols[i]}
             };
             traces.push(temp);
         }
@@ -91,6 +91,6 @@ class Plot {
 //usage, ideally, the parameters that we pass to initialize the object are extracted from WP meta
 // x = ['Year']; //have to make sure this is in the data
 // y = ['Whales', 'Fish']; //have to make sure this is in the data
-// colors = ['blue', 'green'];
-// let plotInstance = new Plot('plot', 'test.json', x, y, colors);
+// cols = ['blue', 'green'];
+// let plotInstance = new Plot('plot', 'test.json', x, y, cols);
 // plotInstance.execute('lines');
