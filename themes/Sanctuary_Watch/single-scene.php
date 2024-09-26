@@ -74,7 +74,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 </script>
 
 
-<body>
+<body      >
   <!-- for the mobile image stuff -->
   <div class="modal" id="mobileModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
   <div class="modal-dialog modal-lg" style="z-index: 9999;margin-top: 60%;max-width: 88%;/* margin-right: 10%; */">
@@ -154,12 +154,11 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 </div>
 
 <div id="entire_thing" style="
-    /* max-width: 80%; */
-    /* max-width: 1700px; */
-    /* justify-content: center; */
-    margin-left: 10%;
-    /* margin-left: 30%; */
-    margin-right: 10%;
+ 
+    max-width: 1700px !important; /* Set the maximum width */
+    margin: 0 auto; /* Center it horizontally */
+
+    
 ">  
 <div id="title-container" style="margin-left: 9%" ></div>
 <div id="mobile-view-image"></div>
