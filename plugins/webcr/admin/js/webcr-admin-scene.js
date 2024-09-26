@@ -223,6 +223,7 @@
 	//	imageColumn.id = "previewSvgContainer";
 		
 		let svgPath = document.getElementsByName("scene_infographic")[0].value;
+		let hoverSceneColor = document.getElementsByName("scene_hover_color")[0].value;
 		if (svgPath == ""){
 			imageColumn.innerText = "No image.";
 			thirdRow.append(imageColumn);
@@ -299,7 +300,7 @@
 						sublayers.forEach (listElement => {
 						//	document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').classList.add("highlightIcons");
 						//console.log  (hoverColor);
-							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.stroke = "yellow"; //hoverColor; 
+							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.stroke = hoverSceneColor; 
 							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.strokeWidth = "2";
 						})
 

@@ -1117,6 +1117,18 @@ class Webcr_Scene {
             )
         );  
         
+        register_meta(
+            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
+            'scene_hover_color', // Meta key name
+            array(
+                'show_in_rest' => true, // Make the field available in REST API
+                'single' => true, // Indicates whether the meta key has one single value
+                'type' => 'string', // Data type of the meta value
+                'description' => 'The hover color for the icons', // Description of the meta key
+                'auth_callback' => '__return_false' //Return false to disallow writing
+            )
+        );  
+
         for ($i = 1; $i < 7; $i++ ) {
             $target_field = 'scene_info' . $i;
             $target_description = 'Info link ' . $i;
