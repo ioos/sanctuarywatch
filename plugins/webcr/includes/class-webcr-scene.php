@@ -863,7 +863,7 @@ class Webcr_Scene {
                     'id'             => 'scene_toc_style',
                     'type'           => 'select',
                     'title'          => 'Table of Contents Style',
-                    'options'        => array("accordion" => "Accordion", "list" => "List", "sectioned_list" => "Sectioned List"),
+                    'options'        => array("accordion" => "Accordion", "list" => "List (default option)", "sectioned_list" => "Sectioned List"),
                     'default' => 'list',
                     'description' => 'What should the table of contents look like?',
                 ),
