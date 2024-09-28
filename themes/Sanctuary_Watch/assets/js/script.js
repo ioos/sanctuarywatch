@@ -1597,7 +1597,9 @@ function full_screen_button(svgId){
         let button = document.createElement("button");
         
         // Button attributes
-        button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1");
+        // button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1");
+        button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1; margin-left: 10px; max-width: 98%; background: #03386c; border-radius: 0px;");
+
         button.setAttribute("id", "top-button");
         button.setAttribute('class', 'btn btn-info btn-block');
         button.innerHTML = "Full Screen";
@@ -1673,7 +1675,9 @@ function toggle_text() {
     let button = document.createElement("button");
     button.setAttribute("class", "btn btn-info btn-block"); // w-100 makes the button full width
     button.setAttribute("id", "toggleButton");
-    button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1;");
+    // button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1;");
+    button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1; margin-left: 10px; max-width: 98%; background: #03386c; border-radius: 0px;");
+
 
     let initialState = scene_text_toggle === "toggle_on"; //this should be done on the SCENE side of things
     let svgText = document.querySelector("#text");

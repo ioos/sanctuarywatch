@@ -1,0 +1,1 @@
+var wp_dark_mode_elementor_editor = true

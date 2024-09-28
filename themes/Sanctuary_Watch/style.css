@@ -5,6 +5,9 @@ Description: Sanctuary Watch is an interactive theme that visualizes and webeniz
 
 @import url('assets/css/bootstrap.css');
 
+body{
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
 #top-bar {
   background-color: white;
   text-align: center;
@@ -198,6 +201,8 @@ body > h1{
   /* Nav tabs styles */
   .nav-tabs .nav-link {
     color: black;
+    padding-right: 20px;
+    padding-left: 20px;
   }
   .nav-tabs .nav-link.active {
     color: black;
@@ -375,7 +380,7 @@ input:checked + .slider:before {
 @media (min-width: 900px) {
   .modal-dialog {
     min-width: 30%;
-    max-width: 70%;
+    /* max-width: 70%; */
     /* transform: scale(1.3);  */
     /* thought it'd be better to scale size instead of just max width; essentially a max width of 65% */
     transform-origin: top center;
@@ -432,7 +437,78 @@ input:checked + .slider:before {
   transform: scale(0.9);
 }
 }
+.accordion-button {
+  /* background-image: linear-gradient(#2b5b89, #033c73 60%, #03386c); */
+  background: #03386c;
+  color: white;
+}
+#images-header-1 > button{
+  color:white;
+  border-radius: 0px;
+}
+#more-info-header-1 > button{
+  color:white;
+  border-radius: 0px;
+}
 
+#more-info-header-1 > button::after{
+    filter: brightness(0) invert(1) !important;
+
+}
+#images-header-1 > button::after{
+  filter: brightness(0) invert(1) !important;
+}
+.accordion-button::after {
+  /* filter: brightness(0) invert(1); */
+  filter: brightness(0) saturate(100%) invert(13%) sepia(68%) saturate(2471%) hue-rotate(195deg) brightness(94%) contrast(101%);
+  color: #03386c;
+}
+
+#accordion-header-1 > button{
+  color: white;
+  background: #03386c;
+}
+#accordion-header-2 > button{
+  color: white;
+  background: #03386c;
+}
+#heading0 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+  /* color: white */
+}
+#heading1 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+  /* border-width: 10px; */
+}
+#heading2 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
+#heading3 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
+#heading4 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
+#heading5 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
+#heading6 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
 
 /* #more-info-header-1 > button{
   max-height: 40px;
@@ -478,8 +554,9 @@ input:checked + .slider:before {
 }
 
 #toc-group{
-  padding-top: 5%;
+  padding-top: 4%;
   font-size: large;
+  margin-right: -11px;
 }
 
 
@@ -631,4 +708,69 @@ button:focus,
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+.btn-primary {
+  background: #03386c;
+}
+
+.accordion-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: large;
+  
+}
+
+.accordion-button::after {
+  position: absolute;
+  right: 20px;
+  margin-left: 0;
+}
+
+
+#more-info-collapse-1 > div{
+  background-color: #f2f2f2;
+}
+#images-collapse-1 > div{
+  background-color: #f2f2f2;
+}
+
+#toccollapse0 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse1 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse2 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse3 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse4 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse5 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse6 > div{
+  background-color: #f2f2f2;
+}
+
+.accordion-button:not(.collapsed) {
+  background: #03386c;
+}
+
+#toc-group > div:nth-child(n) {
+  border-radius: 0px;
+  border-color: #cbcbcb;
+  margin-bottom: 6px;
+  border-top: 1px solid #cbcbcb;
+}
+
+
+#more-info-item-1{
+  margin-bottom: 4px;
 }

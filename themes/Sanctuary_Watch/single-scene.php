@@ -76,6 +76,9 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 
 <body      >
   <!-- for the mobile image stuff -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+
   <div class="modal" id="mobileModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
   <div class="modal-dialog modal-lg" style="z-index: 9999;margin-top: 60%;max-width: 88%;/* margin-right: 10%; */">
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -153,10 +156,15 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
   </div>
 </div>
 
+
 <div id="entire_thing" style="
  
-    max-width: 1700px !important; /* Set the maximum width */
-    margin: 0 auto; /* Center it horizontally */
+  max-width: 1700px !important;
+    margin: 0 auto;
+    background: #f2f2f2;
+    padding-bottom: 3%;
+    margin-top: -20px;
+    padding-top: 1%;
 
     
 ">  

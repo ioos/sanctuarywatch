@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<ruleset 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	name="WordPress Coding Standard 3.0" 
+	xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+
+	<description>Coding Standard 3</description>
+
+	<!-- textdomain  -->
+	
+	
+	<file>.</file>
+
+	<!-- Exclude common patterns -->
+	<exclude-pattern>src</exclude-pattern>
+	<exclude-pattern>node_modules</exclude-pattern>
+
+	<!-- BASIC Configuration -->
+	<arg name="extensions" value="php" />
+	<arg name="basepath" value="."/> <!-- Strip the filepaths down to the relevant bit. -->
+	<arg name="parallel" value="20"/> <!-- Check up to 20 files simultaneously. -->
+    <arg value="ps" /> <!-- Show progress -->
+	<arg name="colors" /> <!-- Show colors in console -->
+    <arg value="ns" /> <!-- Show sniff codes in all reports -->
+
+	<!--
+	#############################################################################
+	FILES
+	#############################################################################
+	-->
+
+	<config name="testVersion" value="5.6-" />
+
+	<rule ref="Squiz.Classes.ClassFileName"  /> <!-- Class name doesn't match filename -->
+	<rule ref="Squiz.Classes.ValidClassName" /> <!-- Valid class name -->
+	<rule ref="Squiz.Classes.ClassFileName">
+		<exclude name="Squiz.Classes.ClassFileName.NoMatch" />
+        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />
+	</rule>
+	<rule ref="Squiz.Commenting">
+		<exclude name="Squiz.Commenting"/>
+	</rule>
+	 <!-- Missing file doc comment -->
+	<!--
+	#############################################################################
+	GENERIC
+	#############################################################################
+	-->
+
+	<!-- PHPCompatibility -->
+	<rule ref="PHPCompatibility" />
+	
+	<rule ref="Generic.Commenting"/> <!-- Commenting -->
+	<rule ref="Generic.CodeAnalysis" /> <!-- Code analysis -->
+	<rule ref="Generic.WhiteSpace" /> <!-- spacing and indentation -->
+	<rule ref="Generic.WhiteSpace.DisallowTabIndent"> <!-- Allow tab indent  -->
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent.TabsUsed" />
+		<exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed" />
+	</rule>
+	<!-- <rule ref="Universal.Arrays.DisallowLongArraySyntax">  -->
+	<rule ref="Universal"> 
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax" />
+        <exclude name="Universal.ControlStructures.DisallowLonelyIf.Found" />
+        <exclude name="Universal.Classes.RequireFinalClass.NonFinalClassFound" />
+        <exclude name="Universal.ControlStructures.IfElseDeclaration.NoNewLine" />
+        <exclude name="Universal.ControlStructures.DisallowAlternativeSyntax.FoundIfWithInlineHTML" />
+        <exclude name="Universal.Namespaces.EnforceCurlyBraceSyntax.Forbidden" />
+        <exclude name="Universal.Files.SeparateFunctionsFromOO.Mixed" />
+        <exclude name="Universal.UseStatements.DisallowUseClass.FoundWithoutAlias" />
+	</rule>
+	<rule ref="Generic.Functions.FunctionCallArgumentSpacing"> <!-- whitespace in function arguements  -->
+		<exclude
+      name="Generic.Functions.FunctionCallArgumentSpacing.NoSpaceAfterComma"
+    />
+	</rule>
+	<rule ref="Generic.Classes.DuplicateClassName">
+		<type>warning</type>
+	</rule>
+	
+
+	<rule ref="PEAR.Functions.FunctionCallSignature.EmptyLine" /> <!-- Empty line before function call  -->
+	
+
+	<!--
+	#############################################################################
+	WORDPRESS
+	#############################################################################
+	-->
+	<config name="minimum_wp_version" value="6.0"/>
+
+	<rule ref="WordPress"></rule> <!-- Include the WordPress standard. -->
+    <rule ref="WordPress-Core" /> 
+    <rule ref="WordPress-Docs" /> 
+    <rule ref="WordPress-Extra" /> 
+	<rule ref="WordPress.Files.FileName"> <!-- exclude WordPress InvalidClassFileName  -->
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+	</rule>
+	<rule ref="WordPress.PHP.StrictInArray"> <!-- exclude WordPress.PHP.StrictInArray.FoundNonStrictFalse -->
+		<exclude name="WordPress.PHP.StrictInArray.FoundNonStrictFalse" />
+		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />	
+	</rule>
+
+</ruleset>

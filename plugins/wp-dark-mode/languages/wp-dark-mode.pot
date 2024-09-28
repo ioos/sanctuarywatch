@@ -1,0 +1,1670 @@
+# Copyright (C) 2024 WPPOOL
+# This file is distributed under the GPL3.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Dark Mode 5.0.8\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/plugin\n"
+"POT-Creation-Date: 2024-07-17 09:40:18+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: wp-vue-i18n 1.1.4\n"
+
+#: includes/admin/class-admin-install.php:221
+#. translators: %s: WordPress version
+msgid "Upgrade now"
+msgstr ""
+
+#: includes/admin/class-admin-install.php:232
+#: includes/admin/class-admin-menus.php:59
+#: includes/admin/class-admin-menus.php:60
+#: includes/admin/class-admin-menus.php:71
+#: includes/admin/class-admin-menus.php:72
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-admin-menus.php:45
+msgid "WP Dark Mode Settings"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WP Dark Mode"
+msgstr ""
+
+#: includes/admin/class-admin-menus.php:82
+#: includes/admin/class-admin-menus.php:83
+msgid "Get Started"
+msgstr ""
+
+#: includes/admin/class-admin-menus.php:104
+#: includes/admin/class-admin-menus.php:105
+msgid "Tools"
+msgstr ""
+
+#: includes/admin/class-admin-menus.php:118
+msgid "Recommended Plugins"
+msgstr ""
+
+#: includes/admin/class-admin-menus.php:119
+msgid "Recommended <br /> Plugins"
+msgstr ""
+
+#: includes/admin/class-admin-menus.php:131
+#: includes/admin/class-admin-menus.php:140
+msgid "Upgrade Now"
+msgstr ""
+
+#: includes/admin/class-admin-rest.php:142
+#: includes/admin/class-admin-rest.php:182
+msgid "No settings found."
+msgstr ""
+
+#: includes/admin/class-admin-rest.php:190
+msgid "Settings saved successfully."
+msgstr ""
+
+#: includes/admin/class-admin-rest.php:205
+msgid "Reset not confirmed."
+msgstr ""
+
+#: includes/admin/class-admin-rest.php:215
+msgid "Settings reset successfully."
+msgstr ""
+
+#: includes/admin/class-admin-rest.php:233
+msgid "No notice found."
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:201
+#: templates/admin/recommended-plugins.php:133
+msgid "Try out our recommended plugins"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:202
+#: templates/admin/recommended-plugins.php:134
+msgid "Hide From Menu"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:252
+#: templates/admin/recommended-plugins.php:183
+#. translators: %s: Plugin author.
+msgid "By %s"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:279
+#: templates/admin/recommended-plugins.php:210
+msgid "Install Now"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:301
+#: templates/admin/recommended-plugins.php:232
+msgid "Update Now"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:320
+#: templates/admin/recommended-plugins.php:251
+msgid "Activate"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:353
+#: templates/admin/recommended-plugins.php:284
+#. translators: %s: Plugin name and version.
+msgid "More information about %s"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:355
+#: templates/admin/recommended-plugins.php:286
+msgid "More Details"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:385
+#: templates/admin/recommended-plugins.php:316
+msgid "This plugin doesn&#8217;t work with your versions of WordPress and PHP."
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:409
+#: templates/admin/recommended-plugins.php:340
+#. translators: %s: URL to Update PHP page.
+msgid "This plugin doesn&#8217;t work with your version of WordPress."
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:418
+#: templates/admin/recommended-plugins.php:349
+#. translators: %s: URL to WordPress Updates screen.
+msgid "This plugin doesn&#8217;t work with your version of PHP."
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:466
+#: templates/admin/recommended-plugins.php:397
+#. translators: %s: URL to Update PHP page.
+msgid "Last Updated:"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:469
+#: templates/admin/recommended-plugins.php:400
+#. translators: %s: Human-readable time difference.
+msgid "%s ago"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:487
+#: templates/admin/recommended-plugins.php:418
+#. translators: %s: Number of installations.
+msgid "%s Active Installations"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:508
+#: src/admin/views/settings/Performance.vue:12
+#: templates/admin/recommended-plugins.php:439
+msgid "Are you sure?"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:509
+#: templates/admin/recommended-plugins.php:440
+msgid ""
+"If you hide the recommended plugins page from your menu, it won't appear "
+"there again. Are you sure you'd like to do it?"
+msgstr ""
+
+#: includes/models/class-visitor.php:85
+msgid "Failed to insert visitor data."
+msgstr ""
+
+#: includes/models/class-visitor.php:106
+msgid "Failed to update visitor data."
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:46
+#: includes/modules/elementor/widgets/class-elementor-widget.php:100
+#: src/gutenberg/block/index.js:9
+msgid "Dark Mode Switch"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:109
+#: src/gutenberg/block/DarkModeSwitchEditor.js:29
+msgid "Switch Style"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:119
+msgid "Style 1"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:120
+msgid "Style 2"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:121
+msgid "Style 3"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:122
+msgid "Style 4"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:123
+msgid "Style 5"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:124
+msgid "Style 6"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:125
+msgid "Style 7"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:126
+msgid "Style 8"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:127
+msgid "Style 9"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:128
+msgid "Style 10"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:129
+msgid "Style 11"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:130
+msgid "Style 12"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:131
+msgid "Style 13"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:145
+msgid "XS"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:146
+msgid "SM"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:147
+msgid "MD"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:148
+msgid "XL"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:149
+msgid "2XL"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:150
+msgid "3XL"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:160
+msgid "Alignment"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:164
+msgid "Left"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:168
+msgid "Center"
+msgstr ""
+
+#: includes/modules/elementor/widgets/class-elementor-widget.php:172
+msgid "Right"
+msgstr ""
+
+#: includes/modules/social-share/class-social-share.php:424
+msgid "Social Share - WP Dark Mode"
+msgstr ""
+
+#: includes/modules/social-share/class-social-share.php:425
+msgid "Social Share"
+msgstr ""
+
+#: includes/modules/social-share/class-social-share.php:598
+msgid "Invalid nonce"
+msgstr ""
+
+#: includes/modules/social-share/class-social-share.php:603
+msgid "Permission denied"
+msgstr ""
+
+#: includes/modules/social-share/class-social-share.php:784
+msgid "Invalid permission"
+msgstr ""
+
+#: includes/modules/social-share/class-social-share.php:791
+msgid "Invalid channel"
+msgstr ""
+
+#: includes/modules/social-share/class-social-share.php:825
+msgid "Something went wrong"
+msgstr ""
+
+#: includes/wppool/class-plugin.php:308
+msgid "Deal Ends In"
+msgstr ""
+
+#: includes/wppool/class-plugin.php:313 includes/wppool/class-plugin.php:322
+#: includes/wppool/class-plugin.php:331 includes/wppool/class-plugin.php:340
+msgid "00"
+msgstr ""
+
+#: includes/wppool/class-plugin.php:316
+msgid "Days"
+msgstr ""
+
+#: includes/wppool/class-plugin.php:325
+msgid "Hours"
+msgstr ""
+
+#: includes/wppool/class-plugin.php:334
+msgid "Minutes"
+msgstr ""
+
+#: includes/wppool/class-plugin.php:343
+msgid "Seconds"
+msgstr ""
+
+#: includes/wppool/class-plugin.php:351
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:5
+msgid "Controls"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:16
+msgid "Frontend Dark Mode"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:17
+msgid "Settings to Control Dark Mode on your Frontend Website"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:21
+msgid "Admin Panel Dark Mode"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:22
+msgid "Settings to Control Dark Mode on your WordPress Admin Panel"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:28
+msgid "Customization"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:36
+msgid "Switch Settings"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:37
+msgid "Configure the dark mode switch for your website"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:41
+msgid "Color Settings"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:42
+msgid "Explore your options to get the best dark mode visual experience."
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:46
+msgid "Image Settings"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:51
+msgid "Video Settings"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:52
+msgid "Customize video appearance in Dark Mode"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:56
+msgid "Site Animation"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:57
+msgid "Choose your page transition animation"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:63
+msgid "Advanced"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:72
+msgid "Performance"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:73
+msgid "Configure performance settings."
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:77
+msgid "Exclude Settings"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:78
+msgid "Customize image appearance in Dark Mode"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:82
+msgid "Custom CSS"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:83
+msgid "Custom CSS code to apply on dark mode or on both mode"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:87
+msgid "Accessibility"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:88
+msgid "Make your website more accessible for people with disabilities."
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:92
+#: src/admin/views/settings/ShortCode.vue:33
+msgid "Shortcode"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:93
+msgid "Generate shortcodes for dark mode switches"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:97
+msgid "Switch Widget"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:98
+msgid "Display dark mode switch using WordPress widget"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:104
+#: src/admin/routes/settings-routes.js:118
+msgid "Analytics"
+msgstr ""
+
+#: src/admin/routes/settings-routes.js:119
+msgid "Configure analytics settings."
+msgstr ""
+
+#: src/admin/views/MailTo.vue:121
+msgid "Choose how you want to connect to us. Select the option convenient for you"
+msgstr ""
+
+#: src/admin/views/settings/Accessibility.vue:19
+msgid "Do you want to disable Typography settings?"
+msgstr ""
+
+#: src/admin/views/settings/Accessibility.vue:20
+msgid ""
+"Disabling typography settings will not make the text size increase "
+"automatically when text toggle is pressed on accessibility switches"
+msgstr ""
+
+#: src/admin/views/settings/Accessibility.vue:21
+msgid "Disable"
+msgstr ""
+
+#: src/admin/views/settings/Accessibility.vue:22
+#: src/admin/views/settings/CustomPreset.vue:38
+#: src/admin/views/settings/ImageReplacement.vue:98
+#: src/admin/views/settings/ImageReplacement.vue:279
+#: src/admin/views/settings/MenuSwitch.vue:20
+#: src/admin/views/settings/Performance.vue:15
+#: src/admin/views/settings/VideoReplacement.vue:275
+msgid "Cancel"
+msgstr ""
+
+#: src/admin/views/settings/Accessibility.vue:86
+msgid "Small"
+msgstr ""
+
+#: src/admin/views/settings/Accessibility.vue:90
+msgid "Medium"
+msgstr ""
+
+#: src/admin/views/settings/Accessibility.vue:94
+msgid "Large"
+msgstr ""
+
+#: src/admin/views/settings/Accessibility.vue:98
+msgid "Custom"
+msgstr ""
+
+#: src/admin/views/settings/Accessibility.vue:141
+msgid "Typography Settings"
+msgstr ""
+
+#: src/admin/views/settings/Admin.vue:12
+msgid "Enable Admin Dashboard Dark Mode"
+msgstr ""
+
+#: src/admin/views/settings/Admin.vue:13
+msgid "Turn it ON to enable dark mode on the WordPress dashboard"
+msgstr ""
+
+#: src/admin/views/settings/Admin.vue:17
+msgid "Block Editor Dark Mode"
+msgstr ""
+
+#: src/admin/views/settings/Admin.vue:18
+msgid ""
+"Turn it ON to show dark mode switch in the block editor for toggling "
+"between dark and light mode."
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:15
+msgid "Dark Mode Analytics"
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:16
+msgid "Enable Dark Mode Analytics to show how much users use teh dark mode each day"
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:23
+msgid "Display this dark mode usage chart on the WordPress Dashboard"
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:25
+msgid ""
+"If you enable this then the chart above will be shown in your admin panel "
+"dashboard"
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:31
+msgid "Email Reporting"
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:32
+msgid "Enable this feature to get the dark mode usage summery through email."
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:36
+msgid "Reporting Frequency"
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:36
+msgid "Select the reporting frequency when the email will be send."
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:44
+msgid "Reporting Email"
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:44
+msgid "Enter the email where analytics report will be sent"
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:50
+msgid "Reporting Email Subject"
+msgstr ""
+
+#: src/admin/views/settings/Analytics.vue:50
+msgid "Subject of the analytics report mail"
+msgstr ""
+
+#: src/admin/views/settings/AnalyticsChart.vue:11
+msgid "WP Dark Mode Usage"
+msgstr ""
+
+#: src/admin/views/settings/Animation.vue:19
+msgid "Enable Page Transition Animation"
+msgstr ""
+
+#: src/admin/views/settings/Animation.vue:20
+msgid ""
+"Enable this option to choose the transition animation when switching "
+"between light and dark modes on your website."
+msgstr ""
+
+#: src/admin/views/settings/Animation.vue:24
+msgid "Select Animation"
+msgstr ""
+
+#: src/admin/views/settings/AutomaticColor.vue:7
+msgid "Adjust your automatic color filter"
+msgstr ""
+
+#: src/admin/views/settings/AutomaticColor.vue:8
+msgid "Adjust the your automatic color for dark mode color scheme"
+msgstr ""
+
+#: src/admin/views/settings/Color.vue:10
+msgid "Automatic Color"
+msgstr ""
+
+#: src/admin/views/settings/Color.vue:18
+msgid "Color Presets"
+msgstr ""
+
+#: src/admin/views/settings/Color.vue:26
+msgid "Custom Preset"
+msgstr ""
+
+#: src/admin/views/settings/Color.vue:57
+msgid "Choose Color Mode"
+msgstr ""
+
+#: src/admin/views/settings/ColorFilters.vue:34
+msgid "Adjust your preferred dark mode brightness"
+msgstr ""
+
+#: src/admin/views/settings/ColorFilters.vue:42
+msgid "Adjust your desired dark mode contrast"
+msgstr ""
+
+#: src/admin/views/settings/ColorFilters.vue:50
+msgid "Adjust your preferred dark mode Sepia"
+msgstr ""
+
+#: src/admin/views/settings/ColorFilters.vue:58
+msgid "Adjust your preferred dark mode Grayscale"
+msgstr ""
+
+#: src/admin/views/settings/ColorPresets.vue:34
+msgid "Dark Mode Color Presets"
+msgstr ""
+
+#: src/admin/views/settings/ColorPresets.vue:34
+msgid "Choose a color preset for the dark mode color scheme."
+msgstr ""
+
+#: src/admin/views/settings/ContentSwitch.vue:16
+msgid ""
+"The Content Switch is <strong>currently unavailable</strong>. To access "
+"this feature, first you have to enable the “Frontend Dark Mode” feature "
+"from the Control settings"
+msgstr ""
+
+#: src/admin/views/settings/ContentSwitch.vue:19
+#: src/admin/views/settings/Frontend.vue:23
+#: src/admin/views/settings/MenuSwitch.vue:41
+msgid "Enable Frontend Dark Mode"
+msgstr ""
+
+#: src/admin/views/settings/ContentSwitch.vue:27
+msgid "Display dark mode switch at top of all posts"
+msgstr ""
+
+#: src/admin/views/settings/ContentSwitch.vue:28
+#: src/admin/views/settings/ContentSwitch.vue:33
+msgid "Enable to display the dark mode switch button in menus."
+msgstr ""
+
+#: src/admin/views/settings/ContentSwitch.vue:32
+msgid "Display dark mode switch at top of all pages"
+msgstr ""
+
+#: src/admin/views/settings/ContentSwitch.vue:39
+msgid "Select Switches"
+msgstr ""
+
+#: src/admin/views/settings/CustomCSS.vue:12
+msgid "Dark Mode CSS"
+msgstr ""
+
+#: src/admin/views/settings/CustomCSS.vue:14
+msgid ""
+"Add custom CSS for dark mode only. This CSS will only apply when the dark "
+"mode is on. use <code>!important</code> flag on each property"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:23
+msgid "Preset is already in use!"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:24
+msgid ""
+"You cannot delete this preset as it is currently in use. Please select "
+"another preset or change the \"Color Mode\" before deleting this preset."
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:25
+#: src/admin/views/settings/CustomPreset.vue:53
+msgid "Got it"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:35
+msgid "Do you want to delete this preset?"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:36
+msgid ""
+"This preset will be permanently deleted. Are you sure you want to confirm "
+"this deletion?"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:37
+#: src/admin/views/settings/ImageReplacement.vue:281
+#: src/admin/views/settings/MenuSwitch.vue:19
+#: src/admin/views/settings/VideoReplacement.vue:277
+msgid "Confirm"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:51
+msgid "Create a custom color palette first!"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:52
+msgid ""
+"Before saving this mode, please ensure you have created a custom color "
+"palette. Alternatively, you can switch your mode to either \"Color "
+"Presets\" or \"Automatic Color\" if that better suits your needs."
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:98
+msgid "No custom color presets is created"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:99
+msgid "Click on the button below to create your first custom color."
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:103
+msgid "Add Custom Color Preset"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:106
+msgid "Custom Color Presets"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:106
+msgid "Custom color preset for the dark mode color scheme."
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:128
+#: src/admin/views/settings/ImageReplacement.vue:97
+#: src/admin/views/settings/ImageReplacement.vue:275
+#: src/admin/views/settings/VideoReplacement.vue:271
+msgid "Delete"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:143
+msgid "Untitled"
+msgstr ""
+
+#: src/admin/views/settings/CustomPreset.vue:157
+msgid "Create New Preset"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeElements.vue:10
+msgid "HTML Element"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeElements.vue:12
+msgid "Exclude dark mode on HTML tags, CSS class, CSS ids and more"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeElements.vue:18
+msgid "Exclude Elements"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeElements.vue:23
+msgid "Enter HTML element selectors"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeElements.vue:31
+msgid "Include Elements"
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:18
+msgid "Exclude Pages/ Posts"
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:19
+msgid "Exclude dark mode on specific WordPress post type and taxonomy"
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:24
+msgid "Exclude Post Type:"
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:32
+msgid "Exclude Pages/Posts"
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:40
+msgid ""
+"Add pages, posts and custom post types that you want to exclude from the "
+"dark mode."
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:42
+#: src/admin/views/settings/ExcludePages.vue:72
+#: src/admin/views/settings/ExcludeWooCommerce.vue:37
+#: src/admin/views/settings/ExcludeWooCommerce.vue:57
+msgid "Exclude All"
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:43
+#: src/admin/views/settings/ExcludePages.vue:73
+#: src/admin/views/settings/ExcludeWooCommerce.vue:38
+#: src/admin/views/settings/ExcludeWooCommerce.vue:58
+msgid "Except:"
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:49
+#: src/admin/views/settings/ExcludePages.vue:78
+msgid "Dark Mode will only work on the selected posts and pages."
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:56
+msgid "Exclude Taxonomy Type:"
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:64
+msgid "Exclude Taxonomies"
+msgstr ""
+
+#: src/admin/views/settings/ExcludePages.vue:71
+msgid "Include the categories and tags that you want to exclude from the dark mode."
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:20
+msgid "Exclude WooCommerce"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:21
+msgid "Exclude dark mode on WooCommerce products and categories"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:24
+msgid "WooCommerce is not active"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:25
+msgid "WooCommerce is not installed"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:25
+msgid "Please active WooCommerce to use this feature."
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:25
+msgid "Please install WooCommerce to use this feature"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:30
+msgid "Exclude WC Products"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:36
+msgid "Add products to exclude the dark mode from the WooCommerce categories."
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:42
+msgid "Dark Mode will only work on the selected WooCommerce products."
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:49
+msgid "Exclude WC Categories"
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:56
+msgid "Add categories to exclude the dark mode from the WooCommerce categories."
+msgstr ""
+
+#: src/admin/views/settings/ExcludeWooCommerce.vue:62
+msgid "Dark Mode will only work on the selected WooCommerce categories."
+msgstr ""
+
+#: src/admin/views/settings/Excludes.vue:17
+msgid "HTML Elements"
+msgstr ""
+
+#: src/admin/views/settings/Excludes.vue:22
+msgid "Pages/Posts"
+msgstr ""
+
+#: src/admin/views/settings/Excludes.vue:26
+msgid "WooCommerce"
+msgstr ""
+
+#: src/admin/views/settings/Frontend.vue:24
+msgid "Turn it ON to enable dark mode on the Frontend"
+msgstr ""
+
+#: src/admin/views/settings/Frontend.vue:27
+msgid "Choose how you want to use Dark Mode"
+msgstr ""
+
+#: src/admin/views/settings/Frontend.vue:40
+#: src/admin/views/settings/VideoBehavior.vue:121
+#: src/admin/views/settings/VideoBehavior.vue:129
+msgid "New"
+msgstr ""
+
+#: src/admin/views/settings/Frontend.vue:48
+msgid "Start Time"
+msgstr ""
+
+#: src/admin/views/settings/Frontend.vue:52
+msgid "To"
+msgstr ""
+
+#: src/admin/views/settings/Frontend.vue:56
+msgid "End Time"
+msgstr ""
+
+#: src/admin/views/settings/Frontend.vue:63
+msgid "Start time and end time cannot be same."
+msgstr ""
+
+#: src/admin/views/settings/Image.vue:14
+#: src/admin/views/settings/ImageReplacement.vue:155
+msgid "Image Replacement"
+msgstr ""
+
+#: src/admin/views/settings/Image.vue:17
+msgid "Image Behavior"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:41
+msgid "Image Behavior When Dark Mode Is On"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:41
+msgid "Settings to change image appearance on dark mode"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:46
+msgid "Low Brightness Image"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:47
+msgid "Enable to set the brightness level of the images on dark mode"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:52
+#: src/admin/views/settings/VideoBehavior.vue:50
+msgid "Brightness level"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:60
+msgid "Exclude Low Brightness on specific images"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:66
+#: src/admin/views/settings/ImageBehavior.vue:120
+msgid "Enter image URL"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:86
+#: src/admin/views/settings/ImageBehavior.vue:140
+msgid "No Image"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:101
+msgid "Grayscale Image"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:102
+msgid "Enable to set the grayscale level of the images on dark mode"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:108
+#: src/admin/views/settings/VideoBehavior.vue:120
+msgid "Grayscale level"
+msgstr ""
+
+#: src/admin/views/settings/ImageBehavior.vue:114
+msgid "Exclude Low Grayscale Images "
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:95
+msgid "Delete this image group?"
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:96
+msgid ""
+"Are you sure you want to delete this image group? This action is permanent, "
+"and you can't undo it"
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:158
+msgid "Replace specific images when dark mode is enabled"
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:163
+msgid "No Images Added"
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:163
+msgid "Add images to replace them in dark mode"
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:169
+msgid "Replaced Images"
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:170
+msgid "The following added images will be replaced when dark mode is enabled"
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:179
+msgid "Light Mode Image : "
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:194
+msgid "Dark Mode Image"
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:242
+msgid "Mode Image"
+msgstr ""
+
+#: src/admin/views/settings/ImageReplacement.vue:255
+#: src/admin/views/settings/VideoReplacement.vue:251
+msgid "Browse"
+msgstr ""
+
+#: src/admin/views/settings/Layout.vue:82
+msgid "What's New"
+msgstr ""
+
+#: src/admin/views/settings/Layout.vue:91
+msgid "Help"
+msgstr ""
+
+#: src/admin/views/settings/Layout.vue:98
+msgid "Upgrade"
+msgstr ""
+
+#: src/admin/views/settings/MailTo.vue:68
+msgid "Compose new email with"
+msgstr ""
+
+#: src/admin/views/settings/MailTo.vue:94
+msgid "Gmail in browser"
+msgstr ""
+
+#: src/admin/views/settings/MailTo.vue:113
+msgid "Outlook in browser"
+msgstr ""
+
+#: src/admin/views/settings/MailTo.vue:132
+msgid "Yahoo in browser"
+msgstr ""
+
+#: src/admin/views/settings/MailTo.vue:151
+msgid "Default app or browser"
+msgstr ""
+
+#: src/admin/views/settings/MenuSwitch.vue:17
+msgid "Menu switches won’t be visible anymore"
+msgstr ""
+
+#: src/admin/views/settings/MenuSwitch.vue:18
+msgid ""
+"If you disable this feature, the darkmode switch will not be visible in "
+"your website's menu or navigation bar. Are you confirm to disable?"
+msgstr ""
+
+#: src/admin/views/settings/MenuSwitch.vue:38
+msgid ""
+"To access this feature, first you have to enable the “Frontend Dark Mode” "
+"feature from the Control settings"
+msgstr ""
+
+#: src/admin/views/settings/MenuSwitch.vue:48
+msgid "Display Switch in Menu"
+msgstr ""
+
+#: src/admin/views/settings/MenuSwitch.vue:49
+msgid "Display the darkmode switch in your website menu."
+msgstr ""
+
+#: src/admin/views/settings/MenuSwitch.vue:53
+msgid "Add Dark Mode switch to Menus from WordPress dashboard"
+msgstr ""
+
+#: src/admin/views/settings/MenuSwitch.vue:54
+msgid ""
+"Drag & drop the Darkmode Switcher to any of your menus from the Menu option "
+"under Appearance settings in WordPress dashboard"
+msgstr ""
+
+#: src/admin/views/settings/MenuSwitch.vue:56
+msgid "Go to Menu Settings"
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:13
+msgid ""
+"Enabling this feature may delay WP Dark Mode to be applied on the frontend. "
+"Enable this feature only if you are facing issues with server-side caching."
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:14
+msgid "Enable"
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:36
+msgid "Choose Dark Mode behavior to enhance the performance"
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:55
+msgid "Other Performance Settings"
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:61
+msgid "Track Dynamic Content"
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:62
+msgid ""
+"Please turn on this feature only if you have any Ajax Loaded dynamic "
+"content like ajax product filters, ajax page loader, ajax image "
+"loaders/sliders, lazy loaded images etc."
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:66
+msgid "Load Scripts in Footer"
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:68
+msgid ""
+"Enable this feature to improve page load performance and reduce "
+"render-blocking"
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:75
+msgid "Exclude WP Dark Mode from Caching"
+msgstr ""
+
+#: src/admin/views/settings/Performance.vue:77
+msgid ""
+"Enable this feature to exclude WP Dark Mode from server-side caching "
+"technology like Lightspeed Cache, WPRocket etc."
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:44
+msgid "Preset Color Customization"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:47
+msgid "Customize the selected dark mode preset color in your way"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:57
+msgid "You already have a preset named"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:67
+msgid "Body Background Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:70
+msgid "Secondary Background Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:82
+msgid "Text Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:85
+msgid "Link Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:88
+msgid "Link Hover Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:100
+msgid "Background Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:103
+msgid "Input Text Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:106
+msgid "Placeholder Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:118
+msgid "Button Text Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:121
+msgid "Button Hover Text Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:124
+msgid "Button Background Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:127
+msgid "Button Hover Background Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:130
+msgid "Button Border Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:144
+msgid "Scrollbar Customization"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:145
+msgid "Customize the scrollbar of your website in dark mode"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:151
+msgid "Enable Dark Mode on Scrollbar"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:153
+msgid "Enable this option to customize your scrollbar while toggling to dark mode"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:157
+msgid "Track Background Color"
+msgstr ""
+
+#: src/admin/views/settings/PresetCustomization.vue:160
+msgid "Thumb Background Color"
+msgstr ""
+
+#: src/admin/views/settings/ShortCode.vue:33
+msgid "Select a switch from below and a shortcode will be generated"
+msgstr ""
+
+#: src/admin/views/settings/ShortCode.vue:55
+msgid "Select Switch Style"
+msgstr ""
+
+#: src/admin/views/settings/Switch.vue:19
+msgid "Floating Switch"
+msgstr ""
+
+#: src/admin/views/settings/Switch.vue:24
+msgid "Menu Switch"
+msgstr ""
+
+#: src/admin/views/settings/Switch.vue:30
+msgid "Content Switch"
+msgstr ""
+
+#: src/admin/views/settings/Video.vue:12
+#: src/admin/views/settings/VideoReplacement.vue:150
+msgid "Video Replacement"
+msgstr ""
+
+#: src/admin/views/settings/Video.vue:15
+msgid "Video Behavior"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:40
+msgid "Video Behavior When Dark Mode Is On"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:40
+msgid "Settings to change video appearance on dark mode"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:44
+msgid "Low Brightness Video"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:45
+msgid "Enable to set the brightness level of the videos on dark mode"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:57
+msgid "Exclude Low Brightness on specific videos"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:63
+#: src/admin/views/settings/VideoBehavior.vue:134
+msgid "Enter video URL"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:97
+#: src/admin/views/settings/VideoBehavior.vue:168
+msgid "No Video"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:115
+msgid "Grayscale Video"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:116
+msgid "Enable to set the grayscale level of the videos on dark mode"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:125
+msgid "Pro"
+msgstr ""
+
+#: src/admin/views/settings/VideoBehavior.vue:128
+msgid "Exclude Low Grayscale Videos"
+msgstr ""
+
+#: src/admin/views/settings/VideoReplacement.vue:152
+msgid "Replace specific videos when dark mode is enabled"
+msgstr ""
+
+#: src/admin/views/settings/VideoReplacement.vue:157
+msgid "No Videos Added"
+msgstr ""
+
+#: src/admin/views/settings/VideoReplacement.vue:157
+msgid "Add videos to replace them in dark mode"
+msgstr ""
+
+#: src/admin/views/settings/VideoReplacement.vue:163
+msgid "Replaced Videos"
+msgstr ""
+
+#: src/admin/views/settings/VideoReplacement.vue:163
+msgid "These videos will be replaced in the dark mode"
+msgstr ""
+
+#: src/admin/views/settings/VideoReplacement.vue:172
+msgid "Light Mode Video :"
+msgstr ""
+
+#: src/admin/views/settings/VideoReplacement.vue:189
+msgid "Dark Mode Video :"
+msgstr ""
+
+#: src/admin/views/settings/VideoReplacement.vue:239
+msgid "Mode Video"
+msgstr ""
+
+#: src/admin/views/settings/VideoReplacement.vue:241
+msgid "Video URL"
+msgstr ""
+
+#: src/admin/views/settings/Widget.vue:8
+msgid "Display Dark Mode switch using WordPress widget"
+msgstr ""
+
+#: src/admin/views/settings/Widget.vue:8
+msgid "Please follow the steps below"
+msgstr ""
+
+#: src/admin/views/settings/Widget.vue:22
+msgid ""
+"Click on the WP Darkmode Widget and you will see the available switches on "
+"the right side of the screen. Select the one that you like"
+msgstr ""
+
+#: src/admin/views/settings/Widget.vue:29
+msgid ""
+"Click update and you are done! The switch will now be visible in the menu "
+"where you placed."
+msgstr ""
+
+#: src/gutenberg/block/DarkModeSwitchEditor.js:37
+msgid "Switch Size"
+msgstr ""
+
+#: templates/admin/social-share/base.php:16
+msgid "Social Share (Inline Button)"
+msgstr ""
+
+#: templates/admin/social-share/base.php:28
+msgid "Saved Successfully"
+msgstr ""
+
+#: templates/admin/social-share/channels.php:18
+msgid "Enable Social Share (Inline Button)"
+msgstr ""
+
+#: templates/admin/social-share/channels.php:28
+msgid "Enable your preferred social channels"
+msgstr ""
+
+#: templates/admin/social-share/channels.php:30
+msgid "Search Channel"
+msgstr ""
+
+#: templates/admin/social-share/channels.php:77
+msgid ""
+"Not found <span class=\"italic text-blue-500\" "
+"x-text=\"state.search_channels\"></span>"
+msgstr ""
+
+#: templates/admin/social-share/channels.php:90
+msgid "See less channels"
+msgstr ""
+
+#: templates/admin/social-share/channels.php:90
+msgid "See more channels"
+msgstr ""
+
+#: templates/admin/social-share/channels.php:98
+msgid "Unlock all channels"
+msgstr ""
+
+#: templates/admin/social-share/channels.php:106
+msgid "Manage channels"
+msgstr ""
+
+#: templates/admin/social-share/channels.php:107
+msgid ""
+"Reorder your social channels. You can edit the channel label and device "
+"visibility for each. Drag channels to change their order."
+msgstr ""
+
+#: templates/admin/social-share/channels.php:179
+msgid "Drop here"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:18
+msgid "Inline Button Template"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:18
+msgid "Choose any inline button template that suits your style"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:76
+msgid "More"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:96
+msgid "Share Label"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:97
+msgid ""
+"Share label appears before the inline button. Provide engaging texts to "
+"make sure your visitors are sharing the content!"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:101
+msgid "Sharing is Caring: "
+msgstr ""
+
+#: templates/admin/social-share/customization.php:109
+msgid "Button Position"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:109
+msgid "Choose the position where you want show your inline button."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:122
+msgid "Button Alignment"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:122
+msgid "Choose the alignment of the button."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:144
+msgid "Button Shape"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:144
+msgid "Choose the button shape that matches your site content."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:157
+msgid "Button Size"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:157
+msgid "Choose the default size for your inline button."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:170
+msgid "Button Label"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:170
+msgid "Button labels can display your channel’s name and share count."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:183
+msgid "Hide Buttons on"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:183
+msgid "Select where you want to hide your inline button."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:185
+#: templates/admin/social-share/customization.php:205
+#: templates/admin/social-share/customization.php:236
+#: templates/admin/social-share/customization.php:253
+#: templates/admin/social-share/customization.php:267
+#: templates/admin/social-share/customization.php:283
+#: templates/admin/social-share/customization.php:297
+msgid "Ultimate"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:203
+msgid "Display Buttons on"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:203
+msgid "Choose where the inline button will appear on your website."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:234
+msgid "Button Spacing"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:234
+msgid "Select default spacing between each channel."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:250
+msgid "Total Shares"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:251
+msgid ""
+"Enable total share counter. It will show how many times your content is "
+"shared via enabled channels."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:264
+msgid "Minimum Share Count"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:265
+msgid ""
+"This is the minimum number of shares a page needs to have before the share "
+"counter is shown."
+msgstr ""
+
+#: templates/admin/social-share/customization.php:280
+msgid "Maximum Share Click"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:281
+msgid ""
+"This is the maximum number of click count on a social channel you want to "
+"show your visitors"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:294
+msgid "Channel Visibility Count"
+msgstr ""
+
+#: templates/admin/social-share/customization.php:295
+msgid ""
+"Set the number of channels that you want to show on your website. The rest "
+"will be shown after clicking on the 'More' button."
+msgstr ""
+
+#: templates/admin/social-share/preview.php:21
+msgid "Preview"
+msgstr ""
+
+#: templates/admin/upgrade-popup.php:46
+msgid "Unlock all the features"
+msgstr ""
+
+#: templates/admin/upgrade-popup.php:54
+msgid "DAYS"
+msgstr ""
+
+#: templates/admin/upgrade-popup.php:58
+msgid "HOURS"
+msgstr ""
+
+#: templates/admin/upgrade-popup.php:62
+msgid "MINUTES"
+msgstr ""
+
+#: templates/admin/upgrade-popup.php:66
+msgid "SECONDS"
+msgstr ""
+
+#: templates/frontend/social-share.php:206
+msgid "Share via:"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://wppool.dev/wp-dark-mode"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"WP Dark Mode automatically enables a stunning dark mode of your website "
+"based on user's operating system. Supports macOS, Windows, Android & iOS."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "WPPOOL"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://wppool.dev"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:277
+#: templates/admin/recommended-plugins.php:208
+#. translators: %s: Plugin name and version.
+msgctxt "plugin"
+msgid "Install %s now"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:284
+#: templates/admin/recommended-plugins.php:215
+msgctxt "plugin"
+msgid "Cannot Install"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:299
+#: templates/admin/recommended-plugins.php:230
+#. translators: %s: Plugin name and version.
+msgctxt "plugin"
+msgid "Update %s now"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:306
+#: templates/admin/recommended-plugins.php:237
+msgctxt "plugin"
+msgid "Cannot Update"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:317
+#: templates/admin/recommended-plugins.php:248
+msgctxt "plugin"
+msgid "Active"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:322
+#: templates/admin/recommended-plugins.php:253
+#. translators: %s: Plugin name.
+msgctxt "plugin"
+msgid "Activate %s"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:340
+#: templates/admin/recommended-plugins.php:271
+msgctxt "plugin"
+msgid "Installed"
+msgstr ""
+
+#: includes/admin/class-recommended-plugins.php:478
+#: templates/admin/recommended-plugins.php:409
+#. translators: %s: Number of millions.
+msgctxt "Active plugin installations"
+msgid "%s+ Million"
+msgid_plural "%s+ Million"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-recommended-plugins.php:482
+#: templates/admin/recommended-plugins.php:413
+msgctxt "Active plugin installations"
+msgid "Less Than 10"
+msgstr ""
