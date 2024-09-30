@@ -11,7 +11,19 @@ console.log("new wp")
 
 
 
+function hexToRgba(hex, opacity) {
+    // Remove the hash if it's present
+    hex = hex.replace(/^#/, '');
 
+    // Parse the r, g, b values from the hex string
+    let bigint = parseInt(hex, 16);
+    let r = (bigint >> 16) & 255;
+    let g = (bigint >> 8) & 255;
+    let b = bigint & 255;
+
+    // Return the rgba color string
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
 /**
  * Traps the focus within a specified modal element, ensuring that the user cannot tab out of it.
  *
@@ -1767,19 +1779,19 @@ function sectioned_list(){
         let heading = document.createElement("h5");
         // heading.classList.add("accordion-header");
 
-        function hexToRgba(hex, opacity) {
-            // Remove the hash if it's present
-            hex = hex.replace(/^#/, '');
+        // function hexToRgba(hex, opacity) {
+        //     // Remove the hash if it's present
+        //     hex = hex.replace(/^#/, '');
         
-            // Parse the r, g, b values from the hex string
-            let bigint = parseInt(hex, 16);
-            let r = (bigint >> 16) & 255;
-            let g = (bigint >> 8) & 255;
-            let b = bigint & 255;
+        //     // Parse the r, g, b values from the hex string
+        //     let bigint = parseInt(hex, 16);
+        //     let r = (bigint >> 16) & 255;
+        //     let g = (bigint >> 8) & 255;
+        //     let b = bigint & 255;
         
-            // Return the rgba color string
-            return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-        }
+        //     // Return the rgba color string
+        //     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        // }
 
         
         heading.setAttribute("id", `heading${i}`);
@@ -1869,6 +1881,15 @@ function toc_sections() {
         heading.setAttribute("id", `heading${i}`);
 
         let button = document.createElement("button");
+        let color = scene_sections[sections[i]];
+        // if (sections[i] != "None"){
+        //     // heading.innerHTML = sections[i];
+        //     // heading.style.color = 'black';
+        //     // heading.style.display = 'inline-block';
+        //     heading.style.background = hexToRgba(color, 0.3);
+        //     // heading.style.padding = '0 5px';
+        // }
+
         // button.classList.add("accordion-button");
         button.classList.add("accordion-button", "collapsed");
         button.setAttribute("type", "button");
@@ -1877,7 +1898,15 @@ function toc_sections() {
         button.setAttribute("aria-expanded", "false");
         button.setAttribute("aria-controls", `toccollapse${i}`);
         if (sections[i]!="None"){
-            button.innerHTML = sections[i];
+            // button.innerHTML = sections[i];
+            // button.style.backgroundColor = hexToRgba(color, 0.3);
+            let span = document.createElement('span');
+            span.style.color = 'black';
+            span.innerHTML = sections[i];
+            span.style.backgroundColor = hexToRgba(color, 0.2); // Only highlight the text
+            button.innerHTML = ''; // Clear the button content
+            button.appendChild(span);
+
         } else {
             continue;
             // button.innerHTML = "Table of Contents";

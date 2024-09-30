@@ -774,3 +774,33 @@ button:focus,
 #more-info-item-1{
   margin-bottom: 4px;
 }
+
+
+/* display: flex;
+justify-content: center;
+align-items: center;
+position: relative;
+font-size: large; */
+#accordion-header-1 > button {
+  display: flex;
+  justify-content: flex-start; 
+  align-items: center;
+  position: relative;
+  font-size: large;
+  text-align: left; 
+}
+#accordion-header-2 > button {
+  display: flex;
+  justify-content: flex-start; 
+  align-items: center; 
+  position: relative;
+  font-size: large;
+  text-align: left; 
+}
+
+#accordion-header-1 > button::after{
+  filter: brightness(0) invert(1) !important;
+}
+#accordion-header-2 > button::after{
+  filter: brightness(0) invert(1) !important;
+}
