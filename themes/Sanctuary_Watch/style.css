@@ -423,7 +423,7 @@ input:checked + .slider:before {
   margin-left: -20% */
 }
 #accordion-container{
-  max-width: 40%;
+  /* max-width: 40%; */
   min-width: 200px;
   /* min-width: 300px;
   min-width: 10%; 
@@ -781,7 +781,7 @@ justify-content: center;
 align-items: center;
 position: relative;
 font-size: large; */
-#accordion-header-1 > button {
+/* #accordion-header-1 > button {
   display: flex;
   justify-content: flex-start; 
   align-items: center;
@@ -796,11 +796,65 @@ font-size: large; */
   position: relative;
   font-size: large;
   text-align: left; 
-}
+} */
 
 #accordion-header-1 > button::after{
   filter: brightness(0) invert(1) !important;
 }
 #accordion-header-2 > button::after{
   filter: brightness(0) invert(1) !important;
+}
+
+#taglineHeaderId > button{
+  margin-bottom: 4px;
+  background: #03386c;
+  color: white;
+
+}
+#taglineHeaderId > button::after{
+  filter: brightness(0) invert(1) !important;
+}
+
+#accordion-header-3 > button{
+  background: #03386c;
+  color: white;
+  /* display: flex;
+  justify-content: flex-start; 
+  align-items: center; 
+  position: relative;
+  font-size: large;
+  text-align: left;  */
+}
+#accordion-header-3 > button::after{
+  filter: brightness(0) invert(1) !important;
+}
+
+@media (max-width: 430px) {
+  #accordion-header-1 > button {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    position: relative;
+    font-size: large;
+    text-align: left; 
+  }
+  #accordion-header-2 > button {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    position: relative;
+    font-size: large;
+    text-align: left; 
+  }
+  #accordion-header-3 > button{
+    background: #03386c;
+    color: white;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    position: relative;
+    font-size: large;
+    text-align: left; 
+  }
+
 }

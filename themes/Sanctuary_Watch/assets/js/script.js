@@ -348,7 +348,7 @@ async function make_title() {
         titleTagline.style.fontStyle = 'italic';
         if (is_mobile()){
             let item = createAccordionItem("taglineAccId", "taglineHeaderId", "taglineCollapseId", "Tagline", scene_data.scene_tagline);
-            accgroup.append(item);
+            accgroup.prepend(item);
 
         } else {
             col2.appendChild(titleTagline);
@@ -1458,13 +1458,15 @@ function render_modal(key){
 
             if (is_mobile()){
                 console.log("is mobile");
-                tagline_container.setAttribute("class", "");
+                // tagline_container.setAttribute("class", "");
                 accordion_container.setAttribute("class", "");
 
-                tagline_container.classList.add("col-6");
-                accordion_container.classList.add("col-6");
+                // tagline_container.classList.add("col-6");
+                // tagline_container
+                tagline_container.remove();
+                // accordion_container.classList.add("col-6");
                 // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
-                tagline_container.setAttribute("style", "min-width: 300px");
+                // tagline_container.setAttribute("style", "min-width: 300px");
 
 
             } else{
@@ -1539,9 +1541,15 @@ function render_modal(key){
             
             let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
             let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", collapsePhotoHTML);
-
+           
             acc.appendChild(accordionItem1);
             acc.appendChild(accordionItem2);
+            if (is_mobile()){
+                let accordionItem3 = createAccordionItem("accordion-item-3", "accordion-header-3", "accordion-collapse-3", "Tagline", modal_tagline);
+                acc.prepend(accordionItem3);
+
+            }
+
 
 
             accordion_container.appendChild(acc);

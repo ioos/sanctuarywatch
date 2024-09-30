@@ -116,13 +116,15 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
       <!-- Modal body -->
       <div class="modal-body">
         <div class="row">
+        <div id="tagline-container"  >
+            
+            </div>
           <div id="accordion-container"  >
         
           </div>
-          <div id="tagline-container"  >
-            <!-- tagline goes -->
-            tagline here
-          </div>
+          <!-- <div id="tagline-container"  >
+            
+          </div> -->
         </div>
       </div>
 
