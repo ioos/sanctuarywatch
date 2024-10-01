@@ -52,6 +52,13 @@ if ($instances_query->have_posts()) {
 
 ?>
 
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NRQCTZSW');</script>
+<!-- End Google Tag Manager -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         let currentUrl = window.location.href;
@@ -74,6 +81,11 @@ if ($instances_query->have_posts()) {
     });
 </script>
 
+<body>
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NRQCTZSW"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <div class="container-fluid">
 <!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->
@@ -115,6 +127,7 @@ if ($instances_query->have_posts()) {
         //   $child_ids = get_modal_array($svg_url);
         ?>
 </div>
+</body>
 <script>
     let post_id =  <?php echo $post_id; ?>;
     // let is_logged_in = <?php echo is_user_logged_in(); ?>;
