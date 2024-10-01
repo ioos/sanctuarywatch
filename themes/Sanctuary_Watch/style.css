@@ -809,6 +809,7 @@ font-size: large; */
   margin-bottom: 4px;
   background: #03386c;
   color: white;
+  border-radius: 0;
 
 }
 #taglineHeaderId > button::after{
@@ -818,6 +819,8 @@ font-size: large; */
 #accordion-header-3 > button{
   background: #03386c;
   color: white;
+  border-radius: 0;
+
   /* display: flex;
   justify-content: flex-start; 
   align-items: center; 

@@ -5,7 +5,8 @@ console.log(post_id);
 // screen.orientation.lock('landscape');
 console.log("new wp")
 
-// console.log(child_ids);
+console.log(child_ids);
+
 // access echoed JSON here for use. 
 //get all links from single-scene.php
 
@@ -178,6 +179,13 @@ function process_child_obj(){
 process_child_obj();
 console.log("MODIFIED");
 console.log(child_obj);
+child_ids_helper = {};
+for (let child in child_obj) {
+    const childData = child_obj[child];
+    // console.log(childData); 
+    child_ids_helper[childData.title] = child;
+}
+console.log(child_ids_helper);
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
 
 /**
@@ -319,8 +327,8 @@ async function make_title() {
         // col2.classList.add("col-md-10");
 
         if (!is_mobile()) {
-            col1.classList.add("col-md-4");
-            col2.classList.add("col-md-8");
+            col1.classList.add("col-md-2");
+            col2.classList.add("col-md-10");
             // col2.style.marginLeft =  `-12%`;
             // col1.style.marginLeft = '-12%';
             // document.querySelector("#title-container").style.marginLeft = '0%';
@@ -1445,7 +1453,10 @@ function render_modal(key){
             //add stuff for formatting here...
             // console.log(modal_data);
             let modal_tagline = modal_data["modal_tagline"];
-            tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
+            if (!is_mobile()){
+                tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
+            }
+            // tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
 
             //generate accordion
             // Select the container where the accordion will be appended
@@ -1463,7 +1474,7 @@ function render_modal(key){
 
                 // tagline_container.classList.add("col-6");
                 // tagline_container
-                tagline_container.remove();
+                // tagline_container.remove();
                 // accordion_container.classList.add("col-6");
                 // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
                 // tagline_container.setAttribute("style", "min-width: 300px");
@@ -2018,17 +2029,25 @@ function table_of_contents(){
                 // modal.style.display = "none";
                 let accordion_container = document.getElementById('accordion-container');
                 accordion_container.innerHTML = '';
+                if (!is_mobile()){
+                    let tagline_container = document.getElementById('tagline-container');
+                    tagline_container.innerHTML = '';
 
-                let tagline_container = document.getElementById('tagline-container');
+
+                }
+                // let tagline_container = document.getElementById('tagline-container');
                 document.getElementById("myTabContent").innerHTML = '';
-                tagline_container.innerHTML = '';
+                // tagline_container.innerHTML = '';
                 history.pushState("", document.title, window.location.pathname + window.location.search);
         });
         window.onclick = function(event) {
             if (event.target === modal) { // Check if the click is outside the modal content
                 // modal.style.display = "none";
                 document.getElementById('accordion-container').innerHTML = '';
-                document.getElementById('tagline-container').innerHTML = '';
+                if (!is_mobile()){
+                    document.getElementById('tagline-container').innerHTML = '';
+                }
+                // document.getElementById('tagline-container').innerHTML = '';
                 document.getElementById("myTabContent").innerHTML = '';
                 history.pushState("", document.title, window.location.pathname + window.location.search);
             }
@@ -2252,8 +2271,8 @@ function add_modal(){
                     let accordion_container = document.getElementById('accordion-container');
                     accordion_container.innerHTML = '';
 
-                    let tagline_container = document.getElementById('tagline-container');
-                    tagline_container.innerHTML = '';
+                    // let tagline_container = document.getElementById('tagline-container');
+                    // tagline_container.innerHTML = '';
 
 
                     let myTab = document.getElementById('myTab');
@@ -2357,8 +2376,15 @@ async function handleHashNavigation() {
         tabId = tabId.replace(/\//g, '-');
         console.log(window.location.pathname + window.location.search);
         history.pushState("", document.title, window.location.pathname + window.location.search);
+        let modName;
+        if (is_mobile()){
+            let modModal =  modalName.replace(/_/g, ' ');
+            modName = child_ids_helper[modModal] + '-container';
+        } else{
+            modName = modalName;
+        }
         // window.location.href = window.location.href;
-        let modalButton = await waitForElement(`#${modalName}`);
+        let modalButton = await waitForElement(`#${modName}`);
         console.log(modalButton);
 
         modalButton.click();
