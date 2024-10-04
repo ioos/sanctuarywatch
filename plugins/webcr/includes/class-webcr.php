@@ -206,7 +206,7 @@ class Webcr {
 		$this->loader->add_action( 'admin_notices', $plugin_admin_modal, 'modal_admin_notice' ); // scene 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); //scene 11
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); //scene
-		$this->loader->add_action( 'admin_menu', $plugin_admin_modal, 'create_modal_fields', 1 );
+		$this->loader->add_action( 'admin_menu', $plugin_admin_modal, 'create_modal_fields', 1 ); //admin_menu
 		$this->loader->add_action( 'manage_modal_posts_columns', $plugin_admin_modal, 'change_modal_columns' ); //scene
 		$this->loader->add_action( 'manage_modal_posts_custom_column', $plugin_admin_modal, 'custom_modal_column', 10, 2 ); //scene
 		$this->loader->add_action( 'init', $plugin_admin_modal, 'custom_content_type_modal' ); // scene 
