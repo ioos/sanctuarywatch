@@ -838,7 +838,7 @@ function highlight_icons(){
             // }
             // console.log(thisInstance);
             // elem.style.stroke = sectColors[sectionObj[key]];
-            if (sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
                 // console.log(scene_sections[sectionObj[key]]);
                 elem.style.stroke = scene_sections[sectionObj[key]];
             } else{
@@ -875,7 +875,7 @@ function flicker_highlight_icons() {
             // elem.style.stroke = sectColors[sectionObj[key]];
             // if (thisInstance.instance_colored_sections === "yes"){ //needs to be changed
                 // elem.style.stroke =  scene_sections[sectionObj[key]];//sectColors[sectionObj[key]];
-            if (sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
                     // console.log(scene_sections[sectionObj[key]]);
                     elem.style.stroke = scene_sections[sectionObj[key]];
             } else{
@@ -1166,14 +1166,20 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const details = document.createElement('details');
     const summary = document.createElement('summary');
     summary.textContent = 'Click for Details';
-    details.appendChild(summary);
+    // details.appendChild(summary);
     // details.appendChild(document.createTextNode(info_obj['longCaption']));
     let longCaption = document.createElement("p");
     longCaption.innerHTML = info_obj['longCaption'];
-    details.appendChild(longCaption);
+    if (info_obj['longCaption'] != ''){
+        details.appendChild(summary);
+        details.appendChild(longCaption);
+        tabContentElement.appendChild(details);
+
+    }
+    
 
     // Add the details element to the tab content element
-    tabContentElement.appendChild(details);
+    // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
 
     console.log("tab content container");
@@ -1865,7 +1871,10 @@ function sectioned_list(){
             heading.innerHTML = sections[i];
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
-            heading.style.backgroundColor = hexToRgba(color, 0.3);
+            if (scene_same_hover_color_sections != "yes"){
+                heading.style.backgroundColor = hexToRgba(color, 0.3);
+            }
+            // heading.style.backgroundColor = hexToRgba(color, 0.3);
             heading.style.padding = '0 5px';
         }
         // heading.setAttribute("style", `color: ${sectColors[sections[i]]}`);
@@ -1932,11 +1941,6 @@ function toc_sections() {
     // let colorIdx = 0;
 
     for (let i = 0; i < sections.length; i++) {
-        // if (sections[i] == "None"){
-        //     continue;
-        // }
-        // sectColors[sections[i]] = colors[colorIdx]; 
-        // colorIdx = (colorIdx + 1) % colors.length;
 
 
         let sect = document.createElement("div");
@@ -1948,13 +1952,7 @@ function toc_sections() {
 
         let button = document.createElement("button");
         let color = scene_sections[sections[i]];
-        // if (sections[i] != "None"){
-        //     // heading.innerHTML = sections[i];
-        //     // heading.style.color = 'black';
-        //     // heading.style.display = 'inline-block';
-        //     heading.style.background = hexToRgba(color, 0.3);
-        //     // heading.style.padding = '0 5px';
-        // }
+      
 
         // button.classList.add("accordion-button");
         button.classList.add("accordion-button", "collapsed");
@@ -1965,7 +1963,11 @@ function toc_sections() {
         button.setAttribute("aria-controls", `toccollapse${i}`);
         if (sections[i]!="None"){
             button.innerHTML = sections[i];
-            button.style.backgroundColor = hexToRgba(color, 0.2);
+            if (scene_same_hover_color_sections != "yes"){
+                // heading.style.backgroundColor = hexToRgba(color, 0.3);
+                button.style.backgroundColor = hexToRgba(color, 0.2);
+            }
+            // button.style.backgroundColor = hexToRgba(color, 0.2);
             // let span = document.createElement('span');
             // span.style.color = 'black';
             // span.innerHTML = sections[i];
@@ -2120,7 +2122,7 @@ function table_of_contents(){
             // console.log(sectionObj);
             // console.log(sectColors);
             // if (thisInstance.instance_colored_sections === "yes"){ //this should be done on the SCENE side of things, will havet o bring this back
-            if (sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
                 // console.log(scene_sections[sectionObj[key]]);
                 svg_elem.style.stroke = scene_sections[sectionObj[key]];
             } else{
@@ -2240,7 +2242,7 @@ function list_toc(){
             // } else{
             //     svg_elem.style.stroke = colors[0];
             // }
-            if (sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
                 // console.log(scene_sections[sectionObj[key]]);
                 svg_elem.style.stroke = scene_sections[sectionObj[key]];
             } else{

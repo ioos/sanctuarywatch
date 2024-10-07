@@ -194,6 +194,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
           $scene_text_toggle = get_post_meta($post_id, 'scene_text_toggle', true); 
           $scene_toc_style = get_post_meta($post_id, 'scene_toc_style', true); 
           $scene_full_screen_button = get_post_meta($post_id, 'scene_full_screen_button', true); 
+          $scene_same_hover_color_sections	= get_post_meta($post_id, 'scene_same_hover_color_sections', true); 
 
           $child_ids = get_modal_array($svg_url);
         
@@ -218,6 +219,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     let svg_url =  <?php echo json_encode($scene_url); ?>;
     let num_sections =  <?php echo json_encode($num_sections); ?>;
     let scene_sections =  <?php echo json_encode($scene_sections); ?>;
+    let scene_same_hover_color_sections = <?php echo json_encode($scene_same_hover_color_sections); ?>;
     console.log("the SECTIONS")
     console.log(scene_sections);
 
@@ -230,6 +232,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     console.log(scene_text_toggle);
     console.log(scene_toc_style);
     console.log(scene_full_screen_button);
+    console.log(scene_same_hover_color_sections);
     
     
   </script>
