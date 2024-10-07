@@ -862,7 +862,7 @@ font-size: large; */
 
 }
 #svg-elem{
-  z-index: 1000000;
+  z-index: 9998;
 }
 @media (min-width: 769px) {  /* a bunch of new stuff here for updated formatting */
   #title-container > div > div.col-md-2{

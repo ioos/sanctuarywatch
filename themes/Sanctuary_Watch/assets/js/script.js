@@ -1653,11 +1653,9 @@ function full_screen_button(svgId) {
             if (document.webkitFullscreenElement) {
                 webkitElem.style.width = (window.innerWidth) + 'px';
                 webkitElem.style.height = (window.innerHeight) + 'px';
-                text.textContent = "Exit";
             } else {
                 webkitElem.style.width = width;
                 webkitElem.style.height = height;
-                text.textContent = "Full Screen";
             }
         });
         
@@ -1669,7 +1667,7 @@ function full_screen_button(svgId) {
                 } else if (elem.webkitRequestFullscreen) {
                     elem.webkitRequestFullscreen();
                 }
-                // text.textContent = "Exit";
+                text.textContent = "Exit";
 
                 let modal = document.getElementById("myModal");
                 elem.prepend(modal);
@@ -1679,23 +1677,29 @@ function full_screen_button(svgId) {
                 } else if (document.webkitExitFullscreen) {
                     document.webkitExitFullscreen();
                 }
-                // text.textContent = "Full Screen";
+                text.textContent = "Full Screen";
             }
         }
 
         g.addEventListener('click', toggleFullScreen);
-        let isOn = true;
-        g.addEventListener('click', () => {
-        isOn = !isOn;
-        if (isOn) {
-            text.textContent = "Full Screen";
-            // g.setAttribute("fill", "#28a745");
-        } else {
-            text.textContent = "Exit";
-            // g.setAttribute("fill", "#dc3545");
-        }
-        console.log(`Toggle is now ${isOn ? 'ON' : 'OFF'}`);
+        document.addEventListener('fullscreenchange', function() {
+            if (!document.fullscreenElement) {
+                text.textContent = "Full Screen";
+            }
         });
+
+        document.addEventListener('webkitfullscreenchange', function() {
+            if (!document.webkitFullscreenElement) {
+                text.textContent = "Full Screen";
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && (document.fullscreenElement || document.webkitFullscreenElement)) {
+                text.textContent = "Full Screen";
+            }
+        });
+
     }
 }
 
