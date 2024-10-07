@@ -1964,14 +1964,14 @@ function toc_sections() {
         button.setAttribute("aria-expanded", "false");
         button.setAttribute("aria-controls", `toccollapse${i}`);
         if (sections[i]!="None"){
-            // button.innerHTML = sections[i];
-            // button.style.backgroundColor = hexToRgba(color, 0.3);
-            let span = document.createElement('span');
-            span.style.color = 'black';
-            span.innerHTML = sections[i];
-            span.style.backgroundColor = hexToRgba(color, 0.2); // Only highlight the text
-            button.innerHTML = ''; // Clear the button content
-            button.appendChild(span);
+            button.innerHTML = sections[i];
+            button.style.backgroundColor = hexToRgba(color, 0.2);
+            // let span = document.createElement('span');
+            // span.style.color = 'black';
+            // span.innerHTML = sections[i];
+            // span.style.backgroundColor = hexToRgba(color, 0.2); // Only highlight the text
+            // button.innerHTML = ''; // Clear the button content
+            // button.appendChild(span);
 
         } else {
             continue;
