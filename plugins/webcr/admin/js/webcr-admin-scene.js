@@ -5,6 +5,18 @@
 	let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
 	displaySceneEntries(openingSceneSections);
 	displayHoverColor();
+	//sameColorSections();
+
+	function sameColorSections () {
+		const tocStyle = document.getElementsByName("scene_toc_style")[0].value;
+		if (tocStyle =="list"){
+			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.parentElement.style.display = "none";
+		//	document.getElementsByName("scene_same_hover_color_sections")[0].value = 'no';
+		} else {
+			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.parentElement.style.display = "block";
+
+		}
+	}
 
 	   // function to display Scene Section fields
 	function displaySceneEntries (entry_number){
@@ -363,6 +375,11 @@
 	$('select[name="scene_section_number"]').change(function(){
 		let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
 		displaySceneEntries(openingSceneSections);
+	});
+
+
+	$('select[name="scene_toc_style"]').change(function(){
+		sameColorSections();
 	});
 
 	$('select[name="scene_section_number"]').change(function(){

@@ -872,7 +872,7 @@ class Webcr_Scene {
                     'type'  => 'checkbox',
                     'title' => 'Single color for sections',
                     'description' => 'Should all sections have the same hover color?',
-                    "default"   => "no",
+                  //  "default"   => "no",
                 ),
                 array(
                     'id'     => 'scene_hover_color',
