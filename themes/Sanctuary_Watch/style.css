@@ -861,3 +861,50 @@ font-size: large; */
   }
 
 }
+#svg-elem{
+  z-index: 1000000;
+}
+@media (min-width: 769px) {  /* a bunch of new stuff here for updated formatting */
+  #title-container > div > div.col-md-2{
+    width: 21%;
+    margin-left: 71.4%;
+  }
+  #title-container > div > div.col-md-2 > div{
+    margin-top: 2%;
+    margin-left: 19%;
+    margin-bottom: 2%;
+    max-width: 87%;
+  }
+  #title-container{
+    margin-left: 9%;
+  }
+  #title-container > h1{
+    margin-left: -5%;
+  }
+  #title-container > div > div.col-md-10{
+    margin-left: -12%;
+    margin-bottom: -8%;
+    width: 97.333333%;
+  }
+  #scene-row > div.col-md-10{
+    margin-left: -5.7% !important;
+    width: 97.333333% !important;
+
+  }
+  #svg1{
+    margin-left: -4% !important;
+  }
+  #toc-container{
+    margin-left: -22% !important;
+    padding-right: 0% !important; 
+  }
+
+  #toc-group{
+    max-width: 61% !important;
+    margin-left: 37% !important;
+    padding-top: 0% !important;
+  }
+
+  
+
+}
