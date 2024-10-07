@@ -186,9 +186,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 ">  
 <div id="title-container" style="margin-left: 9%" ></div>
 <div id="mobile-view-image"></div>
-<div class="container-fluid" id="scene-fluid">
+<div class="%container-fluid%" id="scene-fluid">
   <div class="row" id="scene-row">
-    <div class="col-md-10" style="margin-left: -4%;">
+    <div class="col-md-10" style="margin-left: -9%; width: 95%">
       <div id="svg1" class="responsive-image-container">
         <?php
           $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
@@ -215,7 +215,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
 
-    <div class="col-md-2" id="toc-container" style="margin-left: -6%">
+    <div class="col-md-2" id="toc-container" style="margin-left: -13%">
     <!-- <button style="margin-bottom: 5px; font-size: large;" class="btn btn-info fa fa-arrows-alt btn-block" id="top-button"> Full Screen</button> -->
 
       <!-- temporary, make the above a dropdown -->

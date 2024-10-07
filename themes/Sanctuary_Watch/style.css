@@ -546,17 +546,21 @@ input:checked + .slider:before {
 
 #title-container > h1{
   color: #008da8;
+  margin-left: -100px;
 
 }
 
 #title-container > div > div.col-md-10 > p{
-  max-width: 75%;
+  max-width: 97%;
+  margin-left: -99px;
 }
 
 #toc-group{
   padding-top: 4%;
-  font-size: large;
-  margin-right: -11px;
+    font-size: large;
+    margin-right: -11px;
+    max-width: 73%;
+    margin-left: 105px;
 }
 
 
@@ -600,9 +604,14 @@ body > nav > div > div{
 
 
 #title-container > div > div.col-md-2 > div{
-  margin-top: 2%;
+  /* margin-top: 2%;
   margin-bottom: 2%;
-  max-width: 87%;
+  max-width: 87%; */
+  margin-bottom: 2%;
+  max-width: 122%;
+  /* margin-top: 2%; */
+  margin-left: -89px;
+  
 }
 
 /* 
@@ -861,3 +870,14 @@ font-size: large; */
   }
 
 }
+
+/* #title-container > div > div.col-md-10{
+  margin-right: 19%
+}
+#title-container > div > div.col-md-10 > p{
+  margin-left: -9%
+} */
+
+
+
+
