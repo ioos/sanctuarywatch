@@ -42,14 +42,6 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 
 ?>
 
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NRQCTZSW');</script>
-<!-- End Google Tag Manager -->
-
 <script>
 //   document.addEventListener('DOMContentLoaded', function() {
 //     const postId = <?php echo json_encode($post_id); ?>;
@@ -83,12 +75,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
 <body      >
-
-  <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NRQCTZSW"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-
   <!-- for the mobile image stuff -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -186,9 +172,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 ">  
 <div id="title-container" style="margin-left: 9%" ></div>
 <div id="mobile-view-image"></div>
-<div class="%container-fluid%" id="scene-fluid">
+<div class="container-fluid" id="scene-fluid">
   <div class="row" id="scene-row">
-    <div class="col-md-10" style="margin-left: -9%; width: 95%">
+    <div class="col-md-10" style="margin-left: -4%;">
       <div id="svg1" class="responsive-image-container">
         <?php
           $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
@@ -215,7 +201,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
 
-    <div class="col-md-2" id="toc-container" style="margin-left: -13%">
+    <div class="col-md-2" id="toc-container" style="margin-left: -6%">
     <!-- <button style="margin-bottom: 5px; font-size: large;" class="btn btn-info fa fa-arrows-alt btn-block" id="top-button"> Full Screen</button> -->
 
       <!-- temporary, make the above a dropdown -->

@@ -292,21 +292,14 @@ async function make_title() {
         let scene_location = scene_data["scene_location"];
         let title = scene_data.title.rendered;
 
-        let titleDom;
-        if (is_mobile()){
-            titleDom = document.getElementById("title-container");
-        } else {
-            titleDom = document.querySelector("#scene-fluid");
-        }
-        // let titleDom = document.getElementById("title-container");
+        let titleDom = document.getElementById("title-container");
         let titleh1 = document.createElement("h1");
         titleh1.innerHTML = title;
-        titleDom.prepend(titleh1);
+        titleDom.appendChild(titleh1);
 
         let accgroup = document.createElement("div");
         if (!is_mobile()) {
-            // accgroup.setAttribute("style", "margin-top: 2%");
-            accgroup.setAttribute("style", `margin-top: 2%; padding-top: 4%; font-size: large; margin-right: -11px; max-width: 73%;margin-left: 105px;`);
+            accgroup.setAttribute("style", "margin-top: 2%");
         } else {
             accgroup.setAttribute("style", "max-width: 85%; margin-top: 2%");
         }
@@ -321,29 +314,21 @@ async function make_title() {
             accgroup.appendChild(acc1); 
         }
    
-        let row;
-        if (is_mobile()){
-            row = document.createElement("div");
-        } else {
-            row = document.querySelector("#scene-row");
-        }
-        
+        let row = document.createElement("div");
         row.classList.add("row");
 
        
-        let col1;
-        let col2;
-        // col1.classList.add("col-md-2");
 
+        let col1 = document.createElement("div");
+        // col1.classList.add("col-md-2");
+        col1.appendChild(accgroup);
+
+        let col2 = document.createElement("div");
         // col2.classList.add("col-md-10");
 
         if (!is_mobile()) {
-            col2 = document.querySelector("#scene-row > div.col-md-10");
-            col1 = document.querySelector("#scene-row > div.col-md-2");
-            console.log(col1);
-
-            // col1.classList.add("col-md-2");
-            // col2.classList.add("col-md-10");
+            col1.classList.add("col-md-2");
+            col2.classList.add("col-md-10");
             // col2.style.marginLeft =  `-12%`;
             // col1.style.marginLeft = '-12%';
             // document.querySelector("#title-container").style.marginLeft = '0%';
@@ -358,13 +343,9 @@ async function make_title() {
             window.addEventListener('resize', adjustTitleContainerMargin);
 
         } else {
-            col1 = document.createElement("div");
-            col2 = document.createElement("div");
-
             col1.classList.add("col-md-2");
             col2.classList.add("col-md-10");
         }
-        col1.appendChild(accgroup);
 
         if (is_mobile()){
             col2.setAttribute("style", "padding-top: 5%; align-content: center; margin-left: 7%;");
@@ -378,8 +359,7 @@ async function make_title() {
             accgroup.prepend(item);
 
         } else {
-            titleTagline.setAttribute("style", "font-style: italic; max-width: 80%; margin-left: 10.5%;")
-            col2.prepend(titleTagline);
+            col2.appendChild(titleTagline);
         }
         // row.setAttribute("style", "display: flex; justify-content: center; margin-right: -15px; margin-left: -15px; margin-top: 1%");
         row.appendChild(col2);
@@ -387,7 +367,7 @@ async function make_title() {
         // row.appendChild(col2);
         row.setAttribute("style", "margin-top: 1%");
 
-        titleDom.appendChild(row);
+        titleDom.append(row);
         // return scene_location;
         return scene_data;
 
@@ -489,8 +469,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
     let defs = svgElement.firstElementChild;
    
     function updateLayout(numCols, numRows) {
-        // let outer_cont = document.querySelector("body > div.container-fluid");
-        let outer_cont = document.querySelector("#scene-fluid");
+        let outer_cont = document.querySelector("body > div.container-fluid");
         outer_cont.innerHTML = '';
     
         let idx = 0;
@@ -1637,92 +1616,6 @@ function render_modal(key){
  * 
  * Usage: called within load_svg
  */
-// function full_screen_button(svgId){
-//     // if (thisInstance.instance_full_screen_button != "yes"){ //this should be done on the SCENE side of things
-//     if (scene_full_screen_button != "yes"){ //this should be done on the SCENE side of things
-
-//         return;
-//     }
-
-//     if ((document.fullscreenEnabled || document.webkitFullscreenEnabled)){ 
-//         const svg = document.querySelector('#svg1 svg');
-
-//         // Get the SVG's viewBox
-//         const viewBox = svg.viewBox.baseVal;
-
-//         // Create a group element to hold our button
-//         const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-
-//         // Create a rect element for the button background
-//         const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-//         rect.setAttribute("width", "60");
-//         rect.setAttribute("height", "20");
-//         rect.setAttribute("fill", "#007bff");
-//         rect.setAttribute("rx", "5");
-
-//         // Create a text element for the button label
-//         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-//         text.textContent = "Full Screen";
-//         text.setAttribute("fill", "white");
-//         text.setAttribute("font-size", "12");
-//         text.setAttribute("text-anchor", "middle");
-//         text.setAttribute("dominant-baseline", "middle");
-//         text.setAttribute("x", "30");
-//         text.setAttribute("y", "10");
-
-//         // Add rect and text to the group
-//         g.appendChild(rect);
-//         g.appendChild(text);
-
-//         // Position the button in the top right corner
-//         g.setAttribute("transform", `translate(${viewBox.width - 70}, 10)`);
-
-//         // Add click event listener
-//         g.addEventListener('click', () => {
-//         console.log('Button clicked!');
-//         // Add your desired functionality here
-//         });
-
-//         // Add the group to the SVG
-//         svg.appendChild(g);
-        
-//         // Fullscreen change event for SVG
-//         var webkitElem = document.getElementById(svgId);
-//         webkitElem.addEventListener('webkitfullscreenchange', (event) => {
-//           if (document.webkitFullscreenElement) {
-//             webkitElem.style.width = (window.innerWidth) + 'px';
-//             webkitElem.style.height = (window.innerHeight) + 'px';
-//           } else {
-//             webkitElem.style.width = width;
-//             webkitElem.style.height = height;
-//           }
-//         });
-        
-        
-//         // Open Fullscreen Function
-//         function openFullScreen() {
-//           var elem = document.getElementById(svgId);
-//           if (elem.requestFullscreen) {
-//             elem.requestFullscreen();
-//           } else if (elem.webkitRequestFullscreen) { /* Safari */
-//             elem.webkitRequestFullscreen();
-//           }
-//           let modal = document.getElementById("myModal");
-//             elem.prepend(modal);
-//         }
-
-        
-
-        
-//         // Button click event
-//         g.addEventListener('click', function() {
-//           openFullScreen();
-//           // add_modal(); // Ensure add_modal() is defined and functional
-//         });
-        
-//     }
-
-// }
 function full_screen_button(svgId) {
     if (scene_full_screen_button != "yes") {
         return;
