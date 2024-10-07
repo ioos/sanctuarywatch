@@ -868,6 +868,13 @@ class Webcr_Scene {
                     'description' => 'What should the table of contents look like?',
                 ),
                 array(
+                    'id'    => 'scene_same_hover_color_sections',
+                    'type'  => 'checkbox',
+                    'title' => 'Single color for sections',
+                    'description' => 'Should all sections have the same hover color?',
+                    "default"   => "no",
+                ),
+                array(
                     'id'     => 'scene_hover_color',
                     'type'   => 'color',
                     'title'  => 'Hover Color',

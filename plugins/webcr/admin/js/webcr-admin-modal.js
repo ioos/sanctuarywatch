@@ -36,7 +36,6 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
 		const targetElement = "modal_photo" + fieldNumber + "[modal_photo_location" + fieldNumber + "]";
 		const targetLocation = document.getElementsByName(targetElement)[0];
 		const imageElement = '[data-depend-id="modal_photo_internal' + fieldNumber + '"]';
-        console.log(imageElement);
 		const imageField = document.querySelector(imageElement);
 		const urlElement = "modal_photo" + fieldNumber + "[modal_photo_url" + fieldNumber + "]";
 		const urlField = document.getElementsByName(urlElement)[0];
@@ -372,13 +371,12 @@ function modal_scene_change(){
         const host = window.location.host;
         const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_infographic";
 
-        const modalInstance = document.getElementsByName("modal_location")[0].value;
-        const restHoverColor = protocol + "//" + host  + "/wp-json/wp/v2/instance/" + modalInstance;
+        const restHoverColor = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_hover_color";
 
         fetch(restHoverColor)
             .then(response => response.json())
             .then(data => {
-                const rawHoverColorString = data['instance_hover_color'];
+                const rawHoverColorString = data['scene_hover_color'];
             //    let hoverColor = "yellow"; 
                 if (rawHoverColorString) {
                     hoverColor = rawHoverColorString;

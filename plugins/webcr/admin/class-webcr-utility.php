@@ -215,7 +215,7 @@ class Webcr_Utility {
         for ($i = 1; $i < 7; $i++){
             $field_target = 'scene_section' . $i;
             $target_section = get_post_meta($scene_id, $field_target, true);
-            if ($target_section != null && $target_section != ""){
+            if ($target_section != null && $target_section != "" & is_array($target_section)){
                 $target_title = $target_section["scene_section_title" . $i];
                 if ($target_title != null && $target_title != ""){
                     $modal_sections[$target_title] = $target_title;
