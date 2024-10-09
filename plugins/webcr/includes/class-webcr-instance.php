@@ -148,6 +148,52 @@ class Webcr_Instance {
                     'description' => 'What is the instance image for the front page tile? The image should be 250 pixels wide and 200 pixels tall.'
                 ),
                 array(
+                    'type' => 'fieldset',
+                    'id' => 'instance_contact_person',
+                    'title'   => 'Contact Person',
+                    'description' => 'Who should site visitors contact if they have a question?',
+                    'fields' => array(
+                        array(
+                            'id'          => 'instance_contact_name',
+                            'type'        => 'text',
+                            'title'       => 'Name',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'instance_contact_title',
+                            'type'        => 'text',
+                            'title'       => 'Title',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'instance_contact_email',
+                            'type'        => 'text',
+                            'title'       => 'E-mail address',
+                            'class'       => 'text-class',
+                        ),
+                    ),
+                ),
+                array(
+                    'type' => 'fieldset',
+                    'id' => 'instance_more_info',
+                    'title'   => 'More information',
+                    'description' => 'Where can site visitors find more information about the instance?',
+                    'fields' => array(
+                        array(
+                            'id'          => 'instance_link_text',
+                            'type'        => 'text',
+                            'title'       => 'Link Text',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'instance_url',
+                            'type'        => 'text',
+                            'title'       => 'URL',
+                            'class'       => 'text-class',
+                        ),
+                    ),
+                ),
+                array(
                     'id'          => 'instance_check',
                     'type'        => 'button',
                     'title'       => 'Check Instance for Errors',

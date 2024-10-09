@@ -869,8 +869,9 @@ class Webcr_Scene {
                 ),
                 array(
                     'id'    => 'scene_same_hover_color_sections',
-                    'type'  => 'checkbox',
+                    'type'  => 'select',
                     'title' => 'Single color for sections',
+                    'options'        => array("no" => "No", "yes" => "Yes"),
                     'description' => 'Should all sections have the same hover color?',
                     "default"   => "no",
                 ),
@@ -884,9 +885,10 @@ class Webcr_Scene {
                 ),
                 array(
                     'id'    => 'scene_full_screen_button',
-                    'type'  => 'checkbox',
+                    'type'  => 'select',
                     'title' => 'Full Screen Button',
                     'description' => 'Should there be a full screen button?',
+                    'options'        => array("no" => "No", "yes" => "Yes"),
                     "default"   => "no",
                 ),
                 array(
