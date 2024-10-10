@@ -148,6 +148,21 @@ class Webcr_Instance {
                     'description' => 'What is the instance image for the front page tile? The image should be 250 pixels wide and 200 pixels tall.'
                 ),
                 array(
+                    'id'             => 'instance_legacy_content',
+                    'type'           => 'select',
+                    'title'          => 'Legacy Content',
+                    'options'        => array("no" => "No", "yes" => "Yes"),
+                    'default' => 'no',
+                    'description' => 'Should the Instance tile point to legacy content?',
+                ),
+                array(
+                    'id'          => 'instance_legacy_content_url',
+                    'type'        => 'text',
+                    'title'       => 'Legacy Content URL',
+                    'description' => 'What is the URL of the legacy content?',
+                    'class'       => 'text-class',
+                ),
+                array(
                     'type' => 'fieldset',
                     'id' => 'instance_contact_person',
                     'title'   => 'Contact Person',
