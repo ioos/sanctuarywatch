@@ -10,10 +10,9 @@
 	function sameColorSections () {
 		const tocStyle = document.getElementsByName("scene_toc_style")[0].value;
 		if (tocStyle =="list"){
-			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.parentElement.style.display = "none";
-		//	document.getElementsByName("scene_same_hover_color_sections")[0].value = 'no';
+			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.style.display = "none";
 		} else {
-			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.parentElement.style.display = "block";
+			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.style.display = "block";
 
 		}
 	}
@@ -22,8 +21,6 @@
 	function displaySceneEntries (entry_number){
 		let target_title_element = "";
 		let target_color_element = "";
-//		document.getElementsByName("scene_section1[scene_section_title1]")[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
-
 
 		for (let i = 6; i > entry_number; i--){
 			target_title_element = "scene_section" + i + "[scene_section_title" + i + "]";
