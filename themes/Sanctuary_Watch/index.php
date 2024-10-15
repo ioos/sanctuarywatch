@@ -32,6 +32,7 @@ $args = array(
 $instances_query = new WP_Query($args);
 
 $instance_slugs = array(); 
+$instance_legacy_urls = [];
 
 if ($instances_query->have_posts()) {
     while ($instances_query->have_posts()) {
@@ -40,9 +41,14 @@ if ($instances_query->have_posts()) {
         $instance_id = get_the_ID();
         $instance_slug = get_post_meta($instance_id, 'instance_slug', true); 
         $instance_overview_scene = get_post_meta($instance_id, 'instance_overview_scene', true); 
+        $instance_legacy_content_url = get_post_meta($instance_id, 'instance_legacy_content_url', true);
+
 
         if ($instance_slug) {
             $instance_slugs[] = [$instance_slug, $instance_overview_scene]; 
+        }
+        if ($instance_legacy_content_url){
+            $instance_legacy_urls[$instance_id] = $instance_legacy_content_url;
         }
     }
     wp_reset_postdata();
@@ -50,42 +56,19 @@ if ($instances_query->have_posts()) {
     // echo 'No instances found.';
 }
 
-?>
 
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NRQCTZSW');</script>
-<!-- End Google Tag Manager -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let currentUrl = window.location.href;
-        let instanceSlugs = <?php echo json_encode($instance_slugs); ?>; 
-    
-            instanceSlugs.forEach(function(slugScenePair) {
-            let slug = slugScenePair[0];
-            let overviewScene = slugScenePair[1];
-            
-            let slugPattern = new RegExp(slug + '\/?$'); 
-            if (currentUrl.match(slugPattern)) {
-                const protocol = window.location.protocol;
-                const host = window.location.host;
-                const postType = 'scene'; 
-                const postId = overviewScene; 
-                const url = `${protocol}//${host}/?post_type=${postType}&p=${postId}`;
-                window.location.href = url;
-            }
-        });
-    });
+
+?>
+<script> 
+
+let legacy_urls = <?php echo json_encode($instance_legacy_urls); ?>;
+console.log("legacy urls here");
+console.log(legacy_urls);
+
 </script>
 
+
 <body>
-    <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NRQCTZSW"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <div class="container-fluid">
 <!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->

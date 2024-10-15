@@ -1059,7 +1059,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  */
 function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const containerDiv = document.createElement('div');
-    containerDiv.style.background = 'LightGrey';
+    containerDiv.style.background = '#e3e3e354';
     containerDiv.style.width = '100%';
     containerDiv.style.display = 'table';
     containerDiv.style.fontSize = '120%';
@@ -1067,6 +1067,10 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     containerDiv.style.marginBottom = '10px';
     containerDiv.style.margin = '0 auto'; 
     containerDiv.style.borderRadius = '6px 6px 6px 6px'; 
+    containerDiv.style.borderWidth = '1px'; 
+    containerDiv.style.borderColor = 'lightgrey'; 
+    
+
 
 
     // Create the table row div
@@ -1087,6 +1091,8 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         let icon1 = `<i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon" style=""></i> `;
         firstLink.innerHTML = icon1 + firstLink.innerHTML;
         firstLink.style.textDecoration = 'none';
+        firstLink.style.color = '#03386c';
+
         leftCellDiv.appendChild(firstLink);
     }
     // firstLink.appendChild(document.createTextNode(info_obj['scienceText']));
@@ -1105,6 +1111,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         const secondLink = document.createElement('a');
         secondLink.href = info_obj['dataLink'];
         secondLink.target = '_blank';
+        secondLink.style.color = '#03386c';
         let icon2 = `<i class="fa fa-database" role="presentation" aria-label="database icon"></i>`;
         secondLink.appendChild(document.createTextNode(info_obj['dataText']));
         // secondLink.innerHTML = secondLink.innerHTML + `  ` + icon2;
@@ -1132,7 +1139,12 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     if (info_obj["interactive"] != "Interactive" ){
         img = document.createElement('img');
         img.src = info_obj['imageLink'];
-        img.alt = '';
+        if (info_obj['externalAlt']){
+            img.alt = info_obj['externalAlt'];
+        } else {
+            img.alt = '';
+        }
+        
 
     }  else {  
         img = document.createElement('div'); // Create a div to hold the plot
@@ -1158,6 +1170,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const caption = document.createElement('p');
     caption.classList.add('caption');
     caption.innerHTML = info_obj['shortCaption'];
+    caption.style.marginTop = '10px';
 
     figureDiv.appendChild(caption);
     tabContentElement.appendChild(figureDiv);
@@ -1261,8 +1274,10 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     figure_data = all_figure_data[idx];
                     console.log(all_figure_data[idx]);
                     let img = '';
+                    let external_alt = '';
                     if (figure_data['figure_path']==='External'){
                         img = figure_data['figure_external_url'];
+                        external_alt = figure_data['figure_external_alt'];
                     } else {
                         img = figure_data['figure_image'];
                     } // add smth here for external
@@ -1272,6 +1287,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
                     "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
                     "imageLink" : img,
+                    "externalAlt": external_alt,
                     "shortCaption" : figure_data["figure_caption_short"],
                     "longCaption": figure_data["figure_caption_long"],
                     "interactive": figure_data["figure_path"]
@@ -1984,6 +2000,15 @@ function toc_sections() {
         let arrowSpan = document.createElement("span");
         arrowSpan.classList.add("arrow");
         button.appendChild(arrowSpan);
+     
+        if (sections[i].length > 20){
+            console.log('section name: ');
+            console.log(sections[i]);
+            arrowSpan.style.marginRight = '15%';
+        } else {
+            arrowSpan.style.marginRight = '63%';
+        }
+        
 
         heading.appendChild(button);
         sect.appendChild(heading);

@@ -37,9 +37,10 @@ async function getInstanceInfo() {
         console.log(child);
         console.log(child.instance_status);
         console.log(is_logged_in);
-        if (child.instance_status == "Draft" && !is_logged_in){
-            continue;
-        }
+        // might wanna delete/comment this bottom stuff out
+        // if (child.instance_status == "Draft" && !is_logged_in){
+        //     continue;
+        // }
         
         let col = document.createElement('div');
         col.classList.add("col-xs-12", "col-sm-6", "col-md-4");
@@ -67,7 +68,14 @@ async function getInstanceInfo() {
         const host = window.location.host;
         const postType = 'scene'; 
         const postId = child.instance_overview_scene; 
-        const url = `${protocol}//${host}/?post_type=${postType}&p=${postId}`;
+        let url;
+        // if (child.instance_status == "Draft" && !is_logged_in && legacy_urls[child.id]){
+        if (legacy_urls[child.id]){
+          url = legacy_urls[child.id];
+        } else{
+          url = `${protocol}//${host}/?post_type=${postType}&p=${postId}`;
+        }
+        // const url = `${protocol}//${host}/?post_type=${postType}&p=${postId}`;
         console.log(url);
 
         link.setAttribute('href', url);

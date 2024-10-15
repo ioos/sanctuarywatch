@@ -1,62 +1,82 @@
-<?php 
+<?php
 /**
  * Footer Template
  *
- * This template is designed to define the footer section of a WordPress theme. It outlines a three-column layout
- * filled with various interactive and informative elements, including links to useful resources, social media platforms,
- * and contact information of the organization. The footer serves as a critical component of site navigation and 
- * visitor engagement, providing key links, social proof, and contact details.
+ * This template is designed for the Sanctuary Watch website.
+ * It includes three columns with links to various sections of the site,
+ * social media links, and copyright information.
  */
 
-defined( 'ABSPATH' ) || exit; ?>
+defined( 'ABSPATH' ) || exit;
+// $post_id = get_the_ID();
+$instance_num =  get_post_meta(get_the_ID(), 'scene_location', true);
+$instance_contact_person = get_post_meta($instance_num, 'instance_contact_person', true);
+$instance_more_info = get_post_meta($instance_num, 'instance_more_info', true);
 
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-column">
-            <h5>Useful Links</h5>
-            <div>
-                <a href="https://www.ioos.noaa.gov/" target="_blank">ioos.noaa.gov</a>
+// echo $post_id;
+?>
+<script> 
+let instance_contact_person =  <?php echo json_encode($instance_contact_person); ?>;
+let instance_more_info =  <?php echo json_encode($instance_more_info); ?>;
+let instance_num = <?php echo json_encode($instance_num); ?>;
+console.log("ahahahahahahhahahaah");
+console.log(instance_num);
+console.log(instance_contact_person);
+console.log(instance_more_info);
+
+</script>
+
+<footer class="site-footer" style="background-color: #03386c; color: white; padding: 32px 12px; font-size: 13px;">
+    <div class="container" style="margin-left: 29%;">
+        <div class="row" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+            <div class="col-md-6" style="flex: 1; ">
+                <h5 style="color: white; font-weight: bold; margin-bottom: 12px;">About the Sanctuary</h5>
+                <a href="#" id="about-sanctuary-btn" style="
+                    /* background-color: #008da8;  */
+                    color: white; 
+                    /* font-weight: bold;  */
+                    padding: 6px 27x;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    margin-bottom: 12px;
+                    font-size: 17px;
+                    /* text-align: left; */
+                    width: 26%;
+                ">
+                    Channel Islands National Marine Sanctuary
+            </a>
+            </div>
+            <div class="col-md-6" style="flex: 1;">
+                <h5 style="color: white; font-weight: bold; margin-bottom: 12px;">Contact</h5>
+                <ul style="list-style: none; padding: 0;font-size: 17px;">
+                <li class="contact-person">
+                <a href="#" style="color: lightgrey; text-decoration: none;">
+                    <strong><?php echo esc_html($instance_contact_person['instance_contact_name']); ?>, <?php echo esc_html($instance_contact_person['instance_contact_title']); ?></strong>
+                    
+                </a>
+                </li>
+                    <li><a href="mailto:<?php echo esc_attr($instance_contact_person['instance_contact_email']); ?>?subject=Inquiry%20from%20Website&body=Hello%2C%0A%0AI%20am%20contacting%20you%20regarding%20..." 
+                    style="color: lightgrey; text-decoration: underline;">
+                        <?php echo esc_html($instance_contact_person['instance_contact_email']); ?>
+                    </a></li>
+                    <!-- <li><a href="#" style="color: lightgrey; text-decoration: none;">916-817-4425</a></li> -->
+                </ul>
             </div>
         </div>
-
-        <div class="footer-column">
-            <h5>Our Social Ocean</h5>
-            <a href="https://www.facebook.com/usioosgov" target="_blank">
-                <div class="ggt-icon-border animate-icon"></div>
-                <div class="txt">
-                    <p> facebook.com/</p>
-                    <p> usioosgov </p>
-                </div>
-            </a>
-            <a href="https://www.twitter.com/usioosgov" target="_blank">
-                <div class="ggt-icon-border animate-icon"></div>
-                <div class="txt">
-                    <p> twitter.com/</p>
-                    <p> usioosgov</p>
-                </div>
-            </a>
-        </div>
-
-        <div class="footer-column">
-            <div itemscope itemtype="https://schema.org/GovernmentOrganization">
-                <p itemprop="name">U.S. Integrated Ocean Observing System Program</p>
-                <p itemprop="address">
-                    1315 East-West Highway
-                    <br>
-                    SSMC3, 2nd Floor
-                    <br>
-                    Silver Spring, MD 20910
-                </p>
-                <p itemprop="telephone">
-                    <a href="tel:240-533-9444"> (240) 533-9444</a>
-                </p>
-            </div>
-            <a class="btn" href="mailto:webmaster.ioos.us@noaa.gov" itemprop="email">
-                <div>
-                    Contact Us
-                </div>
-            </a>
-        </div>
+        <!-- <div class="footer-base" style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 12px; border-top: 1px solid white;"> -->
+            <!-- <div class="social-links">
+                <a href="#" style="color: lightgrey; text-decoration: none; margin-right: 12px;">Blog</a>
+                <a href="#" style="color: lightgrey; text-decoration: none; margin-right: 12px;">Facebook</a>
+                <a href="#" style="color: lightgrey; text-decoration: none; margin-right: 12px;">Github</a>
+                <a href="#" style="color: lightgrey; text-decoration: none; margin-right: 12px;">LinkedIn</a>
+                <a href="#" style="color: lightgrey; text-decoration: none;">Instagram</a>
+            </div> -->
+            <!-- <div class="copyright" style="font-size: 11px;">
+                © <?php echo date('Y'); ?> Sanctuary Watch
+                <span style="display: block;">Protecting wildlife, preserving nature</span>
+            </div> -->
+        <!-- </div> -->
     </div>
 </footer>
 

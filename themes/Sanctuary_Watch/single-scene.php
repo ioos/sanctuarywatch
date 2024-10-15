@@ -246,5 +246,5 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
   <!-- </body> -->
 
 <?php
-// get_footer();
+get_footer();
 ?>

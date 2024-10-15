@@ -465,12 +465,12 @@ input:checked + .slider:before {
 }
 
 #accordion-header-1 > button{
-  color: white;
-  background: #03386c;
+  background-color: #e3e3e354;
+  color: #03386c;
 }
 #accordion-header-2 > button{
-  color: white;
-  background: #03386c;
+  background-color: #e3e3e354;
+  color: #03386c;
 }
 #heading0 > button{
   color: #03386c;
@@ -799,10 +799,15 @@ font-size: large; */
 } */
 
 #accordion-header-1 > button::after{
-  filter: brightness(0) invert(1) !important;
+  /* filter: brightness(0) invert(1) !important; */
+  filter: brightness(0) saturate(100%) invert(13%) sepia(68%) saturate(2471%) hue-rotate(195deg) brightness(94%) contrast(101%);
+
+
 }
 #accordion-header-2 > button::after{
-  filter: brightness(0) invert(1) !important;
+  /* filter: brightness(0) invert(1) !important; */
+  filter: brightness(0) saturate(100%) invert(13%) sepia(68%) saturate(2471%) hue-rotate(195deg) brightness(94%) contrast(101%);
+
 }
 
 #taglineHeaderId > button{
@@ -862,7 +867,7 @@ font-size: large; */
 
 }
 #svg-elem{
-  z-index: 9998;
+  z-index: 999;
 }
 @media (min-width: 769px) {  /* a bunch of new stuff here for updated formatting */
   #title-container > div > div.col-md-2{
@@ -905,10 +910,112 @@ font-size: large; */
     padding-top: 0% !important;
   }
 
-  
+  #accordion-container{
+    padding-top: 8px;
+    transform: scale(0.85);
+    margin-top: -14px;
+    margin-right: -15px;
+
+  }
+  #accordion-collapse-1 a {
+    font-size: 1.1rem; 
+  }
+  #accordion-collapse-2 a {
+    font-size: 1.1rem; 
+  }
 
 }
+body > nav{
+  z-index: 9998 !important;
+}  
+
 
 body > nav > div{
   background-color: #03386c;
+}
+
+#CA_Sheephead-1-pane > button{
+  color:#03386c;
+  background-color: #e3e3e354;
+  border-color: lightgrey;
+}
+#CA_Sheephead-2-pane > button{
+  color:#03386c;
+  background-color: #e3e3e354;
+  border-color: lightgrey;
+}
+#CA_Sheephead-3-pane > button{
+  color:#03386c;
+  background-color: #e3e3e354;
+  border-color: lightgrey;
+}
+#CA_Sheephead-4-pane > button{
+  color:#03386c;
+  background-color: #e3e3e354;
+  border-color: lightgrey;
+}
+#CA_Sheephead-5-pane > button{
+  color:#03386c;
+  background-color: #e3e3e354;
+  border-color: lightgrey;
+}
+#CA_Sheephead-6-pane > button{
+  color:#03386c;
+  background-color: #e3e3e354;
+  border-color: lightgrey;
+}
+#CA_Sheephead-7-pane > button{
+  color:#03386c;
+  background-color: #e3e3e354;
+  border-color: lightgrey;
+}
+
+
+
+
+/* #CA_Sheephead-1-pane > div:nth-child(2) > div > div:nth-child(1) > a{
+  color:#03386c;
+}
+#CA_Sheephead-1-pane > div:nth-child(2) > div > div:nth-child(2) > a{
+  color:#03386c;
+} */
+#modal-title{
+  color:#03386c;
+}
+
+#accordion-item-1{
+  border-color: lightgrey;
+  border-width: 1px;
+}
+#accordion-item-2{
+  border-color: lightgrey;
+  border-width: 1px;
+}
+
+
+#CA_Sheephead-1, 
+#CA_Sheephead-2, 
+#CA_Sheephead-3, 
+#CA_Sheephead-4, 
+#CA_Sheephead-5, 
+#CA_Sheephead-6, 
+#CA_Sheephead-7 {
+  border-color: rgb(240, 239, 239) !important;
+  border-width: 0.5px !important;
+  border-radius: 6px 6px 0px 0px !important;
+}
+
+/* When a tab is active */
+#CA_Sheephead-1.active, 
+#CA_Sheephead-2.active, 
+#CA_Sheephead-3.active, 
+#CA_Sheephead-4.active, 
+#CA_Sheephead-5.active, 
+#CA_Sheephead-6.active, 
+#CA_Sheephead-7.active {
+  background-color: #e3e3e354 !important;
+  border-color: #03386c !important;
+  color: #03386c !important; /* Optional: Change text color too */
+  border-width: 1px !important;
+
 }
