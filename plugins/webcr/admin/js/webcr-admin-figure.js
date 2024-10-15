@@ -151,6 +151,9 @@
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json")[0].value = "";
 
+                document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_external_alt")[0].value = "";
+
                 // Add the "hidden" class to the nested container
                 jsonPreviewContainer.classList.add('hidden');
                 jsonPreviewImg.src ="";
@@ -170,6 +173,8 @@
             case "External":
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json")[0].value = "";
+
+                document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "block";
 
                 // Add the "hidden" class to the nested container
                 jsonPreviewContainer.classList.add('hidden');
@@ -193,6 +198,9 @@
                 if (jsonPreviewImg.src.includes("uploads")) {
                     jsonPreviewContainer.classList.remove('hidden');
                 }
+
+                document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_external_alt")[0].value = "";
 
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
