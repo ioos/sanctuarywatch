@@ -466,12 +466,8 @@ class Webcr_Scene {
 	 * @since    1.0.0
 	 */
     public function create_scene_fields() {
-
         $config_metabox = array(
 
-            /*
-             * METABOX
-             */
             'type'              => 'metabox',                       // Required, menu or metabox
             'id'                => $this->plugin_name,              // Required, meta box id, unique, for saving meta: id[field-id]
             'post_types'        => array( 'scene' ),                 // Post types to display meta box
@@ -483,755 +479,290 @@ class Webcr_Scene {
             'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
         );
 
-
         $function_utilities = new Webcr_Utility();
         $instances = $function_utilities ->  returnAllInstances();
 
-
-        $fields[] = array(
-            'name'   => 'basic',
-            'title'  => 'Basic',
-            'icon'   => 'dashicons-admin-generic',
-            'fields' => array(
-
-                array(
-                    'id'             => 'scene_location',
-                    'type'           => 'select',
-                    'title'          => 'Instance',
-                    'options'        => $instances, 
-                    'description' => 'What instance is the scene part of? ',
+        $fields = array(
+            array(
+                'id'   => 'scene_location',
+                'type' => 'select',
+                'title'          => 'Instance',
+                'options'        => $instances, 
+                'description' => 'What instance is the scene part of? '
+            ),
+            array(
+                'id'   => 'scene_infographic',
+                'type' => 'image',
+                'title' => 'Scene Infographic',
+                'description' => 'What is the image for the scene? Only properly-formatted SVG-type images are allowed.'
+            ),
+            array(
+                'id'   => 'scene_tagline',
+                'type' => 'textarea',
+                'title'       => 'Scene Tagline',
+                'description' => 'What is the tagline for the scene?'
+            ),
+            array(
+                'id'      => 'scene_info_entries',
+                'type'    => 'range',
+                'title'   => 'Number of Scene Info Entries',
+                'description' => 'How many info links are there for the scene?',
+                'min'     => 0,    
+                 'default' => 1,    
+                 'max'     => 6,         
+                 'step'    => 1,             
+            ),   
+            array(
+                'id'      => 'scene_photo_entries',
+                'type'    => 'range',
+                'title'   => 'Number of Scene Photo Entries',
+                'description' => 'How many photo links are there for the scene?',
+                'min'     => 0,    
+                 'default' => 1,    
+                 'max'     => 6,         
+                 'step'    => 1,             
+            ),   
+            array(
+                'id'      => 'scene_order',
+                'type'    => 'number',
+                'title'   => 'Scene Order',
+                'description' => 'What is the order of the scene in the menu bar?',
+                'default' => '1',                               
+                'min'     => '1',                                    
+                'max'     => '10',      
+                'step'    => '1',   
+            ),
+            array(
+                'id'             => 'scene_toc_style',
+                'type'           => 'select',
+                'title'          => 'Table of Contents Style',
+                'options'        => array("accordion" => "Accordion", "list" => "List (default option)", "sectioned_list" => "Sectioned List"),
+                'default' => 'list',
+                'description' => 'What should the table of contents look like?',
+            ),
+            array(
+                'id'    => 'scene_same_hover_color_sections',
+                'type'  => 'select',
+                'title' => 'Single color for sections',
+                'options'        => array("no" => "No", "yes" => "Yes"),
+                'description' => 'Should all sections have the same hover color?',
+                "default"   => "no",
+            ),
+            array(
+                'id'     => 'scene_hover_color',
+                'type'   => 'color',
+                'title'  => 'Hover Color',
+                'description' => 'What should the hover color be?',
+                'picker' => 'html5',
+                "default"   => '#FFFF00',
+            ),
+            array(
+                'id'    => 'scene_full_screen_button',
+                'type'  => 'select',
+                'title' => 'Full Screen Button',
+                'description' => 'Should there be a full screen button?',
+                'options'        => array("no" => "No", "yes" => "Yes"),
+                "default"   => "no",
+            ),
+            array(
+                'id'             => 'scene_text_toggle',
+                'type'           => 'select',
+                'title'          => 'Text Toggle',
+                'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
+                'default'        => 'none',
+                'description' => 'Should there be a text toggle button?',
+             //   'class'      => 'chosen', 
+            ),
+            array(
+                'id'      => 'scene_section_number',
+                'type'    => 'select',
+                'title'   => 'Number of Scene Sections',
+                'description' => 'How many scene sections are there?',
+                'options' => array(
+                    0 => "0",
+                    1 => "1",
+                    2 => "2",
+                    3 => "3",
+                    4 => "4",
+                    5 => "5",
+                    6 => "6"
                 ),
-                array(
-                    'id'    => 'scene_infographic',
-                    'type'  => 'image',
-                    'title' => 'Scene Infographic',
-                    'description' => 'What is the image for the scene? Only properly-formatted SVG-type images are allowed.'
+                'default' => 0           
+            ),  
+            array(
+                'id'          => 'scene_preview',
+                'type'        => 'button',
+                'title'       => 'Preview Scene',
+                'class'        => 'scene_preview',
+                'options'     => array(
+                    'href'  =>  '#nowhere',
+                    'target' => '_self',
+                    'value' => 'Preview',
+                    'btn-class' => 'exopite-sof-btn'
                 ),
-                array(
-                    'id'          => 'scene_tagline',
-                    'type'        => 'textarea',
-                    'title'       => 'Scene Tagline',
-                    'description' => 'What is the tagline for the scene?',
-                ),
-                array(
-                    'id'      => 'scene_info_entries',
-                    'type'    => 'range',
-                    'title'   => 'Number of Scene Info Entries',
-                    'description' => 'How many info links are there for the scene?',
-                    'min'     => 0,    
-                     'default' => 1,    
-                     'max'     => 6,         
-                     'step'    => 1,             
-                ),              
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_info1',
-                    'title'   => 'Scene Info Link 1',
-                   // 'description' => 'Scene Info Link 1 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_info_text1',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_info_url1',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_info2',
-                    'title'   => 'Scene Info Link 2',
-                  //  'description' => 'Scene Info Link 2 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_info_text2',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_info_url2',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_info3',
-                    'title'   => 'Scene Info Link 3',
-                 //   'description' => 'Scene Info Link 3 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_info_text3',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_info_url3',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_info4',
-                    'title'   => 'Scene Info Link 4',
-                //    'description' => 'Scene Info Link 4 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_info_text4',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_info_url4',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_info5',
-                    'title'   => 'Scene Info Link 5',
-                 //   'description' => 'Scene Info Link 5 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_info_text5',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_info_url5',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_info6',
-                    'title'   => 'Scene Info Link 6',
-                 //   'description' => 'Scene Info Link 6 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_info_text6',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_info_url6',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'id'      => 'scene_photo_entries',
-                    'type'    => 'range',
-                    'title'   => 'Number of Scene Photo Entries',
-                    'description' => 'How many photo links are there for the scene?',
-                    'min'     => 0,    
-                     'default' => 1,    
-                     'max'     => 6,         
-                     'step'    => 1,             
-                ),              
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_photo1',
-                    'title'   => 'Scene Photo Link 1',
-                //    'description' => 'Scene Photo 1 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'scene_photo_location1',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_text1',
-                            'type'        => 'text',
-                            'title'       => 'Link Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_url1',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'scene_photo_internal1',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_photo2',
-                    'title'   => 'Scene Photo Link 2',
-                //    'description' => 'Scene Photo Link 2 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'scene_photo_location2',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_text2',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_url2',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'scene_photo_internal2',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_photo3',
-                    'title'   => 'Scene Photo Link 3',
-                 //   'description' => 'Scene Photo Link 3 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'scene_photo_location3',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_text3',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_url3',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'scene_photo_internal3',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_photo4',
-                    'title'   => 'Scene Photo Link 4',
-                 //   'description' => 'Scene Photo Link 4 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'scene_photo_location4',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_text4',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_url4',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'scene_photo_internal4',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_photo5',
-                    'title'   => 'Scene Photo Link 5',
-                //    'description' => 'Scene Photo Link 5 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'scene_photo_location5',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_text5',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_url5',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'scene_photo_internal5',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_photo6',
-                    'title'   => 'Scene Photo Link 6',
-                 //   'description' => 'Scene Photo Link 6 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'scene_photo_location6',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_text6',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'scene_photo_url6',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'scene_photo_internal6',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'id'      => 'scene_order',
-                    'type'    => 'number',
-                    'title'   => 'Scene Order',
-                    'description' => 'What is the order of the scene in the menu bar?',
-                    'default' => '1',                               
-                    'min'     => '1',                                    
-                    'max'     => '10',      
-                    'step'    => '1',   
-                ),
-                array(
-                    'id'             => 'scene_toc_style',
-                    'type'           => 'select',
-                    'title'          => 'Table of Contents Style',
-                    'options'        => array("accordion" => "Accordion", "list" => "List (default option)", "sectioned_list" => "Sectioned List"),
-                    'default' => 'list',
-                    'description' => 'What should the table of contents look like?',
-                ),
-                array(
-                    'id'    => 'scene_same_hover_color_sections',
-                    'type'  => 'select',
-                    'title' => 'Single color for sections',
-                    'options'        => array("no" => "No", "yes" => "Yes"),
-                    'description' => 'Should all sections have the same hover color?',
-                    "default"   => "no",
-                ),
-                array(
-                    'id'     => 'scene_hover_color',
-                    'type'   => 'color',
-                    'title'  => 'Hover Color',
-                    'description' => 'What should the hover color be?',
-                    'picker' => 'html5',
-                    "default"   => '#FFFF00',
-                ),
-                array(
-                    'id'    => 'scene_full_screen_button',
-                    'type'  => 'select',
-                    'title' => 'Full Screen Button',
-                    'description' => 'Should there be a full screen button?',
-                    'options'        => array("no" => "No", "yes" => "Yes"),
-                    "default"   => "no",
-                ),
-                array(
-                    'id'             => 'scene_text_toggle',
-                    'type'           => 'select',
-                    'title'          => 'Text Toggle',
-                    'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
-                    'default'        => 'none',
-                    'description' => 'Should there be a text toggle button?',
-                 //   'class'      => 'chosen', 
-                ),
-                array(
-                    'id'      => 'scene_section_number',
-                    'type'    => 'select',
-                    'title'   => 'Number of Scene Sections',
-                    'description' => 'How many scene sections are there?',
-                    'options' => array(
-                        0 => "0",
-                        1 => "1",
-                        2 => "2",
-                        3 => "3",
-                        4 => "4",
-                        5 => "5",
-                        6 => "6"
-                    ),
-                    'default' => 0           
-                ),     
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_section1',
-                    'title'   => 'Scene Section 1',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_section_title1',
-                            'type'        => 'text',
-                            'title'       => 'Title',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'     => 'scene_section_hover_color1',
-                            'type'   => 'color',
-                            'title'  => 'Hover Color',
-                            'picker' => 'html5',
-                            "default"   => '#FFFF00',
-                        ),
-                    ),
-                ),         
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_section2',
-                    'title'   => 'Scene Section 2',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_section_title2',
-                            'type'        => 'text',
-                            'title'       => 'Title',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'     => 'scene_section_hover_color2',
-                            'type'   => 'color',
-                            'title'  => 'Hover Color',
-                            'picker' => 'html5',
-                            "default"   => '#FFFF00',
-                        ),
-                    ),
-                ),    
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_section3',
-                    'title'   => 'Scene Section 3',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_section_title3',
-                            'type'        => 'text',
-                            'title'       => 'Title',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'     => 'scene_section_hover_color3',
-                            'type'   => 'color',
-                            'title'  => 'Hover Color',
-                            'picker' => 'html5',
-                            "default"   => '#FFFF00',
-                        ),
-                    ),
-                ),    
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_section4',
-                    'title'   => 'Scene Section 4',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_section_title4',
-                            'type'        => 'text',
-                            'title'       => 'Title',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'     => 'scene_section_hover_color4',
-                            'type'   => 'color',
-                            'title'  => 'Hover Color',
-                            'picker' => 'html5',
-                            "default"   => '#FFFF00',
-                        ),
-                    ),
-                ),    
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_section5',
-                    'title'   => 'Scene Section 5',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_section_title5',
-                            'type'        => 'text',
-                            'title'       => 'Title',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'     => 'scene_section_hover_color5',
-                            'type'   => 'color',
-                            'title'  => 'Hover Color',
-                            'picker' => 'html5',
-                            "default"   => '#FFFF00',
-                        ),
-                    ),
-                ),    
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'scene_section6',
-                    'title'   => 'Scene Section 6',
-                    'fields' => array(
-                        array(
-                            'id'          => 'scene_section_title6',
-                            'type'        => 'text',
-                            'title'       => 'Title',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'     => 'scene_section_hover_color6',
-                            'type'   => 'color',
-                            'title'  => 'Hover Color',
-                            'picker' => 'html5',
-                            "default"   => '#FFFF00',
-                        ),
-                    ),
-                ),    
-                array(
-                    'id'          => 'scene_preview',
-                    'type'        => 'button',
-                    'title'       => 'Preview Scene',
-                    'class'        => 'scene_preview',
-                    'options'     => array(
-                        'href'  =>  '#nowhere',
-                        'target' => '_self',
-                        'value' => 'Preview',
-                        'btn-class' => 'exopite-sof-btn'
-                    ),
-                ),
-            )
+            ),  
         );
 
-        // instantiate the admin page
-        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
+        // Step 1: Create an array to hold the new info sub-arrays
+        $infoFields = array();
 
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Scene'
-            'scene_location', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The location of the scene', // Description of the meta key
-                'auth_callback' => '__return_false'
-            )
-        );
- 
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'scene_tagline', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The scene tagline', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Scene'
-            'scene_infographic', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The url of the infographic', // Description of the meta key
-                'auth_callback' => '__return_false'
-            )
-        );
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'scene_info_entries', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'integer', // Data type of the meta value
-                'description' => 'The number of info links', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );        
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'scene_section_number', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'integer', // Data type of the meta value
-                'description' => 'The number of scene sections', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );  
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'scene_hover_color', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The hover color for the icons', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );  
-        
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'scene_hover_color', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The hover color for the icons', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );  
-
-        for ($i = 1; $i < 7; $i++ ) {
-            $target_field = 'scene_info' . $i;
-            $target_description = 'Info link ' . $i;
-            register_meta( 'post', 
-                $target_field,
-                array(
-                    'auth_callback'     => '__return_false' ,
-                    'single'            => true, // The field contains a single array
-                    'description' => $target_description, // Description of the meta key
-                    'show_in_rest'      => array(
-                        'schema' => array(
-                            'type'  => 'array', // The meta field is an array
-                            'items' => array(
-                                'type' => 'string', // Each item in the array is a string
-                            ),
-                        ),
+        // Step 2: Use a loop to generate the new info sub-arrays
+        for ($i = 1; $i <= 6; $i++) {
+            $infoFields[] = array(
+                'type' => 'fieldset',
+                'id' => 'scene_info' . $i,
+                'title'   => 'Scene Info Link ' . $i,
+            // 'description' => 'Scene Info Link 1 description',
+                'fields' => array(
+                    array(
+                        'id'          => 'scene_info_text' . $i,
+                        'type'        => 'text',
+                        'title'       => 'Text',
+                        'class'       => 'text-class',
                     ),
-                ) 
+                    array(
+                        'id'          => 'scene_info_url' . $i,
+                        'type'        => 'text',
+                        'title'       => 'URL',
+                        'class'       => 'text-class',
+                    ),
+                ),
             );
         }
 
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'scene_photo_entries', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'integer', // Data type of the meta value
-                'description' => 'The number of scene links', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );        
+        // Step 1: Create an array to hold the new info sub-arrays
+        $photoFields = array();
+
+        // Step 2: Use a loop to generate the new info sub-arrays
+        for ($i = 1; $i <= 6; $i++) {
+            $photoFields[] = array(
+                'type' => 'fieldset',
+                'id' => 'scene_photo' . $i,
+                'title'   => 'Scene Photo Link ' . $i,
+                'fields' => array(
+                    array(
+                        'id'             => 'scene_photo_location' . $i,
+                        'type'           => 'select',
+                        'title'          => 'Image Location',
+                        'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                        'default'     => 'External',
+                    ),
+                    array(
+                        'id'          => 'scene_photo_text' . $i,
+                        'type'        => 'text',
+                        'title'       => 'Link Text',
+                        'class'       => 'text-class',
+                    ),
+                    array(
+                        'id'          => 'scene_photo_url' . $i,
+                        'type'        => 'text',
+                        'title'       => 'URL',
+                        'class'       => 'text-class',
+                    ),
+                    array(
+                        'id'    => 'scene_photo_internal' . $i,
+                        'type'  => 'image',
+                        'title' => 'Image',
+                    ),
+                ),
+            );
+        }
+
+        // Step 1: Create an array to hold the new info sub-arrays
+        $sectionFields = array();
+
+        // Step 2: Use a loop to generate the new info sub-arrays
+        for ($i = 1; $i <= 6; $i++) {
+            $sectionFields[] = array(
+                'type' => 'fieldset',
+                'id' => 'scene_section' . $i,
+                'title'   => 'Scene Section ' . $i,
+                'fields' => array(
+                    array(
+                        'id'          => 'scene_section_title' . $i,
+                        'type'        => 'text',
+                        'title'       => 'Title',
+                        'class'       => 'text-class',
+                    ),
+                    array(
+                        'id'     => 'scene_section_hover_color' . $i,
+                        'type'   => 'color',
+                        'title'  => 'Hover Color',
+                        'picker' => 'html5',
+                        "default"   => '#FFFF00',
+                    ),
+                ),
+            );
+        }
+
+        // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
+        array_splice($fields, 4, 0, $infoFields);
+        array_splice($fields, 11, 0, $photoFields);
+        array_splice($fields, 24, 0, $sectionFields);
+
+        $fieldsHolder[] = array(
+            'name'   => 'basic',
+            'title'  => 'Basic',
+            'icon'   => 'dashicons-admin-generic',
+            'fields' => $fields,
+        );
+
+        // instantiate the admin page
+        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fieldsHolder ); //$fields
+
+        // Create array of fields to be registered with register_meta
+        $fieldsToBeRegistered = array(
+            array('scene_location', 'string', 'The location of the scene'),
+            array('scene_tagline', 'string', 'The scene tagline'),
+            array('scene_infographic', 'string', 'The url of the infographic'),
+            array('scene_info_entries', 'integer', 'The number of info links'),
+            array('scene_section_number', 'integer', 'The number of scene sections'),
+            array('scene_hover_color', 'string', 'The hover color for the icons'),
+            array('scene_photo_entries', 'integer', 'The number of scene links'),
+        );
+
+        foreach ($fieldsToBeRegistered as $targetSubArray) {
+            register_meta(
+                'post', // Object type. In this case, 'post' refers to custom post type 'Scene'
+                $targetSubArray[0], // Meta key name
+                array(
+                    'show_in_rest' => true, // Make the field available in REST API
+                    'single' => true, // Indicates whether the meta key has one single value
+                    'type' => $targetSubArray[1], // Data type of the meta value
+                    'description' => $targetSubArray[2], // Description of the meta key
+                    'auth_callback' => '__return_false'
+                )
+            );
+        }
+
+        $fieldAndDescription = array(
+            array('scene_info', 'Info link '),
+            array('scene_photo', 'Photo link '),
+            array('scene_photo_internal', 'Internal photo link '),
+            array('scene_section', 'Scene section ')
+        );
 
         for ($i = 1; $i < 7; $i++ ) {
-            $first_target_field = 'scene_photo' . $i;
-            $first_target_description = 'Photo link ' . $i;
-            
-            register_meta( 'post', 
-                $first_target_field,
-                array(
-                    'auth_callback'     => '__return_false' ,
-                    'single'            => true, // The field contains a single array
-                    'description' => $first_target_description, // Description of the meta key
-                    'show_in_rest'      => array(
-                        'schema' => array(
-                            'type'  => 'array', // The meta field is an array
-                            'items' => array(
-                                'type' => 'string', // Each item in the array is a string
+            foreach($fieldAndDescription as $targetFieldAndDescription){
+                $target_field = $targetFieldAndDescription[0] . $i;
+                $target_description = $targetFieldAndDescription[1] . $i;
+                register_meta( 'post', 
+                    $target_field,
+                    array(
+                        'auth_callback'     => '__return_false' ,
+                        'single'            => true, // The field contains a single array
+                        'description' => $target_description, // Description of the meta key
+                        'show_in_rest'      => array(
+                            'schema' => array(
+                                'type'  => 'array', // The meta field is an array
+                                'items' => array(
+                                    'type' => 'string', // Each item in the array is a string
+                                ),
                             ),
                         ),
-                    ),
-                ) 
-            );
-
-            $second_target_field = 'scene_photo_internal' . $i;
-            $second_target_description = 'Internal photo link ' . $i;
-
-            register_meta( 'post', 
-                $second_target_field,
-                array(
-                    'auth_callback'     => '__return_false' ,
-                    'single'            => true, // The field contains a single array
-                    'description' => $second_target_description, // Description of the meta key
-                    'show_in_rest'      => array(
-                        'schema' => array(
-                            'type'  => 'array', // The meta field is an array
-                            'items' => array(
-                                'type' => 'string', // Each item in the array is a string
-                            ),
-                        ),
-                    ),
-                ) 
-            );
-
-            $third_target_field = 'scene_section' . $i;
-            $third_target_description = 'Scene section ' . $i;
-
-            register_meta( 'post', 
-                $second_target_field,
-                array(
-                    'auth_callback'     => '__return_false' ,
-                    'single'            => true, // The field contains a single array
-                    'description' => $third_target_description, // Description of the meta key
-                    'show_in_rest'      => array(
-                        'schema' => array(
-                            'type'  => 'array', // The meta field is an array
-                            'items' => array(
-                                'type' => 'string', // Each item in the array is a string
-                            ),
-                        ),
-                    ),
-                ) 
-            );
-
+                    ) 
+                );
+            }
         }
 
     }

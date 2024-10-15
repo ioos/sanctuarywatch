@@ -278,7 +278,7 @@ class Webcr {
 		add_action('rest_api_init', 'register_modal_rest_fields');
 
 		function register_figure_rest_fields() {
-			$figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_caption_short', 'figure_caption_long');
+			$figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_caption_short', 'figure_caption_long');
 			$function_utilities = new Webcr_Utility();
 			$function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
 		}

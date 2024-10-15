@@ -385,7 +385,6 @@ class Webcr_Figure {
                     'default'        => "Internal",
                     'description' => 'Is the figure image stored within this website or at some external location?',
                 ),
-
                 array(
                     'id'    => 'figure_image',
                     'type'  => 'image',
@@ -395,9 +394,16 @@ class Webcr_Figure {
                 array(
                     'id'          => 'figure_external_url',
                     'type'        => 'text',
-                    'title'       => 'Figure External URL',
+                    'title'       => 'Figure external URL',
                     'class'       => 'text-class',
                     'description' => 'This external URL should link just to the image itself (that is the URL should end in .png .jpeg .jpg or .tiff)',
+                ),
+                array(
+                    'id'          => 'figure_external_alt',
+                    'type'        => 'text',
+                    'title'       => 'Alt text for external figure',
+                    'class'       => 'text-class',
+                    'description' => 'What is the "alternative text" that should be associated with this image for accessibility?',
                 ),
                 array(
                     'id'    => 'figure_json',
@@ -444,138 +450,56 @@ class Webcr_Figure {
         $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
 
         // make several of the modal custom fields available to the REST API
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
-            'figure_modal', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The figure modal', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
+        $fieldsToBeRegistered = array(
+            array('figure_modal', 'string', 'The figure modal'),
+            array('figure_tab', 'string', 'The figure tab'),
+            array('figure_order', 'integer', 'The figure order'),
+            array('figure_path', 'string', 'The figure path'),
+            array('figure_image', 'string', 'The figure image url, internal'),
+            array('figure_external_url', 'string', 'The figure external url'),
+            array('figure_external_alt', 'string', 'The alt text for external figure'),
+            array('figure_caption_short', 'string', 'The short figure caption'),
+            array('figure_caption_long', 'string', 'The long figure caption'),
         );
 
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
-            'figure_tab', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The figure tab', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
+        foreach ($fieldsToBeRegistered as $targetFieldsToBeRegistered){
+            register_meta(
+                'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
+                $targetFieldsToBeRegistered[0], // Meta key name
+                array(
+                    'show_in_rest' => true, // Make the field available in REST API
+                    'single' => true, // Indicates whether the meta key has one single value
+                    'type' => $targetFieldsToBeRegistered[1], // Data type of the meta value
+                    'description' => $targetFieldsToBeRegistered[2], // Description of the meta key
+                    'auth_callback' => '__return_false' //Return false to disallow writing
+                )
+            );
+        }
+
+        $fieldsToBeRegistered2 = array(
+            array('figure_science_info', 'URL for figure info'),
+            array('figure_data_info', 'URL for figure data'),
         );
 
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
-            'figure_order', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'integer', // Data type of the meta value
-                'description' => 'The figure tab', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-
-        register_meta( 
-            'post', 
-            "figure_science_info", // Meta key name
-            array(
-                'auth_callback'     => '__return_false' ,
-                'single'            => true, // The field contains a single array
-                'description' => "URL for figure info", // Description of the meta key
-                'show_in_rest'      => array(
-                    'schema' => array(
-                        'type'  => 'array', // The meta field is an array
-                        'items' => array(
-                            'type' => 'string', // Each item in the array is a string
+        foreach ($fieldsToBeRegistered2 as $targetFieldsToBeRegistered2){
+            register_meta( 
+                'post', 
+                $targetFieldsToBeRegistered2[0], // Meta key name
+                array(
+                    'auth_callback'     => '__return_false' ,
+                    'single'            => true, // The field contains a single array
+                    'description' => $targetFieldsToBeRegistered2[1], // Description of the meta key
+                    'show_in_rest'      => array(
+                        'schema' => array(
+                            'type'  => 'array', // The meta field is an array
+                            'items' => array(
+                                'type' => 'string', // Each item in the array is a string
+                            ),
                         ),
                     ),
-                ),
-            ) 
-        );
-
-        register_meta( 
-            'post', 
-            "figure_data_info", // Meta key name
-            array(
-                'auth_callback'     => '__return_false' ,
-                'single'            => true, // The field contains a single array
-                'description' => "URL for figure data", // Description of the meta key
-                'show_in_rest'      => array(
-                    'schema' => array(
-                        'type'  => 'array', // The meta field is an array
-                        'items' => array(
-                            'type' => 'string', // Each item in the array is a string
-                        ),
-                    ),
-                ),
-            ) 
-        );
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
-            'figure_path', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The figure path', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
-            'figure_image', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The figure image, internal', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
-            'figure_external_url', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The figure external url', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
-            'figure_caption_short', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The short figure caption', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
-            'figure_caption_long', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The long figure caption', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-
+                ) 
+            );
+        }
     }  
 
     public function figure_admin_notice() {
