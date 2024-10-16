@@ -24,8 +24,14 @@
 			const singleColor = document.getElementsByName("scene_same_hover_color_sections")[0].value;
 			if (singleColor == "no"){
 				document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "none";
+				for (let i = 1; i <= 6; i++){
+					document.getElementsByName("scene_section" + i + "[scene_section_hover_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "block";
+				}
 			} else {
 				document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "block";
+				for (let i = 1; i <= 6; i++){
+					document.getElementsByName("scene_section" + i + "[scene_section_hover_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "none";
+				}
 			}
 		}
 
