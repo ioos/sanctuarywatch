@@ -484,6 +484,14 @@ class Webcr_Scene {
 
         $fields = array(
             array(
+                'id'             => 'scene_published',
+                'type'           => 'select',
+                'title'          => 'Scene Status',
+                'options'        => array("draft" => "Draft", "published" => "Published"),
+                'default' => 'draft',
+                'description' => 'Should the Scene be live?',
+            ),
+            array(
                 'id'   => 'scene_location',
                 'type' => 'select',
                 'title'          => 'Instance',
@@ -696,9 +704,9 @@ class Webcr_Scene {
         }
 
         // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
-        array_splice($fields, 4, 0, $infoFields);
-        array_splice($fields, 11, 0, $photoFields);
-        array_splice($fields, 24, 0, $sectionFields);
+        array_splice($fields, 5, 0, $infoFields);
+        array_splice($fields, 12, 0, $photoFields);
+        array_splice($fields, 25, 0, $sectionFields);
 
         $fieldsHolder[] = array(
             'name'   => 'basic',
@@ -719,6 +727,7 @@ class Webcr_Scene {
             array('scene_section_number', 'integer', 'The number of scene sections'),
             array('scene_hover_color', 'string', 'The hover color for the icons'),
             array('scene_photo_entries', 'integer', 'The number of scene links'),
+            array('scene_published', 'string', 'Is the scene live'),
         );
 
         foreach ($fieldsToBeRegistered as $targetSubArray) {
