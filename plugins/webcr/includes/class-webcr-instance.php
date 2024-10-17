@@ -164,47 +164,27 @@ class Webcr_Instance {
                 ),
                 array(
                     'type' => 'fieldset',
-                    'id' => 'instance_contact_person',
-                    'title'   => 'Contact Person',
-                    'description' => 'Who should site visitors contact if they have a question?',
+                    'id' => 'instance_footer',
+                    'title'   => 'Instance footer information',
+                    'description' => 'Information appearing in the footer for all of the Scenes for this instance.',
                     'fields' => array(
                         array(
-                            'id'          => 'instance_contact_name',
-                            'type'        => 'text',
-                            'title'       => 'Name',
-                            'class'       => 'text-class',
+                            'id'     => 'instance_footer_about',
+                            'type'   => 'editor',
+                            'title'  => 'About the instance', 
+                            'description' => 'This is information that appears in the left "About" column of the footer'        
                         ),
                         array(
-                            'id'          => 'instance_contact_title',
-                            'type'        => 'text',
-                            'title'       => 'Title',
-                            'class'       => 'text-class',
+                            'id'     => 'instance_footer_contact',
+                            'type'   => 'editor',
+                            'title'  => 'Contact person for the instance', 
+                            'description' => 'This is information that appears in the center "Contact" column of the footer'        
                         ),
                         array(
-                            'id'          => 'instance_contact_email',
-                            'type'        => 'text',
-                            'title'       => 'E-mail address',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'instance_more_info',
-                    'title'   => 'More information',
-                    'description' => 'Where can site visitors find more information about the instance?',
-                    'fields' => array(
-                        array(
-                            'id'          => 'instance_link_text',
-                            'type'        => 'text',
-                            'title'       => 'Link Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'instance_url',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
+                            'id'          => 'instance_footer_reports',
+                            'type'   => 'editor',
+                            'title'  => 'Relevant reports associated with the instance', 
+                            'description' => 'This is information that appears in the right "Reports" column of the footer'     
                         ),
                     ),
                 ),

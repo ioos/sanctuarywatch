@@ -389,7 +389,6 @@
 		displaySceneEntries(openingSceneSections);
 	});
 
-
 	$('select[name="scene_toc_style"]').change(function(){
 		tableOfContentsFieldOptions();
 	});

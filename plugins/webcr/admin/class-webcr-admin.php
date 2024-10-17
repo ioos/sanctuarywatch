@@ -108,6 +108,11 @@ class Webcr_Admin {
 
 		$current_post_type = get_post_type();
 
+		// Load Instance-specific Javascript only when editing/creating a Instance post 
+		if ($current_post_type == "instance" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
+			wp_enqueue_script( "webcr-admin-instance", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-instance.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+		}
+
 		// Load Scene-specific Javascript only when editing/creating a Scene post 
 		if ($current_post_type == "scene" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
 			wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
