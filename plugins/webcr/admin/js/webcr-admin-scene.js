@@ -4,49 +4,57 @@
 
 	let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
 	displaySceneEntries(openingSceneSections);
-	displayHoverColor();
-	//sameColorSections();
+	tableOfContentsFieldOptions();
 
-	function sameColorSections () {
+	// function to show hover color field, based on table of contents type
+	function tableOfContentsFieldOptions () {
 		const tocStyle = document.getElementsByName("scene_toc_style")[0].value;
-		if (tocStyle =="list"){
-			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.parentElement.style.display = "none";
-		//	document.getElementsByName("scene_same_hover_color_sections")[0].value = 'no';
-		} else {
-			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.parentElement.style.display = "block";
+		let target_color_element = "";
+		// document.getElementsByName("scene_section1[scene_section_hover_color1]")[0].parentElement.parentElement.parentElement;
 
+		if (tocStyle == "list"){
+			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.style.display = "none";
+			document.getElementsByName("scene_section_number")[0].value = 0;
+			displaySceneEntries(0);
+			document.getElementsByName("scene_section_number")[0].parentElement.parentElement.style.display = "none";
+			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "block";
+		} else {
+			document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.style.display = "block";
+			document.getElementsByName("scene_section_number")[0].parentElement.parentElement.style.display = "block";
+			const singleColor = document.getElementsByName("scene_same_hover_color_sections")[0].value;
+			if (singleColor == "no"){
+				document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "none";
+				for (let i = 1; i <= 6; i++){
+					document.getElementsByName("scene_section" + i + "[scene_section_hover_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "block";
+				}
+			} else {
+				document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "block";
+				for (let i = 1; i <= 6; i++){
+					document.getElementsByName("scene_section" + i + "[scene_section_hover_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "none";
+				}
+			}
 		}
+
 	}
 
 	   // function to display Scene Section fields
 	function displaySceneEntries (entry_number){
 		let target_title_element = "";
 		let target_color_element = "";
-//		document.getElementsByName("scene_section1[scene_section_title1]")[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
-
 
 		for (let i = 6; i > entry_number; i--){
 			target_title_element = "scene_section" + i + "[scene_section_title" + i + "]";
 			target_color_element = "scene_section" + i + "[scene_section_hover_color" + i + "]";
+		//	console.log(target_color_element);
 			document.getElementsByName(target_title_element)[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display = "none";
 			document.getElementsByName(target_title_element)[0].value = "";
 		}
 
 		for (let i = 1; i <= entry_number; i++){
 			target_title_element = "scene_section" + i + "[scene_section_title" + i + "]";
-			target_color_element = "scene_section" + i + "[scene_section_hover_color" + i + "]";
+		//	target_color_element = "scene_section" + i + "[scene_section_hover_color" + i + "]";
 			document.getElementsByName(target_title_element)[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display = "block";
 
-		}
-	}
-
-	// function to show hover color field, based on table of contents type
-	function displayHoverColor(){
-		const tocStyle = document.getElementsByName("scene_toc_style")[0].value;
-		if (tocStyle == "list"){
-			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "block";
-		} else {
-			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "none";
 		}
 	}
 
@@ -369,17 +377,20 @@
 	}
 
 	$('select[name="scene_toc_style"]').change(function(){
-		displayHoverColor();
+		tableOfContentsFieldOptions();
 	});
 
+	$('select[name="scene_same_hover_color_sections"]').change(function(){
+		tableOfContentsFieldOptions();
+	});
+	
 	$('select[name="scene_section_number"]').change(function(){
 		let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
 		displaySceneEntries(openingSceneSections);
 	});
 
-
 	$('select[name="scene_toc_style"]').change(function(){
-		sameColorSections();
+		tableOfContentsFieldOptions();
 	});
 
 	$('select[name="scene_section_number"]').change(function(){

@@ -429,7 +429,7 @@ class Webcr_Figure {
                     'id'     => 'figure_caption_long',
                     'type'   => 'editor',
                     'title'  => 'Extended caption', 
-                  //  'description' => 'This caption appears in the "Click for Details" section under the short caption.'
+                    'description' => 'This caption appears in the "Click for Details" section under the short caption. If nothing is provided in this field, then the "Click for Details" section will be be blank for this figure.'
                 ),
                 array(
                     'id'          => 'figure_preview',

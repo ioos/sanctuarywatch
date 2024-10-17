@@ -253,7 +253,7 @@ class Webcr {
 
 		function register_scene_rest_fields() {
 			$scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
-				'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color');
+				'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_published');
 
 			for ($i = 1; $i < 7; $i++){
 				array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i, 'scene_section' . $i);
