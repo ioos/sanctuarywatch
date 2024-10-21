@@ -637,7 +637,6 @@ class Webcr_Scene {
                 ),
             );
         }
-
         // Step 1: Create an array to hold the new info sub-arrays
         $photoFields = array();
 

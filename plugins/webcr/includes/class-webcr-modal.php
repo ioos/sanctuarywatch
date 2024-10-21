@@ -133,616 +133,253 @@ class Webcr_Modal {
             $modal_section = $function_utilities -> returnModalSections($scene_id);
         }
 
-        $fields[] = array(
+        $fields = array(
+            array(
+                'id'             => 'modal_location',
+                'type'           => 'select',
+                'title'          => 'Instance',
+                'options'        => $locations,
+                'description' => 'In which instance is the modal located?'
+            ),
+            array(
+                'id'             => 'modal_scene',
+                'type'           => 'select',
+                'title'          => 'Scene',
+                'options'        => $scene_titles,
+                'description' => 'In which scene is the modal located?',
+            ),
+            array(
+                'id'             => 'modal_icons',
+                'type'           => 'select',
+                'title'          => 'Icons',
+                'options'        => $modal_icons, 
+                'description' => 'Which icon from the above scene is the modal associated with?',
+            ),
+            array(
+                'id'             => 'icon_toc_section',
+                'type'           => 'select',
+                'title'          => 'Icon Section',
+                'options'        =>  $modal_section,
+                'description' => 'Which scene section is this modal associated with?',
+            ),
+            array(
+                'id'             => 'icon_function',
+                'type'           => 'select',
+                'title'          => 'Icon Action',
+                'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
+                'description' => 'What should happen when the user clicks on the icon?',
+                'default'     => 'Modal',
+            ),
+            array(
+                'id'          => 'icon_external_url',
+                'type'        => 'text',
+                'title'       => 'Icon External URL',
+                'class'       => 'text-class',   
+                'description' => 'What is the external URL that the user should be taken to when the icon is clicked?',  
+            ),
+            array(
+                'id'             => 'icon_scene_out',
+                'type'           => 'select',
+                'title'          => 'Icon Scene Out',
+                'options'        => $icon_scene_out,  
+                'description' => 'What is the scene that the user should be taken to when the icon is clicked?',
+            ),
+            array(
+                'id'          => 'modal_tagline',
+                'type'        => 'textarea',
+                'title'       => 'Modal Tagline',
+                'description' => 'What is the modal tagline?',
+            ),
+            array(
+                'id'      => 'modal_info_entries',
+                'type'    => 'range',
+                'title'   => 'Number of Modal Info Entries',
+                'description' => 'How many info links are there for the modal?',
+                'min'     => 0,    
+                'default' => 1,    
+                'max'     => 6,         
+                'step'    => 1,             
+            ),    
+            array(
+                'id'      => 'modal_photo_entries',
+                'type'    => 'range',
+                'title'   => 'Number of Modal Photo Entries',
+                'description' => 'How many photo links are there for the modal?',
+                'min'     => 0,    
+                'default' => 1,    
+                'max'     => 6,         
+                'step'    => 1,             
+            ),     
+            array(
+                'id'      => 'modal_tab_number',
+                'type'    => 'range',
+                'title'   => 'Number of Modal Tabs',
+                'description' => 'How many modal tabs are there?',
+                'min'     => 0,    
+                'default' => 1,    
+                'max'     => 6,         
+                'step'    => 1,             
+            ), 
+            array(
+                'id'          => 'modal_preview',
+                'type'        => 'button',
+                'title'       => 'Preview Modal',
+                'class'        => 'modal_preview',
+                'options'     => array(
+                    'href'  =>  '#nowhere',
+                    'target' => '_self',
+                    'value' => 'Preview',
+                    'btn-class' => 'exopite-sof-btn'
+                ),
+            )         
+        );
+
+        // Step 1: Create an array to hold the new info sub-arrays
+        $infoFields = array();
+
+        // Step 2: Use a loop to generate the new info sub-arrays
+        for ($i = 1; $i <= 6; $i++) {
+            $infoFields[] = array(
+                'type' => 'fieldset',
+                'id' => 'modal_info' . $i,
+                'title'   => 'Modal Info Link ' . $i,
+                'fields' => array(
+                    array(
+                        'id'          => 'modal_info_text' . $i,
+                        'type'        => 'text',
+                        'title'       => 'Text',
+                        'class'       => 'text-class',
+                    ),
+                    array(
+                        'id'          => 'modal_info_url' . $i,
+                        'type'        => 'text',
+                        'title'       => 'URL',
+                        'class'       => 'text-class',
+                    ),
+                ),
+            );
+        }
+        // Step 1: Create an array to hold the new info sub-arrays
+        $photoFields = array();
+
+        // Step 2: Use a loop to generate the new info sub-arrays
+        for ($i = 1; $i <= 6; $i++) {
+            $photoFields[] = array(
+                'type' => 'fieldset',
+                'id' => 'modal_photo' . $i,
+                'title'   => 'Modal Photo Link ' . $i,
+                'fields' => array(
+                    array(
+                        'id'             => 'modal_photo_location' . $i,
+                        'type'           => 'select',
+                        'title'          => 'Image Location',
+                        'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
+                        'default'     => 'External',
+                    ),
+                    array(
+                        'id'          => 'modal_photo_text' . $i,
+                        'type'        => 'text',
+                        'title'       => 'Link Text',
+                        'class'       => 'text-class',
+                    ),
+                    array(
+                        'id'          => 'modal_photo_url' . $i,
+                        'type'        => 'text',
+                        'title'       => 'URL',
+                        'class'       => 'text-class',
+                    ),
+                    array(
+                        'id'    => 'modal_photo_internal' . $i,
+                        'type'  => 'image',
+                        'title' => 'Image',
+                    ),
+                ),
+            );
+        }
+
+        // Step 1: Create an array to hold the new info sub-arrays
+        $tabFields = array();
+
+        // Step 2: Use a loop to generate the new info sub-arrays
+        for ($i = 1; $i <= 6; $i++) {
+            $tabFields[] = array(
+                    'id'          => 'modal_tab_title' . $i,
+                    'type'        => 'text',
+                    'title'       => 'Modal Tab Title ' . $i,
+                    'class'       => 'text-class'
+            );
+        }
+
+        // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
+        array_splice($fields, 9, 0, $infoFields);
+        array_splice($fields, 16, 0, $photoFields);
+        array_splice($fields, 23, 0, $tabFields);
+
+        $fieldsHolder[] = array(
             'name'   => 'basic',
             'title'  => 'Basic',
             'icon'   => 'dashicons-admin-generic',
-            'fields' => array(
-
-                array(
-                    'id'             => 'modal_location',
-                    'type'           => 'select',
-                    'title'          => 'Instance',
-                    'options'        => $locations,
-                    'description' => 'In which instance is the modal located?',
-                 //   'class'      => 'chosen', 
-                ),
-                array(
-                    'id'             => 'modal_scene',
-                    'type'           => 'select',
-                    'title'          => 'Scene',
-                    'options'        => $scene_titles,
-                    'description' => 'In which scene is the modal located?',
-                ),
-                array(
-                    'id'             => 'modal_icons',
-                    'type'           => 'select',
-                    'title'          => 'Icons',
-                    'options'        => $modal_icons, // array (" " => "Modal Icons")
-                    'description' => 'Which icon from the above scene is the modal associated with?',
-                ),
-                array(
-                    'id'             => 'icon_toc_section',
-                    'type'           => 'select',
-                    'title'          => 'Icon Section',
-                    'options'        =>  $modal_section,
-                    'description' => 'Which scene section is this modal associated with?',
-                ),
-                array(
-                    'id'             => 'icon_function',
-                    'type'           => 'select',
-                    'title'          => 'Icon Action',
-                    'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
-                    'description' => 'What should happen when the user clicks on the icon?',
-                    'default'     => 'Modal',
-                 //   'class'      => 'chosen', 
-                ),
-                array(
-                    'id'          => 'icon_external_url',
-                    'type'        => 'text',
-                    'title'       => 'Icon External URL',
-                    'class'       => 'text-class',   
-                    'description' => 'What is the external URL that the user should be taken to when the icon is clicked?',  
-                ),
-                array(
-                    'id'             => 'icon_scene_out',
-                    'type'           => 'select',
-                    'title'          => 'Icon Scene Out',
-                    'options'        => $icon_scene_out,  
-                    'description' => 'What is the scene that the user should be taken to when the icon is clicked?',
-                ),
-
-                array(
-                    'id'          => 'modal_tagline',
-                    'type'        => 'textarea',
-                    'title'       => 'Modal Tagline',
-                    'description' => 'What is the modal tagline?',
-                ),
-                array(
-                    'id'      => 'modal_info_entries',
-                    'type'    => 'range',
-                    'title'   => 'Number of Modal Info Entries',
-                    'description' => 'How many info links are there for the modal?',
-                    'min'     => 0,    
-                    'default' => 1,    
-                    'max'     => 6,         
-                    'step'    => 1,             
-                ),              
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info1',
-                    'title'   => 'Modal Info Link 1',
-                  //  'description' => 'Modal Info Link 1 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text1',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url1',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info2',
-                    'title'   => 'Modal Info Link 2',
-                  //  'description' => 'Modal Info Link 2 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text2',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url2',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info3',
-                    'title'   => 'Modal Info Link 3',
-                 //   'description' => 'Modal Info Link 3 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text3',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url3',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info4',
-                    'title'   => 'Modal Info Link 4',
-                 //   'description' => 'Modal Info Link 4 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text4',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url4',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info5',
-                    'title'   => 'Modal Info Link 5',
-                  //  'description' => 'Modal Info Link 5 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text5',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url5',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_info6',
-                    'title'   => 'Modal Info Link 6',
-                 //   'description' => 'Modal Info Link 6 description',
-                    'fields' => array(
-                        array(
-                            'id'          => 'modal_info_text6',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_info_url6',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'id'      => 'modal_photo_entries',
-                    'type'    => 'range',
-                    'title'   => 'Number of Modal Photo Entries',
-                    'description' => 'How many photo links are there for the modal?',
-                    'min'     => 0,    
-                    'default' => 1,    
-                    'max'     => 6,         
-                    'step'    => 1,             
-                ),              
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo1',
-                    'title'   => 'Modal Photo Link 1',
-                    'fields' => array(
-                        array(
-                            'id'             => 'modal_photo_location1',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_text1',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url1',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'modal_photo_internal1',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo2',
-                    'title'   => 'Modal Photo Link 2',
-                //    'description' => 'Modal Photo Link 2 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'modal_photo_location2',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_text2',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url2',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'modal_photo_internal2',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo3',
-                    'title'   => 'Modal Photo Link 3',
-              //      'description' => 'Modal Photo Link 3 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'modal_photo_location3',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_text3',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url3',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'modal_photo_internal3',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo4',
-                    'title'   => 'Modal Photo Link 4',
-              //      'description' => 'Modal Photo Link 4 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'modal_photo_location4',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_text4',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url4',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'modal_photo_internal4',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo5',
-                    'title'   => 'Modal Photo Link 5',
-               //     'description' => 'Modal Photo Link 5 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'modal_photo_location5',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_text5',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url5',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'modal_photo_internal5',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'modal_photo6',
-                    'title'   => 'Modal Photo Link 6',
-               //     'description' => 'Modal Photo Link 6 description',
-                    'fields' => array(
-                        array(
-                            'id'             => 'modal_photo_location6',
-                            'type'           => 'select',
-                            'title'          => 'Image Location',
-                            'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                            'default'     => 'External',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_text6',
-                            'type'        => 'text',
-                            'title'       => 'Text',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'          => 'modal_photo_url6',
-                            'type'        => 'text',
-                            'title'       => 'URL',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'    => 'modal_photo_internal6',
-                            'type'  => 'image',
-                            'title' => 'Image',
-                        ),
-                    ),
-                ),
-
-                array(
-                    'id'      => 'modal_tab_number',
-                    'type'    => 'range',
-                    'title'   => 'Number of Modal Tabs',
-                    'description' => 'How many modal tabs are there?',
-                    'min'     => 0,    
-                    'default' => 1,    
-                    'max'     => 6,         
-                    'step'    => 1,             
-                ),              
-                array(
-                    'id'          => 'modal_tab_title1',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 1',
-                    'class'       => 'text-class',   
-              //      'description' => 'Modal Tab Title 1 Description',  
-                ),
-                array(
-                    'id'          => 'modal_tab_title2',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 2',
-                    'class'       => 'text-class',   
-            //        'description' => 'Modal Tab Title 2 Description',  
-                ),
-                array(
-                    'id'          => 'modal_tab_title3',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 3',
-                    'class'       => 'text-class',   
-              //      'description' => 'Modal Tab Title 3 Description',  
-                ),
-                array(
-                    'id'          => 'modal_tab_title4',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 4',
-                    'class'       => 'text-class',   
-              //      'description' => 'Modal Tab Title 4 Description',  
-                ),                
-                array(
-                    'id'          => 'modal_tab_title5',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 5',
-                    'class'       => 'text-class',   
-             //       'description' => 'Modal Tab Title 5 Description',  
-                ),                
-                array(
-                    'id'          => 'modal_tab_title6',
-                    'type'        => 'text',
-                    'title'       => 'Modal Tab Title 6',
-                    'class'       => 'text-class',   
-             //       'description' => 'Modal Tab Title 6 Description',  
-                ),
-                array(
-                    'id'          => 'modal_preview',
-                    'type'        => 'button',
-                    'title'       => 'Preview Modal',
-                    'class'        => 'modal_preview',
-                    'options'     => array(
-                        'href'  =>  '#nowhere',
-                        'target' => '_self',
-                        'value' => 'Preview',
-                        'btn-class' => 'exopite-sof-btn'
-                    ),
-                ),
-            )
+            'fields' => $fields,
         );
 
         // instantiate the admin page
-        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
+        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fieldsHolder ); 
 
-        // make several of the modal custom fields available to the REST API
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_scene', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'integer', // Data type of the meta value
-                'description' => 'The modal scene', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
+        // Create array of fields to be registered with register_meta
+        $fieldsToBeRegistered = array(
+            array('modal_scene', 'integer', 'The modal scene'),
+            array('icon_function', 'string', 'The icon function'),
+            array('modal_tagline', 'string', 'The modal tagline'),
+            array('icon_toc_section', 'string', 'The icon table of contents section'),
+            array('modal_info_entries', 'integer', 'The number of info links'),
+            array('modal_photo_entries', 'integer', 'The number of photo links'),
+            array('modal_tab_number', 'integer', 'The number of modal tabs'),
         );
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'icon_function', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The icon function', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-        
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_tagline', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The modal tagline', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'icon_toc_section', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'string', // Data type of the meta value
-                'description' => 'The icon table of contents section', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_info_entries', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'integer', // Data type of the meta value
-                'description' => 'The number of info links', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );        
 
         for ($i = 1; $i < 7; $i++ ) {
-            $target_field = 'modal_info' . $i;
-            $target_description = 'Info link ' . $i;
-            register_meta( 'post', 
-                $target_field,
-                array(
-                    'auth_callback'     => '__return_false' ,
-                    'single'            => true, // The field contains a single array
-                    'description' => $target_description, // Description of the meta key
-                    'show_in_rest'      => array(
-                        'schema' => array(
-                            'type'  => 'array', // The meta field is an array
-                            'items' => array(
-                                'type' => 'string', // Each item in the array is a string
-                            ),
-                        ),
-                    ),
-                ) 
-            );
+            $fieldsToBeRegistered[] = array('modal_tab_title' . $i, 'string', 'Modal tab ' . $i);
         }
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_photo_entries', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'integer', // Data type of the meta value
-                'description' => 'The number of photo links', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );        
-
-        for ($i = 1; $i < 7; $i++ ) {
-            $target_field = 'modal_photo' . $i;
-            $target_description = 'Photo link ' . $i;
-            register_meta( 'post', 
-                $target_field,
-                array(
-                    'auth_callback'     => '__return_false' ,
-                    'single'            => true, // The field contains a single array
-                    'description' => $target_description, // Description of the meta key
-                    'show_in_rest'      => array(
-                        'schema' => array(
-                            'type'  => 'array', // The meta field is an array
-                            'items' => array(
-                                'type' => 'string', // Each item in the array is a string
-                            ),
-                        ),
-                    ),
-                ) 
-            );
-        }
-
-        register_meta(
-            'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-            'modal_tab_number', // Meta key name
-            array(
-                'show_in_rest' => true, // Make the field available in REST API
-                'single' => true, // Indicates whether the meta key has one single value
-                'type' => 'integer', // Data type of the meta value
-                'description' => 'The number of modal tabs', // Description of the meta key
-                'auth_callback' => '__return_false' //Return false to disallow writing
-            )
-        );    
-
-        for ($i = 1; $i < 7; $i++ ) {
-            $target_field = 'modal_tab_title' . $i;
-            $target_description = 'Modal tab ' . $i;
+        foreach ($fieldsToBeRegistered as $targetSubArray) {
             register_meta(
-                'post', // Object type. In this case, 'post' refers to custom post type 'Modal'
-                $target_field, // Meta key name
+                'post', // Object type. In this case, 'post' refers to custom post type 'Scene'
+                $targetSubArray[0], // Meta key name
                 array(
                     'show_in_rest' => true, // Make the field available in REST API
                     'single' => true, // Indicates whether the meta key has one single value
-                    'type' => 'string', // Data type of the meta value
-                    'description' => $target_description, // Description of the meta key
-                    'auth_callback' => '__return_false' //Return false to disallow writing
+                    'type' => $targetSubArray[1], // Data type of the meta value
+                    'description' => $targetSubArray[2], // Description of the meta key
+                    'auth_callback' => '__return_false'
                 )
             );
+        }
+
+        $fieldAndDescription = array(
+            array('modal_info', 'Info link '),
+            array('modal_photo', 'Photo link '),
+            array('modal_photo_internal', 'Internal photo link ')
+        );
+
+        for ($i = 1; $i < 7; $i++ ) {
+            foreach($fieldAndDescription as $targetFieldAndDescription){
+                $target_field = $targetFieldAndDescription[0] . $i;
+                $target_description = $targetFieldAndDescription[1] . $i;
+                register_meta( 'post', 
+                    $target_field,
+                    array(
+                        'auth_callback'     => '__return_false' ,
+                        'single'            => true, // The field contains a single array
+                        'description' => $target_description, // Description of the meta key
+                        'show_in_rest'      => array(
+                            'schema' => array(
+                                'type'  => 'array', // The meta field is an array
+                                'items' => array(
+                                    'type' => 'string', // Each item in the array is a string
+                                ),
+                            ),
+                        ),
+                    ) 
+                );
+            }
         }
     }
 
