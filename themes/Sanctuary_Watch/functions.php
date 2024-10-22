@@ -124,6 +124,31 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
 // }
 //   add_action('init', 'add_custom_rewrite_rules');
 
+  /**
+   * Registers the 'about' custom post type.
+   *
+   * This function sets up a new custom post type called 'about'. It
+   *
+   * @return void
+   */
+  //attempting to rewrite scene base url
+  // function register_about_post_type (){
+  //   $args = array (
+  //     'labels' => array(
+  //       'name' => 'About',
+  //       'singular_name' => 'About',
+  //     ),
+  //     'public' => true,
+  //     'has_archive' => true,
+  //     'rewrite' => array(
+  //       'slug' => 'about',
+  //       'with_front' => false,
+  //       )
+  //   );
+    
+  //   register_post_type( 'about', $args);
+  // }
+  // add_action('init', 'register_about_post_type' );
 
   /**
    * Adds rewrite rules for custom 'scene' post type URLs.

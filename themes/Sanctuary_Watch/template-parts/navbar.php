@@ -32,11 +32,13 @@
             $sceneLocation = $postMeta['scene_location'][0];
             $inst_overview_scene = get_post_meta($sceneLocation, 'instance_overview_scene')[0];
             $title = get_post_meta($sceneLocation, 'post_title')[0];
+            // $scene_published = get_post_meta($sceneLocation, 'scene_published', true);
 
             echo "<script>
                     console.log('Post Meta: ', " . json_encode($postMeta) . ");
                     console.log('Scene Location: ', " . json_encode($sceneLocation) . ");
                     console.log('Instance Overview Scene: ', " . json_encode($title) . ");
+                    // console.log('Scene published: ', " . json_encode($scene_published) . ");
                 </script>";
 
             if($sceneLocation){
@@ -72,12 +74,14 @@
                             // echo get_post_meta(get_the_ID());
                             // echo get_the_ID();
                             $scene_loc = get_post_meta(get_the_ID(), 'scene_location')[0];
+                            $scene_published = get_post_meta(get_the_ID(), 'scene_published', true);
+
                             // echo $scene_loc;
                             $inst_overview_scene = get_post_meta($scene_loc, 'instance_overview_scene')[0];
                             //echo $inst_overview_scene;
 
                             $scene_order = get_post_meta(get_the_ID(), 'scene_order');
-                            if(get_the_ID() != $inst_overview_scene){
+                            if(get_the_ID() != $inst_overview_scene && $scene_published != 'draft'){
                                 $post_titles[] = [get_the_title(), $scene_order[0], get_the_ID()];
                                 // echo get_the_title();
                                 // echo " ";
