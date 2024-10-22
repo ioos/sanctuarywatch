@@ -53,7 +53,7 @@ class Webcr_About {
             'query_var'          => true,
             'rewrite'            => array( 'slug' => 'about' ),
             'capability_type'    => 'post',
-            'menu_icon'          => 'dashicons-admin-site',
+            'menu_icon'          => 'dashicons-admin-site-alt3',
             'has_archive'        => true,
             'hierarchical'       => false,
             'menu_position'      => null,
@@ -99,31 +99,31 @@ class Webcr_About {
                     'id'   => 'about_tagline',
                     'type' => 'textarea',
                     'title'       => 'Tagline',
-                   // 'description' => 'What is the tagline for the About page that appears above the tiles?'
+                    'description' => 'What is the tagline for the About page that appears above the tiles?'
                 ),
                 array(
                     'id'     => 'about_contact_info',
                     'type'   => 'editor',
                     'title'  => 'Contact info', 
-                 //   'description' => 'What information should appear in the Contact Info tile?'
+                    'description' => 'What information should appear in the Contact Info tile?'
                 ),
                 array(
                     'id'     => 'about_partners',
                     'type'   => 'editor',
                     'title'  => 'Partners', 
-                //    'description' => 'What information should appear in the Partners tile?'
+                    'description' => 'What information should appear in the Partners tile?'
                 ),
                 array(
                     'id'     => 'about_code',
                     'type'   => 'editor',
                     'title'  => 'Use our Code', 
-                //    'description' => 'What information should appear in the Use Our Code tile?'
+                    'description' => 'What information should appear in the Use Our Code tile?'
                 ),
                 array(
                     'id'     => 'about_people',
                     'type'   => 'editor',
                     'title'  => 'People Involved', 
-               //     'description' => 'What information should appear in the People Involved tile?'
+                    'description' => 'What information should appear in the People Involved tile?'
                 ),
             )
         );
