@@ -132,6 +132,9 @@ class Webcr {
 		// The class that defines the functions used for the Instance custom content type
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-instance.php';
 
+		// The class that defines the functions used for the About custom content type
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-about.php';
+
 		// The class that defines the validation methods used for the custom post types
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-validation.php';
 
@@ -174,6 +177,11 @@ class Webcr {
 		$this->loader->add_filter( 'upload_mimes', $plugin_admin, 'allow_svg_uploads'); 
 		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
 		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
+
+		// Load  class and functions associated with About custom content type
+		$plugin_admin_about = new Webcr_About ( $this->get_plugin_name(), $this->get_version() );		
+		$this->loader->add_action( 'init', $plugin_admin_about, 'custom_content_type_about' ); 
+		$this->loader->add_action( 'admin_menu', $plugin_admin_about, 'create_about_fields', 1 );
 
 		// Load  class and functions associated with Instance custom content type
 		$plugin_admin_instance = new Webcr_Instance ( $this->get_plugin_name(), $this->get_version() );		
@@ -325,7 +333,6 @@ class Webcr {
 		add_filter('rest_modal_query', 'filter_modal_by_modal_scene', 10, 2);
 
 // begin skanda code
-
 		//THIS IS FOR SCENES PERMALINKS
 		function add_scene_rewrite_rules($rules) {
 			$new_rules = array(
@@ -353,6 +360,72 @@ class Webcr {
 		add_filter('post_type_link', 'remove_scene_slug', 10, 3);
 
 // end skanda code
+
+//Begin code for export tool
+
+// Hook to 'admin_menu' to add a new option under Tools
+add_action('admin_menu', 'add_export_figures_menu');
+
+// Function to add the "Export Figures" submenu under Tools
+function add_export_figures_menu() {
+    add_submenu_page(
+        'tools.php',              // Parent slug - adding it under 'Tools'
+        'Export Figures',         // Page title
+        'Export Figures',         // Menu title
+        'manage_options',         // Capability required to see the option
+        'export-figures',         // Slug (used in the URL)
+        'export_figures_page'     // Callback function to output the page content
+    );
+}
+
+// Callback function to display the content of the "Export Figures" page
+function export_figures_page() {
+    ?>
+    <div class="wrap">
+        <h1><?php esc_html_e('Export Figures', 'export_figures'); ?></h1>
+        <p><?php esc_html_e('Click the button below to export figures.', 'export_figures'); ?></p>
+        
+        <!-- Form to trigger export -->
+        <form method="post" action="">
+            <input type="hidden" name="export_figures_action" value="export" />
+            <?php submit_button('Export Figures'); ?>
+        </form>
+    </div>
+    <?php
+    
+    // Handle export logic when the form is submitted
+    if (isset($_POST['export_figures_action']) && $_POST['export_figures_action'] === 'export') {
+        export_figures_data();
+    }
+}
+
+// Function to handle exporting the data (CSV example)
+function export_figures_data() {
+    // Example data to export (can be dynamic from your database)
+    $data = [
+        ['ID', 'Figure', 'Value'],
+        [1, 'Revenue', '10000'],
+        [2, 'Profit', '5000'],
+        [3, 'Expenses', '2000']
+    ];
+
+    // Set headers to force download
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="export_figures.csv"');
+
+    // Open output stream to write CSV
+    $output = fopen('php://output', 'w');
+
+    // Loop through data and write to CSV
+    foreach ($data as $row) {
+        fputcsv($output, $row);
+    }
+
+    fclose($output);
+    exit;
+}
+
+//End code for export tool
 
 		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated
 		register_activation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');

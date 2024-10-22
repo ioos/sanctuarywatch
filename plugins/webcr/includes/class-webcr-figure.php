@@ -563,6 +563,4 @@ class Webcr_Figure {
             }
         }
     }
-
-
 }
