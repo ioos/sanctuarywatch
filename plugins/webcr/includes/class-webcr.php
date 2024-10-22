@@ -132,6 +132,9 @@ class Webcr {
 		// The class that defines the functions used for the Instance custom content type
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-instance.php';
 
+		// The class that defines the functions used for the About custom content type
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-about.php';
+
 		// The class that defines the validation methods used for the custom post types
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-validation.php';
 
@@ -174,6 +177,11 @@ class Webcr {
 		$this->loader->add_filter( 'upload_mimes', $plugin_admin, 'allow_svg_uploads'); 
 		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
 		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
+
+		// Load  class and functions associated with About custom content type
+		$plugin_admin_about = new Webcr_About ( $this->get_plugin_name(), $this->get_version() );		
+		$this->loader->add_action( 'init', $plugin_admin_about, 'custom_content_type_about' ); 
+		$this->loader->add_action( 'admin_menu', $plugin_admin_about, 'create_about_fields', 1 );
 
 		// Load  class and functions associated with Instance custom content type
 		$plugin_admin_instance = new Webcr_Instance ( $this->get_plugin_name(), $this->get_version() );		
