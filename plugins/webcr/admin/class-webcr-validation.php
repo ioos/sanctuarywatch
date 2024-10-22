@@ -10,6 +10,9 @@ class webcr_validation {
 
     public function master_validate($validate_content_type){
         switch ($validate_content_type) {
+            case "about":
+                return true;
+                break;
             case "scene":
                 return $this->validate_scene();
                 break;
