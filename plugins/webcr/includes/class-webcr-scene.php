@@ -3,6 +3,7 @@
  * Register class that defines the Scene custom content type as well as associated Scene functions
  * 
  */
+include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_Scene {
 
 	/**
@@ -287,7 +288,6 @@ class Webcr_Scene {
                 }
             }
             echo $url_count; 
-
         }
 
         if ($column == 'scene_info_link'){
@@ -773,6 +773,71 @@ class Webcr_Scene {
             }
         }
 
+    }
+
+    /**
+	 * Register Scene custom fields for use by REST API.
+	 *
+	 * @since    1.0.0
+	 */
+    function register_scene_rest_fields() {
+        $scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
+            'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_published');
+
+        for ($i = 1; $i < 7; $i++){
+            array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i, 'scene_section' . $i);
+        }
+        $function_utilities = new Webcr_Utility();
+        $function_utilities -> register_custom_rest_fields("scene", $scene_rest_fields);
+    }
+
+    /**
+	 * Add a filter to support filtering by "scene_location" in REST API queries.
+	 *
+	 * @since    1.0.0
+	 */
+    function filter_scene_by_scene_location($args, $request) {
+        if (isset($request['scene_location'])) {
+            $args['meta_query'][] = array(
+                'key' => 'scene_location',
+                'value' => $request['scene_location'],
+                'compare' => 'LIKE', // Change comparison method as needed
+            );
+        }
+        return $args;
+    }
+
+    /**
+	 * Add scene rewrite rules for permalinks (Skanda).
+	 *
+	 * @since    1.0.0
+	 */
+    function add_scene_rewrite_rules($rules) {
+        $new_rules = array(
+            '([^/]+)/([^/]+)/?$' => 'index.php?post_type=scene&name=$matches[2]&instance_slug=$matches[1]' // Map URL structure to scene post type
+        );
+        return $new_rules + $rules;
+    }
+
+    /**
+	 * Add scene rewrite rules for permalinks (Skanda).
+	 *
+	 * @since    1.0.0
+	 */
+    function remove_scene_slug($post_link, $post, $leavename) {
+        if ('scene' != $post->post_type || 'publish' != $post->post_status) {
+            return $post_link;
+        }
+    
+        $instance_id = get_post_meta($post->ID, 'scene_location', true);
+        $instance = get_post($instance_id);
+        $web_slug = get_post_meta($instance_id, 'instance_slug', true);
+    
+        if (!$instance || !$web_slug) {
+            return $post_link;
+        }
+    
+        return home_url('/' . $web_slug . '/' . $post->post_name . '/');
     }
 
     function scene_preview() {

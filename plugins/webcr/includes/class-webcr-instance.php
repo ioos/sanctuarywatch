@@ -239,7 +239,19 @@ class Webcr_Instance {
         }
     }
 
-        /**
+    /**
+	 * Register Instance custom fields for use by REST API.
+	 *
+	 * @since    1.0.0
+	 */
+    function register_instance_rest_fields(){
+        $instance_rest_fields = array('instance_short_title', 'instance_slug',
+            'instance_type', 'instance_status', 'instance_tile', 'instance_overview_scene');
+            $function_utilities = new Webcr_Utility();
+            $function_utilities -> register_custom_rest_fields("instance", $instance_rest_fields);
+    }
+
+    /**
 	 * Set columns in admin screen for Scene custom content type.
 	 *
      * @link https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/

@@ -158,6 +158,19 @@ class Webcr_Admin {
         $wp_admin_bar->remove_menu('comments');
     }
 
+	/**
+	 * Enqueue Bootstrap (version 5.3.0) CSS and Javascript.
+	 *
+	 * @since    1.0.0
+	 */
+	function enqueue_bootstrap_admin() {
+		// Enqueue Bootstrap CSS
+		wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', array(), '5.3.0');
+		
+		// Enqueue Bootstrap JavaScript
+		wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
+	}
+
     /**
 	 * Remove the ability to access the Comment content type from the sidebar of the dashboard.
 	 *

@@ -1,6 +1,6 @@
 <?php
 /**
- * Register class that defines the Figure custom content type as well as associated Modal functions 
+ * Register class that defines the Figure custom content type as well as associated Figure functions 
  * 
  */
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
@@ -266,7 +266,7 @@ class Webcr_Figure {
             'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
         );
 
-        // get list of locations, which is saved as a taxonomy
+        // get list of locations
         $function_utilities = new Webcr_Utility();
         $locations = $function_utilities -> returnAllInstances();
 
@@ -501,6 +501,17 @@ class Webcr_Figure {
             );
         }
     }  
+
+    /**
+	 * Register Figure custom fields for use by REST API.
+	 *
+	 * @since    1.0.0
+	 */
+    function register_figure_rest_fields() {
+        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_caption_short', 'figure_caption_long');
+        $function_utilities = new Webcr_Utility();
+        $function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
+    }
 
     public function figure_admin_notice() {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
