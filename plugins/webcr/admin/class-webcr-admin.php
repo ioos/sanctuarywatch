@@ -137,6 +137,12 @@ class Webcr_Admin {
 		if ($current_post_type == "figure" && $hook_suffix == "edit.php" ){
 			wp_enqueue_script( "webcr-admin-figure_columns", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure-columns.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
 		}
+
+		// Load Figure Export Javascript, but only when on Figure Export Tool page 
+		$current_screen = get_current_screen();
+		if ($current_screen-> base == "tools_page_export-figures"){
+			wp_enqueue_script( "webcr-admin-figure_export", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-export-figures.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+		}
 	}
 
     /**

@@ -34,18 +34,18 @@ class Webcr_Export_Figures {
             <p>Select an Instance for figure export:</p>
             <p>
             <?php
-                    // get list of locations
-        $function_utilities = new Webcr_Utility();
-        $locations = $function_utilities -> returnAllInstances();
+                // get list of locations
+                $function_utilities = new Webcr_Utility();
+                $locations = $function_utilities -> returnAllInstances();
 
-        echo '<select name="location">'; // Opening the <select> tag
-foreach ($locations as $key => $value) {
-    echo '<option value="' . $key . '">' . $value . '</option>'; // Dynamically generating options
-}
-echo '</select>'; // Closing the <select> tag
-
+                echo '<select id="location" name="location">'; // Opening the <select> tag
+                foreach ($locations as $key => $value) {
+                    echo '<option value="' . $key . '">' . $value . '</option>'; // Dynamically generating options
+                }
+                echo '</select>'; // Closing the <select> tag
             ?></p>
-            
+            <p><button id="testbutton">Download Test RTF</button></p>
+            <p><button id="chooseInstance">Choose Instance</button></p>
             <!-- Form to trigger export -->
             <form method="post" action="">
                 <input type="hidden" name="export_figures_action" value="export" />
