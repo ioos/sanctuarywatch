@@ -384,6 +384,48 @@ class Webcr_Modal {
     }
 
     /**
+	 * Register Modal custom fields for use by REST API.
+	 *
+	 * @since    1.0.0
+	 */
+    function register_modal_rest_fields() {
+        $modal_rest_fields = array('modal_scene','modal_tagline', 'icon_function','modal_info_entries', 
+            'modal_photo_entries', 'modal_tab_number');
+
+            for ($i = 1; $i < 7; $i++){
+                array_push($modal_rest_fields,'modal_info' . $i, 'modal_photo' . $i, 'modal_tab_title' . $i );
+            }
+            $function_utilities = new Webcr_Utility();
+            $function_utilities -> register_custom_rest_fields("modal", $modal_rest_fields);
+    }
+
+    /**
+	 * Add a filter to support filtering by "modal_location" in REST API queries.
+	 *
+	 * @since    1.0.0
+	 */
+    function filter_modal_by_modal_scene($args, $request) {
+        if (isset($request['modal_scene'])) {
+            $args['meta_query'][] = array(
+                'key' => 'modal_scene',
+                'value' => $request['modal_scene'],
+                'compare' => 'LIKE', // Change comparison method as needed
+            );
+        }
+        // Filter by icon_function if set
+        if (isset($request['icon_function'])) {
+            $args['meta_query'][] = array(
+                'key'     => 'icon_function',
+                'value'   => $request['icon_function'],
+                'compare' => '='
+            );
+        }
+        $args['orderby'] = 'title';
+        $args['order'] = 'ASC';
+        return $args;
+    }
+
+    /**
 	 * Add two filter dropdowns, field length and scene location, for the admin screen for the Modal content type.
 	 *
 	 * @since    1.0.0

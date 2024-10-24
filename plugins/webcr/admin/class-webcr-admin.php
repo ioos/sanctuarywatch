@@ -137,6 +137,12 @@ class Webcr_Admin {
 		if ($current_post_type == "figure" && $hook_suffix == "edit.php" ){
 			wp_enqueue_script( "webcr-admin-figure_columns", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure-columns.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
 		}
+
+		// Load Figure Export Javascript, but only when on Figure Export Tool page 
+		$current_screen = get_current_screen();
+		if ($current_screen-> base == "tools_page_export-figures"){
+			wp_enqueue_script( "webcr-admin-figure_export", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-export-figures.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+		}
 	}
 
     /**
@@ -157,6 +163,19 @@ class Webcr_Admin {
         global $wp_admin_bar;
         $wp_admin_bar->remove_menu('comments');
     }
+
+	/**
+	 * Enqueue Bootstrap (version 5.3.0) CSS and Javascript.
+	 *
+	 * @since    1.0.0
+	 */
+	function enqueue_bootstrap_admin() {
+		// Enqueue Bootstrap CSS
+		wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', array(), '5.3.0');
+		
+		// Enqueue Bootstrap JavaScript
+		wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
+	}
 
     /**
 	 * Remove the ability to access the Comment content type from the sidebar of the dashboard.

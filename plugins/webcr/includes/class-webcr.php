@@ -77,7 +77,6 @@ class Webcr {
 		$this->load_dependencies();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -114,7 +113,7 @@ class Webcr {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-webcr-public.php';
 
-		// JAI The class that defines the metaboxes used for field entry
+		// The class that defines the metaboxes used for field entry
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/exopite-simple-options/exopite-simple-options-framework-class.php';
 
 		// The class that defines the functions used to alter the WordPress login screen
@@ -135,11 +134,13 @@ class Webcr {
 		// The class that defines the functions used for the About custom content type
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-webcr-about.php';
 
+		// The class that defines the functions used for the Export Figures Tool
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-export-figures.php';
+
 		// The class that defines the validation methods used for the custom post types
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-validation.php';
 
 		$this->loader = new Webcr_Loader();
-
 	}
 
 	/**
@@ -151,11 +152,8 @@ class Webcr {
 	 */
 	private function define_admin_hooks() {
 
-
-
 		// Load class and functions to change overall look and function of admin screens
 		$plugin_admin = new Webcr_Admin( $this->get_plugin_name(), $this->get_version() );
-
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles', 10 );  
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts', 10 ); 
 		$this->loader->add_action( 'login_head', $plugin_admin, 'add_favicon' ); 
@@ -175,6 +173,7 @@ class Webcr {
 		$this->loader->add_filter( 'init', $plugin_admin, 'add_content_manager_custom_role'); 
 		$this->loader->add_filter( 'admin_menu', $plugin_admin, 'restrict_content_manager_admin_menu', 999); 
 		$this->loader->add_filter( 'upload_mimes', $plugin_admin, 'allow_svg_uploads'); 
+		$this->loader->add_filter( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_bootstrap_admin', 5); 
 		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
 		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
 
@@ -185,256 +184,78 @@ class Webcr {
 
 		// Load  class and functions associated with Instance custom content type
 		$plugin_admin_instance = new Webcr_Instance ( $this->get_plugin_name(), $this->get_version() );		
-		$this->loader->add_action( 'init', $plugin_admin_instance, 'custom_content_type_instance' ); //scene
+		$this->loader->add_action( 'init', $plugin_admin_instance, 'custom_content_type_instance' ); 
 		$this->loader->add_action( 'admin_menu', $plugin_admin_instance, 'create_instance_fields', 1 );
-		$this->loader->add_action( 'manage_instance_posts_columns', $plugin_admin_instance, 'change_instance_columns' ); //scene
-		$this->loader->add_action( 'manage_instance_posts_custom_column', $plugin_admin_instance, 'custom_instance_column', 10, 2 ); //scene
+		$this->loader->add_action( 'manage_instance_posts_columns', $plugin_admin_instance, 'change_instance_columns' ); 
+		$this->loader->add_action( 'manage_instance_posts_custom_column', $plugin_admin_instance, 'custom_instance_column', 10, 2 ); 
 		$this->loader->add_filter( 'bulk_actions-edit-instance', $plugin_admin_instance, 'remove_bulk_actions' ); 
-		$this->loader->add_filter( 'post_row_actions', $plugin_admin_instance, 'custom_content_remove_quick_edit_link', 10, 2 ); //scene
+		$this->loader->add_filter( 'post_row_actions', $plugin_admin_instance, 'custom_content_remove_quick_edit_link', 10, 2 ); 
+		$this->loader->add_filter( 'rest_api_init', $plugin_admin_instance, 'register_instance_rest_fields' ); 
 
 		// Load  class and functions associated with Scene custom content type
 		$plugin_admin_scene = new Webcr_Scene( $this->get_plugin_name(), $this->get_version() );		
-		$this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'scene_admin_notice' ); // scene 
-		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_scene, 'scene_filter_dropdowns' ); //scene 11
-		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_filter_results' ); //scene
-		$this->loader->add_action( 'admin_menu', $plugin_admin_scene, 'create_scene_fields', 1 ); //scene
-		$this->loader->add_action( 'manage_scene_posts_columns', $plugin_admin_scene, 'change_scene_columns' ); //scene
-		$this->loader->add_action( 'manage_scene_posts_custom_column', $plugin_admin_scene, 'custom_scene_column', 10, 2 ); //scene
-		$this->loader->add_filter( 'manage_edit-scene_sortable_columns', $plugin_admin_scene, 'scene_location_column_sortable' ); //scene
-		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_orderby' ); //scene
-		$this->loader->add_action( 'init', $plugin_admin_scene, 'custom_content_type_scene' ); //scene
+		$this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'scene_admin_notice' ); 
+		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_scene, 'scene_filter_dropdowns' ); 
+		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_filter_results' ); 
+		$this->loader->add_action( 'admin_menu', $plugin_admin_scene, 'create_scene_fields', 1 ); 
+		$this->loader->add_action( 'manage_scene_posts_columns', $plugin_admin_scene, 'change_scene_columns' ); 
+		$this->loader->add_action( 'manage_scene_posts_custom_column', $plugin_admin_scene, 'custom_scene_column', 10, 2 ); 
+		$this->loader->add_filter( 'manage_edit-scene_sortable_columns', $plugin_admin_scene, 'scene_location_column_sortable' ); 
+		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_orderby' ); 
+		$this->loader->add_action( 'init', $plugin_admin_scene, 'custom_content_type_scene' ); 
 		$this->loader->add_filter( 'bulk_actions-edit-scene', $plugin_admin_instance, 'remove_bulk_actions' ); 
-		$this->loader->add_action( 'wp_ajax_scene_preview', $plugin_admin_scene, 'scene_preview' ); //scene
-		$this->loader->add_action( 'post_row_actions', $plugin_admin_scene, 'modify_scene_quick_edit_link', 10, 2 ); //scene
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin_scene, 'enqueue_scene_admin_columns_css'); //scene
-
+		$this->loader->add_action( 'wp_ajax_scene_preview', $plugin_admin_scene, 'scene_preview' ); 
+		$this->loader->add_action( 'post_row_actions', $plugin_admin_scene, 'modify_scene_quick_edit_link', 10, 2 ); 
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin_scene, 'enqueue_scene_admin_columns_css'); 
+		$this->loader->add_action( 'rest_api_init', $plugin_admin_scene, 'register_scene_rest_fields'); 
+		$this->loader->add_filter( 'rest_scene_query', $plugin_admin_scene, 'filter_scene_by_scene_location', 10, 2); 
+		$this->loader->add_filter( 'rewrite_rules_array', $plugin_admin_scene, 'add_scene_rewrite_rules'); 
+		$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		
-		$this->loader->add_action( 'admin_notices', $plugin_admin_modal, 'modal_admin_notice' ); // scene 
-		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); //scene 11
-		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); //scene
-		$this->loader->add_action( 'admin_menu', $plugin_admin_modal, 'create_modal_fields', 1 ); //admin_menu
-		$this->loader->add_action( 'manage_modal_posts_columns', $plugin_admin_modal, 'change_modal_columns' ); //scene
-		$this->loader->add_action( 'manage_modal_posts_custom_column', $plugin_admin_modal, 'custom_modal_column', 10, 2 ); //scene
-		$this->loader->add_action( 'init', $plugin_admin_modal, 'custom_content_type_modal' ); // scene 
+		$this->loader->add_action( 'admin_notices', $plugin_admin_modal, 'modal_admin_notice' ); 
+		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); 
+		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); 
+		$this->loader->add_action( 'admin_menu', $plugin_admin_modal, 'create_modal_fields', 1 ); 
+		$this->loader->add_action( 'manage_modal_posts_columns', $plugin_admin_modal, 'change_modal_columns' ); 
+		$this->loader->add_action( 'manage_modal_posts_custom_column', $plugin_admin_modal, 'custom_modal_column', 10, 2 ); 
+		$this->loader->add_action( 'init', $plugin_admin_modal, 'custom_content_type_modal' );
 		$this->loader->add_filter( 'bulk_actions-edit-modal', $plugin_admin_instance, 'remove_bulk_actions' ); 
+		$this->loader->add_action( 'rest_api_init', $plugin_admin_modal, 'register_modal_rest_fields' );
+		$this->loader->add_filter( 'rest_modal_query', $plugin_admin_modal, 'filter_modal_by_modal_scene', 10, 2); 
 
 		// Load  class and functions associated with Figure custom content type
 		$plugin_admin_figure = new Webcr_Figure( $this->get_plugin_name());		
-		$this->loader->add_action( 'init', $plugin_admin_figure, 'custom_content_type_figure' ); //scene
+		$this->loader->add_action( 'init', $plugin_admin_figure, 'custom_content_type_figure' ); 
 		$this->loader->add_action( 'admin_menu', $plugin_admin_figure, 'create_figure_fields', 1 );
-		$this->loader->add_action( 'manage_figure_posts_columns', $plugin_admin_figure, 'change_figure_columns' ); //scene
-		$this->loader->add_action( 'manage_figure_posts_custom_column', $plugin_admin_figure, 'custom_figure_column', 10, 2 ); //scene
-		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_figure, 'figure_filter_dropdowns' ); //scene 11
-		$this->loader->add_action( 'pre_get_posts', $plugin_admin_figure, 'figure_location_filter_results' ); //scene
-		$this->loader->add_action( 'admin_notices', $plugin_admin_figure, 'figure_admin_notice' ); // scene 
+		$this->loader->add_action( 'manage_figure_posts_columns', $plugin_admin_figure, 'change_figure_columns' ); 
+		$this->loader->add_action( 'manage_figure_posts_custom_column', $plugin_admin_figure, 'custom_figure_column', 10, 2 ); 
+		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_figure, 'figure_filter_dropdowns' ); 
+		$this->loader->add_action( 'pre_get_posts', $plugin_admin_figure, 'figure_location_filter_results' ); 
+		$this->loader->add_action( 'admin_notices', $plugin_admin_figure, 'figure_admin_notice' ); 
 		$this->loader->add_filter( 'bulk_actions-edit-figure', $plugin_admin_instance, 'remove_bulk_actions' ); 
+		$this->loader->add_action( 'rest_api_init', $plugin_admin_figure, 'register_figure_rest_fields' ); 
 
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'login_enqueue_scripts', $plugin_admin_logo, 'webcr_login_logo' ); //login page 5
-		$this->loader->add_action( 'login_headerurl', $plugin_admin_logo, 'webcr_logo_url' ); //login page
-		$this->loader->add_action( 'login_headertext', $plugin_admin_logo, 'webcr_logo_url_title' ); //login page
-		$this->loader->add_filter( 'login_title', $plugin_admin_logo, 'custom_login_title' ); //login page	
+		$this->loader->add_action( 'login_enqueue_scripts', $plugin_admin_logo, 'webcr_login_logo' ); 
+		$this->loader->add_action( 'login_headerurl', $plugin_admin_logo, 'webcr_logo_url' ); 
+		$this->loader->add_action( 'login_headertext', $plugin_admin_logo, 'webcr_logo_url_title' ); 
+		$this->loader->add_filter( 'login_title', $plugin_admin_logo, 'custom_login_title' ); 	
 
-		add_action('admin_enqueue_scripts', 'enqueue_bootstrap_admin', 5);
+		// Load class and functions connected with Export Figures Tool
+		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
 
-		function enqueue_bootstrap_admin() {
-			// Enqueue Bootstrap CSS
-			wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', array(), '5.3.0');
-			
-			// Enqueue Bootstrap JavaScript
-			wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
-		}
-
-
-		function register_instance_rest_fields(){
-
-			$instance_rest_fields = array('instance_short_title', 'instance_slug',
-				'instance_type', 'instance_status', 'instance_tile', 'instance_overview_scene');
-				$function_utilities = new Webcr_Utility();
-				$function_utilities -> register_custom_rest_fields("instance", $instance_rest_fields);
-		}
-
-		add_action('rest_api_init', 'register_instance_rest_fields');
-
-		function register_scene_rest_fields() {
-			$scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
-				'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_published');
-
-			for ($i = 1; $i < 7; $i++){
-				array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i, 'scene_section' . $i);
-			}
-			$function_utilities = new Webcr_Utility();
-			$function_utilities -> register_custom_rest_fields("scene", $scene_rest_fields);
-		}
-
-		add_action('rest_api_init', 'register_scene_rest_fields');
-
-		function register_modal_rest_fields() {
-			$modal_rest_fields = array('modal_scene','modal_tagline', 'icon_function','modal_info_entries', 
-				'modal_photo_entries', 'modal_tab_number');
-
-				for ($i = 1; $i < 7; $i++){
-					array_push($modal_rest_fields,'modal_info' . $i, 'modal_photo' . $i, 'modal_tab_title' . $i );
-				}
-				$function_utilities = new Webcr_Utility();
-				$function_utilities -> register_custom_rest_fields("modal", $modal_rest_fields);
-		}
-
-		add_action('rest_api_init', 'register_modal_rest_fields');
-
-		function register_figure_rest_fields() {
-			$figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_caption_short', 'figure_caption_long');
-			$function_utilities = new Webcr_Utility();
-			$function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
-		}
-
-		add_action('rest_api_init', 'register_figure_rest_fields');
-
-
-		// Add the filter to support filtering by "scene_location" in REST API queries
-		function filter_scene_by_scene_location($args, $request) {
-			if (isset($request['scene_location'])) {
-				$args['meta_query'][] = array(
-					'key' => 'scene_location',
-					'value' => $request['scene_location'],
-					'compare' => 'LIKE', // Change comparison method as needed
-				);
-			}
-			return $args;
-		}
-
-		add_filter('rest_scene_query', 'filter_scene_by_scene_location', 10, 2);
-
-		// Add the filter to support filtering by "scene_location" in REST API queries
-		function filter_modal_by_modal_scene($args, $request) {
-			if (isset($request['modal_scene'])) {
-				$args['meta_query'][] = array(
-					'key' => 'modal_scene',
-					'value' => $request['modal_scene'],
-					'compare' => 'LIKE', // Change comparison method as needed
-				);
-			}
-			// Filter by icon_function if set
-			if (isset($request['icon_function'])) {
-				$args['meta_query'][] = array(
-					'key'     => 'icon_function',
-					'value'   => $request['icon_function'],
-					'compare' => '='
-				);
-			}
-			$args['orderby'] = 'title';
-			$args['order'] = 'ASC';
-			return $args;
-		}
-
-		add_filter('rest_modal_query', 'filter_modal_by_modal_scene', 10, 2);
-
-// begin skanda code
-		//THIS IS FOR SCENES PERMALINKS
-		function add_scene_rewrite_rules($rules) {
-			$new_rules = array(
-				'([^/]+)/([^/]+)/?$' => 'index.php?post_type=scene&name=$matches[2]&instance_slug=$matches[1]' // Map URL structure to scene post type
-			);
-			return $new_rules + $rules;
-		}
-		add_filter('rewrite_rules_array', 'add_scene_rewrite_rules');
-
-		function remove_scene_slug($post_link, $post, $leavename) {
-			if ('scene' != $post->post_type || 'publish' != $post->post_status) {
-				return $post_link;
-			}
-		
-			$instance_id = get_post_meta($post->ID, 'scene_location', true);
-			$instance = get_post($instance_id);
-			$web_slug = get_post_meta($instance_id, 'instance_slug', true);
-		
-			if (!$instance || !$web_slug) {
-				return $post_link;
-			}
-		
-			return home_url('/' . $web_slug . '/' . $post->post_name . '/');
-		}
-		add_filter('post_type_link', 'remove_scene_slug', 10, 3);
-
-// end skanda code
-
-//Begin code for export tool
-
-// Hook to 'admin_menu' to add a new option under Tools
-add_action('admin_menu', 'add_export_figures_menu');
-
-// Function to add the "Export Figures" submenu under Tools
-function add_export_figures_menu() {
-    add_submenu_page(
-        'tools.php',              // Parent slug - adding it under 'Tools'
-        'Export Figures',         // Page title
-        'Export Figures',         // Menu title
-        'manage_options',         // Capability required to see the option
-        'export-figures',         // Slug (used in the URL)
-        'export_figures_page'     // Callback function to output the page content
-    );
-}
-
-// Callback function to display the content of the "Export Figures" page
-function export_figures_page() {
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e('Export Figures', 'export_figures'); ?></h1>
-        <p><?php esc_html_e('Click the button below to export figures.', 'export_figures'); ?></p>
-        
-        <!-- Form to trigger export -->
-        <form method="post" action="">
-            <input type="hidden" name="export_figures_action" value="export" />
-            <?php submit_button('Export Figures'); ?>
-        </form>
-    </div>
-    <?php
-    
-    // Handle export logic when the form is submitted
-    if (isset($_POST['export_figures_action']) && $_POST['export_figures_action'] === 'export') {
-        export_figures_data();
-    }
-}
-
-// Function to handle exporting the data (CSV example)
-function export_figures_data() {
-    // Example data to export (can be dynamic from your database)
-    $data = [
-        ['ID', 'Figure', 'Value'],
-        [1, 'Revenue', '10000'],
-        [2, 'Profit', '5000'],
-        [3, 'Expenses', '2000']
-    ];
-
-    // Set headers to force download
-    header('Content-Type: text/csv');
-    header('Content-Disposition: attachment; filename="export_figures.csv"');
-
-    // Open output stream to write CSV
-    $output = fopen('php://output', 'w');
-
-    // Loop through data and write to CSV
-    foreach ($data as $row) {
-        fputcsv($output, $row);
-    }
-
-    fclose($output);
-    exit;
-}
-
-//End code for export tool
-
-		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated
+		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated - ask skanda
 		register_activation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
 		register_deactivation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
 
 		function custom_scene_flush_rewrite_rules() {
 			custom_scene_rewrite_rules();
 			flush_rewrite_rules();
-}
+		}
 	}
 
 	/**
