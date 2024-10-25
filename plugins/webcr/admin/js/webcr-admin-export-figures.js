@@ -31,30 +31,59 @@
         link.click();
     }
 
-    function generateFigureOptions(){
+    async function generateFigureOptions() {
 
+        // Get the integer value of "Location" select element
         const instanceID = document.getElementById("location").value;
-
-        if (instanceID != "") {
+    
+        // If Location select element is not blank, execute code
+        if (instanceID !== "") {
+    
+            // Empty the target div tag of any existing content
+            const divCanvas = document.getElementById("optionCanvas");
+            divCanvas.innerHTML = "";
+    
+            // Create the target API call to call the WordPress database for information from the Scene custom content type
             const protocol = window.location.protocol;
             const host = window.location.host;
-            const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=" + instanceID;
-            fetch(restURL)
-            .then(response => response.json())
-            .then(data => {
-                // Variable to hold the JSON object
-                const jsonData = data;
-
-                // Now you can use the jsonData variable to access the JSON object
-                let sceneArray = [];
-                let newRow;
-                jsonData.forEach(element => {
-                    newRow = [element["id"], element["title"]["rendered"]];
-                    sceneArray.push(newRow)
-                });
-                console.log (sceneArray);
-            })
-            .catch(error => console.error('Error fetching data:', error));
+            const restSceneURL = `${protocol}//${host}/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=${instanceID}`;
+    
+            try {
+                // Fetch the scene data
+                const sceneResponse = await fetch(restSceneURL);
+                const jsonData = await sceneResponse.json();
+    
+                // Loop through every row of jsonData
+                for (const element of jsonData) {
+                    const sceneID = element["id"];
+                    const sceneTitle = element["title"]["rendered"];
+                    const sceneHeader = document.createElement("h6");
+                    sceneHeader.innerHTML = `Scene: ${sceneTitle}`;
+    
+                    // Create the modal API call
+                    const restModalURL = `${protocol}//${host}/wp-json/wp/v2/modal?_fields=id,title,modal_scene,icon_function&orderby=title&order=asc&modal_scene=${sceneID}&icon_function=modal`;
+    
+                    // Fetch the modal data
+                    const modalResponse = await fetch(restModalURL);
+                    const jsonModalData = await modalResponse.json();
+    
+                    // Loop through every row of jsonModalData
+                    for (const modalElement of jsonModalData) {
+                        const modalTitle = modalElement["title"]["rendered"];
+                        const modalHeader = document.createElement("p");
+                        modalHeader.innerHTML = `&nbsp;&nbsp;&nbsp;&nbsp;Modal: ${modalTitle}`;
+    
+                        // Append the Modal title to the target div tag
+                        sceneHeader.appendChild(modalHeader);
+                    }
+    
+                    // Append the Scene title to the target div tag
+                    divCanvas.appendChild(sceneHeader);
+                }
+    
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         }
     }
 

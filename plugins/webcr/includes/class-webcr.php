@@ -248,15 +248,17 @@ class Webcr {
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
 
+		// Do the following rewrite rules do anything? Commenting them out just to see
 		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated - ask skanda
-		register_activation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
-		register_deactivation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
+		//		register_activation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
+		//		register_deactivation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
 
-		function custom_scene_flush_rewrite_rules() {
-			custom_scene_rewrite_rules();
-			flush_rewrite_rules();
-		}
-	}
+		//		function custom_scene_flush_rewrite_rules() {
+		//			custom_scene_rewrite_rules();
+		//			flush_rewrite_rules();
+		//		}
+
+}
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality

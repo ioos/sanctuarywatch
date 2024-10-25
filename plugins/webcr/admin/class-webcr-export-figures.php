@@ -44,8 +44,9 @@ class Webcr_Export_Figures {
                 }
                 echo '</select>'; // Closing the <select> tag
             ?></p>
-            <p><button id="testbutton">Download Test RTF</button></p>
             <p><button id="chooseInstance">Choose Instance</button></p>
+            <div id="optionCanvas">Hello</div>
+            <p><button id="testbutton">Download Test RTF</button></p>
             <!-- Form to trigger export -->
             <form method="post" action="">
                 <input type="hidden" name="export_figures_action" value="export" />
