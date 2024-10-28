@@ -44,46 +44,10 @@ class Webcr_Export_Figures {
                 }
                 echo '</select>'; // Closing the <select> tag
             ?></p>
-            <p><button id="chooseInstance">Choose Instance</button></p>
-            <div id="optionCanvas">Hello</div>
-            <p><button id="testbutton">Download Test RTF</button></p>
-            <!-- Form to trigger export -->
-            <form method="post" action="">
-                <input type="hidden" name="export_figures_action" value="export" />
-                <?php submit_button('Export Figures'); ?>
-            </form>
-        </div>
+            <p><button class = "button button-primary" id="chooseInstance">Choose Instance</button></p>
+
+            <div id="optionCanvas"></div>
+
         <?php
-        
-        // Handle export logic when the form is submitted
-        if (isset($_POST['export_figures_action']) && $_POST['export_figures_action'] === 'export') {
-            $this -> export_figures_data();
-        }
-    }
-
-    // Function to handle exporting the data (CSV example)
-    function export_figures_data() {
-        // Example data to export (can be dynamic from your database)
-        $data = [
-            ['ID', 'Figure', 'Value'],
-            [1, 'Revenue', '10000'],
-            [2, 'Profit', '5000'],
-            [3, 'Expenses', '2000']
-        ];
-
-        // Set headers to force download
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="export_figures.csv"');
-
-        // Open output stream to write CSV
-        $output = fopen('php://output', 'w');
-
-        // Loop through data and write to CSV
-        foreach ($data as $row) {
-            fputcsv($output, $row);
-        }
-
-        fclose($output);
-        exit;
     }
 }
