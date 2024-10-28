@@ -513,6 +513,34 @@ class Webcr_Figure {
         $function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
     }
 
+    /**
+	 * Add a filter to support filtering by "figure_modal" and id in REST API queries.
+	 *
+	 * @since    1.0.0
+	 */
+    function filter_figure_by_figure_modal($args, $request) {
+        if (isset($request['figure_modal'])) {
+            $args['meta_query'][] = [
+                [
+                    'key'   => 'figure_modal',
+                    'value' => (int) $request['figure_modal'],
+                    'compare' => '='
+                ]
+            ];
+        }
+
+        if (isset($request['id'])) {
+            $args['meta_query'][] = [
+                [
+                    'key'   => 'id',
+                    'value' => (int) $request['id'],
+                    'compare' => '='
+                ]
+            ];
+        }
+        return $args;
+    }
+
     public function figure_admin_notice() {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
         // posts after it has been updated. The if statement is looking for three things: 1. Figure post type? 2. An individual post (as opposed to the scene

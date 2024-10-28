@@ -236,6 +236,7 @@ class Webcr {
 		$this->loader->add_action( 'admin_notices', $plugin_admin_figure, 'figure_admin_notice' ); 
 		$this->loader->add_filter( 'bulk_actions-edit-figure', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_figure, 'register_figure_rest_fields' ); 
+		$this->loader->add_filter( 'rest_figure_query', $plugin_admin_figure, 'filter_figure_by_figure_modal', 10, 2); 
 
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );
@@ -248,15 +249,17 @@ class Webcr {
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
 
+		// Do the following rewrite rules do anything? Commenting them out just to see
 		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated - ask skanda
-		register_activation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
-		register_deactivation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
+		//		register_activation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
+		//		register_deactivation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
 
-		function custom_scene_flush_rewrite_rules() {
-			custom_scene_rewrite_rules();
-			flush_rewrite_rules();
-		}
-	}
+		//		function custom_scene_flush_rewrite_rules() {
+		//			custom_scene_rewrite_rules();
+		//			flush_rewrite_rules();
+		//		}
+
+}
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality
