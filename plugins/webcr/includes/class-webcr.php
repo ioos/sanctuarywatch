@@ -236,6 +236,7 @@ class Webcr {
 		$this->loader->add_action( 'admin_notices', $plugin_admin_figure, 'figure_admin_notice' ); 
 		$this->loader->add_filter( 'bulk_actions-edit-figure', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_figure, 'register_figure_rest_fields' ); 
+		$this->loader->add_filter( 'rest_figure_query', $plugin_admin_figure, 'filter_figure_by_figure_modal', 10, 2); 
 
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );

@@ -17,9 +17,9 @@ class Webcr_About {
 	 */
     function custom_content_type_about() {
         $labels = array(
-            'name'                  => _x( 'About Pages', 'Post type general name', 'textdomain' ),
+            'name'                  => _x( 'About Page', 'Post type general name', 'textdomain' ),
             'singular_name'         => _x( 'About Page', 'Post type singular name', 'textdomain' ),
-            'menu_name'             => _x( 'About Pages', 'Admin Menu text', 'textdomain' ),
+            'menu_name'             => _x( 'About Page', 'Admin Menu text', 'textdomain' ),
             'name_admin_bar'        => _x( 'About', 'Add New on Toolbar', 'textdomain' ),
             'add_new'               => __( 'Add New About Page', 'textdomain' ),
             'add_new_item'          => __( 'Add New About Page', 'textdomain' ),

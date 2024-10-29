@@ -53,7 +53,8 @@
         const host = window.location.host;
         const figureScene = document.getElementsByName("figure_scene")[0].value;
 
-        //FIX: the REST API for modal is retrieving all records even when icon_function and modal_scene are set for some reason
+        //FIX: the REST API for modal is retrieving all records even when icon_function and modal_scene are set for some reason 
+        // CHECK - THIS IS FIXED I THINK?
         const restModal = protocol + "//" + host  + "/wp-json/wp/v2/modal?_fields=id,title,modal_scene,icon_function&orderby=title&order=asc";
         fetch(restModal)
         .then(response => response.json())

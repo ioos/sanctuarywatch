@@ -142,6 +142,9 @@ class Webcr_Admin {
 		$current_screen = get_current_screen();
 		if ($current_screen-> base == "tools_page_export-figures"){
 			wp_enqueue_script( "webcr-admin-figure_export", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-export-figures.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			// Enqueue Bootstrap JavaScript
+			wp_enqueue_script('PptxGenJS', 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js', array('jquery'), '3.12.0', true);
+
 		}
 	}
 
@@ -302,7 +305,7 @@ class Webcr_Admin {
 		//	remove_menu_page('themes.php');                 // Appearance
 		//	remove_menu_page('plugins.php');                // Plugins
 		//	remove_menu_page('users.php');                  // Users
-			remove_menu_page('tools.php');                  // Tools
+		//	remove_menu_page('tools.php');                  // Tools
 		//	remove_menu_page('options-general.php');        // Settings
 
 		}

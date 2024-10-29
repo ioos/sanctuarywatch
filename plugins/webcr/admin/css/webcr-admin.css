@@ -181,3 +181,32 @@
 .captionOptions{
   font-size: 15px;
 }
+
+/* Formatting for figure export tool */
+.instanceButton {
+  background: #2271b1;
+  border-color: #2271b1;
+  color: #fff;
+  font-size: 13px;
+  padding: 2px 10px;
+}
+
+.sceneHeader {
+  font-weight: bold;
+  padding-top: 15px;
+}
+
+.modalHeader {
+  font-weight: normal;
+  padding-top: 10px;
+  margin-left: 10px;
+}
+
+.figureCheckBox {
+  margin-left: 10px;
+  margin-top: 5px;
+}
+
+.radioFormat {
+  margin-right: 10px;
+}
