@@ -5,7 +5,8 @@ console.log(post_id);
 // screen.orientation.lock('landscape');
 console.log("new wp")
 
-// console.log(child_ids);
+console.log(child_ids);
+
 // access echoed JSON here for use. 
 //get all links from single-scene.php
 
@@ -178,6 +179,13 @@ function process_child_obj(){
 process_child_obj();
 console.log("MODIFIED");
 console.log(child_obj);
+child_ids_helper = {};
+for (let child in child_obj) {
+    const childData = child_obj[child];
+    // console.log(childData); 
+    child_ids_helper[childData.title] = child;
+}
+console.log(child_ids_helper);
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
 
 /**
@@ -319,8 +327,8 @@ async function make_title() {
         // col2.classList.add("col-md-10");
 
         if (!is_mobile()) {
-            col1.classList.add("col-md-4");
-            col2.classList.add("col-md-8");
+            col1.classList.add("col-md-2");
+            col2.classList.add("col-md-10");
             // col2.style.marginLeft =  `-12%`;
             // col1.style.marginLeft = '-12%';
             // document.querySelector("#title-container").style.marginLeft = '0%';
@@ -830,7 +838,7 @@ function highlight_icons(){
             // }
             // console.log(thisInstance);
             // elem.style.stroke = sectColors[sectionObj[key]];
-            if (sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
                 // console.log(scene_sections[sectionObj[key]]);
                 elem.style.stroke = scene_sections[sectionObj[key]];
             } else{
@@ -867,7 +875,7 @@ function flicker_highlight_icons() {
             // elem.style.stroke = sectColors[sectionObj[key]];
             // if (thisInstance.instance_colored_sections === "yes"){ //needs to be changed
                 // elem.style.stroke =  scene_sections[sectionObj[key]];//sectColors[sectionObj[key]];
-            if (sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
                     // console.log(scene_sections[sectionObj[key]]);
                     elem.style.stroke = scene_sections[sectionObj[key]];
             } else{
@@ -1051,7 +1059,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  */
 function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const containerDiv = document.createElement('div');
-    containerDiv.style.background = 'LightGrey';
+    containerDiv.style.background = '#e3e3e354';
     containerDiv.style.width = '100%';
     containerDiv.style.display = 'table';
     containerDiv.style.fontSize = '120%';
@@ -1059,6 +1067,10 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     containerDiv.style.marginBottom = '10px';
     containerDiv.style.margin = '0 auto'; 
     containerDiv.style.borderRadius = '6px 6px 6px 6px'; 
+    containerDiv.style.borderWidth = '1px'; 
+    containerDiv.style.borderColor = 'lightgrey'; 
+    
+
 
 
     // Create the table row div
@@ -1079,6 +1091,8 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         let icon1 = `<i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon" style=""></i> `;
         firstLink.innerHTML = icon1 + firstLink.innerHTML;
         firstLink.style.textDecoration = 'none';
+        firstLink.style.color = '#03386c';
+
         leftCellDiv.appendChild(firstLink);
     }
     // firstLink.appendChild(document.createTextNode(info_obj['scienceText']));
@@ -1097,6 +1111,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         const secondLink = document.createElement('a');
         secondLink.href = info_obj['dataLink'];
         secondLink.target = '_blank';
+        secondLink.style.color = '#03386c';
         let icon2 = `<i class="fa fa-database" role="presentation" aria-label="database icon"></i>`;
         secondLink.appendChild(document.createTextNode(info_obj['dataText']));
         // secondLink.innerHTML = secondLink.innerHTML + `  ` + icon2;
@@ -1124,7 +1139,12 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     if (info_obj["interactive"] != "Interactive" ){
         img = document.createElement('img');
         img.src = info_obj['imageLink'];
-        img.alt = '';
+        if (info_obj['externalAlt']){
+            img.alt = info_obj['externalAlt'];
+        } else {
+            img.alt = '';
+        }
+        
 
     }  else {  
         img = document.createElement('div'); // Create a div to hold the plot
@@ -1150,6 +1170,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const caption = document.createElement('p');
     caption.classList.add('caption');
     caption.innerHTML = info_obj['shortCaption'];
+    caption.style.marginTop = '10px';
 
     figureDiv.appendChild(caption);
     tabContentElement.appendChild(figureDiv);
@@ -1158,14 +1179,20 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const details = document.createElement('details');
     const summary = document.createElement('summary');
     summary.textContent = 'Click for Details';
-    details.appendChild(summary);
+    // details.appendChild(summary);
     // details.appendChild(document.createTextNode(info_obj['longCaption']));
     let longCaption = document.createElement("p");
     longCaption.innerHTML = info_obj['longCaption'];
-    details.appendChild(longCaption);
+    if (info_obj['longCaption'] != ''){
+        details.appendChild(summary);
+        details.appendChild(longCaption);
+        tabContentElement.appendChild(details);
+
+    }
+    
 
     // Add the details element to the tab content element
-    tabContentElement.appendChild(details);
+    // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
 
     console.log("tab content container");
@@ -1247,8 +1274,10 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     figure_data = all_figure_data[idx];
                     console.log(all_figure_data[idx]);
                     let img = '';
+                    let external_alt = '';
                     if (figure_data['figure_path']==='External'){
                         img = figure_data['figure_external_url'];
+                        external_alt = figure_data['figure_external_alt'];
                     } else {
                         img = figure_data['figure_image'];
                     } // add smth here for external
@@ -1258,6 +1287,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
                     "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
                     "imageLink" : img,
+                    "externalAlt": external_alt,
                     "shortCaption" : figure_data["figure_caption_short"],
                     "longCaption": figure_data["figure_caption_long"],
                     "interactive": figure_data["figure_path"]
@@ -1445,7 +1475,10 @@ function render_modal(key){
             //add stuff for formatting here...
             // console.log(modal_data);
             let modal_tagline = modal_data["modal_tagline"];
-            tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
+            if (!is_mobile()){
+                tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
+            }
+            // tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
 
             //generate accordion
             // Select the container where the accordion will be appended
@@ -1463,7 +1496,7 @@ function render_modal(key){
 
                 // tagline_container.classList.add("col-6");
                 // tagline_container
-                tagline_container.remove();
+                // tagline_container.remove();
                 // accordion_container.classList.add("col-6");
                 // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
                 // tagline_container.setAttribute("style", "min-width: 300px");
@@ -1605,73 +1638,91 @@ function render_modal(key){
  * 
  * Usage: called within load_svg
  */
-function full_screen_button(svgId){
-    // if (thisInstance.instance_full_screen_button != "yes"){ //this should be done on the SCENE side of things
-    if (scene_full_screen_button != "yes"){ //this should be done on the SCENE side of things
-
+function full_screen_button(svgId) {
+    if (scene_full_screen_button != "yes") {
         return;
     }
 
-    if ((document.fullscreenEnabled || document.webkitFullscreenEnabled)){ 
-        let toc_container = document.querySelector("#toc-container");
-        let button = document.createElement("button");
-        
-        // Button attributes
-        // button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1");
-        button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1; margin-left: 10px; max-width: 98%; background: #03386c; border-radius: 0px;");
+    if ((document.fullscreenEnabled || document.webkitFullscreenEnabled)) {
+        const svg = document.querySelector('#svg1 svg');
+        const viewBox = svg.viewBox.baseVal;
 
-        button.setAttribute("id", "top-button");
-        button.setAttribute('class', 'btn btn-info btn-block');
-        button.innerHTML = "Full Screen";
-        
-        // let row = document.createElement("div");
-        let row = document.createElement("div");
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("width", "80");
+        rect.setAttribute("height", "20");
+        rect.setAttribute("fill", "#03386c");
+        rect.setAttribute("rx", "5");
 
-        row.classList.add("row");
-        row.setAttribute("id", "buttonRow");
-        // let col = document.createElement("div");
-        // col.classList.add("col");
-        // col.appendChild(button);
-        row.appendChild(button);
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.textContent = "Full Screen";
+        text.setAttribute("fill", "white");
+        text.setAttribute("font-size", "12");
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("dominant-baseline", "middle");
+        text.setAttribute("x", "40");
+        text.setAttribute("y", "10");
 
-        toc_container.prepend(row);
+        g.appendChild(rect);
+        g.appendChild(text);
+        g.setAttribute("transform", `translate(${viewBox.width - 87}, 10)`);
+        // g.style.borderRadius = '0 0 0 0'
+
+        svg.appendChild(g);
         
-        // Fullscreen change event for SVG
         var webkitElem = document.getElementById(svgId);
         webkitElem.addEventListener('webkitfullscreenchange', (event) => {
-          if (document.webkitFullscreenElement) {
-            webkitElem.style.width = (window.innerWidth) + 'px';
-            webkitElem.style.height = (window.innerHeight) + 'px';
-          } else {
-            webkitElem.style.width = width;
-            webkitElem.style.height = height;
-          }
+            if (document.webkitFullscreenElement) {
+                webkitElem.style.width = (window.innerWidth) + 'px';
+                webkitElem.style.height = (window.innerHeight) + 'px';
+            } else {
+                webkitElem.style.width = width;
+                webkitElem.style.height = height;
+            }
         });
         
-        
-        // Open Fullscreen Function
-        function openFullScreen() {
-          var elem = document.getElementById(svgId);
-          if (elem.requestFullscreen) {
-            elem.requestFullscreen();
-          } else if (elem.webkitRequestFullscreen) { /* Safari */
-            elem.webkitRequestFullscreen();
-          }
-          let modal = document.getElementById("myModal");
-            elem.prepend(modal);
+        function toggleFullScreen() {
+            var elem = document.getElementById(svgId);
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                }
+                text.textContent = "Exit";
+
+                let modal = document.getElementById("myModal");
+                elem.prepend(modal);
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+                text.textContent = "Full Screen";
+            }
         }
 
-        
-
-        
-        // Button click event
-        button.addEventListener('click', function() {
-          openFullScreen();
-          // add_modal(); // Ensure add_modal() is defined and functional
+        g.addEventListener('click', toggleFullScreen);
+        document.addEventListener('fullscreenchange', function() {
+            if (!document.fullscreenElement) {
+                text.textContent = "Full Screen";
+            }
         });
-        
-    }
 
+        document.addEventListener('webkitfullscreenchange', function() {
+            if (!document.webkitFullscreenElement) {
+                text.textContent = "Full Screen";
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && (document.fullscreenElement || document.webkitFullscreenElement)) {
+                text.textContent = "Full Screen";
+            }
+        });
+
+    }
 }
 
 /**
@@ -1690,18 +1741,9 @@ function toggle_text() {
         return;
     }
 
-    let toc_container = document.querySelector("#toc-container");
-
-    let button = document.createElement("button");
-    button.setAttribute("class", "btn btn-info btn-block"); // w-100 makes the button full width
-    button.setAttribute("id", "toggleButton");
-    // button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1;");
-    button.setAttribute("style", "margin-bottom: 5px; font-size: large; z-index: 1; margin-left: 10px; max-width: 98%; background: #03386c; border-radius: 0px;");
-
-
     let initialState = scene_text_toggle === "toggle_on"; //this should be done on the SCENE side of things
     let svgText = document.querySelector("#text");
-    button.innerHTML = initialState ? "Hide Image Text" : "Show Image Text";
+    // button.innerHTML = initialState ? "Hide Image Text" : "Show Image Text";
 
     if (initialState) {
         svgText.setAttribute("display", "");
@@ -1709,24 +1751,62 @@ function toggle_text() {
         svgText.setAttribute("display", "None");
     }
 
-    let row = document.createElement("div");
-    row.classList.add("row");
-    row.setAttribute("id", "buttonRow");
+    const svg = document.querySelector('#svg1 svg');
+    // Get the SVG's viewBox
+    const viewBox = svg.viewBox.baseVal;
+    // Create a group element to hold our button
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    // Create a rect element for the button background
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("width", "60");
+    rect.setAttribute("height", "20");
+    rect.setAttribute("fill", "#007bff");
+    rect.setAttribute("rx", "5");
+    // Create a text element for the button label
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.textContent = "Click";
+    text.setAttribute("fill", "white");
+    text.setAttribute("font-size", "12");
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("dominant-baseline", "middle");
+    text.setAttribute("x", "30");
+    text.setAttribute("y", "10");
 
-    // let col = document.createElement("div");
-    // col.classList.add("col");
-    // col.appendChild(button);
+    g.appendChild(rect);
+    g.appendChild(text);
+    g.setAttribute("transform", `translate(${viewBox.width - 70}, 10)`);
+    svg.appendChild(g);
 
-    row.appendChild(button);
-    toc_container.append(row);
+    const toggleGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-    button.addEventListener('click', function() {
+    const toggleRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    toggleRect.setAttribute("width", "80");
+    toggleRect.setAttribute("height", "20");
+    toggleRect.setAttribute("fill", "#03386c");
+    toggleRect.setAttribute("rx", "5");
+
+    const toggleText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    toggleText.setAttribute("fill", "white");
+    toggleText.setAttribute("font-size", "12");
+    toggleText.setAttribute("text-anchor", "middle");
+    toggleText.setAttribute("dominant-baseline", "middle");
+    toggleText.setAttribute("x", "40");
+    toggleText.setAttribute("y", "10");
+    toggleText.textContent = initialState ? "Hide Text" : "Show Text";
+
+    toggleGroup.appendChild(toggleRect);
+    toggleGroup.appendChild(toggleText);
+
+    toggleGroup.setAttribute("transform", `translate(${viewBox.width - 87}, 35)`);
+    svg.appendChild(toggleGroup);
+
+    toggleGroup.addEventListener('click', function() {
         if (svgText.getAttribute("display") === "none") {
             svgText.setAttribute("display", "");
-            button.innerHTML = "Hide Image Text";
+            toggleText.textContent = "Hide Text";
         } else {
             svgText.setAttribute("display", "none");
-            button.innerHTML = "Show Image Text";
+            toggleText.textContent = "Show Text";
         }
     });
 }
@@ -1807,7 +1887,10 @@ function sectioned_list(){
             heading.innerHTML = sections[i];
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
-            heading.style.backgroundColor = hexToRgba(color, 0.3);
+            if (scene_same_hover_color_sections != "yes"){
+                heading.style.backgroundColor = hexToRgba(color, 0.3);
+            }
+            // heading.style.backgroundColor = hexToRgba(color, 0.3);
             heading.style.padding = '0 5px';
         }
         // heading.setAttribute("style", `color: ${sectColors[sections[i]]}`);
@@ -1874,11 +1957,6 @@ function toc_sections() {
     // let colorIdx = 0;
 
     for (let i = 0; i < sections.length; i++) {
-        // if (sections[i] == "None"){
-        //     continue;
-        // }
-        // sectColors[sections[i]] = colors[colorIdx]; 
-        // colorIdx = (colorIdx + 1) % colors.length;
 
 
         let sect = document.createElement("div");
@@ -1890,13 +1968,7 @@ function toc_sections() {
 
         let button = document.createElement("button");
         let color = scene_sections[sections[i]];
-        // if (sections[i] != "None"){
-        //     // heading.innerHTML = sections[i];
-        //     // heading.style.color = 'black';
-        //     // heading.style.display = 'inline-block';
-        //     heading.style.background = hexToRgba(color, 0.3);
-        //     // heading.style.padding = '0 5px';
-        // }
+      
 
         // button.classList.add("accordion-button");
         button.classList.add("accordion-button", "collapsed");
@@ -1906,14 +1978,18 @@ function toc_sections() {
         button.setAttribute("aria-expanded", "false");
         button.setAttribute("aria-controls", `toccollapse${i}`);
         if (sections[i]!="None"){
-            // button.innerHTML = sections[i];
-            // button.style.backgroundColor = hexToRgba(color, 0.3);
-            let span = document.createElement('span');
-            span.style.color = 'black';
-            span.innerHTML = sections[i];
-            span.style.backgroundColor = hexToRgba(color, 0.2); // Only highlight the text
-            button.innerHTML = ''; // Clear the button content
-            button.appendChild(span);
+            button.innerHTML = sections[i];
+            if (scene_same_hover_color_sections != "yes"){
+                // heading.style.backgroundColor = hexToRgba(color, 0.3);
+                button.style.backgroundColor = hexToRgba(color, 0.2);
+            }
+            // button.style.backgroundColor = hexToRgba(color, 0.2);
+            // let span = document.createElement('span');
+            // span.style.color = 'black';
+            // span.innerHTML = sections[i];
+            // span.style.backgroundColor = hexToRgba(color, 0.2); // Only highlight the text
+            // button.innerHTML = ''; // Clear the button content
+            // button.appendChild(span);
 
         } else {
             continue;
@@ -1924,6 +2000,15 @@ function toc_sections() {
         let arrowSpan = document.createElement("span");
         arrowSpan.classList.add("arrow");
         button.appendChild(arrowSpan);
+     
+        if (sections[i].length > 20){
+            console.log('section name: ');
+            console.log(sections[i]);
+            arrowSpan.style.marginRight = '15%';
+        } else {
+            arrowSpan.style.marginRight = '63%';
+        }
+        
 
         heading.appendChild(button);
         sect.appendChild(heading);
@@ -2018,17 +2103,25 @@ function table_of_contents(){
                 // modal.style.display = "none";
                 let accordion_container = document.getElementById('accordion-container');
                 accordion_container.innerHTML = '';
+                if (!is_mobile()){
+                    let tagline_container = document.getElementById('tagline-container');
+                    tagline_container.innerHTML = '';
 
-                let tagline_container = document.getElementById('tagline-container');
+
+                }
+                // let tagline_container = document.getElementById('tagline-container');
                 document.getElementById("myTabContent").innerHTML = '';
-                tagline_container.innerHTML = '';
+                // tagline_container.innerHTML = '';
                 history.pushState("", document.title, window.location.pathname + window.location.search);
         });
         window.onclick = function(event) {
             if (event.target === modal) { // Check if the click is outside the modal content
                 // modal.style.display = "none";
                 document.getElementById('accordion-container').innerHTML = '';
-                document.getElementById('tagline-container').innerHTML = '';
+                if (!is_mobile()){
+                    document.getElementById('tagline-container').innerHTML = '';
+                }
+                // document.getElementById('tagline-container').innerHTML = '';
                 document.getElementById("myTabContent").innerHTML = '';
                 history.pushState("", document.title, window.location.pathname + window.location.search);
             }
@@ -2054,7 +2147,7 @@ function table_of_contents(){
             // console.log(sectionObj);
             // console.log(sectColors);
             // if (thisInstance.instance_colored_sections === "yes"){ //this should be done on the SCENE side of things, will havet o bring this back
-            if (sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
                 // console.log(scene_sections[sectionObj[key]]);
                 svg_elem.style.stroke = scene_sections[sectionObj[key]];
             } else{
@@ -2174,7 +2267,7 @@ function list_toc(){
             // } else{
             //     svg_elem.style.stroke = colors[0];
             // }
-            if (sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
                 // console.log(scene_sections[sectionObj[key]]);
                 svg_elem.style.stroke = scene_sections[sectionObj[key]];
             } else{
@@ -2252,8 +2345,8 @@ function add_modal(){
                     let accordion_container = document.getElementById('accordion-container');
                     accordion_container.innerHTML = '';
 
-                    let tagline_container = document.getElementById('tagline-container');
-                    tagline_container.innerHTML = '';
+                    // let tagline_container = document.getElementById('tagline-container');
+                    // tagline_container.innerHTML = '';
 
 
                     let myTab = document.getElementById('myTab');
@@ -2357,8 +2450,15 @@ async function handleHashNavigation() {
         tabId = tabId.replace(/\//g, '-');
         console.log(window.location.pathname + window.location.search);
         history.pushState("", document.title, window.location.pathname + window.location.search);
+        let modName;
+        if (is_mobile()){
+            let modModal =  modalName.replace(/_/g, ' ');
+            modName = child_ids_helper[modModal] + '-container';
+        } else{
+            modName = modalName;
+        }
         // window.location.href = window.location.href;
-        let modalButton = await waitForElement(`#${modalName}`);
+        let modalButton = await waitForElement(`#${modName}`);
         console.log(modalButton);
 
         modalButton.click();

@@ -32,6 +32,7 @@ $args = array(
 $instances_query = new WP_Query($args);
 
 $instance_slugs = array(); 
+$instance_legacy_urls = [];
 
 if ($instances_query->have_posts()) {
     while ($instances_query->have_posts()) {
@@ -40,9 +41,14 @@ if ($instances_query->have_posts()) {
         $instance_id = get_the_ID();
         $instance_slug = get_post_meta($instance_id, 'instance_slug', true); 
         $instance_overview_scene = get_post_meta($instance_id, 'instance_overview_scene', true); 
+        $instance_legacy_content_url = get_post_meta($instance_id, 'instance_legacy_content_url', true);
+
 
         if ($instance_slug) {
             $instance_slugs[] = [$instance_slug, $instance_overview_scene]; 
+        }
+        if ($instance_legacy_content_url){
+            $instance_legacy_urls[$instance_id] = $instance_legacy_content_url;
         }
     }
     wp_reset_postdata();
@@ -50,30 +56,19 @@ if ($instances_query->have_posts()) {
     // echo 'No instances found.';
 }
 
-?>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let currentUrl = window.location.href;
-        let instanceSlugs = <?php echo json_encode($instance_slugs); ?>; 
-    
-            instanceSlugs.forEach(function(slugScenePair) {
-            let slug = slugScenePair[0];
-            let overviewScene = slugScenePair[1];
-            
-            let slugPattern = new RegExp(slug + '\/?$'); 
-            if (currentUrl.match(slugPattern)) {
-                const protocol = window.location.protocol;
-                const host = window.location.host;
-                const postType = 'scene'; 
-                const postId = overviewScene; 
-                const url = `${protocol}//${host}/?post_type=${postType}&p=${postId}`;
-                window.location.href = url;
-            }
-        });
-    });
+
+?>
+<script> 
+
+let legacy_urls = <?php echo json_encode($instance_legacy_urls); ?>;
+console.log("legacy urls here");
+console.log(legacy_urls);
+
 </script>
 
+
+<body>
 
 <div class="container-fluid">
 <!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->
@@ -115,6 +110,7 @@ if ($instances_query->have_posts()) {
         //   $child_ids = get_modal_array($svg_url);
         ?>
 </div>
+</body>
 <script>
     let post_id =  <?php echo $post_id; ?>;
     // let is_logged_in = <?php echo is_user_logged_in(); ?>;

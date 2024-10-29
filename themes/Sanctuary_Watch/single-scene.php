@@ -174,7 +174,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 <div id="mobile-view-image"></div>
 <div class="container-fluid" id="scene-fluid">
   <div class="row" id="scene-row">
-    <div class="col-md-9" style="margin-left: -4%;">
+    <div class="col-md-10" style="margin-left: -4%;">
       <div id="svg1" class="responsive-image-container">
         <?php
           $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
@@ -194,6 +194,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
           $scene_text_toggle = get_post_meta($post_id, 'scene_text_toggle', true); 
           $scene_toc_style = get_post_meta($post_id, 'scene_toc_style', true); 
           $scene_full_screen_button = get_post_meta($post_id, 'scene_full_screen_button', true); 
+          $scene_same_hover_color_sections	= get_post_meta($post_id, 'scene_same_hover_color_sections', true); 
 
           $child_ids = get_modal_array($svg_url);
         
@@ -201,7 +202,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
       </div>
     </div>
 
-    <div class="col-md-3" id="toc-container" style="margin-left: -6%">
+    <div class="col-md-2" id="toc-container" style="margin-left: -6%">
     <!-- <button style="margin-bottom: 5px; font-size: large;" class="btn btn-info fa fa-arrows-alt btn-block" id="top-button"> Full Screen</button> -->
 
       <!-- temporary, make the above a dropdown -->
@@ -218,6 +219,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     let svg_url =  <?php echo json_encode($scene_url); ?>;
     let num_sections =  <?php echo json_encode($num_sections); ?>;
     let scene_sections =  <?php echo json_encode($scene_sections); ?>;
+    let scene_same_hover_color_sections = <?php echo json_encode($scene_same_hover_color_sections); ?>;
     console.log("the SECTIONS")
     console.log(scene_sections);
 
@@ -230,6 +232,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     console.log(scene_text_toggle);
     console.log(scene_toc_style);
     console.log(scene_full_screen_button);
+    console.log(scene_same_hover_color_sections);
     
     
   </script>
@@ -243,5 +246,5 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
   <!-- </body> -->
 
 <?php
-// get_footer();
+get_footer();
 ?>

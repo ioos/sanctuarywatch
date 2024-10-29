@@ -1,61 +1,65 @@
-<?php 
-/**
- * Footer Template
- *
- * This template is designed to define the footer section of a WordPress theme. It outlines a three-column layout
- * filled with various interactive and informative elements, including links to useful resources, social media platforms,
- * and contact information of the organization. The footer serves as a critical component of site navigation and 
- * visitor engagement, providing key links, social proof, and contact details.
- */
+<?php
+defined('ABSPATH') || exit;
+$instance_num =  get_post_meta(get_the_ID(), 'scene_location', true);
+$instance_contact_person = get_post_meta($instance_num, 'instance_contact_person', true);
+$instance_more_info = get_post_meta($instance_num, 'instance_more_info', true);
+$instance_footer_about = get_post_meta($instance_num, 'instance_footer_about', true);
 
-defined( 'ABSPATH' ) || exit; ?>
+?>
+<script> 
+let instance_contact_person =  <?php echo json_encode($instance_contact_person); ?>;
+let instance_more_info =  <?php echo json_encode($instance_more_info); ?>;
+let instance_num = <?php echo json_encode($instance_num); ?>;
+console.log("ahahahahahahhahahaah");
+console.log(instance_num);
+console.log(instance_contact_person);
+console.log(instance_more_info);
+</script>
 
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-column">
-            <h5>Useful Links</h5>
-            <div>
-                <a href="https://www.ioos.noaa.gov/" target="_blank">ioos.noaa.gov</a>
+<footer class="site-footer" style="background-color: #03386c; color: white; padding: 32px 12px; font-size: 13px;">
+    <div class="container" style="margin: 0 auto; max-width: 1200px; padding: 0 15px;">
+        <div class="row" style="display: flex; flex-wrap: wrap; margin: 0 -15px;">
+            <div class="col-md-4" style="flex: 0 0 33.333%; padding: 0 15px;">
+                <h5 style="color: white; font-weight: bold; margin-bottom: 12px;">About the Sanctuary</h5>
+                <a href="#" id="about-sanctuary-btn" style="
+                    color: white; 
+                    padding: 6px 0;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    margin-bottom: 12px;
+                    font-size: 17px;
+                    display: inline-block;
+                ">
+                    Channel Islands National Marine Sanctuary
+                </a>
             </div>
-        </div>
-
-        <div class="footer-column">
-            <h5>Our Social Ocean</h5>
-            <a href="https://www.facebook.com/usioosgov" target="_blank">
-                <div class="ggt-icon-border animate-icon"></div>
-                <div class="txt">
-                    <p> facebook.com/</p>
-                    <p> usioosgov </p>
-                </div>
-            </a>
-            <a href="https://www.twitter.com/usioosgov" target="_blank">
-                <div class="ggt-icon-border animate-icon"></div>
-                <div class="txt">
-                    <p> twitter.com/</p>
-                    <p> usioosgov</p>
-                </div>
-            </a>
-        </div>
-
-        <div class="footer-column">
-            <div itemscope itemtype="https://schema.org/GovernmentOrganization">
-                <p itemprop="name">U.S. Integrated Ocean Observing System Program</p>
-                <p itemprop="address">
-                    1315 East-West Highway
-                    <br>
-                    SSMC3, 2nd Floor
-                    <br>
-                    Silver Spring, MD 20910
-                </p>
-                <p itemprop="telephone">
-                    <a href="tel:240-533-9444"> (240) 533-9444</a>
-                </p>
+            
+            <div class="col-md-4" style="flex: 0 0 33.333%; padding: 0 15px;">
+                <h5 style="color: white; font-weight: bold; margin-bottom: 12px;">Contact</h5>
+                <ul style="list-style: none; padding: 0; font-size: 17px;">
+                    <li class="contact-person">
+                        <a href="#" style="color: lightgrey; text-decoration: none;">
+                            <strong><?php echo esc_html($instance_contact_person['instance_contact_name']); ?>, <?php echo esc_html($instance_contact_person['instance_contact_title']); ?></strong>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:<?php echo esc_attr($instance_contact_person['instance_contact_email']); ?>" 
+                           style="color: lightgrey; text-decoration: underline;">
+                            <?php echo esc_html($instance_contact_person['instance_contact_email']); ?>
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <a class="btn" href="mailto:webmaster.ioos.us@noaa.gov" itemprop="email">
-                <div>
-                    Contact Us
-                </div>
-            </a>
+
+            <div class="col-md-4" style="flex: 0 0 33.333%; padding: 0 15px;">
+                <h5 style="color: white; font-weight: bold; margin-bottom: 12px;">Reports</h5>
+                <ul style="list-style: none; padding: 0; font-size: 17px;">
+                    <li><a href="#" style="color: lightgrey; text-decoration: none;">Resources</a></li>
+                    <li><a href="#" style="color: lightgrey; text-decoration: none;">News & Updates</a></li>
+                    <li><a href="#" style="color: lightgrey; text-decoration: none;">Visit Us</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </footer>
