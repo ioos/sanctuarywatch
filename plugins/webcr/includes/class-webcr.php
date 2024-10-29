@@ -209,8 +209,8 @@ class Webcr {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin_scene, 'enqueue_scene_admin_columns_css'); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_scene, 'register_scene_rest_fields'); 
 		$this->loader->add_filter( 'rest_scene_query', $plugin_admin_scene, 'filter_scene_by_scene_location', 10, 2); 
-		$this->loader->add_filter( 'rewrite_rules_array', $plugin_admin_scene, 'add_scene_rewrite_rules'); 
-		$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
+	//	$this->loader->add_filter( 'rewrite_rules_array', $plugin_admin_scene, 'add_scene_rewrite_rules'); 
+//		$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		
@@ -247,6 +247,48 @@ class Webcr {
 		// Load class and functions connected with Export Figures Tool
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
+
+		// BEGIN AI CODE
+
+		add_action('init', 'custom_scene_rewrite_rules');
+
+		function custom_scene_rewrite_rules() {
+			add_rewrite_tag('%instance_slug%', '([^/]+)', 'instance_slug=');
+			add_rewrite_tag('%scene_slug%', '([^/]+)', 'scene_slug=');
+			add_rewrite_rule(
+				'^([^/]+)/([^/]+)/?$',
+				'index.php?scene=$matches[2]&instance_slug=$matches[1]',
+				'top'
+			);
+		}
+
+		add_filter('post_type_link', 'custom_scene_permalink', 10, 2);
+
+		function custom_scene_permalink($permalink, $post) {
+			if ($post->post_type == 'scene') {
+				// Get the instance ID from the scene_location field
+				$instance_id = get_post_meta($post->ID, 'scene_location', true);
+		
+				// Fetch the instance post and get the instance_slug
+				$instance_slug = get_post_meta($instance_id, 'instance_slug', true);
+		
+				// If instance_slug is available, structure the permalink as required
+				if ($instance_slug) {
+					$permalink = home_url('/' . $instance_slug . '/' . $post->post_name . '/');
+				}
+			}
+		
+			return $permalink;
+		}
+
+		add_filter('query_vars', 'add_instance_slug_query_var');
+
+		function add_instance_slug_query_var($vars) {
+			$vars[] = 'instance_slug';
+			return $vars;
+		}
+
+		// END AI CODE
 
 		// Do the following rewrite rules do anything? Commenting them out just to see
 		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated - ask skanda
