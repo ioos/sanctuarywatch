@@ -16,14 +16,16 @@ class Webcr_Export_Figures {
 	 * @since    1.0.0
 	 */
     public function add_export_figures_menu() {
-        add_submenu_page(
-            'tools.php',              // Parent slug - adding it under 'Tools'
-            'Export Figures',         // Page title
-            'Export Figures',         // Menu title
-            'manage_options',         // Capability required to see the option
-            'export-figures',         // Slug (used in the URL)
-            [$this, 'export_figures_page']     // Callback function to output the page content
-        );
+        if (current_user_can('administrator') || current_user_can('webcr_content_manager')) {
+            add_submenu_page(
+                'tools.php',              // Parent slug - adding it under 'Tools'
+                'Export Figures',         // Page title
+                'Export Figures',         // Menu title
+                'edit_posts',         // Capability required to see the option
+                'export-figures',         // Slug (used in the URL)
+                [$this, 'export_figures_page']     // Callback function to output the page content
+            );
+        }
     }
 
     // Callback function to display the content of the "Export Figures" page

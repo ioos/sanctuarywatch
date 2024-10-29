@@ -7,14 +7,153 @@
 
 
     function downloadFile (){
-        fileType = document.querySelector('input[name="exportFormat"]:checked').value;
 
-        if (fileType == "document"){
-            downloadRTF();
+        const instanceSelect = document.getElementById("location");
+        const instanceValue = instanceSelect.value;
+        if (instanceValue != ""){
+            // Find the option with the specified value
+            let instanceValueText = "";
+            for (let option of instanceSelect.options) {
+                if (option.value === instanceValue) {
+                    instanceValueText = option.text; // Get the text associated with this option
+                    break;
+                }
+            }
+
+            let selectedCheckBoxes = [];
+            // Select all checkboxes associated with Figures
+            const checkboxes = document.querySelectorAll('[name^="figure"]');
+            // Loop through each checkbox and check it (or uncheck it)
+
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    selectedCheckBoxes.push(checkbox.value);
+                } 
+            });
+
+            if (selectedCheckBoxes.length > 0) {
+                const currentDate = getFormattedDate();
+                const introSentence = "Selected figures for " + instanceValueText + ", " + currentDate + ".";
+
+                const fileType = document.querySelector('input[name="exportFormat"]:checked').value;
+                if (fileType == "document"){
+                    downloadRTF(introSentence, selectedCheckBoxes);
+                } else {
+                    downloadPPTX(introSentence, selectedCheckBoxes);
+                }
+            } else {
+                alert("No Figures selected.");
+            }
         } else {
-            downloadPPTX();
+            alert("No Instance selected.");
         }
- 
+    }
+    
+    function removeHtmlTagsForPPTX(transformText) {
+        if (transformText == "" || transformText == null){
+            transformText = "None";
+        }
+        // remove <span> tags
+        transformText = transformText.replace(/<\/?span[^>]*>/g, "");
+        // Remove <em> and </em> tags
+        transformText = transformText.replace(/<\/?em>/g, '');
+        // Remove <a> tags and all attributes, keeping only the inner text
+        transformText = transformText.replace(/<a\b[^>]*>(.*?)<\/a>/gi, '$1');
+
+        return transformText;
+    }
+
+    async function downloadPPTX(introText, selectedCheckBoxes) {
+
+        // Create a new presentation
+        const pptx = new PptxGenJS();
+
+        let figureImageURL;
+        // Add first slide with text and image
+        let slide1 = pptx.addSlide();
+        slide1.addText(introText, { x: 0.5, y: 3, w: 8, h: 1, fontSize: 24 });
+
+        for (const targetCheckbox of selectedCheckBoxes) {
+            let newSlide = pptx.addSlide();
+            const targetFields = targetCheckbox.split(";");
+
+            const protocol = window.location.protocol;
+            const host = window.location.host;
+            const restFigureURL = `${protocol}//${host}/wp-json/wp/v2/figure?_fields=id,title,figure_path,figure_image,figure_external_url,figure_caption_short,figure_caption_long&id=${targetFields[0]}`;
+            const figureResponse = await fetch(restFigureURL);
+            const figureData = await figureResponse.json();
+
+            const titleRow = targetFields[1] + " (Scene: " + targetFields[2] + ", Modal: " + targetFields[3] + ")";
+            const figureCaptionShort = "Short Caption: " + removeHtmlTagsForPPTX(figureData[0]["figure_caption_short"]);
+            const figureCaptionLong = "Long Caption: " + removeHtmlTagsForPPTX(figureData[0]["figure_caption_long"]);
+
+            newSlide.addText(titleRow, { x: 0.5, y:0, w: 8, h: 1, fontSize: 18 });
+            newSlide.addText(figureCaptionShort, { x: 0.5, y:0.5, w: 9, h: 1, fontSize: 10 });
+            newSlide.addText(figureCaptionLong, { x: 0.5, y:1.3, w: 9, h: 1, fontSize: 10 });
+
+            const figureLocation = figureData[0]["figure_path"];
+
+            switch(figureLocation){
+                case "Internal":
+                    figureImageURL = figureData[0]["figure_image"];
+                    await addImageToSlide(newSlide, figureImageURL);
+                    break;
+                case "External":
+                    figureImageURL = figureData[0]["figure_external_url"];
+                    await addImageToSlide(newSlide, figureImageURL);
+                    break;
+                case "Interactive":
+                    break;
+            }        
+
+        }
+        // Generate and download the pptx file
+        pptx.writeFile({ fileName: "export-figures.pptx" });
+    }
+
+    // Function to add image to slide if valid
+    async function addImageToSlide(slide, imageUrl) {
+        try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const base64Image = await convertBlobToBase64(blob);
+            const img = new Image();
+
+            // Wait for image to load and get its dimensions
+            img.src = URL.createObjectURL(blob);
+            await img.decode();
+
+            // Original image dimensions
+            const originalWidth = img.width;
+            const originalHeight = img.height;
+
+            // Desired width for the slide image
+            const slideWidth = 6; // in inches
+            const aspectRatio = originalWidth / originalHeight;
+
+            // Calculate height based on the aspect ratio
+            const slideHeight = slideWidth / aspectRatio;
+
+            slide.addImage({
+                data: base64Image,
+                x: 0.5,
+                y: 2,
+                w: slideWidth,  // Specify width
+                h: slideHeight,  // Specify height
+            });
+        } catch (error) {
+            console.error("Error loading image:", error);
+        }
+    }
+
+    // Convert a blob to a base64 data URL for use in PptxGenJS
+    function convertBlobToBase64(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
     }
 
     function selectAll () {
@@ -93,95 +232,65 @@
             }
         } catch (error) {
                 console.error("Error fetching image:", error);
-          //      alert("Failed to fetch the image. Please check the console for more details.");
-            }
+        }
     }
 
     // first pass at downloading a RTF-formatted file
-    async function downloadRTF() {
-        const instanceSelect = document.getElementById("location");
-        const instanceValue = instanceSelect.value;
-        if (instanceValue != ""){
-            // Find the option with the specified value
-            let instanceValueText = "";
-            for (let option of instanceSelect.options) {
-                if (option.value === instanceValue) {
-                    instanceValueText = option.text; // Get the text associated with this option
+    async function downloadRTF(introText, selectedCheckBoxes) {
+
+        // Create RTF content
+        let rtfContent = '{\\rtf1\\ansi\\ansicpg1252\\deff0' +
+            '{\\fonttbl{\\f0 Arial;}}' +
+            '\\f0' +
+            '\\fs36' + introText + '\\par\\par';
+
+        let targetFields;
+        let titleRow;
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        let figureCaptionShort;
+        let figureCaptionLong;
+        let figureLocation;
+        let figureImageURL;
+
+        for (const targetCheckbox of selectedCheckBoxes) {
+            targetFields = targetCheckbox.split(";");
+            titleRow = targetFields[1] + " (Scene: " + targetFields[2] + ", Modal: " + targetFields[3] + ")";
+            rtfContent = rtfContent + '\\fs32\\pard\\par ' + titleRow + '\\par\\par';
+            const restFigureURL = `${protocol}//${host}/wp-json/wp/v2/figure?_fields=id,title,figure_path,figure_image,figure_external_url,figure_caption_short,figure_caption_long&id=${targetFields[0]}`;
+            const figureResponse = await fetch(restFigureURL);
+            const figureData = await figureResponse.json();
+
+            figureCaptionShort = htmlToRtfText(figureData[0]["figure_caption_short"]);
+            figureCaptionLong = htmlToRtfText(figureData[0]["figure_caption_long"]);
+            figureLocation = figureData[0]["figure_path"];
+
+            switch(figureLocation){
+                case "Internal":
+                    figureImageURL = figureData[0]["figure_image"];
+                    rtfContent = rtfContent + await imageToRtf(figureImageURL);
                     break;
-                }
-            }
+                case "External":
+                    figureImageURL = figureData[0]["figure_external_url"];
+                    rtfContent = rtfContent + await imageToRtf(figureImageURL);
+                    break;
+                case "Interactive":
+                    break;
+            }                      
 
-            let selectedCheckBoxes = [];
-            // Select all checkboxes associated with Figures
-            const checkboxes = document.querySelectorAll('[name^="figure"]');
-            // Loop through each checkbox and check it (or uncheck it)
-
-            checkboxes.forEach((checkbox) => {
-                if (checkbox.checked) {
-                    selectedCheckBoxes.push(checkbox.value);
-                } 
-            });
-
-            if (selectedCheckBoxes.length > 0) {
-                const currentDate = getFormattedDate();
-                const sentence1 = "Selected figures for " + instanceValueText + ", " + currentDate + ".";
-
-                // Create RTF content
-                let rtfContent = '{\\rtf1\\ansi\\ansicpg1252\\deff0' +
-                    '{\\fonttbl{\\f0 Arial;}}' +
-                    '\\f0' +
-                    '\\fs36' + sentence1 + '\\par\\par';
-
-                let targetFields;
-                let titleRow;
-                const protocol = window.location.protocol;
-                const host = window.location.host;
-                let figureCaptionShort;
-                let figureCaptionLong;
-                let figureLocation;
-                let figureImageURL;
-
-                for (const targetCheckbox of selectedCheckBoxes) {
-                    targetFields = targetCheckbox.split(";");
-                    titleRow = targetFields[1] + " (Scene: " + targetFields[2] + ", Modal: " + targetFields[3] + ")";
-                    rtfContent = rtfContent + '\\fs32\\pard\\par ' + titleRow + '\\par\\par';
-                    const restFigureURL = `${protocol}//${host}/wp-json/wp/v2/figure?_fields=id,title,figure_path,figure_image,figure_external_url,figure_caption_short,figure_caption_long&id=${targetFields[0]}`;
-                    const figureResponse = await fetch(restFigureURL);
-                    const figureData = await figureResponse.json();
-
-                    figureCaptionShort = htmlToRtfText(figureData[0]["figure_caption_short"]);
-                    figureCaptionLong = htmlToRtfText(figureData[0]["figure_caption_long"]);
-                    figureLocation = figureData[0]["figure_path"];
-
-                    switch(figureLocation){
-                        case "Internal":
-                            figureImageURL = figureData[0]["figure_image"];
-                            rtfContent = rtfContent + await imageToRtf(figureImageURL);
-                            break;
-                        case "External":
-                            figureImageURL = figureData[0]["figure_external_url"];
-                            rtfContent = rtfContent + await imageToRtf(figureImageURL);
-                            break;
-                        case "Interactive":
-                            break;
-                    }                      
-
-                    rtfContent = rtfContent + '\\fs28 Short Caption: ' + figureCaptionShort + '\\par\\par';
-                    rtfContent = rtfContent + '\\fs28 Long Caption: ' + figureCaptionLong + '\\par\\par';
-                //    rtfContent = rtfContent + '\\pard\\qc\\fs24 ________________________________\\par}';
-                }
-
-                rtfContent = rtfContent + '}';
-                // Create a Blob with the RTF content
-                const blob = new Blob([rtfContent], { type: "application/rtf" });
-
-                // Create a link element and trigger the download
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = "figure-export.rtf";
-                link.click();
-            }
+            rtfContent = rtfContent + '\\fs28 Short Caption: ' + figureCaptionShort + '\\par\\par';
+            rtfContent = rtfContent + '\\fs28 Long Caption: ' + figureCaptionLong + '\\par\\par';
         }
+
+        rtfContent = rtfContent + '}';
+        // Create a Blob with the RTF content
+        const blob = new Blob([rtfContent], { type: "application/rtf" });
+
+        // Create a link element and trigger the download
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "figure-export.rtf";
+        link.click();
     }
 
     function htmlToRtfText(transformText){
