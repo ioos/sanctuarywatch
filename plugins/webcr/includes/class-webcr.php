@@ -251,9 +251,10 @@ class Webcr {
 
 		// BEGIN AI CODE
 
-		add_action('init', 'custom_scene_rewrite_rules');
+		add_action('init', 'custom_rewrite_rules');
 
-		function custom_scene_rewrite_rules() {
+		function custom_rewrite_rules() {
+			// Scene permalink structure: /instance_slug/scene_slug
 			add_rewrite_tag('%instance_slug%', '([^/]+)', 'instance_slug=');
 			add_rewrite_tag('%scene_slug%', '([^/]+)', 'scene_slug=');
 			add_rewrite_rule(
@@ -261,34 +262,48 @@ class Webcr {
 				'index.php?scene=$matches[2]&instance_slug=$matches[1]',
 				'top'
 			);
+		
+			// Update About permalink structure: /about targets a single post
+			add_rewrite_rule(
+				'^about/?$',
+				'index.php?post_type=about&name=about',
+				'top'
+			);
 		}
 
-		add_filter('post_type_link', 'custom_scene_permalink', 10, 2);
+		add_filter('post_type_link', 'custom_permalink_structure', 10, 2);
 
-		function custom_scene_permalink($permalink, $post) {
-			if ($post->post_type == 'scene') {
-				// Get the instance ID from the scene_location field
-				$instance_id = get_post_meta($post->ID, 'scene_location', true);
-		
-				// Fetch the instance post and get the instance_slug
-				$instance_slug = get_post_meta($instance_id, 'instance_slug', true);
-		
-				// If instance_slug is available, structure the permalink as required
-				if ($instance_slug) {
-					$permalink = home_url('/' . $instance_slug . '/' . $post->post_name . '/');
-				}
-			}
-		
-			return $permalink;
-		}
+function custom_permalink_structure($permalink, $post) {
+    // Custom structure for Scene posts
+    if ($post->post_type == 'scene') {
+        $instance_id = get_post_meta($post->ID, 'scene_location', true);
+        $instance_slug = get_post_meta($instance_id, 'instance_slug', true);
+        
+        if ($instance_slug) {
+            $permalink = home_url('/' . $instance_slug . '/' . $post->post_name . '/');
+        }
+    }
+    
+    // Custom structure for the single About post
+    elseif ($post->post_type == 'about') {
+        $permalink = home_url('/about/');
+    }
+    
+    return $permalink;
+}
 
-		add_filter('query_vars', 'add_instance_slug_query_var');
+// HERE IS WHERE TO LOOK
+add_action('template_redirect', 'redirect_to_single_about_template');
+function redirect_to_single_about_template() {
+    if (is_singular('about')) {
+        include get_template_directory() . '/single-about.php';
+        exit;
+    }
+}
 
-		function add_instance_slug_query_var($vars) {
-			$vars[] = 'instance_slug';
-			return $vars;
-		}
-
+add_action('init', function() {
+    flush_rewrite_rules();
+});
 		// END AI CODE
 
 		// Do the following rewrite rules do anything? Commenting them out just to see

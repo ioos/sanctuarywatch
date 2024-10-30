@@ -51,10 +51,14 @@ class Webcr_About {
             'show_in_menu'       => true,
             'show_in_rest'       => true,
             'query_var'          => true,
-            'rewrite'            => array( 'slug' => 'about' ),
+   //         'rewrite'            => array( 'slug' => 'about' ),
+   'rewrite'         => [
+    'slug'       => 'about',  // Set slug to 'about'
+    'with_front' => false,
+],
             'capability_type'    => 'post',
             'menu_icon'          => 'dashicons-admin-site-alt3',
-            'has_archive'        => true,
+            'has_archive'        => false, //true,
             'hierarchical'       => false,
             'menu_position'      => null,
             'supports'           => array( 'title' ), //array( 'title', 'revisions' ), 
