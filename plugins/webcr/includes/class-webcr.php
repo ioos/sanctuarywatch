@@ -251,59 +251,195 @@ class Webcr {
 
 		// BEGIN AI CODE
 
-		add_action('init', 'custom_rewrite_rules');
+// Custom permalink structure
+add_filter('post_type_link', 'custom_permalink_structure', 10, 2);
+function custom_permalink_structure($post_link, $post) {
+    if ($post->post_type === 'scene') {
+        $scene_location = get_post_meta($post->ID, 'scene_location', true);
+        if ($scene_location) {
+            $instance = get_post($scene_location);
+            if ($instance) {
+                $instance_slug = get_post_meta($instance->ID, 'instance_slug', true);
+                if ($instance_slug) {
+                    return home_url("/{$instance_slug}/{$post->post_name}/");
+                }
+            }
+        }
+    } elseif ($post->post_type === 'about') {
+        return home_url('/about/');
+    }
+    
+    return $post_link;
+}
 
-		function custom_rewrite_rules() {
-			// Scene permalink structure: /instance_slug/scene_slug
-			add_rewrite_tag('%instance_slug%', '([^/]+)', 'instance_slug=');
-			add_rewrite_tag('%scene_slug%', '([^/]+)', 'scene_slug=');
-			add_rewrite_rule(
-				'^([^/]+)/([^/]+)/?$',
-				'index.php?scene=$matches[2]&instance_slug=$matches[1]',
-				'top'
-			);
-		
-			// Update About permalink structure: /about targets a single post
-			add_rewrite_rule(
-				'^about/?$',
-				'index.php?post_type=about&name=about',
-				'top'
-			);
-		}
+// Modified About post check function with debugging
+function check_existing_about_posts() {
+    $args = array(
+        'post_type' => 'about',
+        'post_status' => array('publish', 'draft', 'pending', 'private', 'future', 'trash'),
+        'posts_per_page' => -1,
+        'fields' => 'ids', // Only get post IDs for efficiency
+    );
+    
+    $existing_about = get_posts($args);
+    $count = count($existing_about);
+    
+    // Optional debugging - remove in production
+    if (defined('WP_DEBUG') && WP_DEBUG === true) {
+        error_log('About Posts Check - Count: ' . $count);
+        error_log('About Posts IDs: ' . print_r($existing_about, true));
+    }
+    
+    return $count;
+}
 
-		add_filter('post_type_link', 'custom_permalink_structure', 10, 2);
+// Add admin notice functionality
+add_action('admin_notices', 'display_about_limit_notice');
+function display_about_limit_notice() {
+    if (isset($_GET['about_limit_reached'])) {
+        ?>
+        <div class="notice notice-error is-dismissible">
+            <p><?php _e('Only one About page can exist. Your new About page was not created.', 'your-text-domain'); ?></p>
+        </div>
+        <?php
+    }
+}
 
-function custom_permalink_structure($permalink, $post) {
-    // Custom structure for Scene posts
-    if ($post->post_type == 'scene') {
-        $instance_id = get_post_meta($post->ID, 'scene_location', true);
-        $instance_slug = get_post_meta($instance_id, 'instance_slug', true);
+// Modified prevention function with better handling
+add_action('wp_insert_post_data', 'prevent_multiple_about_posts', 10, 2);
+function prevent_multiple_about_posts($data, $postarr) {
+    // Only run this check for About post type
+    if ($data['post_type'] !== 'about') {
+        return $data;
+    }
+
+    // Allow updates to existing About posts
+    if (!empty($postarr['ID'])) {
+        return $data;
+    }
+    
+    // Check if an About post already exists
+    $existing_count = check_existing_about_posts();
+    
+    // Optional debugging - remove in production
+    if (defined('WP_DEBUG') && WP_DEBUG === true) {
+        error_log('Attempting to create About post');
+        error_log('Existing count: ' . $existing_count);
+    }
+    
+    if ($existing_count > 0) {
+        // Store the redirect URL with query parameter
+        $redirect_url = add_query_arg(
+            'about_limit_reached', 
+            '1', 
+            admin_url('edit.php?post_type=about')
+        );
         
-        if ($instance_slug) {
-            $permalink = home_url('/' . $instance_slug . '/' . $post->post_name . '/');
+        // Redirect and stop post creation
+        wp_safe_redirect($redirect_url);
+        exit();
+    }
+    
+    return $data;
+}
+
+// Modified button visibility function
+add_action('admin_head-edit.php', 'modify_about_add_new_button');
+function modify_about_add_new_button() {
+    global $current_screen;
+    
+    if ($current_screen->post_type === 'about') {
+        $existing_count = check_existing_about_posts();
+        
+        if ($existing_count > 0) {
+            ?>
+            <style>
+                .page-title-action {
+                    display: none !important;
+                }
+            </style>
+            <?php
         }
     }
-    
-    // Custom structure for the single About post
-    elseif ($post->post_type == 'about') {
-        $permalink = home_url('/about/');
-    }
-    
-    return $permalink;
 }
 
-// HERE IS WHERE TO LOOK
-add_action('template_redirect', 'redirect_to_single_about_template');
-function redirect_to_single_about_template() {
-    if (is_singular('about')) {
-        include get_template_directory() . '/single-about.php';
-        exit;
+// Add function to verify post type registration
+add_action('init', 'verify_about_post_type', 999);
+function verify_about_post_type() {
+    if (defined('WP_DEBUG') && WP_DEBUG === true) {
+        $post_type = get_post_type_object('about');
+        if ($post_type) {
+            error_log('About post type is registered properly');
+//            error_log('About post type capabilities: ' . print_r($post_type->capabilities, true));
+        } else {
+            error_log('About post type is NOT registered properly');
+        }
     }
 }
 
-add_action('init', function() {
-    flush_rewrite_rules();
-});
+// Modified rewrite rules
+add_action('init', 'add_custom_rewrite_rules');
+function add_custom_rewrite_rules() {
+    // Rule for scenes
+    add_rewrite_rule(
+        '^([^/]+)/([^/]+)/?$',
+        'index.php?post_type=scene&name=$2',
+        'top'
+    );
+    
+    // Modified rule for about page
+    add_rewrite_rule(
+        '^about/?$',
+        'index.php?post_type=about&about=true',
+        'top'
+    );
+}
+
+// Add custom query var
+add_filter('query_vars', 'add_custom_query_vars');
+function add_custom_query_vars($vars) {
+    $vars[] = 'about';
+    return $vars;
+}
+
+// Modify the main query for the about page
+add_action('pre_get_posts', 'modify_about_query');
+function modify_about_query($query) {
+    if (!is_admin() && $query->is_main_query() && get_query_var('about') === 'true') {
+        $query->set('post_type', 'about');
+        $query->set('posts_per_page', 1);
+        $query->is_single = true;
+        $query->is_singular = true;
+        $query->is_home = false;
+        $query->is_archive = false;
+        $query->is_page = false;
+    }
+}
+
+// Template hierarchy filter
+add_filter('template_include', 'custom_template_include');
+function custom_template_include($template) {
+    if (get_query_var('about') === 'true') {
+        // Look for single-about.php in theme directory
+        $new_template = locate_template(array('single-about.php'));
+        if (!empty($new_template)) {
+            return $new_template;
+        }
+        // Fall back to single.php if single-about.php doesn't exist
+        $new_template = locate_template(array('single.php'));
+        if (!empty($new_template)) {
+            return $new_template;
+        }
+    }
+    return $template;
+}
+
+// Register activation hook to flush rewrite rules
+register_activation_hook(__FILE__, 'flush_rewrite_rules');
+
+// Register deactivation hook to flush rewrite rules
+register_deactivation_hook(__FILE__, 'flush_rewrite_rules');
+
 		// END AI CODE
 
 		// Do the following rewrite rules do anything? Commenting them out just to see
