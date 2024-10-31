@@ -808,7 +808,7 @@ class Webcr_Scene {
     }
 
     /**
-	 * Add scene rewrite rules for permalinks (Skanda).
+	 * Add scene rewrite rules for permalinks (Skanda). THIS FUNCTION IS NOT IN USE AND REPLACED WITH OTHER REWRITE RULE FUNCTIONS. REMOVE?
 	 *
 	 * @since    1.0.0
 	 */
@@ -820,7 +820,7 @@ class Webcr_Scene {
     }
 
     /**
-	 * Add scene rewrite rules for permalinks (Skanda).
+	 * Add scene rewrite rules for permalinks (Skanda). THIS FUNCTION IS NOT IN USE AND REPLACED WITH OTHER REWRITE RULE FUNCTIONS. REMOVE?
 	 *
 	 * @since    1.0.0
 	 */
@@ -838,6 +838,21 @@ class Webcr_Scene {
         }
     
         return home_url('/' . $web_slug . '/' . $post->post_name . '/');
+    }
+
+	// Rewrite rule for scenes - new Claude code
+    function add_custom_rewrite_rules() {
+        add_rewrite_rule(
+            '([^/]+)/([^/]+)/?$',
+            'index.php?post_type=scene&scene=$matches[2]&instance_slug=$matches[1]',
+            'top'
+        );
+    
+        // Add query var for instance_slug
+        add_filter('query_vars', function($vars) {
+            $vars[] = 'instance_slug';
+            return $vars;
+        });
     }
 
     function scene_preview() {

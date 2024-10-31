@@ -174,6 +174,7 @@ class Webcr {
 		$this->loader->add_filter( 'admin_menu', $plugin_admin, 'restrict_content_manager_admin_menu', 999); 
 		$this->loader->add_filter( 'upload_mimes', $plugin_admin, 'allow_svg_uploads'); 
 		$this->loader->add_filter( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_bootstrap_admin', 5); 
+		$this->loader->add_filter( 'post_type_link', $plugin_admin, 'custom_permalink', 10, 2); // NEW CLAUDE CODE - PERMALINK STRUCTURE FOR ABOUT AND SCENE CONTENT TYPES
 		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
 		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
 
@@ -181,6 +182,10 @@ class Webcr {
 		$plugin_admin_about = new Webcr_About ( $this->get_plugin_name(), $this->get_version() );		
 		$this->loader->add_action( 'init', $plugin_admin_about, 'custom_content_type_about' ); 
 		$this->loader->add_action( 'admin_menu', $plugin_admin_about, 'create_about_fields', 1 );
+		$this->loader->add_action( 'admin_head-edit.php', $plugin_admin_about, 'modify_about_add_new_button' ); // New Claude function for restricting number of about posts
+		$this->loader->add_action( 'admin_notices', $plugin_admin_about, 'display_about_limit_notice' );  // New Claude function for restricting number of about posts
+		$this->loader->add_action( 'wp_insert_post_data', $plugin_admin_about, 'prevent_multiple_about_posts', 10, 2);  // New Claude function for restricting number of about posts
+		$this->loader->add_action( 'template_redirect', $plugin_admin_about, 'handle_about_template' );  // New Claude function for forcing use of single-about.php file for about posts
 
 		// Load  class and functions associated with Instance custom content type
 		$plugin_admin_instance = new Webcr_Instance ( $this->get_plugin_name(), $this->get_version() );		
@@ -209,8 +214,8 @@ class Webcr {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin_scene, 'enqueue_scene_admin_columns_css'); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_scene, 'register_scene_rest_fields'); 
 		$this->loader->add_filter( 'rest_scene_query', $plugin_admin_scene, 'filter_scene_by_scene_location', 10, 2); 
-		$this->loader->add_filter( 'rewrite_rules_array', $plugin_admin_scene, 'add_scene_rewrite_rules'); 
-		$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
+	//	$this->loader->add_filter( 'rewrite_rules_array', $plugin_admin_scene, 'add_scene_rewrite_rules'); 
+//		$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		
@@ -248,199 +253,6 @@ class Webcr {
 		// Load class and functions connected with Export Figures Tool
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
-
-		// BEGIN AI CODE
-
-// Custom permalink structure
-add_filter('post_type_link', 'custom_permalink_structure', 10, 2);
-function custom_permalink_structure($post_link, $post) {
-    if ($post->post_type === 'scene') {
-        $scene_location = get_post_meta($post->ID, 'scene_location', true);
-        if ($scene_location) {
-            $instance = get_post($scene_location);
-            if ($instance) {
-                $instance_slug = get_post_meta($instance->ID, 'instance_slug', true);
-                if ($instance_slug) {
-                    return home_url("/{$instance_slug}/{$post->post_name}/");
-                }
-            }
-        }
-    } elseif ($post->post_type === 'about') {
-        return home_url('/about/');
-    }
-    
-    return $post_link;
-}
-
-// Modified About post check function with debugging
-function check_existing_about_posts() {
-    $args = array(
-        'post_type' => 'about',
-        'post_status' => array('publish', 'draft', 'pending', 'private', 'future', 'trash'),
-        'posts_per_page' => -1,
-        'fields' => 'ids', // Only get post IDs for efficiency
-    );
-    
-    $existing_about = get_posts($args);
-    $count = count($existing_about);
-    
-    // Optional debugging - remove in production
-    if (defined('WP_DEBUG') && WP_DEBUG === true) {
-        error_log('About Posts Check - Count: ' . $count);
-        error_log('About Posts IDs: ' . print_r($existing_about, true));
-    }
-    
-    return $count;
-}
-
-// Add admin notice functionality
-add_action('admin_notices', 'display_about_limit_notice');
-function display_about_limit_notice() {
-    if (isset($_GET['about_limit_reached'])) {
-        ?>
-        <div class="notice notice-error is-dismissible">
-            <p><?php _e('Only one About page can exist. Your new About page was not created.', 'your-text-domain'); ?></p>
-        </div>
-        <?php
-    }
-}
-
-// Modified prevention function with better handling
-add_action('wp_insert_post_data', 'prevent_multiple_about_posts', 10, 2);
-function prevent_multiple_about_posts($data, $postarr) {
-    // Only run this check for About post type
-    if ($data['post_type'] !== 'about') {
-        return $data;
-    }
-
-    // Allow updates to existing About posts
-    if (!empty($postarr['ID'])) {
-        return $data;
-    }
-    
-    // Check if an About post already exists
-    $existing_count = check_existing_about_posts();
-    
-    // Optional debugging - remove in production
-    if (defined('WP_DEBUG') && WP_DEBUG === true) {
-        error_log('Attempting to create About post');
-        error_log('Existing count: ' . $existing_count);
-    }
-    
-    if ($existing_count > 0) {
-        // Store the redirect URL with query parameter
-        $redirect_url = add_query_arg(
-            'about_limit_reached', 
-            '1', 
-            admin_url('edit.php?post_type=about')
-        );
-        
-        // Redirect and stop post creation
-        wp_safe_redirect($redirect_url);
-        exit();
-    }
-    
-    return $data;
-}
-
-// Modified button visibility function
-add_action('admin_head-edit.php', 'modify_about_add_new_button');
-function modify_about_add_new_button() {
-    global $current_screen;
-    
-    if ($current_screen->post_type === 'about') {
-        $existing_count = check_existing_about_posts();
-        
-        if ($existing_count > 0) {
-            ?>
-            <style>
-                .page-title-action {
-                    display: none !important;
-                }
-            </style>
-            <?php
-        }
-    }
-}
-
-// Add function to verify post type registration
-add_action('init', 'verify_about_post_type', 999);
-function verify_about_post_type() {
-    if (defined('WP_DEBUG') && WP_DEBUG === true) {
-        $post_type = get_post_type_object('about');
-        if ($post_type) {
-            error_log('About post type is registered properly');
-//            error_log('About post type capabilities: ' . print_r($post_type->capabilities, true));
-        } else {
-            error_log('About post type is NOT registered properly');
-        }
-    }
-}
-
-// Modified rewrite rules
-add_action('init', 'add_custom_rewrite_rules');
-function add_custom_rewrite_rules() {
-    // Rule for scenes
-    add_rewrite_rule(
-        '^([^/]+)/([^/]+)/?$',
-        'index.php?post_type=scene&name=$2',
-        'top'
-    );
-    
-    // Modified rule for about page
-    add_rewrite_rule(
-        '^about/?$',
-        'index.php?post_type=about&about=true',
-        'top'
-    );
-}
-
-// Add custom query var
-add_filter('query_vars', 'add_custom_query_vars');
-function add_custom_query_vars($vars) {
-    $vars[] = 'about';
-    return $vars;
-}
-
-// Modify the main query for the about page
-add_action('pre_get_posts', 'modify_about_query');
-function modify_about_query($query) {
-    if (!is_admin() && $query->is_main_query() && get_query_var('about') === 'true') {
-        $query->set('post_type', 'about');
-        $query->set('posts_per_page', 1);
-        $query->is_single = true;
-        $query->is_singular = true;
-        $query->is_home = false;
-        $query->is_archive = false;
-        $query->is_page = false;
-    }
-}
-
-// Template hierarchy filter
-add_filter('template_include', 'custom_template_include');
-function custom_template_include($template) {
-    if (get_query_var('about') === 'true') {
-        // Look for single-about.php in theme directory
-        $new_template = locate_template(array('single-about.php'));
-        if (!empty($new_template)) {
-            return $new_template;
-        }
-        // Fall back to single.php if single-about.php doesn't exist
-        $new_template = locate_template(array('single.php'));
-        if (!empty($new_template)) {
-            return $new_template;
-        }
-    }
-    return $template;
-}
-
-// Register activation hook to flush rewrite rules
-register_activation_hook(__FILE__, 'flush_rewrite_rules');
-
-// Register deactivation hook to flush rewrite rules
-register_deactivation_hook(__FILE__, 'flush_rewrite_rules');
-
-		// END AI CODE
 
 		// Do the following rewrite rules do anything? Commenting them out just to see
 		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated - ask skanda

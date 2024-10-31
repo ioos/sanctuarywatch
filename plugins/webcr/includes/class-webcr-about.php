@@ -51,11 +51,12 @@ class Webcr_About {
             'show_in_menu'       => true,
             'show_in_rest'       => true,
             'query_var'          => true,
+            'rewrite'            => false,
 //            'rewrite'            => array( 'slug' => 'about' ),
-            'rewrite' => array(
-                'slug' => 'about',
-                'with_front' => false
-            ),
+//            'rewrite' => array(
+ //               'slug' => 'about',
+  //              'with_front' => false
+    //        ),
             'capability_type'    => 'post',
             'menu_icon'          => 'dashicons-admin-site-alt3',
             'has_archive'        => false, //true,
@@ -66,7 +67,6 @@ class Webcr_About {
     
         register_post_type( 'about', $args );
     }
-
 
     /**
 	 * Create custom fields, using metaboxes, for About custom content type.
@@ -135,4 +135,125 @@ class Webcr_About {
         // instantiate the admin page
         $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
     }  
+
+    // Modified About post check function with debugging - CLAUDE FUNCTION
+    function check_existing_about_posts() {
+        $args = array(
+            'post_type' => 'about',
+            'post_status' => array('publish', 'draft', 'pending', 'private', 'future', 'trash'),
+            'posts_per_page' => -1,
+            'fields' => 'ids', // Only get post IDs for efficiency
+        );
+        
+        $existing_about = get_posts($args);
+        $count = count($existing_about);
+        
+        // Optional debugging - remove in production
+        if (defined('WP_DEBUG') && WP_DEBUG === true) {
+            error_log('About Posts Check - Count: ' . $count);
+            error_log('About Posts IDs: ' . print_r($existing_about, true));
+        }
+        
+        return $count;
+    }
+    
+    // Add admin notice functionality - CLAUDE FUNCTION
+    function display_about_limit_notice() {
+        if (isset($_GET['about_limit_reached'])) {
+            ?>
+            <div class="notice notice-error is-dismissible">
+                <p><?php _e('Only one About page can exist. Your new About page was not created.', 'your-text-domain'); ?></p>
+            </div>
+            <?php
+        }
+    }
+    
+    // Modified prevention function with better handling - CLAUDE FUNCTION
+    function prevent_multiple_about_posts($data, $postarr) {
+        // Only run this check for About post type
+        if ($data['post_type'] !== 'about') {
+            return $data;
+        }
+    
+        // Allow updates to existing About posts
+        if (!empty($postarr['ID'])) {
+            return $data;
+        }
+        
+        // Check if an About post already exists
+        $existing_count = $this->check_existing_about_posts();
+        
+        // Optional debugging - remove in production
+        if (defined('WP_DEBUG') && WP_DEBUG === true) {
+            error_log('Attempting to create About post');
+            error_log('Existing count: ' . $existing_count);
+        }
+        
+        if ($existing_count > 0) {
+            // Store the redirect URL with query parameter
+            $redirect_url = add_query_arg(
+                'about_limit_reached', 
+                '1', 
+                admin_url('edit.php?post_type=about')
+            );
+            
+            // Redirect and stop post creation
+            wp_safe_redirect($redirect_url);
+            exit();
+        }
+        
+        return $data;
+    }
+    
+    // Modified button visibility function - CLAUDE FUNCTION
+    function modify_about_add_new_button() {
+        global $current_screen;
+        
+        if ($current_screen->post_type === 'about') {
+            $existing_count = $this->check_existing_about_posts();
+            
+            if ($existing_count > 0) {
+                ?>
+                <style>
+                    .page-title-action {
+                        display: none !important;
+                    }
+                </style>
+                <?php
+            }
+        }
+    }
+
+    // Force use of single-about.php file for about posts - CLAUDE FUNCTION
+    function handle_about_template() {
+    // Check if we're on the /about URL
+    if ($_SERVER['REQUEST_URI'] === '/about/' || $_SERVER['REQUEST_URI'] === '/about') {
+        // Get the about post
+        $about_posts = get_posts(array(
+            'post_type' => 'about',
+            'posts_per_page' => 1,
+            'post_status' => 'publish'
+        ));
+
+        if (!empty($about_posts)) {
+            // Set up the global post object
+            global $wp_query, $post;
+            $wp_query->is_single = true;
+            $wp_query->is_page = false;
+            $wp_query->is_404 = false;
+            $post = $about_posts[0];
+            $wp_query->posts = array($post);
+            $wp_query->post = $post;
+            $wp_query->post_count = 1;
+            $wp_query->is_posts_page = false;
+            $wp_query->queried_object = $post;
+            $wp_query->queried_object_id = $post->ID;
+            setup_postdata($post);
+            
+            // Load the single-about.php template
+            include(get_template_directory() . '/single-about.php');
+            exit;
+        }
+    }
+    }
 }

@@ -371,6 +371,70 @@
 
      });
 
+// Claude code for json functionality
+$('#select-json-btn').on('click', function(e) {
+    e.preventDefault();
+    
+    // Create file input
+    var fileInput = $('<input type="file" accept=".json" style="display: none;">');
+    $('body').append(fileInput);
+    
+    fileInput.trigger('click');
+    
+    fileInput.on('change', function() {
+        var file = this.files[0];
+        if (!file) return;
+        
+        // Validate file size (optional, adjust limit as needed)
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            alert('File size too large. Please select a file under 5MB.');
+            fileInput.remove();
+            return;
+        }
+        
+        var formData = new FormData();
+        formData.append('action', 'figure_json_upload');
+        formData.append('nonce', figureJsonUploader.nonce);
+        formData.append('json_file', file);
+        
+        // Show loading state
+        $('#select-json-btn').prop('disabled', true).text('Uploading...');
+        
+        $.ajax({
+            url: figureJsonUploader.ajax_url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    $('#figure_json_path').val(response.data.file_path);
+                    
+                    // Add clear button if it doesn't exist
+                    if ($('#clear-json-btn').length === 0) {
+                        $('<button type="button" class="button" id="clear-json-btn">Clear</button>')
+                            .insertAfter('#select-json-btn');
+                    }
+                } else {
+                    alert('Upload failed: ' + response.data);
+                }
+            },
+            error: function() {
+                alert('Upload failed. Please try again.');
+            },
+            complete: function() {
+                $('#select-json-btn').prop('disabled', false).text('Select JSON');
+                fileInput.remove();
+            }
+        });
+    });
+});
 
+// Handle clear button click
+$(document).on('click', '#clear-json-btn', function(e) {
+    e.preventDefault();
+    $('#figure_json_path').val('');
+    $(this).remove();
+});
     
 })( jQuery );
