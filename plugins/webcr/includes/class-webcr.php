@@ -254,6 +254,67 @@ class Webcr {
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
 
+// NEW AI CODE
+
+// Hook into WordPress init to register the taxonomy
+add_action('init', 'register_instance_type_taxonomy', 0);
+
+function register_instance_type_taxonomy() {
+    // Make sure the taxonomy isn't already registered
+    if (!taxonomy_exists('instance_type')) {
+        $args = array(
+            'hierarchical' => false,
+            'labels' => array(
+                'name' => 'Instance Types',
+                'singular_name' => 'Instance Type',
+                'add_new_item' => 'Add New Instance Type',
+                'edit_item' => 'Edit Instance Type',
+                'update_item' => 'Update Instance Type',
+                'view_item' => 'View Instance Type',
+                'search_items' => 'Search Instance Types'
+            ),
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'query_var' => true,
+            'rewrite' => array('slug' => 'instance-type'),
+        );
+        
+        register_taxonomy('instance_type', array('instance'), $args);
+    }
+}
+
+// Save the custom description field
+add_action('created_instance_type', 'save_instance_type_description');
+add_action('edited_instance_type', 'save_instance_type_description');
+
+function save_instance_type_description($term_id) {
+    if (isset($_POST['instance_type_description'])) {
+        $description = sanitize_textarea_field($_POST['instance_type_description']);
+        update_term_meta($term_id, 'instance_type_description', $description);
+    }
+}
+
+// Add custom column to taxonomy list table
+add_filter('manage_edit-instance_type_columns', 'add_instance_type_description_column');
+add_filter('manage_instance_type_custom_column', 'add_instance_type_description_column_content', 10, 3);
+
+function add_instance_type_description_column($columns) {
+    $columns['description'] = 'Description';
+    return $columns;
+}
+
+function add_instance_type_description_column_content($content, $column_name, $term_id) {
+    if ($column_name === 'description') {
+        $description = get_term_meta($term_id, 'instance_type_description', true);
+        return wp_trim_words($description, 20);
+    }
+    return $content;
+}
+
+// END AI CODE
+
+
+
 		// Do the following rewrite rules do anything? Commenting them out just to see
 		// Ensure the rewrite rules are flushed when the plugin is activated or deactivated - ask skanda
 		//		register_activation_hook(__FILE__, 'custom_scene_flush_rewrite_rules');
