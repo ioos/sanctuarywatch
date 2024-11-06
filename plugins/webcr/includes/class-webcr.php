@@ -254,7 +254,126 @@ class Webcr {
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
 
-// NEW AI CODE
+// NEW AI CODE FOR SITE SETTINGS
+
+// Add menu item to WordPress admin
+function webcr_add_admin_menu() {
+    add_menu_page(
+        'Theme Settings', // Page title
+        'Theme Settings', // Menu title
+        'manage_options', // Capability required
+        'theme_settings', // Menu slug
+        'webcr_settings_page' // Function to display the page
+    );
+}
+add_action('admin_menu', 'webcr_add_admin_menu');
+
+// Register settings
+function webcr_settings_init() {
+    // Register a new settings group
+    register_setting('theme_settings_group', 'webcr_settings');
+
+    // Add a new section
+    add_settings_section(
+        'webcr_settings_section',
+        'Theme Display Settings',
+        'webcr_settings_section_callback',
+        'theme_settings'
+    );
+
+    // Add fields to the section
+    add_settings_field(
+        'intro_text',
+        'Front Page Introduction',
+        'intro_text_field_callback',
+        'theme_settings',
+        'webcr_settings_section'
+    );
+
+    add_settings_field(
+        'multiple_instances',
+        'Multiple Instance Types',
+        'multiple_instances_field_callback',
+        'theme_settings',
+        'webcr_settings_section'
+    );
+
+    add_settings_field(
+        'footer_background',
+        'Footer Background Color',
+        'footer_background_field_callback',
+        'theme_settings',
+        'webcr_settings_section'
+    );
+}
+add_action('admin_init', 'webcr_settings_init');
+
+// Section callback
+function webcr_settings_section_callback() {
+ //   echo '<p>Customize your theme\'s appearance and functionality.</p>';
+}
+
+// Field callbacks
+function intro_text_field_callback() {
+    $options = get_option('webcr_settings');
+    $value = isset($options['intro_text']) ? $options['intro_text'] : '';
+    ?>
+    <textarea name="webcr_settings[intro_text]" rows="5" cols="50"><?php echo esc_textarea($value); ?></textarea>
+    <p class="description">This text will appear on your site's front page.</p>
+    <?php
+}
+
+function multiple_instances_field_callback() {
+    $options = get_option('webcr_settings');
+    $value = isset($options['multiple_instances']) ? $options['multiple_instances'] : '0';
+    ?>
+    <input type="checkbox" name="webcr_settings[multiple_instances]" value="1" <?php checked('1', $value); ?>>
+    <p class="description">Check this if your site has multiple instance types.</p>
+    <?php
+}
+
+function footer_background_field_callback() {
+    $options = get_option('webcr_settings');
+    $value = isset($options['footer_background']) ? $options['footer_background'] : '#ffffff';
+    ?>
+    <input type="color" name="webcr_settings[footer_background]" value="<?php echo esc_attr($value); ?>">
+    <p class="description">Choose the background color for your footer.</p>
+    <?php
+}
+
+// Create the settings page
+function webcr_settings_page() {
+    // Check user capabilities
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    ?>
+    <div class="wrap">
+        <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+        <form action="options.php" method="post">
+            <?php
+            settings_fields('theme_settings_group');
+            do_settings_sections('theme_settings');
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+// Optional: Add settings link on plugin page
+function add_settings_link($links) {
+    $settings_link = '<a href="admin.php?page=theme_settings">' . __('Settings') . '</a>';
+    array_push($links, $settings_link);
+    return $links;
+}
+$plugin = plugin_basename(__FILE__);
+add_filter("plugin_action_links_$plugin", 'add_settings_link');
+
+// END CODE FOR SITE SETTINGS
+
+
+// NEW AI CODE FOR TAXONOMY
 
 // Register the instance_type taxonomy if it doesn't exist
 function register_instance_type_taxonomy() {
