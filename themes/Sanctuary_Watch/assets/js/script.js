@@ -269,28 +269,13 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
 async function make_title() {
     const protocol = window.location.protocol;
     const host = window.location.host;
-    const fetchURL = `${protocol}//${host}/wp-json/wp/v2/scene?&order=asc`;
+    // const fetchURL = `${protocol}//${host}/wp-json/wp/v2/scene?&order=asc`;
 
     try {
-        let response = await fetch(fetchURL);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        let data = await response.json();
-
-        let currentUrl = window.location.href;
-        console.log(currentUrl);
-        console.log("all the scenes are here.")
-        console.log(data);
-
-        let scene_data = data.find(scene => scene.link === currentUrl);
-        if (!scene_data) {
-            throw new Error('Scene data not found for the current URL');
-        }
-        console.log(scene_data);
+        scene_data = title_arr;
 
         let scene_location = scene_data["scene_location"];
-        let title = scene_data.title.rendered;
+        let title = scene_data['post_title'];
 
         let titleDom = document.getElementById("title-container");
         let titleh1 = document.createElement("h1");
@@ -372,7 +357,7 @@ async function make_title() {
         return scene_data;
 
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('If this fires you really screwed something up', error);
     }
 }
 
@@ -1942,6 +1927,8 @@ function toc_sections() {
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
+        console.log('section herreeeeeee');
+        console.log(child_obj[key]['section_name']);
         if (!sections.includes(section)) {
             sections.push(section);
         }
@@ -2061,6 +2048,8 @@ function table_of_contents(){
     // sectioned_list();
     // console.log(thisInstance);
     // if (thisInstance.instance_toc_style == "accordion"){ //this should be done on the SCENE side of things
+    console.log('child_obj HERE');
+    console.log(child_obj);
     if (scene_toc_style == "accordion"){ //this should be done on the SCENE side of things
         toc_sections();
     } else {
