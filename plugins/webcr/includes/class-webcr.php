@@ -318,7 +318,7 @@ function intro_text_field_callback() {
     $options = get_option('webcr_settings');
     $value = isset($options['intro_text']) ? $options['intro_text'] : '';
     ?>
-    <textarea name="webcr_settings[intro_text]" rows="5" cols="50"><?php echo esc_textarea($value); ?></textarea>
+    <textarea name="webcr_settings[intro_text]" rows="5" cols="100"><?php echo esc_textarea($value); ?></textarea>
     <p class="description">This text will appear on your site's front page.</p>
     <?php
 }
@@ -399,21 +399,21 @@ function register_instance_type_taxonomy() {
         ]);
 
         // Create the "Main" term if it doesn't exist
-        $main_term = term_exists('Main', 'instance_type');
-        if (!$main_term) {
-            $term = wp_insert_term(
-                'Main',                 // The term name
-                'instance_type',        // The taxonomy
-                array(
-                    'slug' => 'main',
-                    'description' => 'Front page top text'
-                )
-            );
+ //       $main_term = term_exists('Main', 'instance_type');
+   //     if (!$main_term) {
+  //          $term = wp_insert_term(
+   //             'Main',                 // The term name
+   //             'instance_type',        // The taxonomy
+  //              array(
+   //                 'slug' => 'main',
+  //                  'description' => 'Front page top text'
+   //             )
+  //          );
             
-            if (!is_wp_error($term)) {
-                update_term_meta($term['term_id'], 'term_order', -1);
-            }
-        }
+//            if (!is_wp_error($term)) {
+ //               update_term_meta($term['term_id'], 'term_order', -1);
+ //           }
+ //       }
     }
 }
 add_action('init', 'register_instance_type_taxonomy', 0); // Priority 0 to run early
