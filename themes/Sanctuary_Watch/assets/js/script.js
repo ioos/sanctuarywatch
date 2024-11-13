@@ -269,28 +269,13 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
 async function make_title() {
     const protocol = window.location.protocol;
     const host = window.location.host;
-    const fetchURL = `${protocol}//${host}/wp-json/wp/v2/scene?&order=asc`;
+    // const fetchURL = `${protocol}//${host}/wp-json/wp/v2/scene?&order=asc`;
 
     try {
-        let response = await fetch(fetchURL);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        let data = await response.json();
-
-        let currentUrl = window.location.href;
-        console.log(currentUrl);
-        console.log("all the scenes are here.")
-        console.log(data);
-
-        let scene_data = data.find(scene => scene.link === currentUrl);
-        if (!scene_data) {
-            throw new Error('Scene data not found for the current URL');
-        }
-        console.log(scene_data);
+        scene_data = title_arr;
 
         let scene_location = scene_data["scene_location"];
-        let title = scene_data.title.rendered;
+        let title = scene_data['post_title'];
 
         let titleDom = document.getElementById("title-container");
         let titleh1 = document.createElement("h1");
@@ -372,7 +357,7 @@ async function make_title() {
         return scene_data;
 
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('If this fires you really screwed something up', error);
     }
 }
 
@@ -840,7 +825,12 @@ function highlight_icons(){
             // elem.style.stroke = sectColors[sectionObj[key]];
             if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
                 // console.log(scene_sections[sectionObj[key]]);
-                elem.style.stroke = scene_sections[sectionObj[key]];
+                // elem.style.stroke = scene_sections[sectionObj[key]];
+                let section_name = sectionObj[key];
+                let section_num = section_name.substring(section_name.length - 1, section_name.length);
+                // console.log(section_num);
+                let this_color = `scene_section_hover_color${section_num}`;
+                elem.style.stroke = scene_data[sectionObj[key]][this_color];
             } else{
                 elem.style.stroke = scene_default_hover_color;
             }
@@ -877,8 +867,12 @@ function flicker_highlight_icons() {
                 // elem.style.stroke =  scene_sections[sectionObj[key]];//sectColors[sectionObj[key]];
             if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
                     // console.log(scene_sections[sectionObj[key]]);
-                    elem.style.stroke = scene_sections[sectionObj[key]];
-            } else{
+                let section_name = sectionObj[key];
+                let section_num = section_name.substring(section_name.length - 1, section_name.length);
+                // console.log(section_num);
+                let this_color = `scene_section_hover_color${section_num}`;
+                elem.style.stroke = scene_data[sectionObj[key]][this_color];
+                } else {
                     elem.style.stroke = scene_default_hover_color;
                 }
                 // console.log("yes here");
@@ -1830,7 +1824,7 @@ function sectioned_list(){
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
-        if (!sections.includes(section)) {
+        if (!sections.includes(section) && section!='None') {
             sections.push(section);
         }
         sectionObj[key] = section;
@@ -1845,9 +1839,9 @@ function sectioned_list(){
     // let colorIdx = 0;
 
     for (let i = 0; i < sections.length; i++) {
-        // if (sections[i] == "None"){
-        //     continue;
-        // }
+        if (sections[i] == "None"){
+            continue;
+        }
         // sectColors[sections[i]] = colors[colorIdx]; 
         // colorIdx = (colorIdx + 1) % colors.length;
         // console.log(sections[i]);
@@ -1857,9 +1851,9 @@ function sectioned_list(){
         // if (!(sections[i] in scene_sections)) {
         //     continue;
         // }
-        let color = scene_sections[sections[i]];
-        console.log("color is: ")
-        console.log(color);
+        // let color = scene_sections[sections[i]];
+        // console.log("color is: ")
+        // console.log(color);
 
         let sect = document.createElement("div");
         // sect.classList.add("accordion-item");
@@ -1884,12 +1878,15 @@ function sectioned_list(){
         
         heading.setAttribute("id", `heading${i}`);
         if (sections[i] != "None"){
-            heading.innerHTML = sections[i];
+            // heading.innerHTML = sections[i];
+            heading.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
+            let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
+            heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
-            if (scene_same_hover_color_sections != "yes"){
-                heading.style.backgroundColor = hexToRgba(color, 0.3);
-            }
+            // if (scene_same_hover_color_sections != "yes"){
+            //     heading.style.backgroundColor = hexToRgba(color, 0.3);
+            // }
             // heading.style.backgroundColor = hexToRgba(color, 0.3);
             heading.style.padding = '0 5px';
         }
@@ -1942,13 +1939,18 @@ function toc_sections() {
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
-        if (!sections.includes(section)) {
+        console.log('section herreeeeeee');
+        console.log(child_obj[key]['section_name']);
+        if (!sections.includes(section) && section!='None') {
             sections.push(section);
         }
         sectionObj[key] = section;
     }
     sections.sort();
-    console.log(sectionObj);
+    console.log(sectionObj); //use this for naming stuff
+
+    console.log(sections);
+    console.log(scene_sections);
 
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("div");
@@ -1967,7 +1969,7 @@ function toc_sections() {
         heading.setAttribute("id", `heading${i}`);
 
         let button = document.createElement("button");
-        let color = scene_sections[sections[i]];
+        // let color = scene_sections[sections[i]];
       
 
         // button.classList.add("accordion-button");
@@ -1978,12 +1980,15 @@ function toc_sections() {
         button.setAttribute("aria-expanded", "false");
         button.setAttribute("aria-controls", `toccollapse${i}`);
         if (sections[i]!="None"){
-            button.innerHTML = sections[i];
-            if (scene_same_hover_color_sections != "yes"){
-                // heading.style.backgroundColor = hexToRgba(color, 0.3);
-                button.style.backgroundColor = hexToRgba(color, 0.2);
-            }
-            // button.style.backgroundColor = hexToRgba(color, 0.2);
+            console.log(sections[i]);
+            console.log(`scene_section_title${i}`);
+            button.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
+            // if (scene_same_hover_color_sections != "yes"){
+            //     // heading.style.backgroundColor = hexToRgba(color, 0.3);
+            //     button.style.backgroundColor = hexToRgba(color, 0.2);
+            // }
+            let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
+            button.style.backgroundColor = hexToRgba(color, 0.2);
             // let span = document.createElement('span');
             // span.style.color = 'black';
             // span.innerHTML = sections[i];
@@ -2061,6 +2066,8 @@ function table_of_contents(){
     // sectioned_list();
     // console.log(thisInstance);
     // if (thisInstance.instance_toc_style == "accordion"){ //this should be done on the SCENE side of things
+    console.log('child_obj HERE');
+    console.log(child_obj);
     if (scene_toc_style == "accordion"){ //this should be done on the SCENE side of things
         toc_sections();
     } else {
@@ -2075,6 +2082,7 @@ function table_of_contents(){
             continue;
         }
         let elem = document.getElementById(child_obj[key]['section_name']);
+        console.log(elem);
         let item = document.createElement("li");
 
         
@@ -2139,6 +2147,7 @@ function table_of_contents(){
         //CHANGE HERE FOR TABLET STUFF
         link.style.textDecoration = 'none';
         // link.style.color = "#343a40";
+        
 
         item.addEventListener('mouseover', function(){
             // console.log('mousing over: ', key); 
@@ -2147,9 +2156,21 @@ function table_of_contents(){
             // console.log(sectionObj);
             // console.log(sectColors);
             // if (thisInstance.instance_colored_sections === "yes"){ //this should be done on the SCENE side of things, will havet o bring this back
+            
+
             if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
                 // console.log(scene_sections[sectionObj[key]]);
-                svg_elem.style.stroke = scene_sections[sectionObj[key]];
+
+                let section_name = sectionObj[key];
+                let section_num = section_name.substring(section_name.length - 1, section_name.length);
+                // console.log(section_num);
+                let this_color = `scene_section_hover_color${section_num}`;
+                svg_elem.style.stroke = scene_data[sectionObj[key]][this_color];
+                // console.log(scene_data[sectionObj[key]]);
+                // let num = scene_data[sectionObj[key]];
+                // console.log(num);
+                // svg_elem.style.stroke = scene_data[sectionObj[key]];
+
             } else{
                 svg_elem.style.stroke = scene_default_hover_color;
             }
@@ -2258,21 +2279,8 @@ function list_toc(){
         let svg_elem = document.querySelector('g[id="' + key + '"]');
     
         item.addEventListener('mouseover', function() {
-            // svg_elem.style.stroke = thisInstance.instance_hover_color;
-            // svg_elem.style.stroke = sectColors[sectionObj[key]];
-            // if (thisInstance.instance_colored_sections === "yes"){ //this should be done on the SCENE side of things
-                // svg_elem.style.stroke = sectColors[sectionObj[key]];
-                // svg_elem.style.stroke = scene_sections[sectionObj[key]];
-
-            // } else{
-            //     svg_elem.style.stroke = colors[0];
-            // }
-            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
-                // console.log(scene_sections[sectionObj[key]]);
-                svg_elem.style.stroke = scene_sections[sectionObj[key]];
-            } else{
-                svg_elem.style.stroke = scene_default_hover_color;
-            }
+          
+            svg_elem.style.stroke = scene_default_hover_color;
             svg_elem.style.strokeWidth = "3";
         });
     
@@ -2284,6 +2292,7 @@ function list_toc(){
         toc_group.appendChild(item);
     }
     toc_container.appendChild(toc_group);
+    document.querySelector("#toc-container > ul").style.paddingLeft = '11rem';
 }
 
 
@@ -2532,7 +2541,7 @@ async function init() {
         // console.log(testData);
         // hover_color = "red";
         // console.log(hover_color);
-        sceneLoc = await make_title(); //this should be done on the SCENE side of things, maybe have make_title return scene object instead
+        sceneLoc = make_title(); //this should be done on the SCENE side of things, maybe have make_title return scene object instead
         thisInstance = sceneLoc;
         console.log("scene location is ");
         console.log(sceneLoc);

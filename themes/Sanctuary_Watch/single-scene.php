@@ -240,8 +240,42 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
 </div>
 </div>
+<?php
+//This is where all of the stuff related to make_title will be. 
+//variables needed: scene_location, 
+global $wpdb;
+
+$query = "SELECT * FROM {$wpdb->postmeta} 
+          WHERE (meta_id = %d OR post_id = %d OR meta_key = %s OR meta_value = %s)
+          LIMIT 100";
+
+$results = $wpdb->get_results($wpdb->prepare($query, $post_id, $post_id, strval($post_id),  strval($post_id)));
+
+$title_arr = [];
+foreach ($results as $row) {
+  $nestedArray = unserialize($row->meta_value);
+  
+  if ($nestedArray === false && $row->meta_value !== 'b:0;') {
+      $title_arr[$row->meta_key] = $row->meta_value;
+  } else {
+    $title_arr[$row->meta_key] = $nestedArray;
+  }
+
+
+}
+
+
+
+?>
  </body>
-    
+<script>
+
+
+let title_arr  = <?php echo json_encode($title_arr); ?>;
+console.log("title array here!");
+console.log(title_arr);
+
+</script>
 
   <!-- </body> -->
 
