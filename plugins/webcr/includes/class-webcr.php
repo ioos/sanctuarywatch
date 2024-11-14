@@ -215,7 +215,7 @@ class Webcr {
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_scene, 'register_scene_rest_fields'); 
 		$this->loader->add_filter( 'rest_scene_query', $plugin_admin_scene, 'filter_scene_by_scene_location', 10, 2); 
 	//	$this->loader->add_filter( 'rewrite_rules_array', $plugin_admin_scene, 'add_scene_rewrite_rules'); 
-//		$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
+	//	$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		
@@ -266,7 +266,7 @@ function webcr_add_admin_menu() {
         'webcr_settings_page' // Function to display the page
     );
 }
-add_action('admin_menu', 'webcr_add_admin_menu');
+ add_action('admin_menu', 'webcr_add_admin_menu');
 
 // Register settings
 function webcr_settings_init() {
@@ -306,7 +306,7 @@ function webcr_settings_init() {
         'webcr_settings_section'
     );
 }
-add_action('admin_init', 'webcr_settings_init');
+ add_action('admin_init', 'webcr_settings_init');
 
 // Section callback
 function webcr_settings_section_callback() {
