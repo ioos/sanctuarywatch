@@ -174,7 +174,7 @@ class Webcr {
 		$this->loader->add_filter( 'admin_menu', $plugin_admin, 'restrict_content_manager_admin_menu', 999); 
 		$this->loader->add_filter( 'upload_mimes', $plugin_admin, 'allow_svg_uploads'); 
 		$this->loader->add_filter( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_bootstrap_admin', 5); 
-		$this->loader->add_filter( 'post_type_link', $plugin_admin, 'custom_permalink', 10, 2); // NEW CLAUDE CODE - PERMALINK STRUCTURE FOR ABOUT AND SCENE CONTENT TYPES
+		// $this->loader->add_filter( 'post_type_link', $plugin_admin, 'custom_permalink', 10, 2); // NEW CLAUDE CODE - PERMALINK STRUCTURE FOR ABOUT AND SCENE CONTENT TYPES
 		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
 		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
 
