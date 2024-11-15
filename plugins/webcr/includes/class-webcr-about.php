@@ -226,34 +226,43 @@ class Webcr_About {
 
     // Force use of single-about.php file for about posts - CLAUDE FUNCTION
     function handle_about_template() {
-    // Check if we're on the /about URL
-    if ($_SERVER['REQUEST_URI'] === '/about/' || $_SERVER['REQUEST_URI'] === '/about') {
-        // Get the about post
-        $about_posts = get_posts(array(
-            'post_type' => 'about',
-            'posts_per_page' => 1,
-            'post_status' => 'publish'
-        ));
+        // Check if we're on the /about URL
+        if ($_SERVER['REQUEST_URI'] === '/about/' || $_SERVER['REQUEST_URI'] === '/about') {
+            // Get the about post
+            $about_posts = get_posts(array(
+                'post_type' => 'about',
+                'posts_per_page' => 1,
+                'post_status' => 'publish'
+            ));
 
-        if (!empty($about_posts)) {
-            // Set up the global post object
-            global $wp_query, $post;
-            $wp_query->is_single = true;
-            $wp_query->is_page = false;
-            $wp_query->is_404 = false;
-            $post = $about_posts[0];
-            $wp_query->posts = array($post);
-            $wp_query->post = $post;
-            $wp_query->post_count = 1;
-            $wp_query->is_posts_page = false;
-            $wp_query->queried_object = $post;
-            $wp_query->queried_object_id = $post->ID;
-            setup_postdata($post);
-            
-            // Load the single-about.php template
-            include(get_template_directory() . '/single-about.php');
-            exit;
+            if (!empty($about_posts)) {
+                // Set up the global post object
+                global $wp_query, $post;
+                $wp_query->is_single = true;
+                $wp_query->is_page = false;
+                $wp_query->is_404 = false;
+                $post = $about_posts[0];
+                $wp_query->posts = array($post);
+                $wp_query->post = $post;
+                $wp_query->post_count = 1;
+                $wp_query->is_posts_page = false;
+                $wp_query->queried_object = $post;
+                $wp_query->queried_object_id = $post->ID;
+                setup_postdata($post);
+                
+                // Load the single-about.php template
+                include(get_template_directory() . '/single-about.php');
+                exit;
+            }
         }
     }
+
+    // Modify the permalink structure for About post type - CLAUDE function
+    function custom_about_permalink($post_link, $post) {
+        if ($post->post_type === 'about') {
+            return home_url('about');
+        }
+        return $post_link;
     }
+    
 }

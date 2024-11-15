@@ -174,7 +174,7 @@ class Webcr {
 		$this->loader->add_filter( 'admin_menu', $plugin_admin, 'restrict_content_manager_admin_menu', 999); 
 		$this->loader->add_filter( 'upload_mimes', $plugin_admin, 'allow_svg_uploads'); 
 		$this->loader->add_filter( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_bootstrap_admin', 5); 
-		// $this->loader->add_filter( 'post_type_link', $plugin_admin, 'custom_permalink', 10, 2); // NEW CLAUDE CODE - PERMALINK STRUCTURE FOR ABOUT AND SCENE CONTENT TYPES
+//		 $this->loader->add_filter( 'post_type_link', $plugin_admin, 'custom_permalink', 10, 2); // NEW CLAUDE CODE - PERMALINK STRUCTURE FOR ABOUT AND SCENE CONTENT TYPES
 		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
 		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
 
@@ -186,6 +186,7 @@ class Webcr {
 		$this->loader->add_action( 'admin_notices', $plugin_admin_about, 'display_about_limit_notice' );  // New Claude function for restricting number of about posts
 		$this->loader->add_action( 'wp_insert_post_data', $plugin_admin_about, 'prevent_multiple_about_posts', 10, 2);  // New Claude function for restricting number of about posts
 		$this->loader->add_action( 'template_redirect', $plugin_admin_about, 'handle_about_template' );  // New Claude function for forcing use of single-about.php file for about posts
+		$this->loader->add_filter( 'post_type_link', $plugin_admin_about, 'custom_about_permalink', 10, 2 ); // Claude function for forcing About permalink structure
 
 		// Load  class and functions associated with Instance custom content type
 		$plugin_admin_instance = new Webcr_Instance ( $this->get_plugin_name(), $this->get_version() );		
@@ -214,8 +215,8 @@ class Webcr {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin_scene, 'enqueue_scene_admin_columns_css'); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_scene, 'register_scene_rest_fields'); 
 		$this->loader->add_filter( 'rest_scene_query', $plugin_admin_scene, 'filter_scene_by_scene_location', 10, 2); 
-	//	$this->loader->add_filter( 'rewrite_rules_array', $plugin_admin_scene, 'add_scene_rewrite_rules'); 
-	//	$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
+		$this->loader->add_filter( 'rewrite_rules_array', $plugin_admin_scene, 'add_scene_rewrite_rules'); 
+		$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		
