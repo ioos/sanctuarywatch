@@ -1,8 +1,8 @@
 <?php
 defined('ABSPATH') || exit;
 $instance_num =  get_post_meta(get_the_ID(), 'scene_location', true);
-$instance_contact_person = get_post_meta($instance_num, 'instance_contact_person', true);
-$instance_more_info = get_post_meta($instance_num, 'instance_more_info', true);
+// $instance_contact_person = get_post_meta($instance_num, 'instance_contact_person', true);
+// $instance_more_info = get_post_meta($instance_num, 'instance_more_info', true);
 $instance_footer_about = get_post_meta($instance_num, 'instance_footer', true);
 
 ?>
@@ -12,10 +12,10 @@ let instance_more_info =  <?php echo json_encode($instance_more_info); ?>;
 let instance_num = <?php echo json_encode($instance_num); ?>;
 let instance_footer_about = <?php echo json_encode($instance_footer_about); ?>;
 console.log("footer stuff");
-console.log(instance_num);
-console.log(instance_contact_person);
-console.log(instance_more_info);
-console.log('more footer');
+// console.log(instance_num);
+// console.log(instance_contact_person);
+// console.log(instance_more_info);
+// console.log('more footer');
 console.log(instance_footer_about);
 </script>
 
@@ -25,6 +25,7 @@ console.log(instance_footer_about);
             <div class="col-md-4" style="flex: 0 0 33.333%; padding: 0 15px;">
                 <h5 style="color: white; font-weight: bold; margin-bottom: 12px;"><?php echo esc_html($instance_footer_about['instance_footer_about']); ?></h5>
                 <a href="<?php echo esc_html($instance_more_info['instance_url']); ?>" id="about-sanctuary-btn" style="
+                <!-- <a href="<?php echo esc_html($instance_footer_about['instance_url']); ?> id="about-sanctuary-btn" style=" -->
                     color: white; 
                     padding: 6px 0;
                     border: none;
