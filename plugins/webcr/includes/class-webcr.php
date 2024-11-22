@@ -257,6 +257,30 @@ class Webcr {
 
 // NEW AI CODE FOR SITE SETTINGS
 
+// code version for instance
+function instance_settings_init() {
+    // Register a new settings group
+    register_setting('theme_settings_group', 'instance_settings');
+
+    // Add a new section
+    add_settings_section(
+        'instance_settings_section',
+        'Instance Settings',
+        'webcr_settings_section_callback',
+        'instance_settings'
+    );
+
+    add_settings_field(
+        'multiple_instances',
+        'Multiple Instance Types',
+        'multiple_instances_field_callback',
+        'manage-instance-types',
+        'instance_settings_section'
+    );
+}
+ add_action('admin_init', 'instance_settings_init');
+
+
 // Add menu item to WordPress admin
 function webcr_add_admin_menu() {
     add_menu_page(
