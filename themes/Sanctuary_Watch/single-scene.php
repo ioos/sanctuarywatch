@@ -1,3 +1,12 @@
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HQV3WX3V2W"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HQV3WX3V2W');
+</script>
 <?php
 /**
  * Detailed Scene Page Template
@@ -47,32 +56,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 //     const postId = <?php echo json_encode($post_id); ?>;
 //     const instanceSlug = <?php echo json_encode($instance_slug); ?>;
 //     const overviewSceneId = <?php echo json_encode($overview); ?>;
-
-//     function changeUrl() {
-//       const currentHash = window.location.hash;
-//       if (Number(postId) === Number(overviewSceneId)) {
-
-//             const newUrl = `/${instanceSlug}/`;
-//             history.pushState(null, '', newUrl);
-//             console.log('URL changed to:', newUrl);
-//         }
-//     }
-
-//     const observer = new MutationObserver(function(mutations, obs) {
-//         if (document.readyState === 'complete') {
-//             changeUrl();
-//             obs.disconnect(); 
-//             console.log('Page fully loaded, URL updated');
-//         }
-//     });
-
-//     const config = { childList: true, subtree: true };
-
-//     observer.observe(document.body, config);
-// });
-
 </script>
-
 
 <body      >
   <!-- for the mobile image stuff -->
