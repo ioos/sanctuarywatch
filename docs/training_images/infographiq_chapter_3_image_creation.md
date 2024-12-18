@@ -3,7 +3,7 @@
 
 Infographiq works with vector-based images that are set up in a very specific way. Here we provide instructions for two vector graphics packages: [Adobe Illustrator](https://www.adobe.com/products/illustrator.html) (requires a paid subscription) and [Inkscape](https://inkscape.org/) (free).
 
-You’ll also need the example folder for Infographiq, which provides a full working example that you can fiddle around with. We’ll be referring to this folder extensively in this guide and you can download a compressed version [here](https://marinebon.org/infographiqJS/infographiq_example.zip). Just unzip the folder after it has been downloaded.
+You’ll also need the example folder for Infographiq, which provides a full working example that you can fiddle around with. We’ll be referring to this folder extensively in this guide and you can download a compressed version [here](https://github.com/ioos/sanctuarywatch/blob/robbiebranch/docs/training_images/infographiq_chapter_3_files.zip). Just unzip the folder after it has been downloaded.
 
 You can see the working example in action as a finished product [here](https://marinebon.org/infographiqJS/infographiq_example/infographic.html).
 
