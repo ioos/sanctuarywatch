@@ -15,7 +15,7 @@ This guide assumes you have a basic knowledge of using Illustrator ([here is a g
 
 In the Infographiq example folder, you’ll find a file called **"test_image1.ai"**. Open this file in Illustrator and you’ll see the following:
 
-![Logo](updated_images/image1-illustrator.png)
+<img src="updated_images/image1-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
 If you check out the "Layers" tab for the image above, you’ll see that the image is composed of four layers:
 
@@ -32,12 +32,12 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     3. icons
     4. background
 
-![Logo](updated_images/image2-illustrator.png)
+<img src="updated_images/image2-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
 ### 3.1.1 Layer organization
 
 1. **mobile**: 
-     This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orentation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the elements and items on web pages to be displayed very differently. When creating a vector for Infographiq, it is good practice to account change of display because society ubiquitously uses both device types when surfing the waves of information on the world wide web. 
+     This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orentation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the elements and items on web pages to be displayed very differently. When creating a vector for Infographiq, it is good practice to account for the change of display because society ubiquitously uses both device types when surfing the waves of information on the world wide web. 
      
      We will put a pin in this section for the time being and revisit at the end of this section because we will need to use some layers from "3. icons" to complete it correctly.
 
@@ -47,7 +47,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
 
     In the Layers panel, after we click ">" to expand the "text" layer, we can see that this layer contains several elements denoted by <Group>:
 
-    ![Logo](updated_images/image3-illustrator.png)
+    <img src="updated_images/image3-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
     There are three essential things here:
 
@@ -55,7 +55,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
 
     B. None of the elements within this layer can be named “text”. The following (where one of the elements is named text) is not allowed:
 
-    ![Logo](updated_images/image4-illustrator.png)
+    <img src="updated_images/image4-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
     C. Double check that the font you select for the text elements displays well in a browser. The default font for Illustrator is often “Myriad Pro”, which does not display well. There are many great alternatives, with one being “Arial”.
 
@@ -65,7 +65,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
 
     If you check out the "Layers" panel for “icons”, you’ll see that it contains four sublayers; octopus, bird, boat, & shark.
 
-    ![Logo](updated_images/image5-illustrator.png) 
+    <img src="updated_images/image5-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
     Each of these sublayers defines a single clickable component of the image.
 
@@ -78,7 +78,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - Each sublayer contains all of the elements for a single clickable icon.
 
      - The elements in the sublayer, if named, should not have the same name as the sublayer itself. So, for example, the following won’t work :
-     ![Logo](updated_images/image6-illustrator.png)
+     <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
 4. **background**:
 
@@ -89,14 +89,14 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     Step 1: Expand the layers for "icons" using the ">" toggle next to the word. Then, select the four sublayers; octopus, bird, boat, & shark under by clicking on the top option "octopus", then while holding the "shift" key, click on the bottom option "shark". You should see all four sublayers highlighted in light blue. You can realease the shift key. 
     
     Step 2: In the top right corner of the "Layers" window, click on the three stacked bars to expand the options menu and select "Duplicate Selection".
-    ![Logo](updated_images/image7-illustrator.png)
+    <img src="updated_images/image7-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
     Step 3: Next, with the four orginal sublayers still selected, hover the mouse on top of them then click and hold them, then "drag and drop" them directly over the "mobile" layer. You will see that they will be moved to the "mobile" layer section.
-    ![Logo](updated_images/image8-illustrator.png)  
+    <img src="updated_images/image8-illustrator.png" alt="Alt Text" width="80%" height="80%"> 
 
     **Considerations:**
     - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject. 
-    ![Logo](updated_images/image9-illustrator.png) 
+    <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="50%" height="50%">
 
 ### 3.1.2 Dealing with raster-based elements
 
@@ -115,20 +115,24 @@ One dead give-away that an image is raster-based is if the file is saved in a ra
     .tiff (Tag Image File Format)
 
 Checking the file extension isn’t a fool-proof system though. Just because an image is saved in some other format than those above doesn’t mean that it isn’t a raster-based image. So, how can you know for sure? Well, open the image up in Illustrator and take a close look at the Layer panel. If the image is raster-based, it will say <Image> under the appropriate layer (be sure to click the arrow just to the left of the layer name to see what it contains). See below for an example:
-![Logo](updated_images/image10-illustrator.png) 
+
+<img src="updated_images/image10-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
 **Converting a raster to a vector**
 
 If you have some raster-based elements that you’d like to include in your Infographiq image, Illustrator has got you covered. You’ll just need to convert those elements into vectors and here’s how to do that:
 
 1. Select image (from Layers; or Select All from menu).
-![Logo](updated_images/image11-illustrator.png)
+
+<img src="updated_images/image11-illustrator.png" alt="Alt Text" width="60%" height="60%">
 
 2. From the menu, select Object > Image Trace > Make and Expand.
-![Logo](updated_images/image12-illustrator.png)
+
+<img src="updated_images/imag12-illustrator.png" alt="Alt Text" width="60%" height="60%">
 
 3. Delete (trash icon in Layers menu) or Unite/Merge (in Pathfinder menu) the selected layers until you achieve the desired simplified icon result.
-![Logo](updated_images/image13-illustrator.png)
+
+<img src="updated_images/image13-illustrator.png" alt="Alt Text" width="60%" height="60%">
 
 ### 3.1.3 Saving the image
 
@@ -137,7 +141,9 @@ To be used by Infographiq, the file must be exported in svg format. To do so:
 1. From the menu, click: File > Export > Export As.
 2. In the following screen, select svg format. Be sure to click “Use Artboards”.
 3. In the final screen that pops up, be sure to set Object IDs to “Layer Names”, as follows:
-![Logo](updated_images/image14-illustrator.png)
+
+<img src="updated_images/image14-illustrator.png" alt="Alt Text" width="50%" height="50%">
+
 4. The default for Illustrator is to add an “01” to your svg file name (so, “example.svg” becomes “example01.svg”. Change the file name back to your desired choice.
 
 ## 3.2 Inkscape
@@ -146,17 +152,37 @@ This guide assumes you have a basic knowledge of using Inkscape ([here is a grea
 
 In the Infographiq example folder, you’ll find a file called test-image1.svg. Open this file in Inkscape and you’ll see the following:
 
-![Logo](updated_images/image15-inkscape.png)
+- You can open up the "Layers" panel by clicking on the stacked icon in the top navigation bar. It's highlighted in red. 
+
+<img src="updated_images/image15-inkscape.png" alt="Alt Text" width="80%" height="80%">
 
 If you check out the Layers panel for the image, you’ll see the following:
-![Logo](updated_images/image16-inkscape.png)
+
+<img src="updated_images/image16-inkscape.png" alt="Alt Text" width="50%" height="50%">
 
 This is the required layer order of an Inkscape image.
+
 ### 3.2.1 Layer organization
 
-1. text: This first layer is optional and, if present, must be called lower case “text”. This layer contains additional explanatory text and graphics for the image that the Infographiq Javascript can toggle on and off. To see this in action, click the “Text in image” button in the upper right of our Infographiq example. The essential thing here is that all of the elements are vector-based (nothing raster-based). If you happen to have raster-based elements in your image (or are not sure), we can tell you what to do about it in this section of this document: dealing with raster-based elements.
+1. **mobile**:
 
-2. icons. The second layer is required and contains all of the clickable elements in the image. This layer can be named anything, except for “text” or the name of any clickable element in the image. If you check out the Layers panel for “icons” (see image just above), you’ll see that it contains six sublayers (chartexample1 through 6). Each of these sublayers defines a single clickable component of the image.
+     This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orentation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the elements and items on web pages to be displayed very differently. When creating a vector for Infographiq, it is good practice to account for the change of display because society ubiquitously uses both device types when surfing the waves of information on the world wide web. 
+     
+     We will put a pin in this section for the time being and revisit at the end of this section because we will need to use some layers from "3. icons" to complete it correctly.
+
+2. **text**:
+
+    There are three essential things here:
+
+    A. All of the elements are vector-based (nothing raster-based, raster means image such as .tif, .jpg, or .png). If you happen to have raster-based elements in your image (or are not sure), we strongly reccomend that you find a vector version or attempt to convert the raster item to a vector. Rasters will break the functionality of Infographiq and are not meant to be used in these workflows. 
+
+    B. None of the elements within this layer can be named “text”. In this case, it doesnt really apply becasue there are no sublayers for "text". but, if you did have them this would be the case.
+
+    C. Double check that the font you select for the text elements displays well in a browser. The default font for Illustrator is often “Myriad Pro”, which does not display well. There are many great alternatives, with one being “Arial”.
+
+3. **icons**:
+
+    This layer is required and contains all of the clickable elements in the image. This layer can be named anything, except for “text” or the name of any clickable element in the image. If you check out the Layers panel for “icons” (see image just above), you’ll see that it contains four sublayers (chartexample1 through 6). Each of these sublayers defines a single clickable component of the image.
 
     - The names of these sublayers should not contain spaces, commas, or be called “text”.
 
@@ -166,7 +192,18 @@ This is the required layer order of an Inkscape image.
 
     - Each sublayer contains all of the elements for a single clickable icon.
 
-3. background: an optional layer that contains all non-responsive elements of the image. This layer can be called anything (other than “text” or the name of a clickable layer). It is ignored by the Infographiq Javascript.
+4. **background**:
+
+    Another optional layer that contains all non-responsive elements of the image. This layer can be called anything (other than “text” or the name of a clickable layer). It is ignored by the Infographiq Javascript.
+
+5. **mobile** continued: 
+
+    Once again, as in the exmaple for Adobe Illustrator above, the four sublayers; octopus, bird, boat, & shark need to be copied and placed into the mobile folder for icons. If you expand "mobile" layer, you will see the sublayers inside of it.
+
+    **Considerations**:
+    - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject.
+
+    <img src="updated_images/image19-inkscape.png" alt="Alt Text" width="40%" height="40%">
 
 ### 3.2.2 Editing the layer XML
 
@@ -177,7 +214,8 @@ In order for the Infographiq image to behave properly, you will need to edit the
 2. XML Editor (to show from Menu, Edit > XML Editor…)
 
 Let’s zoom in on these panels for the image inkscape_example.svg:
-![Logo](updated_images/image17-inkscape.png)
+
+<img src="updated_images/image17-inkscape.png" alt="Alt Text" width="50%" height="50%">
 
 For each of your layers:
 
@@ -202,7 +240,8 @@ One dead give-away that an image is raster-based is if the file is saved in a ra
     - .tiff (Tag Image File Format)
 
 Checking the file extension isn’t a fool-proof system though. Just because an image is saved in some other format than those above doesn’t mean that it isn’t a raster-based image. So, how can you know for sure? Well, open the image up in Inkscape and right click on it. If in the options you see “Image Properties…”, you’ve got a raster-based image on your hands (see image below).
-![Logo](updated_images/image18-inkscape.png)
+
+<img src="updated_images/image18-inkscape.png" alt="Alt Text" width="50%" height="50%">
 
 Converting a raster to a vector
 
