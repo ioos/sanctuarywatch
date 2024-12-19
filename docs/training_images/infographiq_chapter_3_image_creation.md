@@ -17,9 +17,9 @@ In the Infographiq example folder, you’ll find a file called **"test_image1.ai
 
 <img src="updated_images/image1-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
-If you check out the "Layers" tab for the image above, you’ll see that the image is composed of four layers:
+If you check out the "Layers" tab for the image above, you’ll see that the image is composed of four layers: mobile, text, icons, and background.
 
-If you don't see "Layers", use this access path: *Top Navigation Bar > Windows > Layers
+If you don't see "Layers", use this access path: *Top Navigation Bar > Windows > Layers*
 
  - When optimizing a graphic for desktop view only, the required layer order for Infographiq is listed below. You'll notice it's missing the "mobile" section as shown in the image. All the following steps will still apply, just skip the sections about "mobile" in the following sections. 
     1. text
@@ -71,13 +71,14 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
 
      - The names of these sublayers should not contain spaces, commas, or be called “text”.
 
-     - All elements within the sublayers should be vector-based and not raster-based. If you happen to have raster-based elements in your image (or are not sure), we can tell you what to do about it in this section of this document: dealing with raster-based elements.
+     - All elements within the sublayers should be vector-based and not raster-based. If you happen to have raster-based elements in your image (or are not sure), we you will need to convert them to vector  objects using the [image trace tool](https://helpx.adobe.com/illustrator/using/image-trace.html).
 
      - Nothing should overlap on top of anything you want to be clickable.
 
      - Each sublayer contains all of the elements for a single clickable icon.
 
      - The elements in the sublayer, if named, should not have the same name as the sublayer itself. So, for example, the following won’t work :
+
      <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
 4. **background**:
@@ -186,7 +187,7 @@ This is the required layer order of an Inkscape image.
 
     - The names of these sublayers should not contain spaces, commas, or be called “text”.
 
-    - All elements within the sublayers should be vector-based and not raster-based. If you happen to have raster-based elements in your image (or are not sure), we can tell you what to do about it in this section of this document: dealing with raster-based elements.
+    - All elements within the sublayers should be vector-based and not raster-based. If you happen to have raster-based elements in your image (or are not sure), they will need to be converted to vector objects using the method linked [here](https://inkscape.org/doc/tutorials/tracing/tutorial-tracing.html) in Inkscape. 
 
     - Nothing should overlap on top of anything you want to be clickable.
 
@@ -200,10 +201,14 @@ This is the required layer order of an Inkscape image.
 
     Once again, as in the exmaple for Adobe Illustrator above, the four sublayers; octopus, bird, boat, & shark need to be copied and placed into the mobile folder for icons. If you expand "mobile" layer, you will see the sublayers inside of it.
 
+    <img src="updated_images/image19-inkscape.png" alt="Alt Text" width="40%" height="40%">
+
     **Considerations**:
     - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject.
 
-    <img src="updated_images/image19-inkscape.png" alt="Alt Text" width="40%" height="40%">
+    <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="50%" height="50%">
+
+    
 
 ### 3.2.2 Editing the layer XML
 
