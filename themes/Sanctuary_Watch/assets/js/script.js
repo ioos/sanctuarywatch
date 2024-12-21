@@ -2319,7 +2319,7 @@ function add_modal(){
 
             });
             } else {
-                elem.addEventListener('click', function() {
+                elem.addEventListener('click', function(event) {
                     gtag('event', 'modal_icon_click', {
                         'event_category': 'Button Interaction',
                         'event_label': 'Track Me Button',
@@ -2361,7 +2361,7 @@ function add_modal(){
             };
     
         } else {
-            elem.addEventListener('click', function() {
+            elem.addEventListener('click', function(event) {
                 gtag('event', 'modal_icon_click', {
                     'event_category': 'Button Interaction',
                     'event_label': 'Track Me Button',
