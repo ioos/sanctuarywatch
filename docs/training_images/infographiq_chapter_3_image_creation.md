@@ -204,9 +204,16 @@ This is the required layer order of an Inkscape image.
     <img src="updated_images/image19-inkscape.png" alt="Alt Text" width="40%" height="40%">
 
     **Considerations**:
-    - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject.
+    - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject. Below is an exmaple of what you icons might look like when displayed in mobile view. 
 
     <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="50%" height="50%">
+
+    - **Adding a background to your image:**
+    - It is a good idea. 
+
+    
+
+
 
     
 
