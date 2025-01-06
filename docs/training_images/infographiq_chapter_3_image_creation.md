@@ -81,6 +81,24 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
 
      <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
+    **Adding a background to images:**
+     - It might be nessescary to add a trasnparent white square to the back of complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple arms or branches. In our example, we will use the pelican. 
+
+     - Step 1: In the "Layers" panel we have turned off all of the other layers and selected the "bird" icon under mobile. Keep in mind this method will apply to icons in the "icons" layer and the "mobile" layer. Both will need to be edited.
+         - <img src="updated_images/image20-1-illustrator.png" alt="Alt Text" width="70%" height="70%">
+
+     - Step 2: Select the "rectangle tool" from the left-side bar
+         - <img src="updated_images/image20-2-illustrator.png" alt="Alt Text" width="40%" height="40%">
+     
+     - Step 3: While holding left-click with your mouse, drag a square from the top-left of the pelican to the bottom-right.
+         - <img src="updated_images/image20-3-illustrator.png" alt="Alt Text" width="70%" height="70%">
+    
+     - Step 4: The rectangle you create may cover your icon. If this happens, right click on the rectangle, hover over "arrage" in the expanded menu, and then click on "Send to Back". This will make it the bottom layer of your icon.
+         - <img src="updated_images/image20-4-illustrator.png" alt="Alt Text" width="40%" height="40%">
+
+     - Step 5: To make your rectangle transparent, be sure to click on both the "fill" and "outline" portions of the color indicator on the bottom of your left side tool bar. Once you select either "fill" (#1.1) or "outline" (#1.2) in the top section, click on the white box with the red strike-through in the bottom right (#2) to make it transparent. The "fill" or "outline" will also have this red strike-through when it is applied to them as shown below. 
+         - <img src="updated_images/image20-5-illustrator.png" alt="Alt Text" width="30%" height="30%">
+
 4. **background**:
 
     This is an optional layer that contains all non-responsive elements of the image. This layer can be called anything (other than “text” or the name of a clickable sublayer). It is ignored by the Infographiq Javascript. We reccomend calling it "background" though.
@@ -96,7 +114,8 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     <img src="updated_images/image8-illustrator.png" alt="Alt Text" width="80%" height="80%"> 
 
     **Considerations:**
-    - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject. 
+    - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject. Below is an example of what you icons might look like when displayed in mobile view.
+
     <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="50%" height="50%">
 
 ### 3.1.2 Dealing with raster-based elements
@@ -199,23 +218,14 @@ This is the required layer order of an Inkscape image.
 
 5. **mobile** continued: 
 
-    Once again, as in the exmaple for Adobe Illustrator above, the four sublayers; octopus, bird, boat, & shark need to be copied and placed into the mobile folder for icons. If you expand "mobile" layer, you will see the sublayers inside of it.
+    Once again, as in the exmaple for Adobe Illustrator above, the four sublayers; octopus, bird, boat, & shark need to be copied and placed into the mobile folder for icons. If you expand "mobile" layer, you will see the sublayers inside of it. Below is an example of what you icons might look like when displayed in mobile view.
 
     <img src="updated_images/image19-inkscape.png" alt="Alt Text" width="40%" height="40%">
 
     **Considerations**:
-    - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject. Below is an exmaple of what you icons might look like when displayed in mobile view. 
+    - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject.
 
     <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="50%" height="50%">
-
-    - **Adding a background to your image:**
-    - It is a good idea. 
-
-    
-
-
-
-    
 
 ### 3.2.2 Editing the layer XML
 
