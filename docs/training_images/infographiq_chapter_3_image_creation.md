@@ -45,6 +45,8 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     
     This layer is optional and, if present, must be called lower case “text”. It contains additional explanatory text and graphics for the image that the Infographiq Javascript can toggle on and off. To see this in action, click the “Text in image” button in the upper right of our [Infographiq example](https://marinebon.org/infographiqJS/infographiq_example/infographic.html).
 
+     - **When creting text, be sure to use a [web-safe font](https://www.w3schools.com/cssref/css_websafe_fonts.php) to ensure that your text displays correctly in a web browser.** 
+
     In the Layers panel, after we click ">" to expand the "text" layer, we can see that this layer contains several elements denoted by <Group>:
 
     <img src="updated_images/image3-illustrator.png" alt="Alt Text" width="80%" height="80%">
@@ -82,7 +84,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
     **Adding a background to images:**
-     - It might be nessescary to add a trasnparent white square to the back of complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple arms or branches. In our example, we will use the pelican. 
+     It might be nessescary to add a trasnparent white square or rectangle to the back of complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple arms or branches. In our example, we will use the pelican. 
 
      - Step 1: In the "Layers" panel we have turned off all of the other layers and selected the "bird" icon under mobile. Keep in mind this method will apply to icons in the "icons" layer and the "mobile" layer. Both will need to be edited.
          - <img src="updated_images/image20-1-illustrator.png" alt="Alt Text" width="70%" height="70%">
