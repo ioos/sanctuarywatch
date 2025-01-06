@@ -84,7 +84,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
     **Adding a background to images:**
-     It might be nessescary to add a trasnparent white square or rectangle to the back of complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple arms or branches. In our example, we will use the pelican. 
+     It might be nessescary to add a transparent white square or rectangle to the back of complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple arms or branches. In our example, we will use the pelican. 
 
      - Step 1: In the "Layers" panel we have turned off all of the other layers and selected the "bird" icon under mobile. Keep in mind this method will apply to icons in the "icons" layer and the "mobile" layer. Both will need to be edited.
          - <img src="updated_images/image20-1-illustrator.png" alt="Alt Text" width="70%" height="70%">
@@ -213,6 +213,11 @@ This is the required layer order of an Inkscape image.
     - Nothing should overlap on top of anything you want to be clickable.
 
     - Each sublayer contains all of the elements for a single clickable icon.
+
+    **Adding a background to images:**
+    It might be nessescary to add a transparent white square or rectangle to the back of complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple arms or branches.
+
+    - See the Illustator section for "Icons > Adding a background to images" above fora general outline of what needs to be done in Inkscape as well. 
 
 4. **background**:
 
