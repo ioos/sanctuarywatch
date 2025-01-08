@@ -194,6 +194,8 @@ This is the required layer order of an Inkscape image.
 
 2. **text**:
 
+     - **When creting text, be sure to use a [web-safe font](https://www.w3schools.com/cssref/css_websafe_fonts.php) to ensure that your text displays correctly in a web browser.** 
+
     There are three essential things here:
 
     A. All of the elements are vector-based (nothing raster-based, raster means image such as .tif, .jpg, or .png). If you happen to have raster-based elements in your image (or are not sure), we strongly reccomend that you find a vector version or attempt to convert the raster item to a vector. Rasters will break the functionality of Infographiq and are not meant to be used in these workflows. 
