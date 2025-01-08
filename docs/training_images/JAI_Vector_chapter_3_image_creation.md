@@ -1,11 +1,11 @@
 
-# Chapter 3 Creating an Java-Script Actionable Image Vector (JAI Vector) #
+# Chapter 3 Creating a Java-Script Actionable Image Vector (JAI Vector) #
 
-Java-Script Actionable Image Vectors (JAI Vectors) are vector-based images in an .svg format that are set up specifically to allow the individual components of the image to be responsive objects that are highlighted when a mouse hovers over them. If clicked, they provide access to either other JAI Vectors, or windows with informative interactive graphs, charts, or other content.
+Java-Script Actionable Image Vectors (JAI Vectors) are vector-based images in an .svg or .ai format that are set up specifically to allow the individual components of the image to be responsive objects that are highlighted when a mouse hovers over them. If clicked, they provide access to either other JAI Vectors, or windows with informative interactive graphs, charts, or other content.
 
 Here we provide instructions for two vector graphics packages: 
-- [Adobe Illustrator](https://www.adobe.com/products/illustrator.html) (requires a paid subscription)
-- [Inkscape](https://inkscape.org/) (free)
+- [Adobe Illustrator (.ai)](https://www.adobe.com/products/illustrator.html) (requires a paid subscription)
+- [Inkscape (.svg)](https://inkscape.org/) (free)
 
 For this tutorial, you will need the example folder for the JAI Vectors, which provides a full working example that you can fiddle around with. We will be referring to this folder extensively in this guide and you can download a compressed version [here](https://github.com/ioos/sanctuarywatch/blob/robbiebranch/docs/training_images/JAI_Vectors_chapter_3_files.zip). Just unzip the folder after it has been downloaded.
 
@@ -19,7 +19,7 @@ This guide assumes you have a basic knowledge of using Illustrator ([here is a g
 
 In the JAI Vector example folder, you will find a file called **"test_image1.ai"**. Open this file in Illustrator and you will see the following:
 
-<img src="updated_images/image1-illustrator.png" alt="Alt Text" width="80%" height="80%">
+ - <img src="updated_images/image1-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
 If you check out the "Layers" tab for the image above, you’ll see that the image is composed of four layers: mobile, text, icons, and background.
 
@@ -36,7 +36,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     3. icons
     4. background
 
-<img src="updated_images/image2-illustrator.png" alt="Alt Text" width="80%" height="80%">
+     - <img src="updated_images/image2-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
 ### 3.1.1 Layer organization
 
@@ -47,21 +47,19 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
 
 2. **text**: 
     
-    This layer is optional and, if present, must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off. To see this in action, click the “Text in image” button in the upper right of our [JAI Vectors example](https://marinebon.github.io/infographiqJS/demo.html).
+    **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
 
      - **When creating text, be sure to use a [web-safe font](https://www.w3schools.com/cssref/css_websafe_fonts.php) to ensure that your text displays correctly in a web browser.** 
 
     In the Layers panel, after we click ">" to expand the "text" layer, we can see that this layer contains several elements denoted by <Group>:
-
-    <img src="updated_images/image3-illustrator.png" alt="Alt Text" width="80%" height="80%">
+     - <img src="updated_images/image3-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
     There are three essential things here:
 
     A. All of the elements are vector-based (nothing raster-based, raster means image such as .tif, .jpg, or .png). If you happen to have raster-based elements in your image (or are not sure), we strongly recommend that you find a vector version or attempt to convert the raster item to a vector using the [image trace tool](https://helpx.adobe.com/illustrator/using/image-trace.html). Rasters will break the functionality of JAI Vectors and are not meant to be used in these workflows. 
 
     B. None of the elements within this layer can be named “text”. The following (where one of the elements is named text) is not allowed:
-
-    <img src="updated_images/image4-illustrator.png" alt="Alt Text" width="80%" height="80%">
+     - <img src="updated_images/image4-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
     C. Double check that the font you select for the text elements displays well in a browser. The default font for Illustrator is often “Myriad Pro”, which does not display well. There are many great alternatives, with one being “Arial”.
 
@@ -70,8 +68,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     **This layer is required** and contains all of the clickable elements in the image. This layer can be named anything, except for “text” or the name of any other clickable element in the image. We recommend the name "icons" though.
 
     If you check out the "Layers" panel for “icons”, you’ll see that it contains four sub-layers; octopus, bird, boat, & shark.
-
-    <img src="updated_images/image5-illustrator.png" alt="Alt Text" width="80%" height="80%">
+     - <img src="updated_images/image5-illustrator.png" alt="Alt Text" width="70%" height="70%">
 
     Each of these sub-layers defines a single clickable component of the image.
 
@@ -84,26 +81,28 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - Each sub-layer contains all of the elements for a single clickable icon.
 
      - The elements in the sub-layer, if named, should not have the same name as the sub-layer itself. So, for example, the following won’t work :
+         - <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="70%" height="70%">
 
-     <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="80%" height="80%">
+    **Adding a background to complex objects to make them easy to highlight:**
+     It might be necessary to add a transparent rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches. In our example, we will use an added layer called "sardines" which is located in layers under "icons > sardines". 
 
-    **Adding a background to images:**
-     It might be necessary to add a transparent white square or rectangle to the back of complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple arms or branches. In our example, we will use the pelican. 
+     - Step 1: In the main ArtBoard, we have selected all of the "sardines" (2). You will see the shape tool on the left-side toolbar (1), and the "sardines" layer selected on the right-side Layers panel (3). 
+         - <img src="updated_images/image20-1-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
-     - Step 1: In the "Layers" panel we have turned off all of the other layers and selected the "bird" icon under mobile. Keep in mind this method will apply to icons in the "icons" layer and the "mobile" layer. Both will need to be edited.
-         - <img src="updated_images/image20-1-illustrator.png" alt="Alt Text" width="70%" height="70%">
-
-     - Step 2: Select the "rectangle tool" from the left-side bar
+     - Step 2: Select the "Ellipse tool" from the left-side bar
          - <img src="updated_images/image20-2-illustrator.png" alt="Alt Text" width="40%" height="40%">
      
-     - Step 3: While holding left-click with your mouse, drag a square from the top-left of the pelican to the bottom-right.
-         - <img src="updated_images/image20-3-illustrator.png" alt="Alt Text" width="70%" height="70%">
+     - Step 3: While holding right-click with your mouse, drag an ellipse from the top-left of the sardines to the bottom-right. When you first draw the ellipse it may cover your sardines, this is ok and we will fix it in a second. You can edit the size and rotation of the ellipse by hovering your mouse over the anchor points (little squares that are connected by lines) surrounding the ellipse to adjust these settings accordingly to fit completely over the sardines.
+         - <img src="updated_images/image20-3-illustrator.png" alt="Alt Text" width="50%" height="50%">
     
-     - Step 4: The rectangle you create may cover your icon. If this happens, right click on the rectangle, hover over "arrage" in the expanded menu, and then click on "Send to Back". This will make it the bottom layer of your icon.
-         - <img src="updated_images/image20-4-illustrator.png" alt="Alt Text" width="40%" height="40%">
+     - Step 4: The rectangle you created may cover your icon because it is filled in. If this happens, right click on the rectangle, hover over "arrange" in the expanded menu, and then click on "Send to Back". This will make it the bottom layer of your icon. Be sure to check the layers panel to ensure that you sent it to the back of the "sardines" layer. If your ellipse appears in a different layer, you can simply drag it into the sardines layer and repeat the process of sending it to the back. 
+         - <img src="updated_images/image20-4-illustrator.png" alt="Alt Text" width="50%" height="50%">
 
      - Step 5: To make your rectangle transparent, be sure to click on both the "fill" and "outline" portions of the color indicator on the bottom of your left side tool bar. Once you select either "fill" (#1.1) or "outline" (#1.2) in the top section, click on the white box with the red strike-through in the bottom right (#2) to make it transparent. The "fill" or "outline" will also have this red strike-through when it is applied to them as shown below. 
-         - <img src="updated_images/image20-5-illustrator.png" alt="Alt Text" width="30%" height="30%">
+         - <img src="updated_images/image20-5-illustrator.png" alt="Alt Text" width="20%" height="20%">
+
+    - Step 6: Everything should look like this when you're complete.
+        - <img src="updated_images/image20-6-illustrator.png" alt="Alt Text" width="90%" height="90%">
 
 4. **background**:
 
@@ -120,9 +119,8 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     <img src="updated_images/image8-illustrator.png" alt="Alt Text" width="80%" height="80%"> 
 
     **Considerations:**
-    - Icons might need to be adjusted to fit into the example format shown in the exmaple image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject. Below is an example of what you icons might look like when displayed in mobile view.
-
-    <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="50%" height="50%">
+    - Icons might need to be adjusted to fit into the example format shown in the example image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject. Below is an example of what you icons might look like when displayed in mobile view.
+    - <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
 
 ### 3.1.2 Dealing with raster-based elements
 
@@ -198,6 +196,8 @@ This is the required layer order of an Inkscape image.
 
 2. **text**:
 
+    **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
+
      - **When creating text, be sure to use a [web-safe font](https://www.w3schools.com/cssref/css_websafe_fonts.php) to ensure that your text displays correctly in a web browser.** 
 
     There are three essential things here:
@@ -220,10 +220,10 @@ This is the required layer order of an Inkscape image.
 
     - Each sub-layer contains all of the elements for a single clickable icon.
 
-    **Adding a background to images:**
-    It might be necessary add a transparent white square or rectangle to the back of complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple arms or branches.
+    **Adding a background to complex objects to make them easy to highlight:**
+    It might be necessary to add a transparent white rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches.
 
-    - See the Illustrator section for "Icons > Adding a background to images" above fora general outline of what needs to be done in Inkscape as well. 
+    - See this section for the Illustrator instructions for "Icons > Adding a background to complex objects to make them easy to highlight" above for a general outline of what needs to be done in Inkscape as well. The exact method will differ.
 
 4. **background**:
 
@@ -237,8 +237,7 @@ This is the required layer order of an Inkscape image.
 
     **Considerations**:
     - Icons might need to be adjusted to fit into the example format shown in the example image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject.
-
-    <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="50%" height="50%">
+    - <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
 
 ### 3.2.2 Editing the layer XML
 
