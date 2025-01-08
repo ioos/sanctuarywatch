@@ -1,5 +1,4 @@
-
-# Chapter 3 Creating a Java-Script Actionable Image Vector (JAI Vector) #
+# Chapter 3 | Creating a Java-Script Actionable Image Vector (JAI Vector) #
 
 Java-Script Actionable Image Vectors (JAI Vectors) are vector-based images in an .svg or .ai format that are set up specifically to allow the individual components of the image to be responsive objects that are highlighted when a mouse hovers over them. If clicked, they provide access to either other JAI Vectors, or windows with informative interactive graphs, charts, or other content.
 
