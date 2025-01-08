@@ -84,7 +84,8 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
          - <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="70%" height="70%">
 
     **Adding a background to complex objects to make them easy to highlight:**
-     It might be necessary to add a transparent rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches. In our example, we will use an added layer called "sardines" which is located in layers under "icons > sardines". 
+
+     - It might be necessary to add a transparent rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches. In our example, we will use an added layer called "sardines" which is located in layers under "icons > sardines". 
 
      - Step 1: In the main ArtBoard, we have selected all of the "sardines" (2). You will see the shape tool on the left-side toolbar (1), and the "sardines" layer selected on the right-side Layers panel (3). 
          - <img src="updated_images/image20-1-illustrator.png" alt="Alt Text" width="80%" height="80%">
@@ -119,6 +120,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     <img src="updated_images/image8-illustrator.png" alt="Alt Text" width="80%" height="80%"> 
 
     **Considerations:**
+
     - Icons might need to be adjusted to fit into the example format shown in the example image below. If your icons are too wide or long, you will need to adjust them to make them fit properly. Or, use a different icon to represent the same subject. Below is an example of what you icons might look like when displayed in mobile view.
     - <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
 
@@ -196,7 +198,7 @@ This is the required layer order of an Inkscape image.
 
 2. **text**:
 
-    **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
+    - **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
 
      - **When creating text, be sure to use a [web-safe font](https://www.w3schools.com/cssref/css_websafe_fonts.php) to ensure that your text displays correctly in a web browser.** 
 
@@ -210,7 +212,7 @@ This is the required layer order of an Inkscape image.
 
 3. **icons**:
 
-    This layer is required and contains all of the clickable elements in the image. This layer can be named anything, except for “text” or the name of any clickable element in the image. If you check out the Layers panel for “icons” (see image just above), you’ll see that it contains four sub-layers (chart examples 1 through 6). Each of these sub-layers defines a single clickable component of the image.
+    **This layer is required** and contains all of the clickable elements in the image. This layer can be named anything, except for “text” or the name of any clickable element in the image. If you check out the Layers panel for “icons” (see image just above), you’ll see that it contains four sub-layers (chart examples 1 through 6). Each of these sub-layers defines a single clickable component of the image.
 
     - The names of these sub-layers should not contain spaces, commas, or be called “text”.
 
@@ -221,9 +223,10 @@ This is the required layer order of an Inkscape image.
     - Each sub-layer contains all of the elements for a single clickable icon.
 
     **Adding a background to complex objects to make them easy to highlight:**
-    It might be necessary to add a transparent white rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches.
 
-    - See this section for the Illustrator instructions for "Icons > Adding a background to complex objects to make them easy to highlight" above for a general outline of what needs to be done in Inkscape as well. The exact method will differ.
+     It might be necessary to add a transparent white rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches.
+
+     - See this section for the Illustrator instructions for "Icons > Adding a background to complex objects to make them easy to highlight" above for a general outline of what needs to be done in Inkscape as well. The exact method will differ.
 
 4. **background**:
 
