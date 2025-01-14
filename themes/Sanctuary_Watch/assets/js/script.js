@@ -2320,11 +2320,11 @@ function add_modal(){
             });
             } else {
                 elem.addEventListener('click', function(event) {
-                    gtag('event', 'modal_icon_click', {
-                        'event_category': 'Button Interaction',
-                        'event_label': 'Track Me Button',
-                        'value': 1
-                      });
+                    // gtag('event', 'modal_icon_click', {
+                    //     'event_category': 'Button Interaction',
+                    //     'event_label': 'Track Me Button',
+                    //     'value': 1
+                    //   });
 
                     modal.style.display = "block";
                     render_modal(key );
@@ -2362,11 +2362,11 @@ function add_modal(){
     
         } else {
             elem.addEventListener('click', function(event) {
-                gtag('event', 'modal_icon_click', {
-                    'event_category': 'Button Interaction',
-                    'event_label': 'Track Me Button',
-                    'value': 1
-                  });
+                // gtag('event', 'modal_icon_click', {
+                //     'event_category': 'Button Interaction',
+                //     'event_label': 'Track Me Button',
+                //     'value': 1
+                //   });
 
                 let link =  child_obj[key]['external_url'];
                 window.location.href = link;

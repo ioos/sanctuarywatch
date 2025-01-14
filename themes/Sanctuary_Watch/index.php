@@ -78,7 +78,17 @@ console.log(legacy_urls);
 
 
 <body>
+<div id="entire_thing" style="
+ 
+  max-width: 1700px !important;
+    margin: 0 auto;
+    background: #f2f2f2;
+    padding-bottom: 9%;
+    margin-top: -20px;
+    padding-top: 1%;
 
+    
+"> 
 <div class="container-fluid">
 <!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->
 <div class="image-center" style="padding-bottom: 20px;">
@@ -118,6 +128,7 @@ console.log(legacy_urls);
         //   $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
         //   $child_ids = get_modal_array($svg_url);
         ?>
+</div>
 </div>
 </body>
 <script>
