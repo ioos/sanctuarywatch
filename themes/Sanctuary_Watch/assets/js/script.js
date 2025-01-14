@@ -1908,6 +1908,7 @@ function sectioned_list(){
  */
 function toc_sections() {
     let sections = [];
+    // console.log(child_obj);
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
         console.log('section herreeeeeee');

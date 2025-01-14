@@ -454,6 +454,7 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
           $external_url =  '';
           $external_scene_id = '';
           $is_modal = get_post_meta($child_post_id,"post_type" );//[0]; //error here?
+          $icon_order = get_post_meta($child_post_id,"modal_icon_order");
           //create array/map from child id to different attributes (ie hyperlinks)
           if($is_modal){
             if ($icon_type[0] === "Modal"){
@@ -485,7 +486,8 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
               "modal" => $modal,
               "scene" => $scenePost,
               "section_name" => $section_name, 
-              "original_name" => $child_id
+              "original_name" => $child_id,
+              "modal_icon_order" => $icon_order[0]
             ];
           } 
           return $child_ids;
