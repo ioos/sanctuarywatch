@@ -156,6 +156,17 @@ class Webcr_Modal {
                 'description' => 'Which icon from the above scene is the modal associated with?',
             ),
             array(
+                'id'      => 'modal_icon_order',
+                'type'    => 'number',
+                'title'   => 'Icon order (optional)',
+                'default' => '1',
+                // 'unit'    => '$',
+                'min'     => '1',
+                'max'     => '20',
+                'step'    => '1',
+                'description' => "In the table of contents to the right of the scene, what is the order in which this icon should appear? Lower numbers will appear first. All icons with the same order number (example: all icons keep the default value of 1), will be sorted alphabetically."
+            ),
+            array(
                 'id'             => 'icon_toc_section',
                 'type'           => 'select',
                 'title'          => 'Icon Section',
@@ -328,6 +339,7 @@ class Webcr_Modal {
         // Create array of fields to be registered with register_meta
         $fieldsToBeRegistered = array(
             array('modal_scene', 'integer', 'The modal scene'),
+            array('modal_icon_order', 'integer', 'The modal icon order'),
             array('icon_function', 'string', 'The icon function'),
             array('modal_tagline', 'string', 'The modal tagline'),
             array('icon_toc_section', 'string', 'The icon table of contents section'),
@@ -389,7 +401,7 @@ class Webcr_Modal {
 	 * @since    1.0.0
 	 */
     function register_modal_rest_fields() {
-        $modal_rest_fields = array('modal_scene','modal_tagline', 'icon_function','modal_info_entries', 
+        $modal_rest_fields = array('modal_scene','modal_tagline', 'modal_icon_order', 'icon_function','modal_info_entries', 
             'modal_photo_entries', 'modal_tab_number');
 
             for ($i = 1; $i < 7; $i++){
