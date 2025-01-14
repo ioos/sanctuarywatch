@@ -49,7 +49,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      
      **How to create a mobile icon:**
 
-     - For this example, we are going to show you how to create the "sardines" sublayer you see under mobile. The "sardines" sublayer under the "icons" layer, as seen below, is clunky and would not make a good mobile icon. Therefore, we are going to re-imagine it in a format that would suit a the grey mobile button format and place it inside of the "mobile" layer.
+     - For this example, we are going to show you how to create the "sardines" sublayer that is currently under the "mobile" layer (Click "Window" in the top navigation bar > Layers). The "sardines" sublayer under the "icons" layer, as seen below is clunky and would not make a good mobile icon. Therefore, we are going to re-imagine it in a format that would suit a mobile button by placing it inside of the "mobile" layer. To avoid confusion, you can turn off the existing "mobile > sardines" layer by clicking the right-arrow next to "mobile" to expand the layer, then clicking on the eye ball icon to the left of the sublayer named "sardines" that is nested under "mobile".
      - <img src="updated_images/image22-illustrator.png" alt="Alt Text" width="40%" height="40%">
      
      - Step 1: Be sure that a top level layer called "mobile" exists in your layers panel. Then, click on the "mobile" layer. In the top-right click the three stacked lines to access the layers menu. Then click on "New Sublayer" in the dropdown menu. You can also create the top level "mobile" layer here as needed by selecting "New Layer" instead. 
@@ -154,15 +154,15 @@ If you have some raster-based elements that you’d like to include in your JAI 
 
 1. Select image (from Layers; or Select All from menu).
 
-<img src="updated_images/image11-illustrator.png" alt="Alt Text" width="60%" height="60%">
+ - <img src="updated_images/image11-illustrator.png" alt="Alt Text" width="60%" height="60%">
 
 2. From the menu, select Object > Image Trace > Make and Expand.
 
-<img src="updated_images/image12-illustrator.png" alt="Alt Text" width="60%" height="60%">
+ - <img src="updated_images/image12-illustrator.png" alt="Alt Text" width="40%" height="40%">
 
 3. Delete (trash icon in Layers menu) or Unite/Merge (in Pathfinder menu) the selected layers until you achieve the desired simplified icon result.
 
-<img src="updated_images/image13-illustrator.png" alt="Alt Text" width="60%" height="60%">
+ - <img src="updated_images/image13-illustrator.png" alt="Alt Text" width="60%" height="60%">
 
 ### 3.1.3 Saving the image
 
@@ -172,7 +172,7 @@ To be used by JAI Vectors, the file must be exported in svg format. To do so:
 2. In the following screen, select svg format. Be sure to click “Use ArtBoards”.
 3. In the final screen that pops up, be sure to set Object IDs to “Layer Names”, as follows:
 
-<img src="updated_images/image14-illustrator.png" alt="Alt Text" width="50%" height="50%">
+ - <img src="updated_images/image14-illustrator.png" alt="Alt Text" width="50%" height="50%">
 
 4. The default for Illustrator is to add an “01” to your svg file name (so, “example.svg” becomes “example01.svg”. Change the file name back to your desired choice.
 
@@ -190,8 +190,6 @@ If you check out the Layers panel for the image, you’ll see the following:
 
 <img src="updated_images/image16-inkscape.png" alt="Alt Text" width="50%" height="50%">
 
-This is the required layer order of an Inkscape image.
-
 ### 3.2.1 Layer organization
 
 1. **mobile**:
@@ -203,13 +201,13 @@ This is the required layer order of an Inkscape image.
      -  Below is an example of what your icons might look like when displayed in mobile view:
      - <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
 
-     - See this section in the Illustrator instructions above for "mobile > How to create a mobile icon" for a general outline of what needs to be done in Inkscape as well. The exact method will differ in Inkscape.
+     - See this section in the Illustrator instructions above for "1.mobile > How to create a mobile icon" for a general outline of what needs to be done in Inkscape as well. The exact method will differ in Inkscape.
      
 2. **text**:
 
-    - **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
+    **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
 
-     - **When creating text, be sure to use a [web-safe font](https://www.w3schools.com/cssref/css_websafe_fonts.php) to ensure that your text displays correctly in a web browser.** 
+    **When creating text, be sure to use a [web-safe font](https://www.w3schools.com/cssref/css_websafe_fonts.php) to ensure that your text displays correctly in a web browser.** 
 
     There are three essential things here:
 
@@ -239,7 +237,7 @@ This is the required layer order of an Inkscape image.
 
      It might be necessary to add a transparent white rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches.
 
-     - See this section in the Illustrator instructions above for "Icons > Adding a background to complex objects to make them easy to highlight" for a general outline of what needs to be done in Inkscape as well. The exact method will differ in Inkscape.
+     - See this section in the Illustrator instructions above for "3.icons > Adding a background to complex objects to make them easy to highlight" for a general outline of what needs to be done in Inkscape as well. The exact method will differ in Inkscape.
 
 4. **background**:
 
