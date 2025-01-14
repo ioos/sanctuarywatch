@@ -3,16 +3,17 @@
 Java-Script Actionable Image Vectors (JAI Vectors) are vector-based images in an .svg or .ai format that are set up specifically to allow the individual components of the image to be responsive objects that are highlighted when a mouse hovers over them. If clicked, they provide access to either other JAI Vectors, or windows with informative interactive graphs, charts, or other content.
 
 Here we provide instructions for two vector graphics packages: 
-- [Adobe Illustrator (.ai)](https://www.adobe.com/products/illustrator.html) (requires a paid subscription)
-- [Inkscape (.svg)](https://inkscape.org/) (free)
+- <a href="https://www.adobe.com/products/illustrator.html" target="_blank">Adobe Illustrator (.ai)</a> (requires a paid subscription)
+- <a href="https://inkscape.org/" target="_blank">Inkscape (.svg)</a> (free)
+
 
 For this tutorial, you will need the example folder for the JAI Vectors, which provides a full working example that you can fiddle around with. We will be referring to this folder extensively in this guide and you can download a compressed version [here](https://github.com/ioos/sanctuarywatch/blob/robbiebranch/docs/training_images/JAI_Vectors_chapter_3_files.zip). Just unzip the folder after it has been downloaded.
 
-You can see a working example in action as a finished product [here](https://marinebon.github.io/infographiqJS/demo.html).
+You can see a working example in action as a finished product <a href="https://marinebon.github.io/infographiqJS/demo.html" target="_blank">here</a>
 
 ## 3.1 Adobe Illustrator ##
 
-This guide assumes you have a basic knowledge of using Illustrator ([here is a great series of tutorials](https://www.adobe.com/learn/illustrator)). In particular, you’ll need to understand how "layers" work in Illustrator ([and here’s a tutorial for that](https://helpx.adobe.com/illustrator/using/layers.html)).
+This guide assumes you have a basic knowledge of using Illustrator (<a href="https://www.adobe.com/learn/illustrator" target="_blank">here is a great series of tutorials</a>). In particular, you’ll need to understand how "layers" work in Illustrator (<a href="https://helpx.adobe.com/illustrator/using/layers.html" target="_blank">and here’s a tutorial for that</a>). 
 
 **NOTE: The methods of implementation vary slightly for desktop view vs mobile view when using "layers". For the sake of continuity, this documentation will consider both as part of a singular workflow for optimizing a .svg graphic for use with JAI Vector in both desktop and mobile settings.**
 
@@ -68,14 +69,14 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     
     **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
 
-     - **When creating text, be sure to use a [web-safe font](https://www.w3schools.com/cssref/css_websafe_fonts.php) to ensure that your text displays correctly in a web browser.** 
+    **When creating text, be sure to use a <a href="https://www.w3schools.com/cssref/css_websafe_fonts.php" target="_blank">web-safe font</a> to ensure that your text displays correctly in a web browser.** 
 
     In the Layers panel, after we click ">" to expand the "text" layer, we can see that this layer contains several elements denoted by <Group>:
      - <img src="updated_images/image3-illustrator.png" alt="Alt Text" width="80%" height="80%">
 
     There are three essential things here:
 
-    A. All of the elements are vector-based (nothing raster-based, raster means image such as .tif, .jpg, or .png). If you happen to have raster-based elements in your image (or are not sure), we strongly recommend that you find a vector version or attempt to convert the raster item to a vector using the [image trace tool](https://helpx.adobe.com/illustrator/using/image-trace.html). Rasters will break the functionality of JAI Vectors and are not meant to be used in these workflows. 
+    A. All of the elements are vector-based (nothing raster-based, raster means image such as .tif, .jpg, or .png). If you happen to have raster-based elements in your image (or are not sure), we strongly recommend that you find a vector version or attempt to convert the raster item to a vector using the <a href="https://helpx.adobe.com/illustrator/using/image-trace.html" target="_blank">image trace tool</a>. Rasters will break the functionality of JAI Vectors and are not meant to be used in these workflows. 
 
     B. None of the elements within this layer can be named “text”. The following (where one of the elements is named text) is not allowed:
      - <img src="updated_images/image4-illustrator.png" alt="Alt Text" width="80%" height="80%">
@@ -93,7 +94,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
 
      - The names of these sub-layers should not contain spaces, commas, or be called “text”.
 
-     - All elements within the sub-layers should be vector-based and not raster-based. If you happen to have raster-based elements in your image (or are not sure), we you will need to convert them to vector objects using the [image trace tool](https://helpx.adobe.com/illustrator/using/image-trace.html).
+     - All elements within the sub-layers should be vector-based and not raster-based. If you happen to have raster-based elements in your image (or are not sure), we you will need to convert them to vector objects using the <a href="https://helpx.adobe.com/illustrator/using/image-trace.html" target="_blank"> image trace tool</a>.
 
      - Nothing should overlap on top of anything you want to be clickable.
 
@@ -178,7 +179,7 @@ To be used by JAI Vectors, the file must be exported in svg format. To do so:
 
 ## 3.2 Inkscape
 
-This guide assumes you have a basic knowledge of using Inkscape ([here is a great series of tutorials](https://inkscape.org/learn/tutorials/)). In particular, you’ll need to understand how layers work in Inkscape ([and here’s a tutorial for that](https://inkscape.org/~JurgenG/%E2%98%85layers-objects-and-paths)).
+This guide assumes you have a basic knowledge of using Inkscape <a href="https://inkscape.org/learn/tutorials/" target="_blank"> here is a great series of tutorials</a>. In particular, you’ll need to understand how layers work in Inkscape <a href="https://inkscape.org/~JurgenG/%E2%98%85layers-objects-and-paths" target="_blank"> and here’s a tutorial for that</a>.
 
 In the JAI Vectors example folder, you’ll find a file called test-image1.svg. Open this file in Inkscape and you’ll see the following:
 
@@ -207,7 +208,7 @@ If you check out the Layers panel for the image, you’ll see the following:
 
     **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
 
-    **When creating text, be sure to use a [web-safe font](https://www.w3schools.com/cssref/css_websafe_fonts.php) to ensure that your text displays correctly in a web browser.** 
+    **When creating text, be sure to use a <a href="https://www.w3schools.com/cssref/css_websafe_fonts.php" target="_blank">web-safe font</a> to ensure that your text displays correctly in a web browser.** 
 
     There are three essential things here:
 
@@ -283,7 +284,7 @@ Checking the file extension isn’t a fool-proof system though. Just because an 
 
 Converting a raster to a vector
 
-If you have some raster-based elements that you’d like to include in your JAI Vectors image, Inkscape has got you covered. You’ll just need to convert those elements into vectors and [here’s a tutorial on how to do that](https://inkscape.org/doc/tutorials/tracing/tutorial-tracing.html).
+If you have some raster-based elements that you’d like to include in your JAI Vectors image, Inkscape has got you covered. You’ll just need to convert those elements into vectors and <a href="https://inkscape.org/doc/tutorials/tracing/tutorial-tracing.html" target="_blank"> here’s a tutorial on how to do that</a>.
 
 ### 3.2.4 Saving the image
 
