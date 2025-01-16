@@ -175,8 +175,13 @@ function process_child_obj(){
             }
         }
     }
+    //now sort by icon order
+    // If you need it back as an object:
 }
+
+
 process_child_obj();
+const sorted_child_objs = Object.values(child_obj).sort((a, b) => a.modal_icon_order - b.modal_icon_order);
 console.log("MODIFIED");
 console.log(child_obj);
 child_ids_helper = {};
@@ -2052,7 +2057,17 @@ function table_of_contents(){
     }               
     // let elem = document.getElementById("toc1");
     // let elem = document.createElement("ul")
-    for (let key in child_obj){
+    // use  sorted_child_objs
+    console.log(sorted_child_objs);
+ 
+   
+    // for (let key in child_obj){
+    for (let obj of sorted_child_objs){
+        console.log('obj here..');
+        console.log(obj.modal_icon_order);
+        key = obj.original_name;
+        console.log("key here...");
+        console.log(key);
         // document.querySelector("#Section\\ 1")
         // console.log(key);
         if (sectionObj[key]=="None"){
@@ -2191,6 +2206,7 @@ function table_of_contents(){
  */
 
 function list_toc(){
+ 
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
@@ -2200,15 +2216,26 @@ function list_toc(){
         sectionObj[key] = section;
     }
     sections.sort();
+    // console.log(sections);
 
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("ul");
     let colorIdx = 0;
     let i = 0;
-    for (let key in child_obj) {
+    console.log("sorted list here...");
+    console.log(sorted_child_objs);
+    // for (let obj of sorted_child_objs){
+    //     
+    // for (let key in child_obj) {
+    for (let obj of sorted_child_objs){
         // let elem = document.getElementById(child_obj[key]['section_name']);
         // sectColors[sections[i]] = colors[colorIdx]; 
         // colorIdx = (colorIdx + 1) % colors.length;
+        console.log('obj here..');
+        console.log(obj.modal_icon_order);
+        key = obj.original_name;
+        console.log("key here...");
+        console.log(key);
         i++;
 
         let item = document.createElement("li");

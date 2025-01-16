@@ -487,7 +487,7 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
               "scene" => $scenePost,
               "section_name" => $section_name, 
               "original_name" => $child_id,
-              "modal_icon_order" => $icon_order[0]
+              "modal_icon_order" => intval($icon_order[0])
             ];
           } 
           return $child_ids;
