@@ -36,7 +36,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     3. icons
     4. background
 
-    - <img src="updated_images/image2-illustrator.png" alt="Alt Text" width="80%" height="80%">
+    - <img src="updated_images/image2-illustrator.png" alt="Alt Text" width="70%" height="70%">
 
 ### 3.1.1 Layer organization
 
@@ -54,7 +54,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - <img src="updated_images/image22-illustrator.png" alt="Alt Text" width="40%" height="40%">
      
      - Step 1: Click on the "mobile" layer. In the top-right click the three stacked lines to access the layers menu. Then click on "New Sublayer" in the dropdown menu. You can also create the top level "mobile" layer here as needed by selecting "New Layer" instead. 
-     - <img src="updated_images/image7-illustrator.png" alt="Alt Text" width="80%" height="80%">
+     - <img src="updated_images/image7-illustrator.png" alt="Alt Text" width="70%" height="70%">
         
      - Step 2: In the dialog box that appears go ahead and give your new sublayer a name. For this example, we have just created a new "mobile" sublayer called "sardines". Click "OK" to finish.
      - <img src="updated_images/image8-illustrator.png" alt="Alt Text" width="40%" height="40%"> 
@@ -62,7 +62,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - Step 3: Your new sublayer names "sardines" will now appear nested inside the "mobile" layer. With "sardines" selected in the layers panel, It is then possible to paste vector items and artwork inside of it (To be sure it is a vector object, See 3.1.2 Dealing with raster-based elements below). For this example we selected the original "sardines" layer  under "icons" then copied a single sardine using "CTRL + C", then pasted it 3 times using "CTRL + V" inside of the of "sardines" layer under "mobile". We did this three times and repositioned each individual sardine to stack them vertically. The layer nesting (hierarchical structure of the layers and sublayers) should reflect how the "mobile" layer is displayed in the example below. 
      - <img src="updated_images/image21-illustrator.png" alt="Alt Text" width="90%" height="90%">
     
-     - Step 4: Now, when being used on your web page, the "sardines" layer will appear as shown in the "mobile" layer and not as previously as shown in the layer graphic meant for a desktop computer. The example below allows for you to see the two potential icons next to each other. The "sardines" icon in the top left is more clear and easy to understand. The top-center "sardines" icon to the right of it could be any small fish, and is more ambiguous to interpret visually.  
+     - Step 4: Now, when being used on your web page, the "sardines" layer will appear as shown in the "mobile" layer and not as previously as shown in the layer graphic meant for a desktop computer. The example below allows for you to see the two potential icons next to each other. The "sardines" icon in the top-left is more clear and easy to understand. The top-center "sardines" icon to the right of it could be any small fish, and is more ambiguous to interpret visually.  
      - <img src="updated_images/image23-illustrator.png" alt="Alt Text" width="35%" height="35%">
 
 2. **text**: 
@@ -101,20 +101,20 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - Each sub-layer contains all of the elements for a single clickable icon.
 
      - The elements in the sub-layer, if named, should not have the same name as the sub-layer itself. So, for example, the following won’t work :
-         - <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="70%" height="70%">
+         - <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="60%" height="60%">
 
     **Adding a background to complex objects to make them easy to highlight:**
 
      - It might be necessary to add a transparent rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches. In our example, we will use an added layer called "sardines" which is located in layers under "icons > sardines". 
 
      - Step 1: In the main ArtBoard, we have selected all of the "sardines" (2). You will see the shape tool on the left-side toolbar (1), and the "sardines" layer selected on the right-side Layers panel (3). 
-         - <img src="updated_images/image20-1-illustrator.png" alt="Alt Text" width="80%" height="80%">
+         - <img src="updated_images/image20-1-illustrator.png" alt="Alt Text" width="90%" height="90%">
 
      - Step 2: Select the "Ellipse tool" from the left-side bar
-         - <img src="updated_images/image20-2-illustrator.png" alt="Alt Text" width="40%" height="40%">
+         - <img src="updated_images/image20-2-illustrator.png" alt="Alt Text" width="35%" height="35%">
      
      - Step 3: While holding right-click with your mouse, drag an ellipse from the top-left of the sardines to the bottom-right. When you first draw the ellipse it may cover your sardines, this is ok and we will fix it in a second. You can edit the size and rotation of the ellipse by hovering your mouse over the anchor points (little squares that are connected by lines) surrounding the ellipse to adjust these settings accordingly to fit completely over the sardines.
-         - <img src="updated_images/image20-3-illustrator.png" alt="Alt Text" width="50%" height="50%">
+         - <img src="updated_images/image20-3-illustrator.png" alt="Alt Text" width="40%" height="40%">
     
      - Step 4: The rectangle you created may cover your icon because it is filled in. If this happens, right click on the rectangle, hover over "arrange" in the expanded menu, and then click on "Send to Back". This will make it the bottom layer of your icon. Be sure to check the layers panel to ensure that you sent it to the back of the "sardines" layer. If your ellipse appears in a different layer, you can simply drag it into the sardines layer and repeat the process of sending it to the back. 
          - <img src="updated_images/image20-4-illustrator.png" alt="Alt Text" width="50%" height="50%">
@@ -147,7 +147,7 @@ One dead give-away that an image is raster-based is if the file is saved in a ra
 
 Checking the file extension isn’t a fool-proof system though. Just because an image is saved in some other format than those above doesn’t mean that it isn’t a raster-based image. So, how can you know for sure? Well, open the image up in Illustrator and take a close look at the Layer panel. If the image is raster-based, it will say <Image> under the appropriate layer (be sure to click the arrow just to the left of the layer name to see what it contains). See below for an example:
 
-<img src="updated_images/image10-illustrator.png" alt="Alt Text" width="80%" height="80%">
+<img src="updated_images/image10-illustrator.png" alt="Alt Text" width="50%" height="50%">
 
 **Converting a raster to a vector**
 
@@ -155,7 +155,7 @@ If you have some raster-based elements that you’d like to include in your JAI 
 
 1. Select image (from Layers; or Select All from menu).
 
- - <img src="updated_images/image11-illustrator.png" alt="Alt Text" width="60%" height="60%">
+ - <img src="updated_images/image11-illustrator.png" alt="Alt Text" width="45%" height="45%">
 
 2. From the menu, select Object > Image Trace > Make and Expand.
 
@@ -163,7 +163,7 @@ If you have some raster-based elements that you’d like to include in your JAI 
 
 3. Delete (trash icon in Layers menu) or Unite/Merge (in Pathfinder menu) the selected layers until you achieve the desired simplified icon result.
 
- - <img src="updated_images/image13-illustrator.png" alt="Alt Text" width="60%" height="60%">
+ - <img src="updated_images/image13-illustrator.png" alt="Alt Text" width="50%" height="50%">
 
 ### 3.1.3 Saving the image
 
@@ -173,7 +173,7 @@ To be used by JAI Vectors, the file must be exported in svg format. To do so:
 2. In the following screen, select svg format. Be sure to click “Use ArtBoards”.
 3. In the final screen that pops up, be sure to set Object IDs to “Layer Names”, as follows:
 
- - <img src="updated_images/image14-illustrator.png" alt="Alt Text" width="50%" height="50%">
+ - <img src="updated_images/image14-illustrator.png" alt="Alt Text" width="40%" height="40%">
 
 4. The default for Illustrator is to add an “01” to your svg file name (so, “example.svg” becomes “example01.svg”. Change the file name back to your desired choice.
 
@@ -189,7 +189,7 @@ In the JAI Vectors example folder, you’ll find a file called test-image1.svg. 
 
 If you check out the Layers panel for the image, you’ll see the following:
 
-<img src="updated_images/image16-inkscape.png" alt="Alt Text" width="50%" height="50%">
+<img src="updated_images/image16-inkscape.png" alt="Alt Text" width="30%" height="30%">
 
 ### 3.2.1 Layer organization
 
