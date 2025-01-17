@@ -135,6 +135,14 @@ class Webcr_Modal {
 
         $fields = array(
             array(
+                'id'             => 'modal_published',
+                'type'           => 'select',
+                'title'          => 'Modal Status',
+                'options'        => array("draft" => "Draft", "published" => "Published"),
+                'default' => 'draft',
+                'description' => 'Should the modal be live?',
+            ),
+            array(
                 'id'             => 'modal_location',
                 'type'           => 'select',
                 'title'          => 'Instance',
@@ -340,7 +348,8 @@ class Webcr_Modal {
         $fieldsToBeRegistered = array(
             array('modal_scene', 'integer', 'The modal scene'),
             array('modal_icon_order', 'integer', 'The modal icon order'),
-            array('icon_function', 'string', 'The icon function'),
+            array('icon_function', 'string', 'The icon function'),           
+            array('modal_published', 'string', 'The icon function'),
             array('modal_tagline', 'string', 'The modal tagline'),
             array('icon_toc_section', 'string', 'The icon table of contents section'),
             array('modal_info_entries', 'integer', 'The number of info links'),
@@ -401,7 +410,7 @@ class Webcr_Modal {
 	 * @since    1.0.0
 	 */
     function register_modal_rest_fields() {
-        $modal_rest_fields = array('modal_scene','modal_tagline', 'modal_icon_order', 'icon_function','modal_info_entries', 
+        $modal_rest_fields = array('modal_scene','modal_tagline', 'modal_published', 'modal_icon_order', 'icon_function','modal_info_entries', 
             'modal_photo_entries', 'modal_tab_number');
 
             for ($i = 1; $i < 7; $i++){
