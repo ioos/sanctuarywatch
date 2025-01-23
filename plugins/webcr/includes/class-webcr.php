@@ -269,14 +269,6 @@ function instance_settings_init() {
         'webcr_settings_section_callback',
         'instance_settings'
     );
-
-    add_settings_field(
-        'multiple_instances',
-        'Multiple Instance Types',
-        'multiple_instances_field_callback',
-        'manage-instance-types',
-        'instance_settings_section'
-    );
 }
  add_action('admin_init', 'instance_settings_init');
 
@@ -311,14 +303,6 @@ function webcr_settings_init() {
         'intro_text',
         'Front Page Introduction',
         'intro_text_field_callback',
-        'theme_settings',
-        'webcr_settings_section'
-    );
-
-    add_settings_field(
-        'multiple_instances',
-        'Multiple Instance Types',
-        'multiple_instances_field_callback',
         'theme_settings',
         'webcr_settings_section'
     );
