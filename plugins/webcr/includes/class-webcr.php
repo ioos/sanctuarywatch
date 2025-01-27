@@ -429,7 +429,7 @@ add_action('init', 'register_instance_type_taxonomy', 0); // Priority 0 to run e
 
 // Register the order meta field for the taxonomy
 function register_instance_type_order_meta() {
-    register_meta('term', 'term_order', [
+    register_meta('term', 'instance_order', [
         'type' => 'integer',
         'single' => true,
         'show_in_rest' => true,
@@ -465,11 +465,11 @@ function render_instance_type_admin_page() {
         if (isset($_POST['action'])) {
             switch ($_POST['action']) {
                 case 'add':
-                    if (isset($_POST['term_name']) && isset($_POST['term_order'])) {
+                    if (isset($_POST['term_name']) && isset($_POST['instance_order'])) {
                         $term_name = sanitize_text_field($_POST['term_name']);
                         $term_slug = sanitize_title($_POST['term_slug']);
                         $term_description = sanitize_textarea_field($_POST['term_description']);
-                        $term_order = absint($_POST['term_order']);
+                        $instance_order = absint($_POST['instance_order']);
                         
                         $args = array(
                             'slug' => $term_slug,
@@ -478,25 +478,25 @@ function render_instance_type_admin_page() {
                         
                         $term = wp_insert_term($term_name, 'instance_type', $args);
                         if (!is_wp_error($term)) {
-                            update_term_meta($term['term_id'], 'term_order', $term_order);
+                            update_term_meta($term['term_id'], 'instance_order', $instance_order);
                         }
                     }
                     break;
                     
                 case 'edit':
-                    if (isset($_POST['term_id']) && isset($_POST['term_name']) && isset($_POST['term_order'])) {
+                    if (isset($_POST['term_id']) && isset($_POST['term_name']) && isset($_POST['instance_order'])) {
                         $term_id = absint($_POST['term_id']);
                         $term_name = sanitize_text_field($_POST['term_name']);
                         $term_slug = sanitize_title($_POST['term_slug']);
                         $term_description = sanitize_textarea_field($_POST['term_description']);
-                        $term_order = absint($_POST['term_order']);
+                        $instance_order = absint($_POST['instance_order']);
                         
                         wp_update_term($term_id, 'instance_type', [
                             'name' => $term_name,
                             'slug' => $term_slug,
                             'description' => $term_description
                         ]);
-                        update_term_meta($term_id, 'term_order', $term_order);
+                        update_term_meta($term_id, 'instance_order', $instance_order);
                     }
                     break;
                     
@@ -546,8 +546,8 @@ function render_instance_type_admin_page() {
                     <td><textarea name="term_description" id="term_description" class="large-text" rows="5"></textarea></td>
                 </tr>
                 <tr>
-                    <th><label for="term_order">Order</label></th>
-                    <td><input type="number" name="term_order" id="term_order" class="small-text" required></td>
+                    <th><label for="instance_order">Order</label></th>
+                    <td><input type="number" name="instance_order" id="instance_order" class="small-text" required></td>
                 </tr>
             </table>
             <?php submit_button('Add New Instance Type'); ?>
@@ -574,13 +574,13 @@ function render_instance_type_admin_page() {
                         if (!is_object($term) || !isset($term->term_id)) {
                             continue;
                         }
-                        $term_order = get_term_meta($term->term_id, 'term_order', true); 
+                        $instance_order = get_term_meta($term->term_id, 'instance_order', true); 
                     ?>
                         <tr>
                             <td><?php echo esc_html($term->name); ?></td>
                             <td><?php echo esc_html($term->slug); ?></td>
                             <td><?php echo esc_html($term->description); ?></td>
-                            <td><?php echo esc_html($term_order); ?></td>
+                            <td><?php echo esc_html($instance_order); ?></td>
                             <td>
                                 <button type="button" class="button" 
                                     onclick="showEditForm(
@@ -588,7 +588,7 @@ function render_instance_type_admin_page() {
                                         '<?php echo esc_js($term->name); ?>',
                                         '<?php echo esc_js($term->slug); ?>',
                                         '<?php echo esc_js($term->description); ?>',
-                                        <?php echo esc_js($term_order); ?>
+                                        <?php echo esc_js($instance_order); ?>
                                     )">
                                     Edit
                                 </button>
@@ -626,8 +626,8 @@ function render_instance_type_admin_page() {
                         <td><textarea name="term_description" id="edit_term_description" class="large-text" rows="5"></textarea></td>
                     </tr>
                     <tr>
-                        <th><label for="edit_term_order">Order</label></th>
-                        <td><input type="number" name="term_order" id="edit_term_order" class="small-text" required></td>
+                        <th><label for="edit_instance_order">Order</label></th>
+                        <td><input type="number" name="instance_order" id="instance_order" class="small-text" required></td>
                     </tr>
                 </table>
                 <?php submit_button('Update Instance Type'); ?>
@@ -641,7 +641,7 @@ function render_instance_type_admin_page() {
                 document.getElementById('edit_term_name').value = termName;
                 document.getElementById('edit_term_slug').value = termSlug;
                 document.getElementById('edit_term_description').value = termDescription;
-                document.getElementById('edit_term_order').value = termOrder;
+                document.getElementById('edit_instance_order').value = termOrder;
             }
         </script>
     </div>
