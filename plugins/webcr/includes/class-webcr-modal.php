@@ -330,9 +330,9 @@ class Webcr_Modal {
         }
 
         // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
-        array_splice($fields, 9, 0, $infoFields);
-        array_splice($fields, 16, 0, $photoFields);
-        array_splice($fields, 23, 0, $tabFields);
+        array_splice($fields, 11, 0, $infoFields);
+        array_splice($fields, 18, 0, $photoFields);
+        array_splice($fields, 25, 0, $tabFields);
 
         $fieldsHolder[] = array(
             'name'   => 'basic',
