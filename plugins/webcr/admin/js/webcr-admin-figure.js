@@ -146,14 +146,29 @@
         // Select the img tag within the class "exopite-sof-image-preview"
         let jsonPreviewImg = jsonPreviewContainer.querySelector('img');
 
+        // Select the nested container with class "exopite-sof-field-upload"
+        let fileUploadContainer= document.querySelector('.exopite-sof-field-upload');
+
+        // Select the nested container with class "exopite-sof-field-upload"
+        let codeContainer= document.querySelector('.exopite-sof-field-ace_editor');
+
+        // // Select the nested container with class "exopite-sof-field-button"
+        // let previewContainer = document.querySelector('.exopite-sof-field-button');
+        // let figurePreviewElement = previewContainer.querySelector('.figure_preview');
+        // let codePreviewElement = previewContainer.querySelector('.code_preview');
 
         switch (imageType) {
             case "Internal":
+                //Hide the fields we do not want to see
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json")[0].value = "";
 
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
+
+                codeContainer.style.display = "none";
+                fileUploadContainer.style.display = "none";
+                codePreviewElement.parentElement.parentElement.style.display = "none";
 
                 // Add the "hidden" class to the nested container
                 jsonPreviewContainer.classList.add('hidden');
@@ -170,12 +185,23 @@
                 if (imagePreviewImg.src.includes("uploads")) {
                     imagePreviewContainer.classList.remove('hidden');
                 }
+
+                figurePreviewElement.parentElement.parentElement.style.display = "block";
+
                 break;
+
+
+
             case "External":
+                //Hide the fields we do not want to see
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json")[0].value = "";
 
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "block";
+
+                codeContainer.style.display = "none";
+                fileUploadContainer.style.display = "none";
+                codePreviewElement.parentElement.style.display = "none";
 
                 // Add the "hidden" class to the nested container
                 jsonPreviewContainer.classList.add('hidden');
@@ -192,28 +218,61 @@
                 document.getElementsByName("figure_json_arguments")[0].value = "";
 
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "block";
-                break;         
-            case "Interactive":   
+                break;  
+                
+                
+
+            case "Interactive":
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "block";
                 // Add the "hidden" class to the nested container
                 if (jsonPreviewImg.src.includes("uploads")) {
                     jsonPreviewContainer.classList.remove('hidden');
                 }
 
+
+                codeContainer.style.display = "none";
+                codePreviewElement.style.display = "none";
+                figurePreviewElement.parentElement.parentElement.style.display = "none";
+                codePreviewElement.parentElement.parentElement.style.display = "none";
+
+                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json")[0].value = "";
+
+                //Hide the fields we do not want to see
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
 
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
+
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].value = "";
-                // Add the "hidden" class to the nested container
-                if (imagePreviewImg.src.includes("uploads")) {
-                    imagePreviewContainer.classList.remove('hidden');
-                }
-                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "block";
 
-                break; 
+                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json_arguments")[0].value = "";
+
+                fileUploadContainer.style.display = "block";
+
+                break;
+
+
+            case "Code":
+                // Hide fields unrelated to "Code"
+                // Add the "hidden" class to the nested container
+                fileUploadContainer.style.display = "none";
+                figurePreviewElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";             
+            
+                // Display the "figure_code" editor box
+                // Hide the entire row for figure_code
+                if (codeContainer) {
+                    codeContainer.style.display = "block";
+                }
+                break;
         } 
     }
 
@@ -222,7 +281,7 @@
     $( "select[name='figure_scene']" ).change(figureSceneChange);
     $( "select[name='location']" ).change(figureInstanceChange);
 
-    
+    //FIGURE PREVIEW BUTTON   
     $('.figure_preview').click(function(){
         // Let's remove the preview window if it already exists
         var previewWindow = document.getElementById('preview_window');
@@ -294,12 +353,16 @@
 
     const figurePath = document.getElementsByName("figure_path")[0].value;
     let figureSrc;
+
+    // INTERNAL IMAGE PREVIEW DISPLAY
     if (figurePath == "Internal"){
         figureSrc = document.getElementsByName("figure_image")[0].value;
         if (figureSrc != ""){
         figureImage.src = figureSrc;
         } else {imageRow.textContent = "No figure image."}
-    } else {
+    }
+    // ELSE (EXTERNAL OR INTERACTIVE) PREVIEW DISPLAY
+    else {
         figureSrc = document.getElementsByName("figure_external_url")[0].value;
         if (figureSrc != ""){
         figureImage.src = figureSrc;
@@ -367,9 +430,7 @@
     newDiv.appendChild(captionRow);
 
     secondParent.appendChild(newDiv);
-
-
-     });
+    });
 
 // Claude code for json functionality
 $('#select-json-btn').on('click', function(e) {
@@ -438,3 +499,65 @@ $(document).on('click', '#clear-json-btn', function(e) {
 });
     
 })( jQuery );
+
+// CODE PREVIEW BUTTON DISPLAY CODE______CHATGPT
+document.addEventListener("DOMContentLoaded", function () {
+    const previewCodeButton = document.querySelector(".code_preview");
+
+    previewCodeButton.addEventListener("click", function () {
+        // Remove existing preview div if present
+        let previewWindow = document.getElementById("code_preview_window");
+        if (previewWindow) {
+            previewWindow.parentNode.removeChild(previewWindow);
+        }
+
+        // Create a new div to display the embed code
+        const previewDiv = document.createElement("div");
+        previewDiv.id = "code_preview_window";
+        previewDiv.style.width = "100%";
+        previewDiv.style.minHeight = "300px";
+        previewDiv.style.padding = "10px";
+        previewDiv.style.backgroundColor = "#ffffff";
+        previewDiv.style.overflow = "auto";
+        // Center the content using Flexbox
+        previewDiv.style.display = "flex";
+        previewDiv.style.justifyContent = "center"; // Centers horizontally
+        previewDiv.style.alignItems = "center"; // Centers vertically (if height is greater than content)
+
+        // Get the embed code from the figure_code field
+        const embedCode = document.getElementsByName("figure_code")[0]?.value || "No code available. Set the 'Figure Type' to 'Code' and paste your code into the HTML/JavaScript Code Code text area.";
+
+        try {
+            // Parse the embed code and extract <script> tags
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = embedCode;
+
+            // Move <script> tags to the head and inject the rest into the preview div
+            const scripts = tempDiv.querySelectorAll("script");
+            scripts.forEach((script) => {
+                const newScript = document.createElement("script");
+                newScript.type = script.type || "text/javascript";
+                if (script.src) {
+                    newScript.src = script.src; // External script
+                } else {
+                    newScript.textContent = script.textContent; // Inline script
+                }
+                document.head.appendChild(newScript); // Add to <head>
+                script.remove(); // Remove the script tag from tempDiv
+            });
+
+            // Inject remaining HTML into the preview div
+            previewDiv.innerHTML = tempDiv.innerHTML;
+
+            // Append the preview div below the button
+            previewCodeButton.insertAdjacentElement("afterend", previewDiv);
+
+        } catch (error) {
+            console.error("Failed to inject embed code:", error);
+            previewDiv.textContent = "Failed to load embed code. Please check your input.";
+            previewCodeButton.insertAdjacentElement("afterend", previewDiv);
+        }
+    });
+});
+
+

@@ -1027,6 +1027,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  *     @property {string} scienceLink - URL for the "More Science" link.
  *     @property {string} scienceText - Text displayed for the "More Science" link. This text is prepended with a clipboard icon.
  *     @property {string} dataLink - URL for the "More Data" link.
+ *     @property {string} code - HTML or JS code for embedding.
  *     @property {string} dataText - Text displayed for the "More Data" link. This text is prepended with a database icon.
  *     @property {string} imageLink - URL of the image to be displayed in the figure section.
  *     @property {string} shortCaption - Short description that serves as the image caption.
@@ -1063,9 +1064,6 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     containerDiv.style.borderRadius = '6px 6px 6px 6px'; 
     containerDiv.style.borderWidth = '1px'; 
     containerDiv.style.borderColor = 'lightgrey'; 
-    
-
-
 
     // Create the table row div
     const tableRowDiv = document.createElement('div');
@@ -1089,11 +1087,6 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
 
         leftCellDiv.appendChild(firstLink);
     }
-    // firstLink.appendChild(document.createTextNode(info_obj['scienceText']));
-    // let icon1 = `<i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon" style=""></i> `;
-    // firstLink.innerHTML = icon1 + firstLink.innerHTML;
-    // firstLink.style.textDecoration = 'none';
-    // leftCellDiv.appendChild(firstLink);
 
     // Create the right cell div
     const rightCellDiv = document.createElement('div');
@@ -1114,58 +1107,95 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         rightCellDiv.appendChild(secondLink);
     }
 
-    
-
-
     tableRowDiv.appendChild(leftCellDiv);
     tableRowDiv.appendChild(rightCellDiv);
     containerDiv.appendChild(tableRowDiv);
     if (info_obj['dataLink']!='' && info_obj['scienceText']!=''){
         tabContentElement.appendChild(containerDiv);
     }
-    // tabContentElement.appendChild(containerDiv);
 
+
+    //CONSTRUCT THE MAIN DIV "FIGURE" WHERE THE CONTENT WILL GO
     const figureDiv = document.createElement('div');
     figureDiv.classList.add('figure');
 
     let img;
     let interactiveBool = false;
-    if (info_obj["interactive"] != "Interactive" ){
-        img = document.createElement('img');
-        img.src = info_obj['imageLink'];
-        if (info_obj['externalAlt']){
-            img.alt = info_obj['externalAlt'];
-        } else {
-            img.alt = '';
-        }
-        
+    if (info_obj["interactive"] != "Interactive"){
 
+        //LOGIC FOR IMAGE DISPLAY
+        if (info_obj["interactive"] != "Code"){
+            img = document.createElement('img');
+            img.src = info_obj['imageLink'];
+            if (info_obj['externalAlt']){
+                img.alt = info_obj['externalAlt'];
+            } else {
+                img.alt = '';
+            }
+            figureDiv.appendChild(img);
+        }
+
+        //LOGIC FOR CODE DISPLAY
+        if (info_obj["interactive"] == "Code"){
+            // Create a new div to display the embed code
+            const codeDiv = document.createElement("div");
+            codeDiv.id = "code_display_window";
+            codeDiv.style.width = "100%";
+            codeDiv.style.minHeight = "300px";
+            codeDiv.style.padding = "10px";
+            codeDiv.style.backgroundColor = "#ffffff";
+            codeDiv.style.overflow = "auto";
+            // Center the content using Flexbox
+            codeDiv.style.display = "flex";
+            codeDiv.style.justifyContent = "center"; // Centers horizontally
+            codeDiv.style.alignItems = "center"; // Centers vertically (if height is greater than content)
+
+            
+            //Append the codeDiv to the figureDiv
+            figureDiv.appendChild(codeDiv);
+
+            embedCode = info_obj['code'];
+
+            // Parse the embed code and extract <script> tags
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = embedCode;
+
+            // Move <script> tags to the head and inject the rest into the preview div
+            const scripts = tempDiv.querySelectorAll("script");
+            scripts.forEach((script) => {
+                const newScript = document.createElement("script");
+                newScript.type = script.type || "text/javascript";
+                if (script.src) {
+                    newScript.src = script.src; // External script
+                } else {
+                    newScript.textContent = script.textContent; // Inline script
+                }
+                document.head.appendChild(newScript); // Add to <head>
+                script.remove(); // Remove the script tag from tempDiv
+            });
+
+            // Inject remaining HTML into the codeDiv
+            codeDiv.innerHTML = tempDiv.innerHTML;
+        }
+
+    // LOGIC FOR INTERACTIVE FIGURES
     }  else {  
         img = document.createElement('div'); // Create a div to hold the plot
         img.id = 'plotly-plot'; 
         interactiveBool = true;
     }
    
-    figureDiv.appendChild(img);
+    //ATTRIBUTES FOR THE FIGURE DIV
     figureDiv.setAttribute("display","flex");
-    // figureDiv.style.display = "flex";
     figureDiv.style.justifyContent = "center"; // Center horizontally
     figureDiv.style.alignItems = "center";
-    // img.setAttribute("style", "max-width: 100%;margin-top: 3%; justify-content: center");
     figureDiv.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
-    // img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
 
-    // img.setAttribute("style", "margin-top: 2px;");
-
-    
-
-    // img.setAttribute("style", "justify-content: center;");
-
+    //CREATE PARAGRAPH ELEMENT UNDER "myTabContent" > div class="figure"
     const caption = document.createElement('p');
     caption.classList.add('caption');
     caption.innerHTML = info_obj['shortCaption'];
     caption.style.marginTop = '10px';
-
     figureDiv.appendChild(caption);
     tabContentElement.appendChild(figureDiv);
 
@@ -1184,11 +1214,9 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
 
     }
     
-
     // Add the details element to the tab content element
     // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
-
     console.log("tab content container");
     console.log(tabContentContainer);
     if (interactiveBool){
@@ -1202,9 +1230,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         plotInstance.execute('lines');
 
     }
-    img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
-
-    
+    img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");   
 }
 
 /**
@@ -1272,7 +1298,8 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     if (figure_data['figure_path']==='External'){
                         img = figure_data['figure_external_url'];
                         external_alt = figure_data['figure_external_alt'];
-                    } else {
+                    }
+                    else {
                         img = figure_data['figure_image'];
                     } // add smth here for external
                     info_obj = {
@@ -1281,10 +1308,11 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
                     "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
                     "imageLink" : img,
+                    "code" : figure_data["figure_code"],
                     "externalAlt": external_alt,
                     "shortCaption" : figure_data["figure_caption_short"],
                     "longCaption": figure_data["figure_caption_long"],
-                    "interactive": figure_data["figure_path"]
+                    "interactive": figure_data["figure_path"],
                     };
                     // console.log(info_obj);
                     render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure

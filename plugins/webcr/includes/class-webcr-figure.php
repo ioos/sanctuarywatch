@@ -381,9 +381,9 @@ class Webcr_Figure {
                     'id'             => 'figure_path',
                     'type'           => 'select',
                     'title'          => 'Figure Type',
-                    'options'        => array("Internal" => "Internal", "External" => "External", "Interactive" => "Interactive"),
+                    'options'        => array("Internal" => "Internal", "External" => "External", "Interactive" => "Interactive", "Code" => "Code"),
                     'default'        => "Internal",
-                    'description' => 'Is the figure image stored within this website or at some external location?',
+                    'description' => 'Is the figure image stored within this website or at some external location or within the code?',
                 ),
                 array(
                     'id'    => 'figure_image',
@@ -405,12 +405,51 @@ class Webcr_Figure {
                     'class'       => 'text-class',
                     'description' => 'What is the "alternative text" that should be associated with this image for accessibility?',
                 ),
+                // New HTML/JS Code Editor Field
+                array(
+                    'id'          => 'figure_code',
+                    //'type'        => 'editor',
+                    'type'        => 'ace_editor',
+                    'title'       => 'HTML/JavaScript Code',
+                    'class'       => 'text-class',
+                    'description' => 'Insert your custom HTML or JavaScript code here.',
+                    'options' => array(
+                        'theme'                     => 'ace/theme/chrome',
+                        'mode'                      => 'ace/mode/javascript',
+                        'showGutter'                => true,
+                        'showPrintMargin'           => false,
+                        'enableBasicAutocompletion' => true,
+                        'enableSnippets'            => true,
+                        'enableLiveAutocompletion'  => true,
+                    ),
+                    'attributes'    => array(
+                        'style'        => 'height: 150px; max-width: 100%;',
+                    ),
+                ),
                 array(
                     'id'    => 'figure_json',
                     'type'  => 'image',
                     'title' => 'Figure Json',
                     'description' => 'What is the figure json?',
                     'options' => array('filecount' => '1',),
+                ),
+                //IMAGE UPLOAD ARRAY BOX
+                array(
+                    'id'      => 'figure_json',               
+                    'type'    => 'upload',
+                    'title'   => 'Upload File for Interactive Figure (.csv, .json)',
+                    'class'   => 'text-class',
+                    'options' => array(
+                        // 'attach'                    => true, // attach to post (only in metabox)
+                        'filecount'                 => '1',
+                        // 'allowed'                   => array( 'csv', 'json' ),
+                        // 'delete-enabled'            => false,
+                        // 'delete-force-confirm'      => true,
+                        // 'retry-enable-auto'         => true,
+                        // 'retry-max-auto-attempts'   => 3,
+                        // 'retry-auto-attempt-delay'  => 3,
+                        // 'auto-upload'               => false,
+                    ),
                 ),
                 array(
                     'id'          => 'figure_json_arguments',
@@ -443,6 +482,19 @@ class Webcr_Figure {
                         'btn-class' => 'exopite-sof-btn'
                     ),
                 ),
+                //Preview button for displaying the code at the bottom
+                array(
+                    'id'          => 'code_preview',
+                    'type'        => 'button',
+                    'title'       => 'Preview Code',
+                    'class'        => 'code_preview',
+                    'options'     => array(
+                        'href'  =>  '#nowhere',
+                        'target' => '_self',
+                        'value' => 'Preview',
+                        'btn-class' => 'exopite-sof-btn'
+                    ),          
+                ),
             )
         );
 
@@ -458,10 +510,12 @@ class Webcr_Figure {
             array('figure_image', 'string', 'The figure image url, internal'),
             array('figure_external_url', 'string', 'The figure external url'),
             array('figure_external_alt', 'string', 'The alt text for external figure'),
+            array('figure_code', 'string', 'HTML or JS code'),
+            array('figure_upload_file', 'string', 'Upload the .csv or .json file for an interactive figure'),
             array('figure_caption_short', 'string', 'The short figure caption'),
             array('figure_caption_long', 'string', 'The long figure caption'),
         );
-
+        // Register fields in REST API
         foreach ($fieldsToBeRegistered as $targetFieldsToBeRegistered){
             register_meta(
                 'post', // Object type. In this case, 'post' refers to custom post type 'Figure'
@@ -508,7 +562,7 @@ class Webcr_Figure {
 	 * @since    1.0.0
 	 */
     function register_figure_rest_fields() {
-        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_caption_short', 'figure_caption_long');
+        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long');
         $function_utilities = new Webcr_Utility();
         $function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
     }

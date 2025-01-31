@@ -1,0 +1,26 @@
+Displaying this code was due to edit in the files below:
+noaaswlocal/app/public/wp-content/plugins/webcr/includes/class-webcr-figure.php "figure_code" & "code_preview".
+//Preview button for displaying the code at the bottom (Lines 467 - 479)
+// New HTML/JS Code Editor Field (Lines 408 - 427)
+array('figure_code', 'string', 'HTML or JS code'), - 494
+$figure_rest_fields - 545
+
+
+noaaswlocal/app/public/wp-content/plugins/webcr/admin/js/webcr-admin-figure.js (last function)
+// CODE PREVIEW BUTTON DISPLAY CODE______CHATGPT (Lines 469 - 527)
+function displayCorrectImageField () (Lines 227 - 240)
+
+noaaswlocal/app/public/wp-content/themes/Sanctuary_Watch/assets/js/script.js
+function render_tab_info(tabContentElement, tabContentContainer, info_obj)
+function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id)
+
+
+
+
+
+
+
+<!-- Add script to the <head> of your page to load the embeddable map component -->
+<script type="module" src="https://js.arcgis.com/embeddable-components/4.31/arcgis-embeddable-components.esm.js"></script>
+<!-- Add custom element to <body> of your page -->
+ <arcgis-embedded-map style="height:600px;width:700px;" item-id="84fcf8f5fbad4c84b5f31907cb42cb9e" theme="light" portal-url="https://umiami.maps.arcgis.com" ></arcgis-embedded-map>
