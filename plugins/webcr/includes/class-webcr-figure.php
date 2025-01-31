@@ -470,6 +470,7 @@ class Webcr_Figure {
                     'title'  => 'Extended caption', 
                     'description' => 'This caption appears in the "Click for Details" section under the short caption. If nothing is provided in this field, then the "Click for Details" section will be be blank for this figure.'
                 ),
+                //Preview button for displaying the internal or external images at the bottom of form
                 array(
                     'id'          => 'figure_preview',
                     'type'        => 'button',
@@ -482,7 +483,7 @@ class Webcr_Figure {
                         'btn-class' => 'exopite-sof-btn'
                     ),
                 ),
-                //Preview button for displaying the code at the bottom
+                //Preview button for displaying the code at the bottom of form
                 array(
                     'id'          => 'code_preview',
                     'type'        => 'button',

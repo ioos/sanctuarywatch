@@ -152,126 +152,105 @@
         // Select the nested container with class "exopite-sof-field-upload"
         let codeContainer= document.querySelector('.exopite-sof-field-ace_editor');
 
-        // // Select the nested container with class "exopite-sof-field-button"
-        // let previewContainer = document.querySelector('.exopite-sof-field-button');
-        // let figurePreviewElement = previewContainer.querySelector('.figure_preview');
-        // let codePreviewElement = previewContainer.querySelector('.code_preview');
+        // Select the nested container with class ".exopite-sof-btn.figure_preview"
+        let figurePreviewElement = document.querySelector('.exopite-sof-btn.figure_preview'); // Add an ID or a unique class
+        
+        // Select the nested container with class ".exopite-sof-btn.code_preview"
+        let codePreviewElement = document.querySelector('.exopite-sof-btn.code_preview'); // Add an ID or a unique class
+
+
 
         switch (imageType) {
             case "Internal":
+                //Show the fields we want to see
+                document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "block";
+                //Choose the preview field we want to see
+                if (codePreviewElement) {
+                    codePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
+                }
+                if (figurePreviewElement) {
+                    figurePreviewElement.parentElement.parentElement.style.display = "block"; // Show the element
+                }
                 //Hide the fields we do not want to see
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json")[0].value = "";
-
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
-
-                codeContainer.style.display = "none";
-                fileUploadContainer.style.display = "none";
-                codePreviewElement.parentElement.parentElement.style.display = "none";
-
-                // Add the "hidden" class to the nested container
-                jsonPreviewContainer.classList.add('hidden');
-                jsonPreviewImg.src ="";
-
-                document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "block";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].value = "";
-
                 document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json_arguments")[0].value = "";
-
-                // Add the "hidden" class to the nested container
-                if (imagePreviewImg.src.includes("uploads")) {
-                    imagePreviewContainer.classList.remove('hidden');
-                }
-
-                figurePreviewElement.parentElement.parentElement.style.display = "block";
-
+                document.getElementsByName("figure_json")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json")[0].value = "";
+                codeContainer.style.display = "none";
+                fileUploadContainer.style.display = "none";
                 break;
-
-
 
             case "External":
+                //Show the fields we want to see
+                document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "block";
+                document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "block";
+                //Choose the preview field we want to see
+                if (figurePreviewElement) {
+                    figurePreviewElement.parentElement.parentElement.style.display = "block"; // Show the element
+                }
+                if (codePreviewElement) {
+                    codePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
+                } 
                 //Hide the fields we do not want to see
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json")[0].value = "";
-
-                document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "block";
-
-                codeContainer.style.display = "none";
-                fileUploadContainer.style.display = "none";
-                codePreviewElement.parentElement.style.display = "none";
-
-                // Add the "hidden" class to the nested container
-                jsonPreviewContainer.classList.add('hidden');
-                jsonPreviewImg.src ="";
-
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
-
-                // Add the "hidden" class to the nested container
-                imagePreviewContainer.classList.add('hidden');
-                imagePreviewImg.src ="";
-
                 document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json_arguments")[0].value = "";
-
-                document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "block";
-                break;  
-                
-                
+                codeContainer.style.display = "none";
+                fileUploadContainer.style.display = "none";
+                break;               
 
             case "Interactive":
-                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "block";
-                // Add the "hidden" class to the nested container
-                if (jsonPreviewImg.src.includes("uploads")) {
-                    jsonPreviewContainer.classList.remove('hidden');
+                //Show the fields we want to see
+                fileUploadContainer.style.display = "block";
+                //Choose the preview field we want to see
+                if (figurePreviewElement) {
+                    figurePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
                 }
-
-
-                codeContainer.style.display = "none";
-                codePreviewElement.style.display = "none";
-                figurePreviewElement.parentElement.parentElement.style.display = "none";
-                codePreviewElement.parentElement.parentElement.style.display = "none";
-
-                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json")[0].value = "";
-
+                if (codePreviewElement) {
+                    codePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
+                }
                 //Hide the fields we do not want to see
+                codeContainer.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
-
-                document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_image")[0].value = "";
-
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].value = "";
-
+                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json")[0].value = "";
+                document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_image")[0].value = "";
                 document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json_arguments")[0].value = "";
-
-                fileUploadContainer.style.display = "block";
-
                 break;
 
-
             case "Code":
-                // Hide fields unrelated to "Code"
-                // Add the "hidden" class to the nested container
-                fileUploadContainer.style.display = "none";
-                figurePreviewElement.parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";             
-            
-                // Display the "figure_code" editor box
-                // Hide the entire row for figure_code
+                //Show the fields we want to see
                 if (codeContainer) {
                     codeContainer.style.display = "block";
                 }
+                //Choose the preview field we want to see
+                if (figurePreviewElement) {
+                    figurePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
+                }
+                if (codePreviewElement) {
+                    codePreviewElement.parentElement.parentElement.style.display = "block"; // Show the element
+                }
+                //Hide the fields we do not want to see
+                fileUploadContainer.style.display = "none";
+                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
+                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";  
                 break;
         } 
     }
