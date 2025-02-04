@@ -175,8 +175,13 @@ function process_child_obj(){
             }
         }
     }
+    //now sort by icon order
+    // If you need it back as an object:
 }
+
+
 process_child_obj();
+const sorted_child_objs = Object.values(child_obj).sort((a, b) => a.modal_icon_order - b.modal_icon_order);
 console.log("MODIFIED");
 console.log(child_obj);
 child_ids_helper = {};
@@ -1824,6 +1829,8 @@ function sectioned_list(){
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
+        console.log('section herreeeeeee');
+
         if (!sections.includes(section) && section!='None') {
             sections.push(section);
         }
@@ -1831,6 +1838,8 @@ function sectioned_list(){
     }
     sections.sort();
     console.log(sectionObj);
+    console.log(sections);
+    sections.push('None');
 
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("div");
@@ -1839,43 +1848,11 @@ function sectioned_list(){
     // let colorIdx = 0;
 
     for (let i = 0; i < sections.length; i++) {
-        if (sections[i] == "None"){
-            continue;
-        }
-        // sectColors[sections[i]] = colors[colorIdx]; 
-        // colorIdx = (colorIdx + 1) % colors.length;
-        // console.log(sections[i]);
-        // let color = scene_sections[sections[i]];
-        // console.log("color is: ")
-        // console.log(color);
-        // if (!(sections[i] in scene_sections)) {
-        //     continue;
-        // }
-        // let color = scene_sections[sections[i]];
-        // console.log("color is: ")
-        // console.log(color);
-
+    
         let sect = document.createElement("div");
         // sect.classList.add("accordion-item");
 
         let heading = document.createElement("h5");
-        // heading.classList.add("accordion-header");
-
-        // function hexToRgba(hex, opacity) {
-        //     // Remove the hash if it's present
-        //     hex = hex.replace(/^#/, '');
-        
-        //     // Parse the r, g, b values from the hex string
-        //     let bigint = parseInt(hex, 16);
-        //     let r = (bigint >> 16) & 255;
-        //     let g = (bigint >> 8) & 255;
-        //     let b = bigint & 255;
-        
-        //     // Return the rgba color string
-        //     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-        // }
-
-        
         heading.setAttribute("id", `heading${i}`);
         if (sections[i] != "None"){
             // heading.innerHTML = sections[i];
@@ -1889,12 +1866,13 @@ function sectioned_list(){
             // }
             // heading.style.backgroundColor = hexToRgba(color, 0.3);
             heading.style.padding = '0 5px';
+        } else {
+            heading.innerHTML = 'No Section';
+            let color = scene_default_hover_color;
+            heading.style.backgroundColor = hexToRgba(color, 0.2);
+            heading.style.color = 'black';
+            heading.style.display = 'inline-block';
         }
-        // heading.setAttribute("style", `color: ${sectColors[sections[i]]}`);
-        // heading.setAttribute("style", `color: ${color}`);
-        // heading.setAttribute("style", `color: #03386c`);
-
-
 
         sect.appendChild(heading);
 
@@ -1905,8 +1883,6 @@ function sectioned_list(){
 
         let sectlist = document.createElement("ul");
         sectlist.setAttribute("id", sections[i]);
-        // sectlist.setAttribute("style", `color: ${sectColors[sections[i]]}`);
-        // sectlist.setAttribute("style", `color: ${color}`);
         sectlist.setAttribute("style", `color: black`);
 
 
@@ -1937,6 +1913,7 @@ function sectioned_list(){
  */
 function toc_sections() {
     let sections = [];
+    // console.log(child_obj);
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
         console.log('section herreeeeeee');
@@ -1948,6 +1925,7 @@ function toc_sections() {
     }
     sections.sort();
     console.log(sectionObj); //use this for naming stuff
+    sections.push('None');
 
     console.log(sections);
     console.log(scene_sections);
@@ -1997,8 +1975,12 @@ function toc_sections() {
             // button.appendChild(span);
 
         } else {
-            continue;
             // button.innerHTML = "Table of Contents";
+            button.innerHTML = 'No Section';
+            let color = scene_default_hover_color;
+            button.style.backgroundColor = hexToRgba(color, 0.2);
+            // button.style.color = 'black';
+            // button.style.display = 'inline-block';
         }
         
 
@@ -2075,11 +2057,23 @@ function table_of_contents(){
     }               
     // let elem = document.getElementById("toc1");
     // let elem = document.createElement("ul")
-    for (let key in child_obj){
+    // use  sorted_child_objs
+    console.log(sorted_child_objs);
+ 
+   
+    // for (let key in child_obj){
+    for (let obj of sorted_child_objs){
+        console.log('obj here..');
+        console.log(obj.modal_icon_order);
+        key = obj.original_name;
+        console.log("key here...");
+        console.log(key);
         // document.querySelector("#Section\\ 1")
         // console.log(key);
         if (sectionObj[key]=="None"){
-            continue;
+            // continue;
+            console.log("bruhhhhhh");
+            console.log(key);
         }
         let elem = document.getElementById(child_obj[key]['section_name']);
         console.log(elem);
@@ -2212,6 +2206,7 @@ function table_of_contents(){
  */
 
 function list_toc(){
+ 
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
@@ -2221,15 +2216,26 @@ function list_toc(){
         sectionObj[key] = section;
     }
     sections.sort();
+    // console.log(sections);
 
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("ul");
     let colorIdx = 0;
     let i = 0;
-    for (let key in child_obj) {
+    console.log("sorted list here...");
+    console.log(sorted_child_objs);
+    // for (let obj of sorted_child_objs){
+    //     
+    // for (let key in child_obj) {
+    for (let obj of sorted_child_objs){
         // let elem = document.getElementById(child_obj[key]['section_name']);
         // sectColors[sections[i]] = colors[colorIdx]; 
         // colorIdx = (colorIdx + 1) % colors.length;
+        console.log('obj here..');
+        console.log(obj.modal_icon_order);
+        key = obj.original_name;
+        console.log("key here...");
+        console.log(key);
         i++;
 
         let item = document.createElement("li");
@@ -2341,7 +2347,13 @@ function add_modal(){
 
             });
             } else {
-                elem.addEventListener('click', function() {
+                elem.addEventListener('click', function(event) {
+                    // gtag('event', 'modal_icon_click', {
+                    //     'event_category': 'Button Interaction',
+                    //     'event_label': 'Track Me Button',
+                    //     'value': 1
+                    //   });
+
                     modal.style.display = "block";
                     render_modal(key );
 
@@ -2377,7 +2389,13 @@ function add_modal(){
             };
     
         } else {
-            elem.addEventListener('click', function() {
+            elem.addEventListener('click', function(event) {
+                // gtag('event', 'modal_icon_click', {
+                //     'event_category': 'Button Interaction',
+                //     'event_label': 'Track Me Button',
+                //     'value': 1
+                //   });
+
                 let link =  child_obj[key]['external_url'];
                 window.location.href = link;
 
