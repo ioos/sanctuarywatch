@@ -392,7 +392,7 @@ function has_mobile_layer(mob_icons, elemname){
             return true;
         }             
     }
-    console.log("uh oh");
+    // console.log("uh oh");
     return false;
 }
 
@@ -454,9 +454,12 @@ function remove_outer_div(){
  * @returns {void}
  */
 function mobile_helper(svgElement, iconsArr, mobile_icons){
-    // console.log(svgElement);
+    console.log("iconsArr below for mobile");
+    console.log(iconsArr);
     remove_outer_div();
     let defs = svgElement.firstElementChild;
+    let ignore = 0;
+
    
     function updateLayout(numCols, numRows) {
         let outer_cont = document.querySelector("body > div.container-fluid");
@@ -485,6 +488,16 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
                     cont.appendChild(svgClone);
                     let currIcon = iconsArr[idx].id;
+                    if (currIcon && currIcon in child_obj) {
+                        console.log('we good');
+                    } else {
+                        console.log("GTFO");
+                        idx+=1
+                        ignore+=1
+                        console.lo
+                        continue;
+                    }
+                    console.log(child_obj[currIcon]);
                     let key  ='';
                     if (!has_mobile_layer(mobile_icons, currIcon)){
                         key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
@@ -502,7 +515,9 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     if (child_obj[currIcon]){
                         caption.innerText = child_obj[currIcon].title;
                     } else {
-                        caption.innerText = "not in wp yet, have to add";
+                        // idx+=1
+                        // continue;
+                        // caption.innerText = "not in wp yet, have to add";
                     }
                     
                     caption.setAttribute("style", "font-size: 15px")
@@ -574,6 +589,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
 
         }
         // updateLayout();
+        console.log("ignored: ");
+        console.log(ignore);
         numRows = Math.ceil((iconsArr.length/numCols));
         console.log(`Number of columns: ${numCols}`);
         console.log("number of rows: ");
