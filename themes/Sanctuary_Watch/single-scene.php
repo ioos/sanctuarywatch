@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Detailed Scene Page Template
@@ -24,14 +25,27 @@
  * better user engagement and content discovery through well-structured and dynamic data presentation.
  */
 
-defined( 'ABSPATH' ) || exit;
+defined( 'ABSPATH' ) || exit; ?>
 
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NCLV6NC5');</script>
+<!-- End Google Tag Manager -->
+<?php
 get_header();
+?>
 
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NCLV6NC5"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<?php
 //ALL CURRENTLY ASSUME THERE IS THE CORRECT POSTMETA DATA AND THERE ALL SUFFICIENT INFORMATION EXISTS
 //IMPLEMENT ERROR CHECKS LATER
-
-
 // Retrieves the ID of the current post
 $post_id = get_the_ID();
 $scene_url = get_post_meta($post_id, 'scene_infographic');
@@ -47,32 +61,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 //     const postId = <?php echo json_encode($post_id); ?>;
 //     const instanceSlug = <?php echo json_encode($instance_slug); ?>;
 //     const overviewSceneId = <?php echo json_encode($overview); ?>;
-
-//     function changeUrl() {
-//       const currentHash = window.location.hash;
-//       if (Number(postId) === Number(overviewSceneId)) {
-
-//             const newUrl = `/${instanceSlug}/`;
-//             history.pushState(null, '', newUrl);
-//             console.log('URL changed to:', newUrl);
-//         }
-//     }
-
-//     const observer = new MutationObserver(function(mutations, obs) {
-//         if (document.readyState === 'complete') {
-//             changeUrl();
-//             obs.disconnect(); 
-//             console.log('Page fully loaded, URL updated');
-//         }
-//     });
-
-//     const config = { childList: true, subtree: true };
-
-//     observer.observe(document.body, config);
-// });
-
 </script>
-
 
 <body      >
   <!-- for the mobile image stuff -->
