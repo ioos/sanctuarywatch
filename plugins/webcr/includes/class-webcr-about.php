@@ -91,49 +91,75 @@ class Webcr_About {
             'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
         );
 
-        // get list of locations, which is saved as a taxonomy
-        $function_utilities = new Webcr_Utility();
+            // Step 1: Create an array to hold the About Box info 
+            $aboutBoxArray = array();
+            for ($i = 1; $i <= 11; $i++) {
+                $aboutBoxArray[] = array(
+                    'type' => 'fieldset',
+                    'id' => 'aboutBox' . $i,
+                    'title'   => 'About Box ' . $i,
+                    'fields' => array(
+                        array(
+                            'id'          => 'aboutBoxTitle' . $i,
+                            'type'        => 'text',
+                            'title'       => 'Box title',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'          => 'aboutBoxMain' . $i,
+                            'type'        => 'editor',
+                            'title'       => 'Box Content: Main',
+                        ),
+                        array(
+                            'id'          => 'aboutBoxDetail' . $i,
+                            'type'        => 'editor',
+                            'title'       => 'Box Content: Detail',
+                        ),
+                    ),
+                );
+            }
 
-        $fields[] = array(
+        $fields = [ 
+            array(
+                    'type' => 'fieldset',
+                    'id' => 'centralAbout',
+                    'title'   => 'Central About Content',
+                    'fields' => array(
+                        array(
+                            'id'          => 'aboutMain',
+                            'type'        => 'editor',
+                            'title'       => 'Central Content: Main',
+                        ),
+                        array(
+                            'id'          => 'aboutDetail',
+                            'type'        => 'editor',
+                            'title'       => 'Central Content: Detail',
+                        ),
+                    ),
+                ),
+                array(
+                    'id'      => 'numberAboutBoxes',
+                    'type'    => 'range',
+                    'title'   => 'Number of About Boxes',
+                    'min'     => 0,    
+                    'default' => 1,    
+                    'max'     => 10,         
+                    'step'    => 1,             
+                )
+        ];
+
+        // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
+        $fields = array_merge($fields, $aboutBoxArray);
+
+        $fieldsHolder[] = array(
             'name'   => 'basic',
             'title'  => 'Basic',
             'icon'   => 'dashicons-admin-generic',
-            'fields' => array(
-                array(
-                    'id'   => 'about_tagline',
-                    'type' => 'textarea',
-                    'title'       => 'Tagline',
-                    'description' => 'What is the tagline for the About page that appears above the tiles?'
-                ),
-                array(
-                    'id'     => 'about_contact_info',
-                    'type'   => 'editor',
-                    'title'  => 'Contact info', 
-                    'description' => 'What information should appear in the Contact Info tile?'
-                ),
-                array(
-                    'id'     => 'about_partners',
-                    'type'   => 'editor',
-                    'title'  => 'Partners', 
-                    'description' => 'What information should appear in the Partners tile?'
-                ),
-                array(
-                    'id'     => 'about_code',
-                    'type'   => 'editor',
-                    'title'  => 'Use our Code', 
-                    'description' => 'What information should appear in the Use Our Code tile?'
-                ),
-                array(
-                    'id'     => 'about_people',
-                    'type'   => 'editor',
-                    'title'  => 'People Involved', 
-                    'description' => 'What information should appear in the People Involved tile?'
-                ),
-            )
+            'fields' => $fields,
         );
 
         // instantiate the admin page
-        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
+        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fieldsHolder );
     }  
 
     // Modified About post check function with debugging - CLAUDE FUNCTION
