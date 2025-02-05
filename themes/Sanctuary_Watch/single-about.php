@@ -15,59 +15,51 @@ get_header();
 
 // wp_reset_postdata();
 	$abt_post_id = get_the_ID();
-	$about_tagline = get_post_meta($abt_post_id, 'about_tagline', true);
-	$about_contact_info	 = get_post_meta($abt_post_id, 'about_contact_info', true);
-	$about_code = get_post_meta($abt_post_id, 'about_code', true);
-	$about_partners = get_post_meta($abt_post_id, 'about_partners', true);
-	$about_people = get_post_meta($abt_post_id, 'about_people', true);
-
-
+    $numberAboutBoxes = get_post_meta($abt_post_id, 'numberAboutBoxes', true);
+    $about_post_title = get_post_meta($abt_post_id, 'post_title', true);
+    $about_central_array = get_post_meta($abt_post_id, 'centralAbout', true);
+    $about_central_main = $about_central_array['aboutMain'];
+    $about_central_details= $about_central_array['aboutDetail'];
 	?>
 
 <div class="page-header">
-    <h2>About Sanctuary Watch</h2>
+    <h2><?php echo $about_central_main; ?></h2>
     <div class="tagline-content">
-        <?php echo $about_tagline; ?>
+        <?php echo $about_central_details; ?>
     </div>
 </div>
 
+<!-- Loop through all the possible aboutBoxes and populate them dynamically if there is content in any of them content. -->
+<!-- Number of boxes needed is grabbed from the database.-->
 <div class="about-container">
-    <!-- <?php if (!empty($about_contact_info)): ?> -->
-    <div class="about-card">
-        <h2>Contact Information</h2>
-        <div class="card-content">
-            <?php echo $about_contact_info; ?>
-        </div>
-    </div>
-    <!-- <?php endif; ?> -->
+    <?php
+    for ($i = 1; $i <= $numberAboutBoxes; $i++) {
+        $aboutBox_array = get_post_meta($abt_post_id, "aboutBox$i", true);
+        $aboutBox_title = $aboutBox_array["aboutBoxTitle$i"] ?? '';
+        $aboutBox_main = $aboutBox_array["aboutBoxMain$i"] ?? '';
+        $aboutBox_details = $aboutBox_array["aboutBoxDetail$i"] ?? '';
 
-    <!-- <?php if (!empty($about_code)): ?> -->
-    <div class="about-card">
-        <h2>Code</h2>
-        <div class="card-content">
-            <?php echo $about_code; ?>
-        </div>
-    </div>
-    <!-- <?php endif; ?> -->
-
-    <!-- <?php if (!empty($about_partners)): ?> -->
-    <div class="about-card">
-        <h2>Partners</h2>
-        <div class="card-content">
-            <?php echo $about_partners; ?>
-        </div>
-    </div>
-    <!-- <?php endif; ?> -->
-
-    <!-- <?php if (!empty($about_people)): ?> -->
-    <div class="about-card">
-        <h2>People</h2>
-        <div class="card-content">
-            <?php echo $about_people; ?>
-        </div>
-    </div>
-    <!-- <?php endif; ?> -->
+        // If aboutBox_title, aboutBox_main, or aboutBox_details is not empty, then go ahead and create the card. 
+        if (!empty($aboutBox_title) || !empty($aboutBox_main) || !empty($aboutBox_details)) {
+            ?>
+            <div class="about-card">
+                <h2><?php echo esc_html($aboutBox_title); ?></h2>
+                <div class="card-content">
+                    <?php echo ($aboutBox_main); ?>
+                    <?php if (!empty($aboutBox_details)): ?>
+                        <details>
+                            <summary>Learn More...</summary>
+                            <?php echo ($aboutBox_details); ?>
+                        </details>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php
+        }
+    }
+    ?>
 </div>
+
 
 <style>
 .page-header {
