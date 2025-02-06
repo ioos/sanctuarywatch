@@ -369,6 +369,11 @@ function webcr_settings_page() {
         </form>
     </div>
     <?php
+
+
+$tempo = 3;
+
+
 }
 
 // Optional: Add settings link on plugin page

@@ -105,45 +105,93 @@ console.log(legacy_urls);
 </div>
 
 
+
 <!-- Main container with Bootstrap styling for fluid layout -->
 <div class="container-fluid main-container" style="margin-top: 0px;">
-<div >
-        <p>
     <?php 
+
+// BEGIN TEXT
+
+
+
+
+
+// END TEXT
+
+
             $front_page_intro = get_option('webcr_settings')['intro_text'];
             if ($front_page_intro == false) {
                 $front_page_intro = "None";
             }
             echo $front_page_intro;
         ?>
-        </p>
-    </div>
 </div>
-<div class="container-fluid main-container" style="margin-top: 0px;">
 
-    <div id="webcrs---ecosystem-tracking-tools-for-condition-reporting" class="section level2">
-        <h2 style="color: #024880;">WebCRs - Ecosystem Tracking Tools for Condition Reporting</h2>
+<?php 
+$terms = get_terms([
+    'taxonomy'   => 'instance_type',
+    'hide_empty' => false, // Include terms even if not assigned to posts
+]);
 
-        <p>The web-enabled Condition Reporting (WebCR) platform pairs artwork
-            with information to make it easy to explore and track how ecosystem
-            conditions are changing at a sanctuary. Select a sanctuary below to
-            start exploring that sanctuary’s ecosystem. Navigate by clicking on
-            icons representing major habitats, species of interest, climate and
-            ocean drivers, and human connections. Interactive icons and silhouettes
-            are linked to status and trend data, images, web stories and other
-            related content. The goal of WebCRs are to help us keep our finger on
-            the pulse of these dynamic ecosystems and to help us to better
-            understand and manage our sanctuaries together. Tiles for other
-            sanctuaries will be added below as those tools become available.</p>
-        <div></div>
-        
-    </div>
-    <?php
-        $post_id = get_the_ID();
-        //   $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
-        //   $child_ids = get_modal_array($svg_url);
-        ?>
-</div>
+if (empty($terms) || is_wp_error($terms)) {
+    return; // No terms found or an error occurred
+}
+
+// Prepare an array with instance_order
+$terms_array = [];
+foreach ($terms as $term) {
+    $instance_order = get_term_meta($term->term_id, 'instance_order', true);
+    $terms_array[] = [
+        'id'            => $term->term_id,
+        'name'           => $term->name,
+        'description'    => $term->description, // Get term description
+        'instance_order' => (int) $instance_order, // Ensure numeric sorting
+    ];
+}
+
+// Sort terms by instance_order
+usort($terms_array, function ($a, $b) {
+    return $a['instance_order'] - $b['instance_order'];
+});
+
+
+foreach ($terms_array as $term){
+    ?>
+
+    <?php 
+    echo "<div class='container-fluid main-container'><h2 style='color: #024880; margin-right: auto;'>{$term['name']}</h2></div>";
+    echo "<div class='container-fluid main-container' style='margin-top: -30px;'>{$term['description']}</div>";
+    echo "<div class='container-fluid main-container' style='margin-top: -30px;'><div class ='row'>";
+    $args = [
+        'post_type'      => 'instance',
+        'posts_per_page' => -1, // Get all posts
+        'fields'         => ['ids', 'post_title'], 
+        'meta_query'     => [
+            [
+                'key'     => 'instance_type',
+                'value'   => $term["id"],
+                'compare' => '='
+            ]
+        ]
+    ];
+
+ 
+    $instances = new WP_Query($args);
+    foreach ($instances->posts as $instance){
+        echo '<div class="col-xs-12 col-sm-6 col-md-4"><div class="card" style="margin: 10px;">';
+        $tile_image = get_post_meta($instance->ID, "instance_tile")[0];
+        echo "<img class='card-img-top' src='{$tile_image}' alt='{$instance->post_title}'>";
+        $instance_slug = get_post_meta($instance->ID, "instance_slug")[0]; 
+        echo '<div class="card-body">';
+        echo "<a href='$instance_slug' class='btn ' style='display: flex; justify-content: center; align-items: center; color: white !important; background-color: #00467F !important'>{$instance->post_title}</a></div>";
+
+        echo "</div></div>";
+    }
+    echo "</div></div>";
+}
+
+?>
+
 </div>
 </body>
 <script>
