@@ -98,6 +98,18 @@ class Webcr_Instance {
             $scene_titles = $function_utilities -> returnInstanceScenes($instance_id );
         }
 
+        // create an array containing all instance types and ids from the taxonomy table
+        global $wpdb;
+    
+        // Query to fetch term IDs and slugs, sorted by slug
+        $instance_type_results = $wpdb->get_results( "SELECT term_id, slug FROM {$wpdb->terms} ORDER BY slug ASC", ARRAY_A );
+    
+        // Convert results into an associative array
+        $instance_type_array = [];
+        foreach ($instance_type_results as $row) {
+            $instance_type_array[$row['term_id']] = ucwords($row['slug']);
+        }
+
         $fields[] = array(
             'name'   => 'basic',
             'title'  => 'Basic',
@@ -121,7 +133,7 @@ class Webcr_Instance {
                     'id'             => 'instance_type',
                     'type'           => 'select',
                     'title'          => 'Type',
-                    'options'        => array("Designation" => "Designation", "Issue" => "Issue", "Sanctuary" => "Sanctuary"),
+                    'options'        => $instance_type_array, //array("Designation" => "Designation", "Issue" => "Issue", "Sanctuary" => "Sanctuary"),
                     'description' => 'What is the instance type?',
                    // 'class'      => 'chosen', 
                 ),
@@ -272,7 +284,13 @@ class Webcr_Instance {
     public function custom_instance_column( $column, $post_id ) {  
 
         if ( $column === 'type' ) {
-            echo get_post_meta($post_id, 'instance_type', true);
+            global $wpdb;
+            $instance_type_id = get_post_meta($post_id, 'instance_type', true);
+            $instance_type_slug = $wpdb->get_var( $wpdb->prepare( 
+                "SELECT slug FROM {$wpdb->terms} WHERE term_id = %d", 
+                $instance_type_id
+            ));
+            echo ucwords($instance_type_slug);
         }
 
         if ( $column === 'tile' ) {

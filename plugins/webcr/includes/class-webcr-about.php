@@ -93,7 +93,7 @@ class Webcr_About {
 
             // Step 1: Create an array to hold the About Box info 
             $aboutBoxArray = array();
-            for ($i = 1; $i <= 11; $i++) {
+            for ($i = 1; $i <= 10; $i++) {
                 $aboutBoxArray[] = array(
                     'type' => 'fieldset',
                     'id' => 'aboutBox' . $i,

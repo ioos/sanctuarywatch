@@ -115,7 +115,7 @@ class Webcr_Modal {
             'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
         );
 
-        // get list of locations, which is saved as a taxonomy
+        // get list of locations
         $function_utilities = new Webcr_Utility();
         $locations = $function_utilities -> returnAllInstances();
 

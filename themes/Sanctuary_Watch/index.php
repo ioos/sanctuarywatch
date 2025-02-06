@@ -104,11 +104,26 @@ console.log(legacy_urls);
     </div>
 </div>
 
+
 <!-- Main container with Bootstrap styling for fluid layout -->
 <div class="container-fluid main-container" style="margin-top: 0px;">
-    
+<div >
+        <p>
+    <?php 
+            $front_page_intro = get_option('webcr_settings')['intro_text'];
+            if ($front_page_intro == false) {
+                $front_page_intro = "None";
+            }
+            echo $front_page_intro;
+        ?>
+        </p>
+    </div>
+</div>
+<div class="container-fluid main-container" style="margin-top: 0px;">
+
     <div id="webcrs---ecosystem-tracking-tools-for-condition-reporting" class="section level2">
         <h2 style="color: #024880;">WebCRs - Ecosystem Tracking Tools for Condition Reporting</h2>
+
         <p>The web-enabled Condition Reporting (WebCR) platform pairs artwork
             with information to make it easy to explore and track how ecosystem
             conditions are changing at a sanctuary. Select a sanctuary below to
