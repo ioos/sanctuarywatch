@@ -110,14 +110,6 @@ console.log(legacy_urls);
 <div class="container-fluid main-container" style="margin-top: 0px;">
     <?php 
 
-// BEGIN TEXT
-
-
-
-
-
-// END TEXT
-
 
             $front_page_intro = get_option('webcr_settings')['intro_text'];
             if ($front_page_intro == false) {
