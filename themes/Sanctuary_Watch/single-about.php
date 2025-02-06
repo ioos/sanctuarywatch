@@ -23,9 +23,13 @@ get_header();
 	?>
 
 <div class="page-header">
-    <h2><?php echo $about_central_main; ?></h2>
+    <h2><?php echo $about_post_title; ?></h2>
     <div class="tagline-content">
-        <?php echo $about_central_details; ?>
+        <?php echo $about_central_main; ?>
+        <details>
+            <summary>Learn More...</summary>
+            <?php echo ($about_central_details); ?>
+        </details>
     </div>
 </div>
 
