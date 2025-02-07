@@ -872,7 +872,9 @@ font-size: large; */
 @media (min-width: 769px) {  /* a bunch of new stuff here for updated formatting */
   #title-container > div > div.col-md-2{
     width: 21%;
-    margin-left: 71.4%;
+    /* margin-left: 71.4%; */
+    margin-left: -31%;
+
   }
   #title-container > div > div.col-md-2 > div{
     margin-top: 2%;

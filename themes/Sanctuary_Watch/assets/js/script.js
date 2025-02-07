@@ -453,160 +453,111 @@ function remove_outer_div(){
  * 
  * @returns {void}
  */
-function mobile_helper(svgElement, iconsArr, mobile_icons){
+function mobile_helper(svgElement, iconsArr, mobile_icons) {
     console.log("iconsArr below for mobile");
     console.log(iconsArr);
     remove_outer_div();
     let defs = svgElement.firstElementChild;
     let ignore = 0;
 
-   
-    function updateLayout(numCols, numRows) {
+    function updateLayout() {
+        const numCols = 3; // Fixed to 3 columns
+        const numRows = Math.ceil(iconsArr.length / numCols);
         let outer_cont = document.querySelector("body > div.container-fluid");
         outer_cont.innerHTML = '';
-    
+
+        let row_cont = document.createElement("div");
+        row_cont.classList.add("row");
         let idx = 0;
-        for (let i = 0; i < numRows; i++) {
-            let row_cont = document.createElement("div");
-            row_cont.classList.add("row");
-            row_cont.setAttribute("id", `row-${i}`);
+
+        while (idx < iconsArr.length) {
+            let cont = document.createElement("div");
+            cont.classList.add("col-4");
+            cont.style.paddingBottom = '10px';
+            cont.style.paddingTop = '5px';
+            cont.style.fontWeight = 'bold'; 
+            cont.style.border = '2px solid #000';
+            cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
+           
+            let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+            cont.appendChild(svgClone);
             
-            for (let j = 0; j < numCols; j++) {
-                if (idx < iconsArr.length) {
-                    let cont = document.createElement("div");
-                    cont.classList.add("col-4");
-                    cont.style.paddingBottom = '10px';
-                    cont.style.paddingTop = '5px';
-                    cont.style.fontWeight = 'bold'; 
-                    cont.style.border = '2px solid #000';
-                    // cont.style.color = '#008da8';
-                    // cont.style.background = 'white';
-                    cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
-                   
-                    let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                    svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-                    cont.appendChild(svgClone);
-                    let currIcon = iconsArr[idx].id;
-                    if (currIcon && currIcon in child_obj) {
-                        console.log('we good');
-                    } else {
-                        console.log("GTFO");
-                        idx+=1
-                        ignore+=1
-                        console.lo
-                        continue;
-                    }
-                    console.log(child_obj[currIcon]);
-                    let key  ='';
-                    if (!has_mobile_layer(mobile_icons, currIcon)){
-                        key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
-                    } else {
-                        key = get_mobile_layer(mobile_icons, currIcon);
-                        let temp = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
-                        let tempId = temp.getAttribute("id");
-                        key.setAttribute("id",  tempId);
-                    }
-                    cont.setAttribute("id", `${currIcon}-container`);
-                    svgClone.append(defs);
-                    svgClone.append(key);
-                    
-                    let caption = document.createElement("div");
-                    if (child_obj[currIcon]){
-                        caption.innerText = child_obj[currIcon].title;
-                    } else {
-                        // idx+=1
-                        // continue;
-                        // caption.innerText = "not in wp yet, have to add";
-                    }
-                    
-                    caption.setAttribute("style", "font-size: 15px")
-                    cont.appendChild(caption);
-                    row_cont.appendChild(cont);
-                    setTimeout(() => {
-                        let bbox = key.getBBox(); 
-                        svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
-                    }, 0);
-    
-                    idx += 1;
-                } else {
-                    continue;
-                }
+            let currIcon = iconsArr[idx].id;
+            if (!(currIcon && currIcon in child_obj)) {
+                idx += 1;
+                ignore += 1;
+                continue;
             }
-            // outer_cont.style.marginTop = '70%';
-            outer_cont.style.marginLeft = '-1.5%';
-            outer_cont.appendChild(row_cont);
+
+            let key;
+            if (!has_mobile_layer(mobile_icons, currIcon)) {
+                key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+            } else {
+                key = get_mobile_layer(mobile_icons, currIcon);
+                let temp = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                let tempId = temp.getAttribute("id");
+                key.setAttribute("id", tempId);
+            }
+            
+            cont.setAttribute("id", `${currIcon}-container`);
+            svgClone.append(defs.cloneNode(true));  // Clone defs for each SVG
+            svgClone.append(key);
+            
+            let caption = document.createElement("div");
+            caption.innerText = child_obj[currIcon].title;
+            caption.setAttribute("style", "font-size: 15px");
+            cont.appendChild(caption);
+            row_cont.appendChild(cont);
+            
+            setTimeout(() => {
+                let bbox = key.getBBox(); 
+                svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+            }, 0);
+
+            idx += 1;
+        }
+        
+        outer_cont.style.marginLeft = '-1.5%';
+        outer_cont.appendChild(row_cont);
+    }
+
+    function updateViewportSettings() {
+        let mobViewImage = document.querySelector("#mobile-view-image");
+        let sceneFluid = document.querySelector("#scene-fluid");
+        let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
+        let mobModalDialog = document.querySelector("#mobileModal > div");
+        let modalDialogInfo = document.querySelector("#myModal > div");
+
+        if (window.innerWidth > window.innerHeight) {
+            // Landscape mode
+            mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%");
+            sceneFluid.setAttribute("style", "margin-top: 25%; margin-left: -1.5%; display: block");
+            colmd2.setAttribute("style", "width: 100%");
+            mobModalDialog.setAttribute("style", "z-index: 9999; margin-top: 10%; max-width: 88%;");
+            modalDialogInfo.setAttribute("style", "z-index: 9999; margin-top: 10%; max-width: 88%;");
+        } else {
+            // Portrait mode
+            const ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%';
+            const ogSceneFluid = 'margin-top: 70%; margin-left: -1.5%;';
+            
+            mobViewImage.setAttribute("style", ogMobViewImage);
+            sceneFluid.setAttribute("style", ogSceneFluid);
+            colmd2.setAttribute("style", "");
+            mobModalDialog.setAttribute("style", "z-index: 9999; margin-top: 60%; max-width: 88%;");
+            modalDialogInfo.setAttribute("style", "z-index: 9999; margin-top: 60%; max-width: 88%;");
         }
     }
 
-    function updateNumCols() {
-        let numCols;
-        let numRows;
-        // let mobViewImage = document.querySelector("#mobile-view-image");
-        // console.log(mobViewImage.style);
-        let ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%'
-        let sceneFluid = document.querySelector("#scene-fluid");
-        let ogSceneFluid = 'margin-top: 70%; margin-left: -1.5%;'
-        let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
-        let ogColmd2 = colmd2.getAttribute("style", "");
-
-        if (window.innerWidth > window.innerHeight) {
-            let mobViewImage = document.querySelector("#mobile-view-image");
-            let sceneFluid = document.querySelector("#scene-fluid");
-            let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
-            let mobModalDialog = document.querySelector("#mobileModal > div");
-            let modalDialogInfo = document.querySelector("#myModal > div");
-
-            console.log("aaahahaha");
-            numCols = 4;
-            console.log("landscapeee");  
-            mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%")
-            sceneFluid.setAttribute("style", "margin-top: 25%;margin-left: -1.5%; display: block");
-            colmd2.setAttribute("style", "width: 100%")
-            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
-            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
-        //   updateLayout();
-
-        } else  {
-          numCols = 3;
-            let mobViewImage = document.querySelector("#mobile-view-image");
-            let sceneFluid = document.querySelector("#scene-fluid");
-            let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
-            let mobModalDialog = document.querySelector("#mobileModal > div");
-            let modalDialogInfo = document.querySelector("#myModal > div");
-
-            console.log("Portrait mode");
-            mobViewImage.setAttribute("style", '');
-            mobViewImage.setAttribute("style", ogMobViewImage);
-            sceneFluid.setAttribute("style", '');
-            sceneFluid.setAttribute("style", ogSceneFluid);
-            colmd2.setAttribute("style", '');
-            colmd2.setAttribute("style", ogColmd2);
-            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
-            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
-
-        //   updateLayout();
-
-        }
-        // updateLayout();
-        console.log("ignored: ");
-        console.log(ignore);
-        numRows = Math.ceil((iconsArr.length/numCols));
-        console.log(`Number of columns: ${numCols}`);
-        console.log("number of rows: ");
-        console.log(numRows);
-
-        updateLayout(numCols, numRows);
-        // mobViewImage.remove();
-        add_modal();
-
-      }
-    updateNumCols();
-    window.addEventListener("resize", updateNumCols);
-
-   
+    updateLayout();
+    updateViewportSettings();
+    window.addEventListener("resize", () => {
+        updateViewportSettings();
+    });
+    
+    add_modal();
 }
-
 // Below is the function that will be used to include SVGs within each scene
 
 /**
