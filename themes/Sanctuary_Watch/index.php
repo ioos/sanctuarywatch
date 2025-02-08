@@ -68,13 +68,7 @@ if ($instances_query->have_posts()) {
 
 
 ?>
-<script> 
 
-let legacy_urls = <?php echo json_encode($instance_legacy_urls); ?>;
-console.log("legacy urls here");
-console.log(legacy_urls);
-
-</script>
 
 
 <body>
@@ -107,7 +101,7 @@ console.log(legacy_urls);
 
 
 <!-- Main container with Bootstrap styling for fluid layout -->
-<div class="container-fluid main-container" style="margin-top: 0px;">
+
     <?php 
 
 
@@ -115,11 +109,8 @@ console.log(legacy_urls);
             if ($front_page_intro == false) {
                 $front_page_intro = "None";
             }
-            echo $front_page_intro;
-        ?>
-</div>
+            echo "<div class='container-fluid main-container' style='margin-top: 0px;'><h4 style='color:black'>{$front_page_intro}</h3></div>";
 
-<?php 
 $terms = get_terms([
     'taxonomy'   => 'instance_type',
     'hide_empty' => false, // Include terms even if not assigned to posts
@@ -153,39 +144,116 @@ foreach ($terms_array as $term){
     <?php 
     echo "<div class='container-fluid main-container'><h2 style='color: #024880; margin-right: auto;'>{$term['name']}</h2></div>";
     echo "<div class='container-fluid main-container' style='margin-top: -30px;'>{$term['description']}</div>";
-    echo "<div class='container-fluid main-container' style='margin-top: -30px;'><div class ='row'>";
-    $args = [
+    echo "<div class='container main-container'>";
+
+    $args = array(
         'post_type'      => 'instance',
-        'posts_per_page' => -1, // Get all posts
-        'fields'         => ['ids', 'post_title'], 
-        'meta_query'     => [
-            [
-                'key'     => 'instance_type',
-                'value'   => $term["id"],
-                'compare' => '='
-            ]
-        ]
-    ];
-
- 
-    $instances = new WP_Query($args);
-    foreach ($instances->posts as $instance){
-        echo '<div class="col-xs-12 col-sm-6 col-md-4"><div class="card" style="margin: 10px;">';
-        $tile_image = get_post_meta($instance->ID, "instance_tile")[0];
-        echo "<img class='card-img-top' src='{$tile_image}' alt='{$instance->post_title}'>";
-        $instance_slug = get_post_meta($instance->ID, "instance_slug")[0]; 
-        echo '<div class="card-body">';
-        echo "<a href='$instance_slug' class='btn ' style='display: flex; justify-content: center; align-items: center; color: white !important; background-color: #00467F !important'>{$instance->post_title}</a></div>";
-
-        echo "</div></div>";
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'   => 'instance_type',
+                'value' => $term["id"],
+            ),
+        ),
+    );
+    
+    $query = new WP_Query($args);
+    
+    $instances = array();
+    
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $instances[] = array(
+                'id'             => get_the_ID(),
+                'post_title'     => get_the_title(),
+                'instance_status' => get_post_meta(get_the_ID(), 'instance_status', true),
+                'instance_legacy_content' => get_post_meta(get_the_ID(), 'instance_legacy_content', true),
+                'instance_legacy_content_url' => get_post_meta(get_the_ID(), 'instance_legacy_content_url', true),     
+                'instance_overview_scene'    => get_post_meta(get_the_ID(), 'instance_overview_scene', true),         
+            );
+        }
+        wp_reset_postdata();
     }
-    echo "</div></div>";
+    
+    // Custom sorting function: reverse alphabetically by instance_status, then alphabetically by post_title
+    usort($instances, function ($a, $b) {
+        $statusCompare = strcasecmp($b['instance_status'], $a['instance_status']); // Reverse order
+        if ($statusCompare !== 0) {
+            return $statusCompare;
+        }
+        return strcasecmp($a['post_title'], $b['post_title']); // Normal order
+    });
+
+
+
+    $instance_count = count($instances);
+    $instance_rows = ceil($instance_count/3);
+
+    for ($i = 0; $i < $instance_rows; $i++){
+        echo "<div class ='row justify-content-start' style='padding-bottom: 10px;'>";
+        for($j= 0; $j < 3; $j++){
+            $current_row = $i*3 + $j;
+            $instance = $instances[$current_row];
+            if ($instance != null) {
+                $tile_image = get_post_meta($instance["id"], "instance_tile")[0];
+                if ($instance["instance_legacy_content"] == "no") {
+                    $instance_slug = get_post_meta($instance["id"], "instance_slug")[0]; 
+                    $instance_post_name = get_post($instance_overview_scene)->post_name;
+                    $instance_link = $instance_slug . "/" . $instance_post_name;
+                } else {
+                    $instance_link = $instance["instance_legacy_content_url"]; 
+                }
+        
+                echo '<div class="col-12 col-sm-6 col-md-4 d-flex">';
+                echo '<div class="card w-100" >';
+                if ($instance["instance_status"] =="Published") { 
+                    echo "<a href='{$instance_link}'><img class='card-img-top' src='{$tile_image}' alt='{$instance["post_title"]}'></a>";
+                } else {
+                    echo "<img class='card-img-top' src='{$tile_image}' alt='{$instance["post_title"]}'>";
+                }
+                echo '<div class="card-body">';
+                if ($instance["instance_status"] =="Published") { 
+                echo "<a href='{$instance_link}' class='btn w-100 instance_published_button'>{$instance['post_title']}</a>";
+                } else {
+                    echo "<a class='btn w-100 instance_draft_button'>{$instance['post_title']}<br>Coming Soon</a>";
+                }
+                echo "</div>";
+        
+                echo "</div></div>";
+            }
+
+        }
+
+        echo "</div>";
+    }
+    echo "</div>";
 }
 
 ?>
 
 </div>
 </body>
+
+<style>
+    .instance_published_button {
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        color: white; 
+        background-color: #00467F
+    }
+
+    .instance_draft_button {
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        color: white; 
+        background-color: grey;
+    }
+
+</style>
+
 <script>
     let post_id =  <?php echo $post_id; ?>;
     // let is_logged_in = <?php echo is_user_logged_in(); ?>;

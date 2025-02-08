@@ -109,11 +109,13 @@ class Webcr_About {
                             'id'          => 'aboutBoxMain' . $i,
                             'type'        => 'editor',
                             'title'       => 'Box Content: Main',
+                            'editor' => 'trumbowyg',
                         ),
                         array(
                             'id'          => 'aboutBoxDetail' . $i,
                             'type'        => 'editor',
                             'title'       => 'Box Content: Detail',
+                            'editor' => 'trumbowyg',
                         ),
                     ),
                 );
@@ -129,11 +131,13 @@ class Webcr_About {
                             'id'          => 'aboutMain',
                             'type'        => 'editor',
                             'title'       => 'Central Content: Main',
+                            'editor' => 'trumbowyg',
                         ),
                         array(
                             'id'          => 'aboutDetail',
                             'type'        => 'editor',
                             'title'       => 'Central Content: Detail',
+                            'editor' => 'trumbowyg',
                         ),
                     ),
                 ),

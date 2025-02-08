@@ -13,13 +13,13 @@
         const numAboutBoxes = document.getElementsByName("numberAboutBoxes")[0].value;
         let target_element = "";
 		for (let i = 10; i > numAboutBoxes; i--){
-			target_element =  "wp-aboutBoxMain" + i + "-wrap";
-            document.getElementById(target_element).parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="none";
-		}
+			target_element =  "aboutBoxMain" + i;
+            document.getElementById(target_element).closest('.exopite-sof-field-fieldset').style.display="none";
+        }
 
 		for (let i = 1; i <= numAboutBoxes; i++){
-			target_element =  "wp-aboutBoxMain" + i + "-wrap";
-            document.getElementById(target_element).parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="block";
+			target_element =  "aboutBoxMain" + i;
+            document.getElementById(target_element).closest('.exopite-sof-field-fieldset').style.display="block";
 		}
 	}
 

@@ -183,18 +183,21 @@ class Webcr_Instance {
                         array(
                             'id'     => 'instance_footer_about',
                             'type'   => 'editor',
+                            'editor' => 'trumbowyg',
                             'title'  => 'About the instance', 
                             'description' => 'This is information that appears in the left "About" column of the footer'        
                         ),
                         array(
                             'id'     => 'instance_footer_contact',
                             'type'   => 'editor',
+                            'editor' => 'trumbowyg',
                             'title'  => 'Contact person for the instance', 
                             'description' => 'This is information that appears in the center "Contact" column of the footer'        
                         ),
                         array(
                             'id'          => 'instance_footer_reports',
                             'type'   => 'editor',
+                            'editor' => 'trumbowyg',
                             'title'  => 'Relevant reports associated with the instance', 
                             'description' => 'This is information that appears in the right "Reports" column of the footer'     
                         ),
