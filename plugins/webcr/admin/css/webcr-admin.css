@@ -213,3 +213,6 @@
 .radioFormat {
   margin-right: 10px;
 }
+
+ /* get rid of preview, and save draft buttons in post edit screens */
+ #minor-publishing-actions { display: none !important; }

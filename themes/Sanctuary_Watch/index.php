@@ -249,7 +249,7 @@ foreach ($terms_array as $term){
         justify-content: center; 
         align-items: center; 
         color: white; 
-        background-color: grey;
+        background-color: #808080
     }
 
 </style>

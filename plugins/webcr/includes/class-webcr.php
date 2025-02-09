@@ -412,28 +412,11 @@ function register_instance_type_taxonomy() {
             'query_var' => true,
             'rewrite' => ['slug' => 'instance-type'],
         ]);
-
-        // Create the "Main" term if it doesn't exist
- //       $main_term = term_exists('Main', 'instance_type');
-   //     if (!$main_term) {
-  //          $term = wp_insert_term(
-   //             'Main',                 // The term name
-   //             'instance_type',        // The taxonomy
-  //              array(
-   //                 'slug' => 'main',
-  //                  'description' => 'Front page top text'
-   //             )
-  //          );
-            
-//            if (!is_wp_error($term)) {
- //               update_term_meta($term['term_id'], 'term_order', -1);
- //           }
- //       }
     }
 }
 add_action('init', 'register_instance_type_taxonomy', 0); // Priority 0 to run early
 
-// Register the order meta field for the taxonomy
+// Register the instance order meta field for the taxonomy
 function register_instance_type_order_meta() {
     register_meta('term', 'instance_order', [
         'type' => 'integer',
@@ -443,6 +426,16 @@ function register_instance_type_order_meta() {
     ]);
 }
 add_action('init', 'register_instance_type_order_meta');
+
+// Register the instance navbar name meta field for the taxonomy
+function register_instance_type_navbar_name_meta() {
+    register_meta('term', 'navbar_name', [
+        'type' => 'integer',
+        'single' => true,
+        'show_in_rest' => true,
+    ]);
+}
+add_action('init', 'register_instance_type_navbar_name_meta');
 
 // Add the admin menu item
 function add_instance_type_admin_menu() {
@@ -471,11 +464,12 @@ function render_instance_type_admin_page() {
         if (isset($_POST['action'])) {
             switch ($_POST['action']) {
                 case 'add':
-                    if (isset($_POST['term_name']) && isset($_POST['instance_order'])) {
+                    if (isset($_POST['term_name']) && isset($_POST['instance_order']) && isset($_POST['instance_navbar_name'])) {
                         $term_name = sanitize_text_field($_POST['term_name']);
                         $term_slug = sanitize_title($_POST['term_slug']);
                         $term_description = sanitize_textarea_field($_POST['term_description']);
                         $instance_order = absint($_POST['instance_order']);
+                        $instance_navbar_name = sanitize_text_field($_POST['instance_navbar_name']);
                         
                         $args = array(
                             'slug' => $term_slug,
@@ -485,24 +479,27 @@ function render_instance_type_admin_page() {
                         $term = wp_insert_term($term_name, 'instance_type', $args);
                         if (!is_wp_error($term)) {
                             update_term_meta($term['term_id'], 'instance_order', $instance_order);
+                            update_term_meta($term['term_id'], 'instance_navbar_name', $instance_navbar_name);
                         }
                     }
                     break;
                     
                 case 'edit':
-                    if (isset($_POST['term_id']) && isset($_POST['term_name']) && isset($_POST['instance_order'])) {
+                    if (isset($_POST['term_id']) && isset($_POST['term_name']) && isset($_POST['instance_order']) && isset($_POST['instance_navbar_name'])) {
                         $term_id = absint($_POST['term_id']);
                         $term_name = sanitize_text_field($_POST['term_name']);
                         $term_slug = sanitize_title($_POST['term_slug']);
                         $term_description = sanitize_textarea_field($_POST['term_description']);
                         $instance_order = absint($_POST['instance_order']);
-                        
+                        $instance_navbar_name = sanitize_text_field($_POST['instance_navbar_name']);
+
                         wp_update_term($term_id, 'instance_type', [
                             'name' => $term_name,
                             'slug' => $term_slug,
                             'description' => $term_description
                         ]);
                         update_term_meta($term_id, 'instance_order', $instance_order);
+                        update_term_meta($term_id, 'instance_navbar_name', $instance_navbar_name);
                     }
                     break;
                     
@@ -555,6 +552,10 @@ function render_instance_type_admin_page() {
                     <th><label for="instance_order">Order</label></th>
                     <td><input type="number" name="instance_order" id="instance_order" class="small-text" required></td>
                 </tr>
+                <tr>
+                    <th><label for="instance_navbar_name">Navbar Name</label></th>
+                    <td><input type="text" name="instance_navbar_name" id="instance_navbar_name" class="regular-text" required></td>
+                </tr>
             </table>
             <?php submit_button('Add New Instance Type'); ?>
         </form>
@@ -571,6 +572,7 @@ function render_instance_type_admin_page() {
                         <th>Slug</th>
                         <th>Description</th>
                         <th>Order</th>
+                        <th>Navbar Name</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -581,12 +583,14 @@ function render_instance_type_admin_page() {
                             continue;
                         }
                         $instance_order = get_term_meta($term->term_id, 'instance_order', true); 
+                        $instance_navbar_name = get_term_meta($term->term_id, 'instance_navbar_name', true); 
                     ?>
                         <tr>
                             <td><?php echo esc_html($term->name); ?></td>
                             <td><?php echo esc_html($term->slug); ?></td>
                             <td><?php echo esc_html($term->description); ?></td>
                             <td><?php echo esc_html($instance_order); ?></td>
+                            <td><?php echo esc_html($instance_navbar_name); ?></td>
                             <td>
                                 <button type="button" class="button" 
                                     onclick="showEditForm(
@@ -594,7 +598,8 @@ function render_instance_type_admin_page() {
                                         '<?php echo esc_js($term->name); ?>',
                                         '<?php echo esc_js($term->slug); ?>',
                                         '<?php echo esc_js($term->description); ?>',
-                                        <?php echo esc_js($instance_order); ?>
+                                        <?php echo esc_js($instance_order); ?>,
+                                        <?php echo esc_js($instance_navbar_name); ?>
                                     )">
                                     Edit
                                 </button>
@@ -633,7 +638,11 @@ function render_instance_type_admin_page() {
                     </tr>
                     <tr>
                         <th><label for="edit_instance_order">Order</label></th>
-                        <td><input type="number" name="instance_order" id="instance_order" class="small-text" required></td>
+                        <td><input type="number" name="instance_order" id="edit_instance_order" class="small-text" required></td>
+                    </tr>
+                    <tr>
+                        <th><label for="edit_instance_navbar_name">Navbar Name</label></th>
+                        <td><input type="text" name="instance_navbar_name" id="edit_instance_navbar_name" class="regular-text" required></td>
                     </tr>
                 </table>
                 <?php submit_button('Update Instance Type'); ?>
@@ -641,13 +650,14 @@ function render_instance_type_admin_page() {
         </div>
         
         <script>
-            function showEditForm(termId, termName, termSlug, termDescription, termOrder) {
+            function showEditForm(termId, termName, termSlug, termDescription, termOrder, termNavbarName) {
                 document.getElementById('edit-form').style.display = 'block';
                 document.getElementById('edit_term_id').value = termId;
                 document.getElementById('edit_term_name').value = termName;
                 document.getElementById('edit_term_slug').value = termSlug;
                 document.getElementById('edit_term_description').value = termDescription;
                 document.getElementById('edit_instance_order').value = termOrder;
+                document.getElementById('edit_instance_navbar_name').value = termNavbarName;
             }
         </script>
     </div>

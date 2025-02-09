@@ -1,6 +1,6 @@
 let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
 (function( $ ) {
-    //	'use strict';
+    	'use strict';
     
     // adding jquery to the console
     // var script = document.createElement('script');
@@ -30,6 +30,15 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
     modalWindow();
     modal_scene_change();
     modal_location_change();
+    hideIconSection();
+
+    // If a given Scene does not have any sections, then let's hide the Icon Section field in the modal page
+    function hideIconSection (){
+        const sectionField = document.getElementsByName("icon_toc_section")[0];
+        if (sectionField.options.length == 1 && sectionField.value === "None"){
+            sectionField.parentElement.parentElement.style.display = "none";
+        }
+    }
 
 	// Function to display either URL or image under scene image link
 	function displayPhotoPath (fieldNumber){
@@ -389,7 +398,7 @@ function modal_scene_change(){
             })
             .then(response => response.json())
             .then(svgJson => {
-                svgUrl = svgJson["scene_infographic"];
+                const svgUrl = svgJson["scene_infographic"];
                 if(svgUrl == ""){
                     imageColumn.innerHTML = "No infographic for scene";
                     modalIconsDropdown([]);
@@ -408,7 +417,7 @@ function modal_scene_change(){
                             if (isPageLoad == true) {
                                 const iconValue = document.getElementsByName("modal_icons")[0].value;
 
-                                if (iconValue != null && iconValue != " "){
+                                if (iconValue != null && iconValue != ""){
                                     let svgIcons = imageColumn.querySelector('g[id="icons"]');
                                     let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
                                     const svgIconHighlight = svgIconTarget.cloneNode(true);
