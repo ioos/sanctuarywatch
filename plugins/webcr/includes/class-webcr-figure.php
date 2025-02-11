@@ -458,6 +458,12 @@ class Webcr_Figure {
                     'description' => 'This should be a comma-delimited list of arguments',
                 ),
                 array(
+                    'id'          => 'figure_temp_filepath',
+                    'type'        => 'text',
+                    'title'       => 'Temp datafile path',
+                    'class'       => 'text-class',
+                ),     
+                array(
                     'id'     => 'figure_caption_short',
                     'type'   => 'editor',
                     'title'  => 'Short figure caption', 
