@@ -464,6 +464,18 @@ class Webcr_Figure {
                     'class'       => 'text-class',
                 ),     
                 array(
+                    'id'          => 'figure_temp_javascript',
+                    'type'        => 'button',
+                    'title'       => 'Run Data Javascript Figure',
+                    'class'        => 'figure_temp_javascript',
+                    'options'     => array(
+                        'href'  =>  '#nowhere',
+                        'target' => '_self',
+                        'value' => 'Run',
+                        'btn-class' => 'exopite-sof-btn'
+                    ),
+                ),
+                array(
                     'id'     => 'figure_caption_short',
                     'type'   => 'editor',
                     'title'  => 'Short figure caption', 
