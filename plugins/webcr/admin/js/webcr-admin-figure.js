@@ -3,6 +3,15 @@
     'use strict';
 
     displayCorrectImageField ();
+    let jsonColumns;
+    let fieldLabelNumber;
+    let fieldValueSaved;
+
+    document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
+
+    document.querySelector('[data-depend-id="figure_temp_plotly"]').addEventListener('click', function() {
+        tempProducePlotlyFigure();
+    });
 
     function figureInstanceChange(){
         const protocol = window.location.protocol;
@@ -147,9 +156,6 @@
         let jsonPreviewImg = jsonPreviewContainer.querySelector('img');
 
         // Select the nested container with class "exopite-sof-field-upload"
-        let fileUploadContainer= document.querySelector('.exopite-sof-field-upload');
-
-        // Select the nested container with class "exopite-sof-field-upload"
         let codeContainer= document.querySelector('.exopite-sof-field-ace_editor');
 
         // Select the nested container with class ".exopite-sof-btn.figure_preview"
@@ -157,8 +163,6 @@
         
         // Select the nested container with class ".exopite-sof-btn.code_preview"
         let codePreviewElement = document.querySelector('.exopite-sof-btn.code_preview'); // Add an ID or a unique class
-
-
 
         switch (imageType) {
             case "Internal":
@@ -183,7 +187,6 @@
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json")[0].value = "";
                 codeContainer.style.display = "none";
-                fileUploadContainer.style.display = "none";
                 break;
 
             case "External":
@@ -205,12 +208,10 @@
                 document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json_arguments")[0].value = "";
                 codeContainer.style.display = "none";
-                fileUploadContainer.style.display = "none";
                 break;               
 
             case "Interactive":
                 //Show the fields we want to see
-                fileUploadContainer.style.display = "block";
                 //Choose the preview field we want to see
                 if (figurePreviewElement) {
                     figurePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
@@ -245,7 +246,6 @@
                     codePreviewElement.parentElement.parentElement.style.display = "block"; // Show the element
                 }
                 //Hide the fields we do not want to see
-                fileUploadContainer.style.display = "none";
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
@@ -259,6 +259,543 @@
     $( "select[name='figure_modal']" ).change(figureIconChange);
     $( "select[name='figure_scene']" ).change(figureSceneChange);
     $( "select[name='location']" ).change(figureInstanceChange);
+
+    //FIGURE JAVASCRIPT JSON BUTTON
+    $('.figure_temp_javascript').click(function(){
+        loadJson();
+    });
+
+    // JAVASCRIPT JSON CODE
+    async function loadJson() {
+        const rootURL = window.location.origin;
+        const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
+        const finalURL = rootURL + restOfURL;
+        try {
+            const response = await fetch(finalURL);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+
+            jsonColumns = Object.fromEntries(
+                Object.keys(data.data).map((key, index) => [index, key])); 
+
+            const lengthJsonColumns = (Object.entries(jsonColumns).length);
+            if (lengthJsonColumns > 1){
+                var graphGUI = document.getElementById('graphGUI');
+                if (graphGUI) {
+                    // Remove the scene window
+                    graphGUI.parentNode.removeChild(graphGUI);
+                }
+                const targetElement = document.querySelector('.figure_temp_javascript').parentElement.parentElement;
+                let newDiv = document.createElement('div');
+                newDiv.id = "graphGUI";
+                newDiv.classList.add("container", "graphGUI");
+
+                let labelGraphType = document.createElement("label");
+                labelGraphType.for = "graphType";
+                labelGraphType.innerHTML = "Graph Type";
+                let selectGraphType = document.createElement("select");
+                selectGraphType.id = "graphType";
+                selectGraphType.name = "plotFields";
+                let graphType1 = document.createElement("option");
+                graphType1.value = "None";
+                graphType1.innerHTML = "None";
+                let graphType2 = document.createElement("option");
+                graphType2.value = "Plotly bar graph";
+                graphType2.innerHTML = "Plotly bar graph";
+                let graphType3 = document.createElement("option");
+                graphType3.value = "Plotly line graph (time series)";
+                graphType3.innerHTML = "Plotly line graph (time series)"; 
+                selectGraphType.appendChild(graphType1);
+                selectGraphType.appendChild(graphType2);    
+                selectGraphType.appendChild(graphType3);   
+
+                fieldValueSaved = fillFormFieldValues(selectGraphType.id);
+                if (fieldValueSaved != undefined){
+                    selectGraphType.value = fieldValueSaved;
+                }
+                
+                selectGraphType.addEventListener('change', function() {
+                    secondaryGraphFields(this.value);
+                });
+                selectGraphType.addEventListener('change', function() {
+                    logFormFieldValues();
+                });
+
+                let newRow = document.createElement("div");
+                newRow.classList.add("row", "fieldPadding");
+                let newColumn1 = document.createElement("div");
+                newColumn1.classList.add("col-3");   
+                let newColumn2 = document.createElement("div");
+                newColumn2.classList.add("col");
+
+                newColumn1.appendChild(labelGraphType);
+                newColumn2.appendChild(selectGraphType);
+                newRow.append(newColumn1, newColumn2);
+                newDiv.append(newRow);
+
+                targetElement.appendChild(newDiv);
+                if (fieldValueSaved != undefined){
+                    secondaryGraphFields(selectGraphType.value);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading JSON:', error);
+        }
+    }
+
+    function secondaryGraphFields(graphType){
+
+        var secondaryGraphDiv = document.getElementById('secondaryGraphFields');
+        // If the element exists
+        if (secondaryGraphDiv) {
+            // Remove the scene window
+            secondaryGraphDiv.parentNode.removeChild(secondaryGraphDiv);
+        }
+
+        let newDiv = document.createElement("div");
+    
+        switch(graphType){
+            case "None":
+                displayLineFields(0);
+                break;
+            case "Plotly bar graph":
+                displayLineFields(0);
+                break;
+            case "Plotly line graph (time series)":
+                newDiv.id = 'secondaryGraphFields';
+                const targetElement = document.getElementById('graphGUI');
+
+                let newRow;
+                let newColumn1;
+                let newColumn2;
+
+                // Create input fields for X and Y Axis Titles
+                const axisTitleArray = ["X", "Y"];
+
+                axisTitleArray.forEach((axisTitle) => {
+                    newRow = document.createElement("div");
+                    newRow.classList.add("row", "fieldPadding");
+                    newColumn1 = document.createElement("div");
+                    newColumn1.classList.add("col-3");   
+                    newColumn2 = document.createElement("div");
+                    newColumn2.classList.add("col");
+    
+                    let labelInputAxisTitle = document.createElement("label");
+                    labelInputAxisTitle.for = axisTitle + "AxisTitle";
+                    labelInputAxisTitle.innerHTML = axisTitle + " Axis Title";
+                    let inputAxisTitle = document.createElement("input");
+                    inputAxisTitle.id = axisTitle + "AxisTitle";
+                    inputAxisTitle.name = "plotFields";
+                    inputAxisTitle.size = "70";
+                    fieldValueSaved = fillFormFieldValues(inputAxisTitle.id);
+                    if (fieldValueSaved != undefined){
+                        inputAxisTitle.value = fieldValueSaved;
+                    }
+                    inputAxisTitle.addEventListener('change', function() {
+                        logFormFieldValues();
+                    });
+                    newColumn1.appendChild(labelInputAxisTitle);
+                    newColumn2.appendChild(inputAxisTitle);
+                    newRow.append(newColumn1, newColumn2);
+                    newDiv.append(newRow);    
+
+                    const rangeBound =["Low", "High"];
+                    rangeBound.forEach((bound) => {
+                        newRow = document.createElement("div");
+                        newRow.classList.add("row", "fieldPadding");
+                        newColumn1 = document.createElement("div");
+                        newColumn1.classList.add("col-3");   
+                        newColumn2 = document.createElement("div");
+                        newColumn2.classList.add("col");
+        
+                        let labelBound = document.createElement("label");
+                        labelBound.for =  axisTitle + bound + "Bound";
+                        labelBound.innerHTML = axisTitle + " Axis, " + bound + " Bound";
+                        let inputBound = document.createElement("input");
+                        inputBound.id = axisTitle + "Axis" + bound + "Bound";
+                        inputBound.name = "plotFields";
+                        inputBound.type = "number";
+                        fieldValueSaved = fillFormFieldValues(inputBound.id);
+                        if (fieldValueSaved != undefined){
+                            inputBound.value = fieldValueSaved;
+                        }
+                        inputBound.addEventListener('change', function() {
+                            logFormFieldValues();
+                        });
+                        newColumn1.appendChild(labelBound);
+                        newColumn2.appendChild(inputBound);
+                        newRow.append(newColumn1, newColumn2);
+                        newDiv.append(newRow); 
+                    });
+
+                });
+
+                // Create select field for number of lines to be plotted 
+                let labelSelectNumberLines = document.createElement("label");
+                labelSelectNumberLines.for = "NumberOfLines";
+                labelSelectNumberLines.innerHTML = "Number of Lines to Be Plotted";
+                let selectNumberLines = document.createElement("select");
+                selectNumberLines.id = "NumberOfLines";
+                selectNumberLines.name = "plotFields";
+                selectNumberLines.addEventListener('change', function() {
+                    displayLineFields(selectNumberLines.value) });
+                selectNumberLines.addEventListener('change', function() {
+                        logFormFieldValues();
+                    });
+
+                for (let i = 1; i < 7; i++){
+                    let selectNumberLinesOption = document.createElement("option");
+                    selectNumberLinesOption.value = i;
+                    selectNumberLinesOption.innerHTML = i; 
+                    selectNumberLines.appendChild(selectNumberLinesOption);
+                }
+                fieldValueSaved = fillFormFieldValues(selectNumberLines.id);
+                if (fieldValueSaved != undefined){
+                    selectNumberLines.value = fieldValueSaved;
+                }
+                newRow = document.createElement("div");
+                newRow.classList.add("row", "fieldPadding");
+                newColumn1 = document.createElement("div");
+                newColumn1.classList.add("col-3");   
+                newColumn2 = document.createElement("div");
+                newColumn2.classList.add("col");
+
+                newColumn1.appendChild(labelSelectNumberLines);
+                newColumn2.appendChild(selectNumberLines);
+                newRow.append(newColumn1, newColumn2);
+                newDiv.append(newRow);
+
+                let labelSelectXAxisFormat = document.createElement("label");
+                labelSelectXAxisFormat.for = "XAxisFormat";
+                labelSelectXAxisFormat.innerHTML = "X Axis Date Format";
+                let selectXAxisFormat = document.createElement("select");
+                selectXAxisFormat.id = "XAxisFormat";
+                selectXAxisFormat.name = "plotFields";
+                selectXAxisFormat.addEventListener('change', function() {
+                    logFormFieldValues();
+                });
+
+                const dateFormats =["YYYY", "YYYY-MM", "YYYY-MM-DD"];
+                
+                dateFormats.forEach((dateFormat) => {
+                    let selectXAxisFormatOption = document.createElement("option");
+                    selectXAxisFormatOption.value = dateFormat;
+                    selectXAxisFormatOption.innerHTML = dateFormat; 
+                    selectXAxisFormat.appendChild(selectXAxisFormatOption);
+                });
+                fieldValueSaved = fillFormFieldValues(selectXAxisFormat.id);
+                if (fieldValueSaved != undefined){
+                    selectXAxisFormat.value = fieldValueSaved;
+                }
+
+                newRow = document.createElement("div");
+                newRow.classList.add("row", "fieldPadding");
+                newColumn1 = document.createElement("div");
+                newColumn1.classList.add("col-3");   
+                newColumn2 = document.createElement("div");
+                newColumn2.classList.add("col");
+
+                newColumn1.appendChild(labelSelectXAxisFormat);
+                newColumn2.appendChild(selectXAxisFormat);
+                newRow.append(newColumn1, newColumn2);
+                newDiv.append(newRow);
+
+                let newHR = document.createElement("hr");
+                newHR.style = "margin-top:15px";
+                newDiv.append(newHR);        
+
+                targetElement.appendChild(newDiv);
+
+                // Run display line fields
+                displayLineFields(selectNumberLines.value);
+
+                break;
+        }
+    }
+
+    function displayLineFields (numLines) {
+        let assignColumnsToPlot = document.getElementById('assignColumnsToPlot');
+        // If the element exists
+        if (assignColumnsToPlot) {
+            // Remove the scene window
+            assignColumnsToPlot.parentNode.removeChild(assignColumnsToPlot);
+        }
+
+        if (numLines > 0) {
+            let newDiv = document.createElement("div");
+            newDiv.id = "assignColumnsToPlot";
+
+            let fieldLabels = [["XAxis", "X Axis Column"]];
+            for (let i = 1; i <= numLines; i++){
+                fieldLabels.push(["Line" + i, "Line " + i + " Column"]);
+            }
+
+            fieldLabels.forEach((fieldLabel) => {
+                let labelSelectColumn = document.createElement("label");
+                labelSelectColumn.for = fieldLabel[0];
+                labelSelectColumn.innerHTML = fieldLabel[1];
+                let selectColumn = document.createElement("select");
+                selectColumn.id = fieldLabel[0];
+                selectColumn.name = "plotFields";
+                selectColumn.addEventListener('change', function() {
+                    logFormFieldValues();
+                });
+
+                let selectColumnOption = document.createElement("option");
+                selectColumnOption.value = -1;
+                selectColumnOption.innerHTML = "None"; 
+                selectColumn.appendChild(selectColumnOption);
+
+                Object.entries(jsonColumns).forEach(([jsonColumnsKey, jsonColumnsValue]) => {
+                    selectColumnOption = document.createElement("option");
+                    selectColumnOption.value = jsonColumnsKey;
+                    selectColumnOption.innerHTML = jsonColumnsValue; 
+                    selectColumn.appendChild(selectColumnOption);
+                });
+                fieldValueSaved = fillFormFieldValues(selectColumn.id);
+                if (fieldValueSaved != undefined){
+                    selectColumn.value = fieldValueSaved;
+                }
+
+                let newRow = document.createElement("div");
+                newRow.classList.add("row", "fieldPadding");
+
+                if (fieldLabel[0] != "XAxis"){      
+                    fieldLabelNumber = parseInt(fieldLabel[0].slice(-1));
+                    if (fieldLabelNumber % 2 != 0 ){
+                        newRow.classList.add("row", "fieldBackgroundColor");
+                    }
+                }
+
+                let newColumn1 = document.createElement("div");
+                newColumn1.classList.add("col-3");   
+                let newColumn2 = document.createElement("div");
+                newColumn2.classList.add("col");
+
+                newColumn1.appendChild(labelSelectColumn);
+                newColumn2.appendChild(selectColumn);
+                newRow.append(newColumn1, newColumn2);
+                newDiv.append(newRow);
+
+                if (fieldLabel[0] != "XAxis"){
+                    // Add line label field
+                    newRow = document.createElement("div");
+                    newRow.classList.add("row", "fieldPadding");
+
+                    if (fieldLabelNumber % 2 != 0 ){
+                        newRow.classList.add("row", "fieldBackgroundColor");
+                    }
+
+                    newColumn1 = document.createElement("div");
+                    newColumn1.classList.add("col-3");   
+                    newColumn2 = document.createElement("div");
+                    newColumn2.classList.add("col");
+
+                    let labelInputTitle = document.createElement("label");
+                    labelInputTitle.for = fieldLabel[0] + "Title";
+                    labelInputTitle.innerHTML = fieldLabel[1] + " Title";
+                    let inputTitle = document.createElement("input");
+                    inputTitle.id = fieldLabel[0] + "Title";
+                    inputTitle.size = "70";
+                    inputTitle.name = "plotFields";
+                    inputTitle.addEventListener('change', function() {
+                        logFormFieldValues();
+                    });
+                    fieldValueSaved = fillFormFieldValues(inputTitle.id);
+                    if (fieldValueSaved != undefined){
+                        inputTitle.value = fieldValueSaved;
+                    }
+
+                    newColumn1.appendChild(labelInputTitle);
+                    newColumn2.appendChild(inputTitle);
+                    newRow.append(newColumn1, newColumn2);
+                    newDiv.append(newRow); 
+
+                    // Add color field
+                    newRow = document.createElement("div");
+                    newRow.classList.add("row", "fieldPadding");
+                    if (fieldLabelNumber % 2 != 0 ){
+                        newRow.classList.add("row", "fieldBackgroundColor");
+                    }
+                    newColumn1 = document.createElement("div");
+                    newColumn1.classList.add("col-3");   
+                    newColumn2 = document.createElement("div");
+                    newColumn2.classList.add("col");
+
+                    let labelInputColor = document.createElement("label");
+                    labelInputColor.for = fieldLabel[0] + "Color";
+                    labelInputColor.innerHTML = fieldLabel[1] + " Color";
+                    let inputColor = document.createElement("input");
+                    inputColor.id = fieldLabel[0] + "Color";
+                    inputColor.name = "plotFields";
+                    inputColor.type = "color";
+                    fieldValueSaved = fillFormFieldValues(inputColor.id);
+                    if (fieldValueSaved != undefined){
+                        inputColor.value = fieldValueSaved;
+                    }
+                    inputColor.addEventListener('change', function() {
+                        logFormFieldValues();
+                    });
+
+                    newColumn1.appendChild(labelInputColor);
+                    newColumn2.appendChild(inputColor);
+                    newRow.append(newColumn1, newColumn2);
+                    newDiv.append(newRow);    
+                }
+
+                const targetElement = document.getElementById('graphGUI');
+                targetElement.appendChild(newDiv);
+            });
+        }
+   }
+
+   function logFormFieldValues() {
+        const allFields = document.getElementsByName("plotFields");
+        let fieldValues = [];
+        allFields.forEach((uniqueField) => {
+            fieldValues.push([uniqueField.id, uniqueField.value]);
+        });
+        document.getElementsByName("figure_interactive_arguments")[0].value = JSON.stringify(fieldValues); 
+    }
+
+    function fillFormFieldValues(elementID){
+        const interactiveFields = document.getElementsByName("figure_interactive_arguments")[0].value;
+        if (interactiveFields != ""  && interactiveFields != null) {
+            const resultJSON = Object.fromEntries(JSON.parse(interactiveFields));
+
+            if (resultJSON[elementID] != undefined && resultJSON[elementID] != ""){
+                return resultJSON[elementID];
+            }
+        }
+    }
+
+    async function tempProducePlotlyFigure(){
+        let plotlyFigure = document.getElementById('plotlyFigure');
+        // If the element exists
+        if (plotlyFigure) {
+            // Remove the scene window
+            plotlyFigure.parentNode.removeChild(plotlyFigure);
+        }
+
+        try {
+            await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
+
+
+
+            async function loadJson() {
+                const rootURL = window.location.origin;
+                const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
+                const finalURL = rootURL + restOfURL;
+                try {
+                    const response = await fetch(finalURL);
+
+
+
+            let newDiv = document.createElement('div');
+            newDiv.id = "plotlyFigure";
+            newDiv.classList.add("container", "figure_interactive");
+          //  newDiv.innerHTML = "hello";
+            const targetElement = document.querySelector('[data-depend-id="figure_temp_plotly"]').parentElement.parentElement;
+            targetElement.appendChild(newDiv);
+            
+            var trace1 = {
+                x: [1, 2, 3, 4],
+                y: [10, 15, 13, 17],
+                mode: 'lines+markers',
+                type: 'scatter',
+                marker: {
+                    color: 'red'
+                },
+                name: 'Elephants',
+                hovertemplate: 
+                'GDP per Capita: %{x}<br>' +  // Custom label for x-axis
+                'Percent: %{y}' // Custom label for y-axis
+              };
+              
+              var trace2 = {
+                x: [2, 3, 4, 5],
+                y: [16, 5, 11, 9],
+                mode: 'lines+markers',
+                type: 'scatter',
+                marker: {
+                    color: 'blue'
+                },
+                name: 'Oranges',
+                hovertemplate: 
+                'GDP per Capita: %{x}<br>' +  // Custom label for x-axis
+                'Percent: %{y}' // Custom label for y-axis
+              };
+              
+              var trace3 = {
+                x: [1, 2, 3, 4],
+                y: [12, 9, 15, 12],
+                mode: 'lines+markers',
+                type: 'scatter',
+                marker: {
+                    color: 'black'
+                },
+                name: 'Giraffes',
+                hovertemplate: 
+                'GDP per Capita: %{x}<br>' +  // Custom label for x-axis
+                'Percent: %{y}' // Custom label for y-axis
+              };
+              
+              var data = [trace1, trace2, trace3];
+              
+              var layout = {
+                xaxis: {
+                  title: {
+                    text: 'GDP per Capita'
+                  },
+                  linecolor: 'black', 
+                  linewidth: 1       
+                },
+                yaxis: {
+                  title: {
+                    text: 'Percent'
+                  },
+                  linecolor: 'black', 
+                  linewidth: 1     
+                }
+              };
+              const config = {
+                responsive: true  // This makes the plot resize with the browser window
+              };
+
+              Plotly.newPlot('plotlyFigure', data, layout, config);
+
+        } catch (error) {
+            console.error('Error loading scripts:', error);
+        }
+    }
+
+    function loadExternalScript(url) {
+        return new Promise((resolve, reject) => {
+            // Check if script is already loaded
+            if (document.querySelector(`script[src="${url}"]`)) {
+                resolve();
+                return;
+            }
+    
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = url;
+            script.async = true;
+    
+            script.onload = () => {
+                resolve();
+            };
+    
+            script.onerror = () => {
+                reject(new Error(`Failed to load script: ${url}`));
+            };
+    
+            document.head.appendChild(script);
+        });
+    }
+
 
     //FIGURE PREVIEW BUTTON   
     $('.figure_preview').click(function(){
@@ -284,11 +821,9 @@
     const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
     const dataUrl = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
 
-    let txtOutput;
     if (scienceUrl !="" || dataUrl != ""){
         let firstRow = document.createElement("div");
         firstRow.classList.add("grayFigureRow");
-
 
         if (scienceUrl !=""){
             let scienceA = document.createElement("a");

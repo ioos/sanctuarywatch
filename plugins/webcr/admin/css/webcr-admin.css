@@ -216,3 +216,31 @@
 
  /* get rid of preview, and save draft buttons in post edit screens */
  #minor-publishing-actions { display: none !important; }
+
+ /* CSS for graph GUI in Figure edit page */
+
+ .graphGUI {
+  font-family: "Helvetica";
+  font-size: 15px;
+  padding-top: 7px;
+ }
+
+ .fieldPadding {
+  padding-top: 8px;
+  padding-bottom: 7px;
+ }
+
+ .fieldBackgroundColor {
+  background-color: #F5F5F5;
+ }
+ /*
+ .formLabel {
+  margin-top: 15px !important; 
+ }
+
+ .formSelect {
+  margin-top: 15px !important; 
+  margin-left: 10px !important;
+ }
+
+ */

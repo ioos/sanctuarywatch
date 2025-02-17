@@ -432,24 +432,6 @@ class Webcr_Figure {
                     'description' => 'What is the figure json?',
                     'options' => array('filecount' => '1',),
                 ),
-                //IMAGE UPLOAD ARRAY BOX
-                array(
-                    'id'      => 'figure_json',               
-                    'type'    => 'upload',
-                    'title'   => 'Upload File for Interactive Figure (.csv, .json)',
-                    'class'   => 'text-class',
-                    'options' => array(
-                        // 'attach'                    => true, // attach to post (only in metabox)
-                        'filecount'                 => '1',
-                        // 'allowed'                   => array( 'csv', 'json' ),
-                        // 'delete-enabled'            => false,
-                        // 'delete-force-confirm'      => true,
-                        // 'retry-enable-auto'         => true,
-                        // 'retry-max-auto-attempts'   => 3,
-                        // 'retry-auto-attempt-delay'  => 3,
-                        // 'auto-upload'               => false,
-                    ),
-                ),
                 array(
                     'id'          => 'figure_json_arguments',
                     'type'        => 'text',
@@ -463,6 +445,11 @@ class Webcr_Figure {
                     'title'       => 'Temp datafile path',
                     'class'       => 'text-class',
                 ),     
+                array(
+                    'id'          => 'figure_interactive_arguments',
+                    'type'        => 'textarea',
+                    'title'       => 'Figure: interactive arguments',
+                ),    
                 array(
                     'id'          => 'figure_temp_javascript',
                     'type'        => 'button',
@@ -493,6 +480,19 @@ class Webcr_Figure {
                     'type'        => 'button',
                     'title'       => 'Preview Figure',
                     'class'        => 'figure_preview',
+                    'options'     => array(
+                        'href'  =>  '#nowhere',
+                        'target' => '_self',
+                        'value' => 'Preview',
+                        'btn-class' => 'exopite-sof-btn'
+                    ),
+                ),
+                //Preview button for displaying the internal or external images at the bottom of form
+                array(
+                    'id'          => 'figure_temp_plotly',
+                    'type'        => 'button',
+                    'title'       => 'Preview Temp Plotly',
+                    'class'        => 'figure_temp_plotly',
                     'options'     => array(
                         'href'  =>  '#nowhere',
                         'target' => '_self',
@@ -532,6 +532,9 @@ class Webcr_Figure {
             array('figure_upload_file', 'string', 'Upload the .csv or .json file for an interactive figure'),
             array('figure_caption_short', 'string', 'The short figure caption'),
             array('figure_caption_long', 'string', 'The long figure caption'),
+            array('figure_interactive_arguments', 'string', 'Arguments used in interactive figures'),
+            array('figure_temp_filepath', 'string', 'Temp path to JSON file'),
+            
         );
         // Register fields in REST API
         foreach ($fieldsToBeRegistered as $targetFieldsToBeRegistered){
@@ -580,7 +583,7 @@ class Webcr_Figure {
 	 * @since    1.0.0
 	 */
     function register_figure_rest_fields() {
-        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long');
+        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long', 'figure_interactive_arguments','figure_temp_filepath');
         $function_utilities = new Webcr_Utility();
         $function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
     }
