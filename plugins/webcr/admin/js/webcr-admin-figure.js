@@ -7,7 +7,7 @@
     let fieldLabelNumber;
     let fieldValueSaved;
 
-    document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
+ //   document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
 
     document.querySelector('[data-depend-id="figure_temp_plotly"]').addEventListener('click', function() {
         tempProducePlotlyFigure();
@@ -683,15 +683,8 @@
             await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
 
 
-
-            async function loadJson() {
-                const rootURL = window.location.origin;
-                const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
-                const finalURL = rootURL + restOfURL;
-                try {
-                    const response = await fetch(finalURL);
-
-
+        //    const response = await fetch(finalURL);
+        //    console.log(response);
 
             let newDiv = document.createElement('div');
             newDiv.id = "plotlyFigure";
