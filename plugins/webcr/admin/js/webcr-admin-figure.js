@@ -544,13 +544,13 @@
                 });
 
                 let selectColumnOption = document.createElement("option");
-                selectColumnOption.value = -1;
+                selectColumnOption.value = "None";
                 selectColumnOption.innerHTML = "None"; 
                 selectColumn.appendChild(selectColumnOption);
 
                 Object.entries(jsonColumns).forEach(([jsonColumnsKey, jsonColumnsValue]) => {
                     selectColumnOption = document.createElement("option");
-                    selectColumnOption.value = jsonColumnsKey;
+                    selectColumnOption.value = jsonColumnsValue;// jsonColumnsKey;
                     selectColumnOption.innerHTML = jsonColumnsValue; 
                     selectColumn.appendChild(selectColumnOption);
                 });
@@ -682,17 +682,60 @@
         try {
             await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
 
+            const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
+            const figureArguments = Object.fromEntries(JSON.parse(rawField));
+            console.log(figureArguments);
 
-        //    const response = await fetch(finalURL);
-        //    console.log(response);
+            const rootURL = window.location.origin;
+            const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
+            const finalURL = rootURL + restOfURL;
+            const rawResponse = await fetch(finalURL);
+            if (!rawResponse.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const responseJson = await rawResponse.json();
+            const dataToBePlotted = responseJson.data;
 
             let newDiv = document.createElement('div');
             newDiv.id = "plotlyFigure";
             newDiv.classList.add("container", "figure_interactive");
-          //  newDiv.innerHTML = "hello";
             const targetElement = document.querySelector('[data-depend-id="figure_temp_plotly"]').parentElement.parentElement;
             targetElement.appendChild(newDiv);
             
+            const numLines = figureArguments['NumberOfLines'];
+
+            let plotlyX;
+            let plotlyY;
+            let columnXHeader;
+            let columnYHeader;
+            let targetLineColumn;
+            let singleLinePlotly;
+            let allLinesPlotly = [];
+
+            for (let i = 1; i <= numLines; i++){
+                targetLineColumn = "Line" + i;
+                columnXHeader = figureArguments['XAxis'];
+
+                plotlyX = dataToBePlotted[columnXHeader];
+                columnYHeader = figureArguments[targetLineColumn];
+                plotlyY = dataToBePlotted[columnYHeader];
+                singleLinePlotly= {
+                    x: plotlyX,
+                    y: plotlyY,
+                    mode: 'lines+markers',
+                    type: 'scatter',
+                    marker: {
+                        color: figureArguments[targetLineColumn + "Color"]
+                    },
+                    name: figureArguments[targetLineColumn + "Title"],
+                    hovertemplate: 
+                    figureArguments['XAxisTitle'] + ': %{x}<br>' +  // Custom label for x-axis
+                    figureArguments['YAxisTitle'] + ': %{y}' // Custom label for y-axis
+                  };
+                 // console.log(singleLinePlotly);
+                  allLinesPlotly.push(singleLinePlotly);
+            }
+
             var trace1 = {
                 x: [1, 2, 3, 4],
                 y: [10, 15, 13, 17],
@@ -740,24 +783,26 @@
               var layout = {
                 xaxis: {
                   title: {
-                    text: 'GDP per Capita'
+                    text: figureArguments['XAxisTitle']
                   },
                   linecolor: 'black', 
-                  linewidth: 1       
+                  linewidth: 1,
+                  range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
                 },
                 yaxis: {
                   title: {
-                    text: 'Percent'
+                    text: figureArguments['YAxisTitle']
                   },
                   linecolor: 'black', 
-                  linewidth: 1     
+                  linewidth: 1,
+                  range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
                 }
               };
               const config = {
                 responsive: true  // This makes the plot resize with the browser window
               };
 
-              Plotly.newPlot('plotlyFigure', data, layout, config);
+              Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
 
         } catch (error) {
             console.error('Error loading scripts:', error);
