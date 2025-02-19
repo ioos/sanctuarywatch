@@ -264,15 +264,15 @@
         } 
     }
 
-    $( "select[name='figure_path']" ).change(displayCorrectImageField);
-    $( "select[name='figure_modal']" ).change(figureIconChange);
-    $( "select[name='figure_scene']" ).change(figureSceneChange);
-    $( "select[name='location']" ).change(figureInstanceChange);
+    document.getElementsByName("figure_path")[0].addEventListener('change', displayCorrectImageField);
+    document.getElementsByName("figure_modal")[0].addEventListener('change', figureIconChange);
+    document.getElementsByName("figure_scene")[0].addEventListener('change', figureSceneChange);
+    document.getElementsByName("location")[0].addEventListener('change', figureInstanceChange);
+
+
 
     //FIGURE JAVASCRIPT JSON BUTTON
-    $('.figure_temp_javascript').click(function(){
-        loadJson();
-    });
+    document.querySelector('[data-depend-id="figure_temp_javascript"]').addEventListener('click', loadJson);
 
     // JAVASCRIPT JSON CODE
     async function loadJson() {
