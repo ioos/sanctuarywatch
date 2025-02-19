@@ -7,7 +7,7 @@
     let fieldLabelNumber;
     let fieldValueSaved;
 
- //   document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
+    document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
 
     document.querySelector('[data-depend-id="figure_temp_plotly"]').addEventListener('click', function() {
         tempProducePlotlyFigure();
@@ -186,6 +186,9 @@
                 document.getElementsByName("figure_json_arguments")[0].value = "";
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json")[0].value = "";
+                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "none";
+                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "none";
+
                 codeContainer.style.display = "none";
                 break;
 
@@ -207,6 +210,8 @@
                 document.getElementsByName("figure_image")[0].value = "";
                 document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json_arguments")[0].value = "";
+                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "none";
+                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "none";
                 codeContainer.style.display = "none";
                 break;               
 
@@ -231,6 +236,8 @@
                 document.getElementsByName("figure_image")[0].value = "";
                 document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json_arguments")[0].value = "";
+                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "block";
+                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "block";
                 break;
 
             case "Code":
@@ -250,7 +257,9 @@
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";  
+                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none"; 
+                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "none";
+                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "none"; 
                 break;
         } 
     }
@@ -719,7 +728,7 @@
                 plotlyX = dataToBePlotted[columnXHeader];
                 columnYHeader = figureArguments[targetLineColumn];
                 plotlyY = dataToBePlotted[columnYHeader];
-                singleLinePlotly= {
+                singleLinePlotly = {
                     x: plotlyX,
                     y: plotlyY,
                     mode: 'lines+markers',
@@ -735,50 +744,6 @@
                  // console.log(singleLinePlotly);
                   allLinesPlotly.push(singleLinePlotly);
             }
-
-            var trace1 = {
-                x: [1, 2, 3, 4],
-                y: [10, 15, 13, 17],
-                mode: 'lines+markers',
-                type: 'scatter',
-                marker: {
-                    color: 'red'
-                },
-                name: 'Elephants',
-                hovertemplate: 
-                'GDP per Capita: %{x}<br>' +  // Custom label for x-axis
-                'Percent: %{y}' // Custom label for y-axis
-              };
-              
-              var trace2 = {
-                x: [2, 3, 4, 5],
-                y: [16, 5, 11, 9],
-                mode: 'lines+markers',
-                type: 'scatter',
-                marker: {
-                    color: 'blue'
-                },
-                name: 'Oranges',
-                hovertemplate: 
-                'GDP per Capita: %{x}<br>' +  // Custom label for x-axis
-                'Percent: %{y}' // Custom label for y-axis
-              };
-              
-              var trace3 = {
-                x: [1, 2, 3, 4],
-                y: [12, 9, 15, 12],
-                mode: 'lines+markers',
-                type: 'scatter',
-                marker: {
-                    color: 'black'
-                },
-                name: 'Giraffes',
-                hovertemplate: 
-                'GDP per Capita: %{x}<br>' +  // Custom label for x-axis
-                'Percent: %{y}' // Custom label for y-axis
-              };
-              
-              var data = [trace1, trace2, trace3];
               
               var layout = {
                 xaxis: {

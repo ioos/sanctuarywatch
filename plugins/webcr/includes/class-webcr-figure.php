@@ -465,12 +465,14 @@ class Webcr_Figure {
                 array(
                     'id'     => 'figure_caption_short',
                     'type'   => 'editor',
+                    'editor' => 'trumbowyg',
                     'title'  => 'Short figure caption', 
                  //   'description' => 'What is the short version of the figure caption?'
                 ),
                 array(
                     'id'     => 'figure_caption_long',
                     'type'   => 'editor',
+                    'editor' => 'trumbowyg',
                     'title'  => 'Extended caption', 
                     'description' => 'This caption appears in the "Click for Details" section under the short caption. If nothing is provided in this field, then the "Click for Details" section will be be blank for this figure.'
                 ),
