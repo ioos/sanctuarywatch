@@ -112,6 +112,17 @@ class webcr_validation {
         $modal_errors = [];
         $modal_warnings = [];
         
+        // For each tab that the user has said they wanted, check to see that there is an actual tab title
+        $modal_tab_number = $_POST["modal_tab_number"];
+        for ($i = 1; $i <= $modal_tab_number; $i++) {
+            $tab_title = "modal_tab_title" . $i;
+            $tab_title = $_POST["modal_tab_title1"];
+            if (empty($tab_title) || is_null($tab_title) ){
+                $save_modal_fields = FALSE;
+                array_push($modal_errors,  "Modal Tab Title " . $i . " is blank.");
+            }
+        }
+
         $field_types = array("info", "photo");
 
         foreach ($field_types as $field_type){

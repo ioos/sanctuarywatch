@@ -234,7 +234,7 @@ class Webcr_Modal {
                 'type'    => 'range',
                 'title'   => 'Number of Modal Tabs',
                 'description' => 'How many modal tabs are there?',
-                'min'     => 0,    
+                'min'     => 1,    
                 'default' => 1,    
                 'max'     => 6,         
                 'step'    => 1,             

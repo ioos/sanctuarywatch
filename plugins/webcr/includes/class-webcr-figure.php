@@ -467,7 +467,7 @@ class Webcr_Figure {
                     'type'   => 'editor',
                     'editor' => 'trumbowyg',
                     'title'  => 'Short figure caption', 
-                 //   'description' => 'What is the short version of the figure caption?'
+                    'description' => 'What is the short version of the figure caption?'
                 ),
                 array(
                     'id'     => 'figure_caption_long',

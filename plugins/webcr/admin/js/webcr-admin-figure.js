@@ -801,7 +801,7 @@
 
 
     //FIGURE PREVIEW BUTTON   
-    $('.figure_preview').click(function(){
+    document.querySelector('[data-depend-id="figure_preview"]').addEventListener('click', function() {
         // Let's remove the preview window if it already exists
         var previewWindow = document.getElementById('preview_window');
         // If the element exists
@@ -810,143 +810,143 @@
             previewWindow.parentNode.removeChild(previewWindow);
         }
 
-    // Find element
-    const firstFigurePreview = document.querySelector('.figure_preview');
+        // Find element
+        const firstFigurePreview = document.querySelector('.figure_preview');
 
-    // Find the second parent element
-    const secondParent = firstFigurePreview.parentElement.parentElement;
+        // Find the second parent element
+        const secondParent = firstFigurePreview.parentElement.parentElement;
 
-    // Create a new div element
-    let newDiv = document.createElement('div');
-    newDiv.id = "preview_window";
-    newDiv.classList.add("container", "figure_preview");
+        // Create a new div element
+        let newDiv = document.createElement('div');
+        newDiv.id = "preview_window";
+        newDiv.classList.add("container", "figure_preview");
 
-    const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
-    const dataUrl = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
+        const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
+        const dataUrl = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
 
-    if (scienceUrl !="" || dataUrl != ""){
-        let firstRow = document.createElement("div");
-        firstRow.classList.add("grayFigureRow");
+        if (scienceUrl !="" || dataUrl != ""){
+            let firstRow = document.createElement("div");
+            firstRow.classList.add("grayFigureRow");
 
-        if (scienceUrl !=""){
-            let scienceA = document.createElement("a");
-            scienceA.classList.add("grayFigureRowLinks");
-            scienceA.href = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
-            scienceA.target="_blank";
-            let dataIcon = document.createElement("i");
-            dataIcon.classList.add("fa-solid", "fa-clipboard-list", "grayFigureRowIcon");
-            let urlText = document.createElement("span");
-            urlText.classList.add("grayFigureRowText");
-            urlText.innerHTML = document.getElementsByName("figure_science_info[figure_science_link_text]")[0].value;
-            scienceA.appendChild(dataIcon);
-            scienceA.appendChild(urlText);
-            firstRow.appendChild(scienceA);
-           // firstRow.appendChild(urlText);
+            if (scienceUrl !=""){
+                let scienceA = document.createElement("a");
+                scienceA.classList.add("grayFigureRowLinks");
+                scienceA.href = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
+                scienceA.target="_blank";
+                let dataIcon = document.createElement("i");
+                dataIcon.classList.add("fa-solid", "fa-clipboard-list", "grayFigureRowIcon");
+                let urlText = document.createElement("span");
+                urlText.classList.add("grayFigureRowText");
+                urlText.innerHTML = document.getElementsByName("figure_science_info[figure_science_link_text]")[0].value;
+                scienceA.appendChild(dataIcon);
+                scienceA.appendChild(urlText);
+                firstRow.appendChild(scienceA);
+            // firstRow.appendChild(urlText);
+            }
+
+            if (dataUrl !=""){
+                let dataA = document.createElement("a");
+                dataA.classList.add("grayFigureRowLinks");//, "grayFigureRowRightLink");
+                dataA.href = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
+                dataA.target="_blank";
+                let dataIcon = document.createElement("i");
+                dataIcon.classList.add("fa-solid", "fa-database", "grayFigureRowIcon");
+                let urlText = document.createElement("span");
+                urlText.classList.add("grayFigureRowText");
+                urlText.innerHTML = document.getElementsByName("figure_data_info[figure_data_link_text]")[0].value;
+                dataA.appendChild(dataIcon);
+                dataA.appendChild(urlText);
+                firstRow.appendChild(dataA);
+            // firstRow.appendChild(urlText);
+            }
+
+            newDiv.appendChild(firstRow);
+        } 
+
+        let imageRow = document.createElement("div");
+        imageRow.classList.add("imageRow");
+        let figureImage = document.createElement("img");
+        figureImage.classList.add("figureImage");
+
+        const figurePath = document.getElementsByName("figure_path")[0].value;
+        let figureSrc;
+
+        // INTERNAL IMAGE PREVIEW DISPLAY
+        if (figurePath == "Internal"){
+            figureSrc = document.getElementsByName("figure_image")[0].value;
+            if (figureSrc != ""){
+            figureImage.src = figureSrc;
+            } else {imageRow.textContent = "No figure image."}
+        }
+        // ELSE (EXTERNAL OR INTERACTIVE) PREVIEW DISPLAY
+        else {
+            figureSrc = document.getElementsByName("figure_external_url")[0].value;
+            if (figureSrc != ""){
+            figureImage.src = figureSrc;
+            } else {imageRow.textContent = "No figure image."}
         }
 
-        if (dataUrl !=""){
-            let dataA = document.createElement("a");
-            dataA.classList.add("grayFigureRowLinks");//, "grayFigureRowRightLink");
-            dataA.href = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
-            dataA.target="_blank";
-            let dataIcon = document.createElement("i");
-            dataIcon.classList.add("fa-solid", "fa-database", "grayFigureRowIcon");
-            let urlText = document.createElement("span");
-            urlText.classList.add("grayFigureRowText");
-            urlText.innerHTML = document.getElementsByName("figure_data_info[figure_data_link_text]")[0].value;
-            dataA.appendChild(dataIcon);
-            dataA.appendChild(urlText);
-            firstRow.appendChild(dataA);
-           // firstRow.appendChild(urlText);
+        const containerWidth = document.querySelector('[data-depend-id="figure_preview"]').parentElement.parentElement.parentElement.clientWidth;
+
+        if (containerWidth < 800){
+            figureImage.style.width = (containerWidth-88) + "px";
         }
+        imageRow.appendChild(figureImage);
+        newDiv.appendChild(imageRow);
 
-        newDiv.appendChild(firstRow);
-    } 
+        let captionRow = document.createElement("div");
+        captionRow.classList.add("captionRow");
 
-    let imageRow = document.createElement("div");
-    imageRow.classList.add("imageRow");
-    let figureImage = document.createElement("img");
-    figureImage.classList.add("figureImage");
+        // Step 1: Access the iframe element
+        let iframeShort = document.getElementById('figure_caption_short_ifr');
 
-    const figurePath = document.getElementsByName("figure_path")[0].value;
-    let figureSrc;
+        // Step 2: Get the document inside the iframe
+        const iframeShortDocument = iframeShort.contentDocument || iframeShort.contentWindow.document;
+    
+        // Step 3: Select the <body> element with the specified data-id attribute
+        const bodyElementShort = iframeShortDocument.querySelector('body[data-id="figure_caption_short"]');
+    
+        // Step 4: Retrieve and store its contents
+        let shortCaption = bodyElementShort ? bodyElementShort.innerHTML : null;
+        //let shortCaption = document.getElementById("figure_caption_short").value;
+    // if (shortCaption == ""){
+    //     shortCaption = "No short caption";
+    // }
 
-    // INTERNAL IMAGE PREVIEW DISPLAY
-    if (figurePath == "Internal"){
-        figureSrc = document.getElementsByName("figure_image")[0].value;
-        if (figureSrc != ""){
-        figureImage.src = figureSrc;
-        } else {imageRow.textContent = "No figure image."}
-    }
-    // ELSE (EXTERNAL OR INTERACTIVE) PREVIEW DISPLAY
-    else {
-        figureSrc = document.getElementsByName("figure_external_url")[0].value;
-        if (figureSrc != ""){
-        figureImage.src = figureSrc;
-        } else {imageRow.textContent = "No figure image."}
-    }
+        // Step 1: Access the iframe element
+        let iframeLong = document.getElementById('figure_caption_long_ifr');
 
-    const containerWidth = document.querySelector('[data-depend-id="figure_preview"]').parentElement.parentElement.parentElement.clientWidth;
+        // Step 2: Get the document inside the iframe
+        const iframeLongDocument = iframeLong.contentDocument || iframeLong.contentWindow.document;
+    
+        // Step 3: Select the <body> element with the specified data-id attribute
+        const bodyElementLong = iframeLongDocument.querySelector('body[data-id="figure_caption_long"]');
+        
+        // Step 4: Retrieve and store its contents
+        let longCaption = bodyElementLong ? bodyElementLong.innerHTML : null;
+    
+    //   let longCaption = document.getElementById("figure_caption_long").value;
+    //   if (longCaption == ""){
+    //       longCaption = "No long caption";
+    //   }
 
-    if (containerWidth < 800){
-        figureImage.style.width = (containerWidth-88) + "px";
-    }
-    imageRow.appendChild(figureImage);
-    newDiv.appendChild(imageRow);
+        let shortCaptionElementContent = document.createElement("p");
+        shortCaptionElementContent.innerHTML = shortCaption;
+        shortCaptionElementContent.classList.add("captionOptions");
+        captionRow.appendChild(shortCaptionElementContent);
+        let longCaptionElement = document.createElement("details");
+    // longCaptionElement.classList.add("captionOptions");
+        let longCaptionElementSummary = document.createElement("summary");
+        longCaptionElementSummary.textContent = "Click here for more details.";
+        let longCaptionElementContent = document.createElement("p");
+        longCaptionElementContent.classList.add("captionOptions");
+        longCaptionElementContent.innerHTML = longCaption;
+        longCaptionElement.appendChild(longCaptionElementSummary);
+        longCaptionElement.appendChild(longCaptionElementContent);
+        captionRow.appendChild(longCaptionElement);
+        newDiv.appendChild(captionRow);
 
-    let captionRow = document.createElement("div");
-    captionRow.classList.add("captionRow");
-
-    // Step 1: Access the iframe element
-    let iframeShort = document.getElementById('figure_caption_short_ifr');
-
-    // Step 2: Get the document inside the iframe
-    const iframeShortDocument = iframeShort.contentDocument || iframeShort.contentWindow.document;
-  
-    // Step 3: Select the <body> element with the specified data-id attribute
-    const bodyElementShort = iframeShortDocument.querySelector('body[data-id="figure_caption_short"]');
-  
-    // Step 4: Retrieve and store its contents
-    let shortCaption = bodyElementShort ? bodyElementShort.innerHTML : null;
-    //let shortCaption = document.getElementById("figure_caption_short").value;
-   // if (shortCaption == ""){
-   //     shortCaption = "No short caption";
-   // }
-
-    // Step 1: Access the iframe element
-    let iframeLong = document.getElementById('figure_caption_long_ifr');
-
-    // Step 2: Get the document inside the iframe
-    const iframeLongDocument = iframeLong.contentDocument || iframeLong.contentWindow.document;
-  
-    // Step 3: Select the <body> element with the specified data-id attribute
-    const bodyElementLong = iframeLongDocument.querySelector('body[data-id="figure_caption_long"]');
-  
-    // Step 4: Retrieve and store its contents
-    let longCaption = bodyElementLong ? bodyElementLong.innerHTML : null;
-   
- //   let longCaption = document.getElementById("figure_caption_long").value;
- //   if (longCaption == ""){
- //       longCaption = "No long caption";
- //   }
-
-    let shortCaptionElementContent = document.createElement("p");
-    shortCaptionElementContent.innerHTML = shortCaption;
-    shortCaptionElementContent.classList.add("captionOptions");
-    captionRow.appendChild(shortCaptionElementContent);
-    let longCaptionElement = document.createElement("details");
-   // longCaptionElement.classList.add("captionOptions");
-    let longCaptionElementSummary = document.createElement("summary");
-    longCaptionElementSummary.textContent = "Click here for more details.";
-    let longCaptionElementContent = document.createElement("p");
-    longCaptionElementContent.classList.add("captionOptions");
-    longCaptionElementContent.innerHTML = longCaption;
-    longCaptionElement.appendChild(longCaptionElementSummary);
-    longCaptionElement.appendChild(longCaptionElementContent);
-    captionRow.appendChild(longCaptionElement);
-    newDiv.appendChild(captionRow);
-
-    secondParent.appendChild(newDiv);
+        secondParent.appendChild(newDiv);
     });
 
 // Claude code for json functionality
