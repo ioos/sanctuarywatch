@@ -486,7 +486,7 @@
                     logFormFieldValues();
                 });
 
-                const dateFormats =["YYYY", "YYYY-MM", "YYYY-MM-DD"];
+                const dateFormats =["YYYY", "YYYY-MM-DD"];
                 
                 dateFormats.forEach((dateFormat) => {
                     let selectXAxisFormatOption = document.createElement("option");
