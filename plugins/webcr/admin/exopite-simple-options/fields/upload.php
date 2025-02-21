@@ -9,32 +9,6 @@
 /**
  * Info about JavaScript uploaders
  *
- * https://codex.wordpress.org/Function_Reference/wp_handle_upload
- * https://codex.wordpress.org/Function_Reference/media_handle_upload
- * http://www.kvcodes.com/2013/12/create-front-end-multiple-file-upload-wordpress/
- * https://wordpress.stackexchange.com/questions/173197/upload-multiple-files-with-media-handle-upload
- * https://www.ibenic.com/wordpress-file-upload-with-ajax/
- * https://www.theaveragedev.com/wordpress-files-ajax/
- *
- * Dropzone
- * https://www.startutorial.com/articles/view/how-to-build-a-file-upload-form-using-dropzonejs-and-php
- * http://www.dropzonejs.com/
- * https://github.com/enyo/dropzone/wiki/FAQ
- * https://wordpress.org/plugins/wp-dropzone/
- *
- * FineUploader
- * wp-multi-file-uploader
- * https://docs.fineuploader.com/integrating/jquery.html
- * https://github.com/FineUploader/fine-uploader
- *
- * PlUpload
- * http://www.plupload.com/examples/events
- *
- * JQuery Drag and Drop Files
- * https://danielmg.org/demo/java-script/bootstrap-drag-and-drop-uploader
- *
- * jQuery File Upload
- * https://blueimp.github.io/jQuery-File-Upload/jquery-ui.html
  */
 if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
@@ -62,175 +36,436 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 		}
 
 		public function output() {
-
 			echo $this->element_before();
+			?>
+
+			<?php		
+			// Expoite array variables from the FILE UPLOAD ARRAY BOX field in class-webcr-figure.php
+			//$maxsize = $this->field['options']['maxsize']; //not used
+
+			// WP variables for post values in database
+			$post_id = get_the_ID();
+			$instance_id = get_post_meta( $post_id, 'location', true );
+			$uploaded_path_csv = get_post_meta( $post_id, 'uploaded_path_csv', true );
+			$uploaded_path_json = get_post_meta( $post_id, 'uploaded_path_json', true );
+
+			// Check if a file exists in postmeta before rendering the file input button
+			$existing_file = get_post_meta($post_id, 'uploaded_file', true);
+			$file_label = $existing_file ? 'Current File: ' . basename($existing_file) : '';
+
+			// Style for the .custom-div where the light grey text is located. 
+			echo '<style>
+			.custom-div {
+				color: #aaa; /* Light grey text */
+				font-size: 13px; /* Text size */
+				text-align: left; /* Left justified */
+			}
+			</style>';
 
 			?>
-            <!-- Fine Uploader Thumbnails template w/ customization
-            ====================================================================== -->
-            <script type="text/template" id="qq-template-manual-trigger">
-                <div class="qq-uploader-selector qq-uploader"
-                     qq-drop-area-text="<?php esc_html_e( 'Drop files here', 'exopite-sof' ); ?>">
-                    <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
-                        <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-                             class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
-                    </div>
-                    <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
-                        <span class="qq-upload-drop-area-text-selector"></span>
-                    </div>
-                    <div class="buttons">
-                        <div class="qq-upload-button-selector exopite-sof-btn">
-                            <div><?php esc_html_e( 'Select files', 'exopite-sof' ); ?></div>
-                        </div>
-                        <div class="exopite-sof-btn trigger-upload">
-                            <i class="icon-upload icon-white"></i> <?php esc_html_e( 'Upload', 'exopite-sof' ); ?>
-                        </div>
-                    </div>
-                    <span class="qq-drop-processing-selector qq-drop-processing">
-                        <span><?php esc_html_e( 'Processing dropped files...', 'exopite-sof' ); ?></span>
-                        <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
-                    </span>
-                    <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite"
-                        aria-relevant="additions removals">
-                        <li>
-                            <div class="qq-progress-bar-container-selector">
-                                <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-                                     class="qq-progress-bar-selector qq-progress-bar"></div>
-                            </div>
-                            <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
-                            <img class="qq-thumbnail-selector" qq-max-size="100" qq-server-scale>
-                            <span class="qq-upload-file-selector qq-upload-file"></span>
-                            <span class="qq-edit-filename-icon-selector qq-edit-filename-icon"
-                                  aria-label="Edit filename"></span>
-                            <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
-                            <span class="qq-upload-size-selector qq-upload-size"></span>
-                            <button type="button"
-                                    class="qq-btn qq-upload-cancel-selector qq-upload-cancel"><?php esc_html_e( 'Cancel', 'exopite-sof' ); ?></button>
-                            <button type="button"
-                                    class="qq-btn qq-upload-retry-selector qq-upload-retry"><?php esc_html_e( 'Retry', 'exopite-sof' ); ?></button>
-                            <button type="button"
-                                    class="qq-btn qq-upload-delete-selector qq-upload-delete"><?php esc_html_e( 'Delete', 'exopite-sof' ); ?></button>
-                            <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
-                        </li>
-                    </ul>
+			<!-- Custom form elements for the file select, upload, and -->
+			<form id="custom-file-upload" enctype="multipart/form-data">
+				<input type="hidden" id="existing-file-name" value="<?php echo esc_attr(basename($existing_file)); ?>">
+				<input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>"> 
+				<label for="uploaded-file" id="file-label"><?php echo esc_html($file_label); ?></label>
+				<?php if (!$existing_file): ?>
+					<input type="file" name="uploaded_file" id="uploaded-file" accept=".json, .csv"><input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>">
+					<button type="button" id="upload-btn">Upload</button>
+				<?php endif; ?>
+				<?php if ($existing_file): ?>
+					<button type="button" id="delete-btn">Delete File</button>
+				<?php endif; ?>
+			</form>
 
-                    <dialog class="qq-alert-dialog-selector">
-                        <div class="qq-dialog-message-selector"></div>
-                        <div class="qq-dialog-buttons">
-                            <button type="button"
-                                    class="qq-cancel-button-selector"><?php esc_html_e( 'Close', 'exopite-sof' ); ?></button>
-                        </div>
-                    </dialog>
-
-                    <dialog class="qq-confirm-dialog-selector">
-                        <div class="qq-dialog-message-selector"></div>
-                        <div class="qq-dialog-buttons">
-                            <button type="button"
-                                    class="qq-cancel-button-selector"><?php esc_html_e( 'No', 'exopite-sof' ); ?></button>
-                            <button type="button"
-                                    class="qq-ok-button-selector"><?php esc_html_e( 'Yes', 'exopite-sof' ); ?></button>
-                        </div>
-                    </dialog>
-
-                    <dialog class="qq-prompt-dialog-selector">
-                        <div class="qq-dialog-message-selector"></div>
-                        <input type="text">
-                        <div class="qq-dialog-buttons">
-                            <button type="button"
-                                    class="qq-cancel-button-selector"><?php esc_html_e( 'Cancel', 'exopite-sof' ); ?></button>
-                            <button type="button"
-                                    class="qq-ok-button-selector"><?php esc_html_e( 'Ok', 'exopite-sof' ); ?></button>
-                        </div>
-                    </dialog>
-                </div>
-            </script>
-			<?php
-
-			$maxsize = Exopite_Simple_Options_Framework_Upload::file_upload_max_size();
-			if ( isset( $this->field['options']['maxsize'] ) && Exopite_Simple_Options_Framework_Upload::file_upload_max_size() >= $this->field['options']['maxsize'] ) {
-				$maxsize = $this->field['options']['maxsize'];
-			}
-
-			$allowed_mime_types = ( gettype( Exopite_Simple_Options_Framework_Upload::allowed_mime_types() ) == 'array' ) ? implode( ',', Exopite_Simple_Options_Framework_Upload::allowed_mime_types() ) : Exopite_Simple_Options_Framework_Upload::allowed_mime_types();
-
-			if ( isset( $this->field['options']['allowed'] ) && is_array( $this->field['options']['allowed'] ) ) {
-				$allowed_mime_types_array = explode( ',', $allowed_mime_types );
-				$allowed_mime_types_array = array_intersect( $allowed_mime_types_array, $this->field['options']['allowed'] );
-				$allowed_mime_types       = implode( ',', $allowed_mime_types_array );
-			}
-
-
-			?>
-            <div class="qq-template" <?php
-			echo 'data-filecount="' . $this->field['options']['filecount'] . '" ';
-			echo 'data-mimetypes="' . $allowed_mime_types . '" ';
-			echo 'data-maxsize="' . $maxsize . '" ';
-			echo ( $this->field['options']['attach'] && $this->config['type'] == 'metabox' ) ? 'data-postid="' . get_the_ID() . '" ' : '';
-			echo 'data-ajaxurl="' . site_url( 'wp-admin/admin-ajax.php' ) . '" ';
-			echo 'data-delete-enabled="' . $this->field['options']['delete-enabled'] . '" ';
-			echo 'data-delete-force-confirm="' . $this->field['options']['delete-force-confirm'] . '" ';
-			echo 'data-retry-enable-auto="' . $this->field['options']['retry-enable-auto'] . '" ';
-			echo 'data-retry-max-auto-attempts="' . $this->field['options']['retry-max-auto-attempts'] . '" ';
-			echo 'data-retry-auto-attempt-delay="' . $this->field['options']['retry-auto-attempt-delay'] . '" ';
-			echo 'data-auto-upload="' . $this->field['options']['auto-upload'] . '" ';
-			?>>
-            </div>
-            <div class="qq-template-info">
+			<div class="custom-div">
 				<?php
-
+				echo '<br>';
+				echo '<strong>Upload Information:</strong><br>';
 				echo esc_attr__( 'Max amount of files: ', 'exopite-sof' ) . $this->field['options']['filecount'] . '<br>';
-				echo esc_attr__( 'Max file upload size: ', 'exopite-sof' ) . number_format( (float) ( Exopite_Simple_Options_Framework_Upload::file_upload_max_size() / 1048576 ), 2, '.', '' ) . 'Mb<br><br>';
-				// echo '<i style="font-size:.9em;">' . esc_attr__( 'To increase file upload limit in the standard built-in WordPress media uploader up as large as available disk space allows, you could use', 'exopite-sof' ) . ' <a target="_blank" href="' . admin_url() . 'plugin-install.php?tab=plugin-information&plugin=tuxedo-big-file-uploads">Tuxedo Big File Uploads</a> ' . esc_attr__( 'Plugin', 'exopite-sof' ) . '</i>';
+				echo esc_attr__( 'Allowed file types: ', 'exopite-sof' ) . '.csv, .json'  . '<br><br>';
 
+				// Output links to example files
+				// Define the folder path inside wp-content
+				$example_folder = get_site_url() . '/wp-content/data/example_files/';
+
+				// Example file names
+				$example_csv = 'example.csv';
+				$example_json = 'example.json';
+
+				echo '<strong>Example Files:</strong><br>';
+				echo 'Please format your file as shown in the examples below. If they are not formatted properly, your file will be rejected.<br>';
+				echo ' - For .csv and/or .json files, be sure none of your columns header names or row data values contain commas.<br>';
+				echo ' - Please see the date examples in the example files for accepted date formats. <br>';
+				echo ' - The date formats are best viewed in Notepad or a similar text editor, MS Excel may automatically change date formats. <br>';
+				echo '<a href="' . esc_url($example_folder . $example_csv) . '" target="_blank">Download example.csv</a><br>';
+				echo '<a href="' . esc_url($example_folder . $example_json) . '" target="_blank">Download example.json</a>';
 				?>
-            </div>
-			<?php
+			</div>
 
-			echo $this->element_after();
 
-		}
+			<script>
+			/**
+			 * Converts a CSV string into a structured JSON object.
+			 * 
+			 * @param {string} csvString - The CSV input as a string.
+			 * @returns {Object} - The converted JSON object with metadata and data.
+			 */
+			function csvToJson(csvString) {
+				// Split the CSV string into an array of lines, trim whitespace, and remove empty lines
+				const lines = csvString.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+				
+				// Extract the first line as headers and trim whitespace from each header
+				const headers = lines[0].split(',').map(header => header.trim());
+				
+				// Initialize an empty object to store the result
+				const result = {};
+				
+				// Create an array for each header key in the result object
+				headers.forEach(header => {
+					result[header] = [];
+				});
+				
+				// Iterate through the remaining lines (data rows)
+				for (let i = 1; i < lines.length; i++) {
+					// Split each line by commas and trim whitespace
+					const values = lines[i].split(',').map(value => value.trim());
+					
+					// Assign values to corresponding headers
+					headers.forEach((header, index) => {
+						let parsedValue = values[index];
+						
+						// Convert numeric values to integers or floats, keep non-numeric as strings
+						if (!isNaN(parsedValue) && parsedValue.trim() !== "") {
+							parsedValue = parsedValue.includes('.') ? parseFloat(parsedValue) : parseInt(parsedValue, 10);
+						}
+						
+						// Push the parsed value into the respective header array
+						result[header].push(parsedValue);
+						//result[header][i - 1] = parsedValue;
+					});
+				}
+				
+				// Initialize an empty metadata object
+				const metadata_result = {};
 
-		public static function enqueue( $args ) {
-
-			if ( ! wp_script_is( 'fine-uploader' ) ) {
-
-				/**
-				 * https://fineuploader.com/
-				 */
-
-				$resources = array(
-					array(
-						'name'       => 'fine-uploader',
-						'fn'         => 'fine-uploader-new.min.css',
-						'type'       => 'style',
-						'dependency' => array(),
-						'version'    => '5.15.5',
-						'attr'       => 'all',
-					),
-					array(
-						'name'       => 'fine-uploader',
-						'fn'         => 'jquery.fine-uploader.min.js',
-						'type'       => 'script',
-						'dependency' => array(),
-						'version'    => '5.15.5',
-						'attr'       => true,
-					),
-					array(
-						'name'       => 'exopite-sof-fine-uploader-loader',
-						'fn'         => 'loader-fine-uploader.min.js',
-						'type'       => 'script',
-						'dependency' => array( 'fine-uploader' ),
-						'version'    => '',
-						'attr'       => true,
-					),
-				);
-
-				parent::do_enqueue( $resources, $args );
-
+				// Wrap the result object inside a "data" key and return it along with metadata
+				return { metadata: metadata_result, data: result };
 			}
 
+			</script>
+
+			
+			<script>
+			//JSON formatter______________________________________________________________________
+			function formatJsonCompact(obj) {
+				//let jsonStr = '{\n    "data": {\n';
+				let jsonStr = '{\n    "metadata": {},\n    "data": {\n';
+				const keys = Object.keys(obj.data);
+				
+				keys.forEach((key, index) => {
+					const values = obj.data[key].map(value => 
+						typeof value === "string" ? `"${value}"` : value // Keep string values quoted
+					);
+					
+					jsonStr += `        "${key}": [${values.join(',')}]`;
+					if (index < keys.length - 1) {
+						jsonStr += ',\n'; // Add comma only between items
+					}
+				});
+				
+				jsonStr += '\n    }\n}';
+				return jsonStr;
+			}
+			</script>
+
+
+
+
+			<script>
+			//JSON Validator______________________________________________________________________
+			function validateJson(json) {
+				if (typeof json !== 'object' || json === null) return false;
+				if (!json.metadata || typeof json.metadata !== 'object') return false;
+				if (!json.data || typeof json.data !== 'object') return false;
+				
+				const keys = Object.keys(json.data);
+				//if (!keys.includes("Year")) return false;
+				//if (!Array.isArray(json.data.Year) || json.data.Year.some(y => typeof y !== 'number')) return false;
+				
+				for (let key of keys) {
+					if (!Array.isArray(json.data[key])) return false;
+				}
+				
+				return true;
+			}
+			</script>
+
+
+			<script>
+			// Delete Function______________________________________________________________________
+			function deleteUploadedFile() {
+
+				//Select an existing uploaded file, or the file you just attempted to upload that is not formatted correctly for deletion. 
+				try {
+					var fileNameInput = document.getElementById('existing-file-name');
+					if (!fileNameInput || !fileNameInput.value) {
+						//alert("Error: No file to delete.");
+						console.error("Filename input error:", error);
+						return;
+					}
+					var fileName = fileNameInput.value;
+				} catch (error) {
+					var fileNameInput = document.getElementById('uploaded-file');
+					var file = fileNameInput.files[0];
+					var fileName = file.name.toLowerCase();
+				}
+				
+				//Get the post ID
+				var postIdInput = document.querySelector('[name="post_id"]');
+				if (!postIdInput || !postIdInput.value) {
+					alert("Error: Post ID is missing in the form!");
+					return;
+				}
+
+				var postId = postIdInput.value;
+				
+				var formData = new FormData();
+				formData.append('post_id', postId);
+				formData.append('file_name', fileName); // Send only the stored filename
+				formData.append('action', 'custom_file_delete'); // Match WordPress AJAX action
+
+				console.log("Sending post_id:", postId, "file_name:", fileName); // Debugging
+
+				fetch('<?php echo admin_url("admin-ajax.php"); ?>', { // Correct URL
+					method: 'POST',
+					body: formData,
+					credentials: 'same-origin'
+				})
+				.then(response => response.json())
+				.then(data => {
+					console.log("Server response:", data); // Debugging
+					if (data.success) {
+						alert("Success: " + (data.message || "File deleted successfully."));
+						location.reload(); // Refresh the page to reflect deletion
+					} else {
+						alert("Error: " + (data.message || "Delete failed."));
+					}
+				})
+				.catch(error => {
+					console.error("Delete error:", error);
+					alert("Delete failed: " + error.message);
+				});
+			}
+			</script>
+
+			<script>
+			// Trigger Delete button when clicked______________________________________________________________________
+			document.getElementById('delete-btn').addEventListener('click', deleteUploadedFile);
+				console.log("Delete button clicked!"); // Debugging
+			</script>
+
+			<script>
+			// Do not allow access to the upload button if it is a new post. 
+			document.addEventListener("DOMContentLoaded", function () {
+				var uploadBtn = document.getElementById('upload-btn');
+				var fileInput = document.getElementById('uploaded-file');
+
+				// Check if URL contains "post-new.php?post_type=figure"
+				if (window.location.href.includes("post-new.php?post_type=figure")) {
+					if (uploadBtn) {
+						uploadBtn.disabled = true; // Disable the button
+						uploadBtn.style.opacity = "0.5"; // Make it look inactive
+					}
+
+					if (fileInput) {
+						fileInput.disabled = true; // Disable file input as well
+					}
+
+					// Show a message above the button
+					var message = document.createElement("p");
+					message.textContent = "⚠️ You must save this post before uploading a file to create an interactive figure.";
+					message.style.color = "red";
+					message.style.fontWeight = "bold";
+					uploadBtn.parentNode.insertBefore(message, uploadBtn);
+				}
+			});			
+			</script>
+
+			<script>
+			// Upload button and .csv call to csvtojson converter and .json call to json validator______________________________________________________________________
+			document.getElementById('upload-btn').addEventListener('click', function() {
+				
+				// Validation of variables form html and php
+				var fileInput = document.getElementById('uploaded-file');
+				var uploadBtn = document.getElementById('upload-btn');
+				var uploadMessage = document.createElement("p");
+
+				if (!fileInput.files.length) {
+					alert("Please select a file before uploading.");
+					return;
+				}
+
+				var formData = new FormData();
+				var file = fileInput.files[0];
+				var fileName = file.name.toLowerCase();
+
+				// Append uploaded_file to form to send to AJAX
+				formData.append('uploaded_file', file);
+
+				var postIdInput = document.querySelector('[name="post_id"]');
+				if (!postIdInput || !postIdInput.value) {
+					alert("Error: Post ID is missing in the form!");
+					return;
+				}
+
+				var postId = postIdInput.value;
+				if (postId == '') {
+					alert("Error: Post ID is missing in the form!");
+					return;
+				}
+				
+				// Append post_id and the action to trigger custom_file_upload to form to send to AJAX
+				formData.append('post_id', postId);
+				formData.append('action', 'custom_file_upload'); // Required for WordPress AJAX
+
+				// AJAX processing request
+				console.log("Sending post_id:", postId);
+				fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+					method: 'POST',
+					body: formData,
+					credentials: 'same-origin'
+				})
+				.then(response => response.json())
+				.then(data => {
+					console.log("Server response:", data);
+					// If the Ajax Request was successful
+					if (data.success) {
+						// If the file is a .csv file, trigger CSV-to-JSON conversion
+						if (fileName.endsWith(".csv")) {
+							var reader = new FileReader();
+							reader.onload = function(event) {
+								var csvData = event.target.result;
+								var jsonData;
+
+								try {
+									jsonData = csvToJson(csvData); // Convert CSV to JSON
+								} catch (error) {
+									deleteUploadedFile();
+									alert("CSV Conversion Failed: " + error.message);
+									console.error("CSV Conversion Error:", error);
+									return; // Stop execution if CSV is invalid
+								}
+
+								// Convert JSON object to a Blob
+								//var jsonBlob = new Blob([JSON.stringify(jsonData, null, 0)], { type: "application/json" }); //standard JS way of precessing that doesn't give what Jai wants.
+								var jsonBlob = new Blob([formatJsonCompact(jsonData)], { type: "application/json" });
+								var json_fileName = fileName.replace('.csv', '.json');
+
+								// Convert Blob to a File
+								var jsonFile = new File([jsonBlob], json_fileName, { type: "application/json" });
+
+								// Prepare FormData for AJAX request
+								var formData_csvtojson = new FormData();
+								formData_csvtojson.append('uploaded_file', jsonFile);
+								formData_csvtojson.append('post_id', postId);
+								formData_csvtojson.append('action', 'custom_file_upload');
+
+								console.log("Sending JSON file to server:", json_fileName);
+
+								fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+									method: 'POST',
+									body: formData_csvtojson,
+									credentials: 'same-origin'
+								})
+								.then(response => response.json())
+								.then(data => {
+									console.log("Server response:", data);
+									if (data.success) {
+										alert("Success: " + (data.message || "File Upload Successful.") +  "\n" +
+											"\nClick 'Update' button in the top-right to save your changes or access the delete button.");
+
+										// Hide the upload button and the file input
+										uploadBtn.style.display = "none";
+										fileInput.style.display = "none";
+
+										// Display message after hiding the buttons
+										uploadMessage.textContent = `Current File: ${fileName}, Click 'Update' button in the top-right to save your changes and/or access the delete button.`;
+										uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);
+									} else {
+										alert("Error: " + (data.message || "Something went wrong."));
+									}
+								})
+								.catch(error => {
+									console.error("Upload error:", error);
+									alert("Upload failed: " + error.message);
+								});
+							};
+							reader.readAsText(file);
+
+
+						}
+						// If the file is a .json file, trigger json validation script
+						if (fileName.endsWith(".json")) {
+							var reader = new FileReader();
+
+							reader.onload = function(event) {
+								try {
+									var jsonData = JSON.parse(event.target.result); // Parse the file content into JSON
+									var isValid = validateJson(jsonData); // Validate the JSON
+
+									if (!isValid) {
+										throw new Error("JSON validation failed.");
+									}
+
+									alert("Success: " + (data.message || "File Upload Successful.") + "\n\n" +
+										"Click 'Update' button in the top-right to save your changes or access the delete button.");
+
+									// Hide the upload button and the file input
+									uploadBtn.style.display = "none";
+									fileInput.style.display = "none";
+
+									// Display message after hiding the buttons
+									uploadMessage.textContent = `Current File: ${fileName}\n\nClick 'Update' button in the top-right to save your changes and/or access the delete button.`;
+									uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);
+								} catch (error) {
+									deleteUploadedFile();
+									alert("JSON Validation Failed: " + error.message);
+									console.error("JSON Validation Error:", error);
+								}
+							};
+							reader.readAsText(file); // Read file content as text
+											
+						} 
+						else {
+							// If the file is NOT a CSV or a Json, proceed with the normal success message. This would be if you allowed for more file types.
+// 							alert("Success: " + (data.message || "File Upload Successful.") + "\n" +
+// 									"\nClick 'Update' button in the top-right to save your changes or access the delete button.");
+
+// ``							// Hide the upload button and the file input
+// 							uploadBtn.style.display = "none";
+// 							fileInput.style.display = "none";
+
+// 							// Display message after hiding the buttons
+// 							uploadMessage.textContent = `Current File: ${fileName}, Click 'Update' button in the top-right to save your changes and/or access the delete button.`;
+// 							uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);``
+						} 
+					}
+					// If the Ajax Request was not successful			
+					if (!data.success) {
+						console.error("Upload error:", error);
+						alert("Upload failed: Data was not successfully Sent: " + error.message)
+					}
+				})
+				.catch(error => {
+					console.error("Upload error:", error);
+					alert("Upload failed: " + error.message);
+				});
+			});
+			</script>
+
+			<?php
+
 		}
-
 	}
-
 }
+

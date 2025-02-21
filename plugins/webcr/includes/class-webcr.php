@@ -256,7 +256,7 @@ class Webcr {
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
 
-// NEW AI CODE FOR SITE SETTINGS
+// START AI CODE
 
 // code version for instance
 function instance_settings_init() {
