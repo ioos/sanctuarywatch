@@ -472,9 +472,7 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
 
           $section_name = get_post_meta($child_post_id, "icon_toc_section")[0];
           $child = $child_id;
-          // if (in_array($child_id, $child_ids)){
-          //   $child = $child_id . $idx;
-          // } 
+
           if (array_key_exists($child_id, $child_ids)){
             $child = ($child_id . $idx);
           }
