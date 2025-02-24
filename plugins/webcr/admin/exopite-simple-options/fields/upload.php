@@ -105,7 +105,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
 			<script>
 			/**
-			 * Converts a CSV string into a structured JSON object.
+			 * CSVTOJSON CONVERTER - Converts a CSV string into a structured JSON object.
 			 * 
 			 * @param {string} csvString - The CSV input as a string.
 			 * @returns {Object} - The converted JSON object with metadata and data.
@@ -114,75 +114,128 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				// Split the CSV string into an array of lines, trim whitespace, and remove empty lines
 				const lines = csvString.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 				
-				// Extract the first line as headers and trim whitespace from each header
-				const headers = lines[0].split(',').map(header => header.trim());
-				
+				// Initialize an empty metadata object
+				const metadata_result = {};
+
+				// Determine the starting index of the header (first line with the same number of columns as the data rows)
+				let headerIndex = lines.findIndex((line, idx) => {
+					const values = line.split(',').map(value => value.trim());
+					return values.length > 1 && values.every(value => value !== ""); // Ensure all columns are filled and more than one column exists
+				});
+
+				if (headerIndex === -1) headerIndex = 0; // Default to 0 if no valid header is found
+
+				// Extract metadata lines before the header row, assigning each to a unique key
+				lines.slice(0, headerIndex).forEach((line, index) => {
+					if (line.includes(':')) {
+						const [key, value] = line.split(':').map(part => part.trim());
+						metadata_result[key] = value;
+					} else {
+						metadata_result[`meta${index + 1}`] = line;
+					}
+				});
+				// Extract headers from the determined starting index
+				const headers = lines[headerIndex].split(',').map(header => header.trim());
+
 				// Initialize an empty object to store the result
 				const result = {};
-				
+
 				// Create an array for each header key in the result object
 				headers.forEach(header => {
 					result[header] = [];
 				});
-				
+
 				// Iterate through the remaining lines (data rows)
-				for (let i = 1; i < lines.length; i++) {
+				for (let i = headerIndex + 1; i < lines.length; i++) {
 					// Split each line by commas and trim whitespace
 					const values = lines[i].split(',').map(value => value.trim());
-					
+
 					// Assign values to corresponding headers
 					headers.forEach((header, index) => {
-						let parsedValue = values[index];
-						
-						// Convert numeric values to integers or floats, keep non-numeric as strings
-						if (!isNaN(parsedValue) && parsedValue.trim() !== "") {
+						let parsedValue = values[index] !== undefined ? values[index] : "";
+
+						// Convert numeric values to integers or floats, assign null for missing numerical values, and keep non-numeric as strings
+						const columnValues = result[header].filter(val => val !== "" && val !== null);
+						const isNumericColumn = columnValues.every(val => typeof val === "number");
+
+						if (parsedValue === "") {
+							parsedValue = isNumericColumn ? null : "";
+						} else if (!isNaN(parsedValue)) {
 							parsedValue = parsedValue.includes('.') ? parseFloat(parsedValue) : parseInt(parsedValue, 10);
 						}
-						
+
 						// Push the parsed value into the respective header array
 						result[header].push(parsedValue);
-						//result[header][i - 1] = parsedValue;
 					});
 				}
-				
-				// Initialize an empty metadata object
-				const metadata_result = {};
 
 				// Wrap the result object inside a "data" key and return it along with metadata
 				return { metadata: metadata_result, data: result };
 			}
 
+
+
 			</script>
 
 			
 			<script>
-			//JSON formatter______________________________________________________________________
+			/**
+			 * JSON formatter - Formats the output json from csvToJson into a specific format.
+			 * 
+			 * @param {obj} obj - The json returned from csvToJson.
+			 * @returns {Object} - The converted JSON object with metadata and data.
+			 */
 			function formatJsonCompact(obj) {
-				//let jsonStr = '{\n    "data": {\n';
-				let jsonStr = '{\n    "metadata": {},\n    "data": {\n';
+				// Initialize the JSON string with the opening bracket and metadata
+				// Initialize the JSON string with the opening bracket and metadata
+				let jsonStr = '{\n    "metadata": {\n';
+
+				// Append metadata dynamically
+				const metaKeys = Object.keys(obj.metadata);
+				metaKeys.forEach((key, index) => {
+					jsonStr += `        "${key}": "${obj.metadata[key]}"`;
+					if (index < metaKeys.length - 1) {
+						jsonStr += ',\n';
+					}
+				});
+
+				jsonStr += '\n    },\n    "data": {\n';
+				
+				// Retrieve all keys from the "data" object
 				const keys = Object.keys(obj.data);
 				
+				// Iterate through each key (column name) in the data object
 				keys.forEach((key, index) => {
+					// Format each value in the array appropriately
 					const values = obj.data[key].map(value => 
-						typeof value === "string" ? `"${value}"` : value // Keep string values quoted
+						value === "null" ? null : (typeof value === "string" ? `"${value}"` : value) // Remove quotes from "null", keep other strings quoted
 					);
 					
+					// Append the formatted key-value pair to the JSON string
 					jsonStr += `        "${key}": [${values.join(',')}]`;
+					
+					// Add a comma after each key-value pair except the last one
 					if (index < keys.length - 1) {
-						jsonStr += ',\n'; // Add comma only between items
+						jsonStr += ',\n';
 					}
 				});
 				
+				// Close the "data" object and the JSON structure
 				jsonStr += '\n    }\n}';
+				
+				// Return the fully formatted compact JSON string
 				return jsonStr;
 			}
 			</script>
 
 
-
-
 			<script>
-			//JSON Validator______________________________________________________________________
+			/**
+			 * JSON Validator - When a .json file is uploaded form the admin GUI, this validates that json format to match the json output in the csvToJson.
+			 * 
+			 * @param {json} obj - The json string from the uploaded json file.
+			 * @returns {true} - The script checks to see if the json contains the objects that are needed.
+			 */
 			function validateJson(json) {
 				if (typeof json !== 'object' || json === null) return false;
 				if (!json.metadata || typeof json.metadata !== 'object') return false;
@@ -202,7 +255,12 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
 
 			<script>
-			// Delete Function______________________________________________________________________
+			/**
+			 * Delete Function - After a file has been uploaded this can be triggered to delete an existing file via an Ajax call.
+			 * 
+			 * @param {} obj - None
+			 * @returns {} - Alert a file has been deleted.
+			 */
 			function deleteUploadedFile() {
 
 				//Select an existing uploaded file, or the file you just attempted to upload that is not formatted correctly for deletion. 
@@ -259,7 +317,12 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 			</script>
 
 			<script>
-			// Trigger Delete button when clicked______________________________________________________________________
+			/**
+			 * Trigger Delete button when clicked - This makes the call the delete-btn on the page, does not include the Ajax call.
+			 * 
+			 * @param {} obj - None
+			 * @returns {} - Alert a file has been deleted.
+			 */
 			document.getElementById('delete-btn').addEventListener('click', deleteUploadedFile);
 				console.log("Delete button clicked!"); // Debugging
 			</script>
