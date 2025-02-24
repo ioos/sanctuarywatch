@@ -7,7 +7,7 @@
     let fieldLabelNumber;
     let fieldValueSaved;
 
-  //  document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
+    document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
 
     document.querySelector('[data-depend-id="figure_temp_plotly"]').addEventListener('click', function() {
         tempProducePlotlyFigure();

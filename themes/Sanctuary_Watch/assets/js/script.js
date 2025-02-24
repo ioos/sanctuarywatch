@@ -1167,17 +1167,12 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
 function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id){
     const protocol = window.location.protocol;
     const host = window.location.host;
-    const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/figure?&order=asc"
+    const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/figure?&order=asc&figure_modal=" + modal_id + "&figure_tab=" + tab_id;
     // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
-
-            // figure_data = data.find(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
-            // all_figure_data = data.filter(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
-            all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
-            all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
-            
+            all_figure_data = data;
             if (!all_figure_data){
                 //we don't create anything here...
                 //don't have to render any of the info
@@ -1369,7 +1364,6 @@ function render_modal(key){
     const protocol = window.location.protocol;
     const host = window.location.host;
     const fetchURL  =  protocol + "//" + host  + `/wp-json/wp/v2/modal/${id}`;
-    debugger;
     // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
     fetch(fetchURL)
         .then(response => response.json())
