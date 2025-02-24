@@ -1019,3 +1019,8 @@ body > nav > div{
   border-width: 1px !important;
 
 }
+
+/* padding under scene tagline when no photo or info accordions on a non-mobile view */
+.blankAccordion {
+  padding-bottom: 70px;
+}

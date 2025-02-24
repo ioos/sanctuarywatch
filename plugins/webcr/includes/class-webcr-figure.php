@@ -590,6 +590,22 @@ class Webcr_Figure {
         $function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
     }
 
+
+    /**
+	 * Remove "view" link from admin screen for figure posts.
+	 *
+     * @param string $column The name of the column.
+     * @param int $post_id The database id of the post.
+	 * @since    1.0.0
+	 */
+
+     function remove_view_link_from_figure_post_type($actions, $post) {
+        if ($post->post_type === 'figure' && isset($actions['view'])) {
+            unset($actions['view']); // Remove the "View" link
+        }
+        return $actions;
+    }
+
     /**
 	 * Add a filter to support filtering by "figure_modal" and id in REST API queries.
 	 *

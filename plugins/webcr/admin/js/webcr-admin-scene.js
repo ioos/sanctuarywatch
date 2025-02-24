@@ -316,12 +316,18 @@
 						thirdRow.append(tocColumn);
 
 						//let's highlight the clickable elements of the svg
-
+						const targetSvg = document.getElementById("previewSvg");
 						sublayers.forEach (listElement => {
-						//	document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').classList.add("highlightIcons");
-						//console.log  (hoverColor);
-							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.stroke = hoverSceneColor; 
-							document.getElementById("previewSvg").querySelector('g[id="' + listElement + '"]').style.strokeWidth = "2";
+							let iconLayer = targetSvg.getElementById(listElement);
+
+							// Select all child elements 
+							let subElements = iconLayer.querySelectorAll("*");
+						
+							// Loop through each sub-element and update its stroke-width and color
+							subElements.forEach(element => {
+								element.style.strokeWidth = "2";
+								element.style.stroke = hoverSceneColor;
+							});
 						})
 
 					} else {
@@ -398,9 +404,30 @@
 		displaySceneEntries(openingSceneSections);
 	});
 
-	$(".range[data-depend-id='scene_info_entries']").change(function(){ 
-		let number_of_scene_info_entries = $(".range[data-depend-id='scene_info_entries']").val();
+	// Add on change event handlers to the two "scene info number" entry fields
+	let sceneInfoRangeElement = document.querySelector(".range[data-depend-id='scene_info_entries']");
+	sceneInfoRangeElement.addEventListener("change", function() {
+		let number_of_scene_info_entries = sceneInfoRangeElement.value;
 		displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='scene_info_");
+	});
+
+	let sceneInfoRangeElement2 = sceneInfoRangeElement.nextElementSibling;
+	sceneInfoRangeElement2.addEventListener("change", function() {
+		let number_of_scene_info_entries2 = sceneInfoRangeElement2.value;
+		displayEntries(number_of_scene_info_entries2, ".text-class[data-depend-id='scene_info_");
+	});
+
+	// Add on change event handlers to the two "scene photo number" entry fields
+	let scenePhotoRangeElement = document.querySelector(".range[data-depend-id='scene_photo_entries']");
+	scenePhotoRangeElement.addEventListener("change", function() {
+		let number_of_scene_photo_entries = scenePhotoRangeElement.value;
+		displayEntries(number_of_scene_photo_entries, ".text-class[data-depend-id='scene_photo_");
+	});
+
+	let scenePhotoRangeElement2 = scenePhotoRangeElement.nextElementSibling;
+	scenePhotoRangeElement2.addEventListener("change", function() {
+		let number_of_scene_photo_entries2 = scenePhotoRangeElement2.value;
+		displayEntries(number_of_scene_photo_entries2, ".text-class[data-depend-id='scene_photo_");
 	});
 
 	$(".range[data-depend-id='scene_photo_entries']").change(function(){ 

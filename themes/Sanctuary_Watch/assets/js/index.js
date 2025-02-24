@@ -1,9 +1,3 @@
-// console.log("here is the post id");
-// console.log(post_id);
-
-// let test = document.querySelector("body > div.container-fluid.main-container");
-// test.innerHTML = '';
-// console.log(is_logged_in);
 
 async function getInstanceInfo() {
     const protocol = window.location.protocol;
@@ -27,16 +21,12 @@ async function getInstanceInfo() {
   (async () => {
     try {
       testDataIndex = await getInstanceInfo();
-      //console.log(testDataIndex);
 
       let elem = document.querySelector("#webcrs---ecosystem-tracking-tools-for-condition-reporting > div");
       let list = document.createElement("div");
       list.classList.add("row");
     for (let idx in testDataIndex) {
         let child = testDataIndex[idx];
-        console.log(child);
-        console.log(child.instance_status);
-        console.log(is_logged_in);
         // might wanna delete/comment this bottom stuff out
         // if (child.instance_status == "Draft" && !is_logged_in){
         //     continue;
@@ -75,8 +65,6 @@ async function getInstanceInfo() {
         } else{
           url = `${protocol}//${host}/?post_type=${postType}&p=${postId}`;
         }
-        // const url = `${protocol}//${host}/?post_type=${postType}&p=${postId}`;
-        console.log(url);
 
         link.setAttribute('href', url);
         // link.setAttribute('href', child.link)
@@ -101,6 +89,5 @@ async function getInstanceInfo() {
     }
   })();
   
-console.log(testDataIndex)
  
 

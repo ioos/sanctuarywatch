@@ -112,6 +112,8 @@ class webcr_validation {
         $modal_errors = [];
         $modal_warnings = [];
         
+        
+
         // For each tab that the user has said they wanted, check to see that there is an actual tab title
         $modal_tab_number = $_POST["modal_tab_number"];
         for ($i = 1; $i <= $modal_tab_number; $i++) {
@@ -121,6 +123,11 @@ class webcr_validation {
                 $save_modal_fields = FALSE;
                 array_push($modal_errors,  "Modal Tab Title " . $i . " is blank.");
             }
+        }
+
+        if ($modal_tab_number == 0 && $_POST["icon_function"] == "Modal"){
+            $save_modal_fields = FALSE;
+            array_push($modal_errors,  "There must be at least one modal tab if the Icon Action is set to Modal");
         }
 
         $field_types = array("info", "photo");

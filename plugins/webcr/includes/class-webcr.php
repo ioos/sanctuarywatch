@@ -231,6 +231,7 @@ class Webcr {
 		$this->loader->add_filter( 'bulk_actions-edit-modal', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_modal, 'register_modal_rest_fields' );
 		$this->loader->add_filter( 'rest_modal_query', $plugin_admin_modal, 'filter_modal_by_modal_scene', 10, 2); 
+		$this->loader->add_filter( 'post_row_actions', $plugin_admin_modal, 'remove_view_link_from_modal_post_type', 10, 2); 
 
 		// Load  class and functions associated with Figure custom content type
 		$plugin_admin_figure = new Webcr_Figure( $this->get_plugin_name());		
@@ -244,6 +245,7 @@ class Webcr {
 		$this->loader->add_filter( 'bulk_actions-edit-figure', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_figure, 'register_figure_rest_fields' ); 
 		$this->loader->add_filter( 'rest_figure_query', $plugin_admin_figure, 'filter_figure_by_figure_modal', 10, 2); 
+		$this->loader->add_filter( 'post_row_actions', $plugin_admin_figure, 'remove_view_link_from_figure_post_type', 10, 2); 
 
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );

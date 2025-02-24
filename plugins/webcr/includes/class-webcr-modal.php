@@ -234,7 +234,7 @@ class Webcr_Modal {
                 'type'    => 'range',
                 'title'   => 'Number of Modal Tabs',
                 'description' => 'How many modal tabs are there?',
-                'min'     => 1,    
+                'min'     => 0,    
                 'default' => 1,    
                 'max'     => 6,         
                 'step'    => 1,             
@@ -575,6 +575,21 @@ class Webcr_Modal {
             }
             $query->set('meta_query', $meta_query);
         }
+    }
+
+    /**
+	 * Remove "view" link from admin screen for modal posts.
+	 *
+     * @param string $column The name of the column.
+     * @param int $post_id The database id of the post.
+	 * @since    1.0.0
+	 */
+
+    function remove_view_link_from_modal_post_type($actions, $post) {
+        if ($post->post_type === 'modal' && isset($actions['view'])) {
+            unset($actions['view']); // Remove the "View" link
+        }
+        return $actions;
     }
 
     /**
