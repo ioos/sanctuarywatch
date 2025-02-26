@@ -143,7 +143,7 @@ foreach ($terms_array as $term){
 
     <?php 
     echo "<div class='container-fluid main-container'><h2 style='color: #024880; margin-right: auto;'>{$term['name']}</h2></div>";
-    echo "<div class='container-fluid main-container' style='margin-top: -30px;'>{$term['description']}</div>";
+    echo "<div class='container-fluid main-container' style='margin-top: -30px; display: block'>{$term['description']}</div>";
     echo "<div class='container main-container'>";
 
     $args = array(
