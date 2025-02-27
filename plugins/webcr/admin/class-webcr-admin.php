@@ -129,7 +129,15 @@ class Webcr_Admin {
 
 		// Load Figure -specific Javascript only when editing/creating a Figure post 
 		if ($current_post_type == "figure" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
+
+			// Enqueue utility.js
+			wp_enqueue_script('figure-utility', dirname(plugin_dir_url(__FILE__)) . '/includes/utilities/js/utility.js',array(), '1.0.0', array('strategy'  => 'defer'));
+		
+			// Enqueue plotly-timeseries-line.js
+			wp_enqueue_script('plotly-timeseries-line', dirname(plugin_dir_url(__FILE__)) .  '/includes/figures/js/plotly-timeseries-line.js', array(), '1.0.0', array('strategy'  => 'defer'));
+
 			wp_enqueue_script( "webcr-admin-figure", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+
 		}
 
 		// Load Modal-specific Javascript only for admin columns screen 

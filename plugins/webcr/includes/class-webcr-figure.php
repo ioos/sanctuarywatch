@@ -30,36 +30,6 @@ class Webcr_Figure {
         return $columns;
     }
 
-
-    /**
-	 * Enqueue Javascript functions used by figure content type
-	 *
-	 * @since    1.0.0
-	 */
-	function enqueue_figure_javascript() {
-
-        $plugin_url = plugin_dir_url(__FILE__);
-
-        // Enqueue utility.js
-        wp_enqueue_script(
-            'figure-utility', // Unique handle
-            $plugin_url . 'includes/figure/js/utility.js', // Path to the JS file
-            array(),
-            '1.0.0', // Version number
-            true // Load in footer
-        );
-    
-        // Enqueue utility1.js
-        wp_enqueue_script(
-            'plotly-timeseries-line', // Unique handle
-            $plugin_url . 'includes/figures/js/plotly-timeseries-line.js', // Path to the JS file
-            array(), 
-            '1.0.0',
-            true
-        );
-    }
-
-
     /**
 	 * Populate custom fields for Figure content type in the admin screen.
 	 *

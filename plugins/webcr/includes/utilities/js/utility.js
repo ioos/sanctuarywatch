@@ -1,5 +1,5 @@
 //utility functions used in lots of places
-export function loadExternalScript(url) {
+function loadExternalScript(url) {
     return new Promise((resolve, reject) => {
       // Check if script is already loaded
       if (document.querySelector(`script[src="${url}"]`)) {

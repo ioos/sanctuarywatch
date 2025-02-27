@@ -1,7 +1,5 @@
 // Code for plotting time series data with a plotly line
 
-import { loadExternalScript } from 'wp-content/plugins/webcr/includes/figure/js/utility.js'; 
-
 async function producePlotlyLineFigure(targetFigureElement){
     try {
         await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');

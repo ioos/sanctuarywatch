@@ -246,7 +246,6 @@ class Webcr {
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_figure, 'register_figure_rest_fields' ); 
 		$this->loader->add_filter( 'rest_figure_query', $plugin_admin_figure, 'filter_figure_by_figure_modal', 10, 2); 
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin_figure, 'remove_view_link_from_figure_post_type', 10, 2); 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin_figure, 'webcr_enqueue_scripts'); 
 
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );
