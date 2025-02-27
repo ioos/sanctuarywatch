@@ -136,7 +136,6 @@
 
     }
 
-
     // Should the image be an external URL or an internal URL? Show the relevant fields either way
     function displayCorrectImageField () {
         const imageType = document.getElementsByName("figure_path")[0].value;
@@ -268,8 +267,6 @@
     document.getElementsByName("figure_modal")[0].addEventListener('change', figureIconChange);
     document.getElementsByName("figure_scene")[0].addEventListener('change', figureSceneChange);
     document.getElementsByName("location")[0].addEventListener('change', figureInstanceChange);
-
-
 
     //FIGURE JAVASCRIPT JSON BUTTON
     document.querySelector('[data-depend-id="figure_temp_javascript"]').addEventListener('click', loadJson);
@@ -871,19 +868,22 @@
         const figurePath = document.getElementsByName("figure_path")[0].value;
         let figureSrc;
 
-        // INTERNAL IMAGE PREVIEW DISPLAY
-        if (figurePath == "Internal"){
-            figureSrc = document.getElementsByName("figure_image")[0].value;
-            if (figureSrc != ""){
-            figureImage.src = figureSrc;
-            } else {imageRow.textContent = "No figure image."}
-        }
-        // ELSE (EXTERNAL OR INTERACTIVE) PREVIEW DISPLAY
-        else {
-            figureSrc = document.getElementsByName("figure_external_url")[0].value;
-            if (figureSrc != ""){
-            figureImage.src = figureSrc;
-            } else {imageRow.textContent = "No figure image."}
+        switch(figurePath){
+            case "Internal":
+                figureSrc = document.getElementsByName("figure_image")[0].value;
+                if (figureSrc != ""){
+                figureImage.src = figureSrc;
+                } else {imageRow.textContent = "No figure image."}
+                break;
+            case "External":
+                figureSrc = document.getElementsByName("figure_external_url")[0].value;
+                if (figureSrc != ""){
+                figureImage.src = figureSrc;
+                } else {imageRow.textContent = "No figure image."}
+                break;         
+            case "Interactive":
+                    imageRow.textContent = "No figure image."
+                break;
         }
 
         const containerWidth = document.querySelector('[data-depend-id="figure_preview"]').parentElement.parentElement.parentElement.clientWidth;
@@ -897,45 +897,18 @@
         let captionRow = document.createElement("div");
         captionRow.classList.add("captionRow");
 
-        // Step 1: Access the iframe element
-        let iframeShort = document.getElementById('figure_caption_short_ifr');
-
-        // Step 2: Get the document inside the iframe
-        const iframeShortDocument = iframeShort.contentDocument || iframeShort.contentWindow.document;
-    
-        // Step 3: Select the <body> element with the specified data-id attribute
-        const bodyElementShort = iframeShortDocument.querySelector('body[data-id="figure_caption_short"]');
-    
-        // Step 4: Retrieve and store its contents
-        let shortCaption = bodyElementShort ? bodyElementShort.innerHTML : null;
-        //let shortCaption = document.getElementById("figure_caption_short").value;
-    // if (shortCaption == ""){
-    //     shortCaption = "No short caption";
-    // }
-
-        // Step 1: Access the iframe element
-        let iframeLong = document.getElementById('figure_caption_long_ifr');
-
-        // Step 2: Get the document inside the iframe
-        const iframeLongDocument = iframeLong.contentDocument || iframeLong.contentWindow.document;
-    
-        // Step 3: Select the <body> element with the specified data-id attribute
-        const bodyElementLong = iframeLongDocument.querySelector('body[data-id="figure_caption_long"]');
-        
-        // Step 4: Retrieve and store its contents
-        let longCaption = bodyElementLong ? bodyElementLong.innerHTML : null;
-    
-    //   let longCaption = document.getElementById("figure_caption_long").value;
-    //   if (longCaption == ""){
-    //       longCaption = "No long caption";
-    //   }
+        // Get the short caption
+        let shortCaption = document.getElementById('figure_caption_short').value;  
+     
+        // Get the long caption
+        let longCaption = document.getElementById('figure_caption_long').value;  
 
         let shortCaptionElementContent = document.createElement("p");
         shortCaptionElementContent.innerHTML = shortCaption;
         shortCaptionElementContent.classList.add("captionOptions");
         captionRow.appendChild(shortCaptionElementContent);
         let longCaptionElement = document.createElement("details");
-    // longCaptionElement.classList.add("captionOptions");
+
         let longCaptionElementSummary = document.createElement("summary");
         longCaptionElementSummary.textContent = "Click here for more details.";
         let longCaptionElementContent = document.createElement("p");
