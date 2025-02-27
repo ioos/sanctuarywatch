@@ -1,6 +1,9 @@
+
 // These functions only fire upon editing or creating a post of Scene custom content type
 (function( $ ) {
     'use strict';
+
+
 
     displayCorrectImageField ();
     let jsonColumns;
@@ -9,9 +12,9 @@
 
     document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
 
-    document.querySelector('[data-depend-id="figure_temp_plotly"]').addEventListener('click', function() {
-        tempProducePlotlyFigure();
-    });
+//    document.querySelector('[data-depend-id="figure_temp_plotly"]').addEventListener('click', function() {
+//        tempProducePlotlyFigure();
+ //   });
 
     function figureInstanceChange(){
         const protocol = window.location.protocol;
@@ -215,15 +218,7 @@
                 break;               
 
             case "Interactive":
-                //Show the fields we want to see
-                //Choose the preview field we want to see
-                if (figurePreviewElement) {
-                    figurePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
-                }
-                if (codePreviewElement) {
-                    codePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
-                }
-                //Hide the fields we do not want to see
+                //Hide the fields we do not want to see and show the fields we want to see
                 codeContainer.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
@@ -244,13 +239,7 @@
                 if (codeContainer) {
                     codeContainer.style.display = "block";
                 }
-                //Choose the preview field we want to see
-                if (figurePreviewElement) {
-                    figurePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
-                }
-                if (codePreviewElement) {
-                    codePreviewElement.parentElement.parentElement.style.display = "block"; // Show the element
-                }
+
                 //Hide the fields we do not want to see
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
@@ -364,12 +353,13 @@
     
         switch(graphType){
             case "None":
-                displayLineFields(0);
+                clearPreviousGraphFields()
                 break;
             case "Plotly bar graph":
-                displayLineFields(0);
+                clearPreviousGraphFields()
                 break;
             case "Plotly line graph (time series)":
+                clearPreviousGraphFields()
                 newDiv.id = 'secondaryGraphFields';
                 const targetElement = document.getElementById('graphGUI');
 
@@ -521,7 +511,18 @@
         }
     }
 
-    function displayLineFields (numLines) {
+    // let's clear out, if they exist, the prior form fields used for indicating figure preferences
+    function clearPreviousGraphFields (){
+        let assignColumnsToPlot = document.getElementById('assignColumnsToPlot');
+        // If the element exists
+        if (assignColumnsToPlot) {
+            // Remove the scene window
+            assignColumnsToPlot.parentNode.removeChild(assignColumnsToPlot);
+        }
+    }
+
+    // generate the form fields needed for users to indicate preferences for how a figure should appear 
+     function displayLineFields (numLines) {
         let assignColumnsToPlot = document.getElementById('assignColumnsToPlot');
         // If the element exists
         if (assignColumnsToPlot) {
@@ -677,126 +678,6 @@
         }
     }
 
-    async function tempProducePlotlyFigure(){
-        let plotlyFigure = document.getElementById('plotlyFigure');
-        // If the element exists
-        if (plotlyFigure) {
-            // Remove the scene window
-            plotlyFigure.parentNode.removeChild(plotlyFigure);
-        }
-
-        try {
-            await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
-
-            const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
-            const figureArguments = Object.fromEntries(JSON.parse(rawField));
-            console.log(figureArguments);
-
-            const rootURL = window.location.origin;
-            const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
-            const finalURL = rootURL + restOfURL;
-            const rawResponse = await fetch(finalURL);
-            if (!rawResponse.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const responseJson = await rawResponse.json();
-            const dataToBePlotted = responseJson.data;
-
-            let newDiv = document.createElement('div');
-            newDiv.id = "plotlyFigure";
-            newDiv.classList.add("container", "figure_interactive");
-            const targetElement = document.querySelector('[data-depend-id="figure_temp_plotly"]').parentElement.parentElement;
-            targetElement.appendChild(newDiv);
-            
-            const numLines = figureArguments['NumberOfLines'];
-
-            let plotlyX;
-            let plotlyY;
-            let columnXHeader;
-            let columnYHeader;
-            let targetLineColumn;
-            let singleLinePlotly;
-            let allLinesPlotly = [];
-
-            for (let i = 1; i <= numLines; i++){
-                targetLineColumn = "Line" + i;
-                columnXHeader = figureArguments['XAxis'];
-
-                plotlyX = dataToBePlotted[columnXHeader];
-                columnYHeader = figureArguments[targetLineColumn];
-                plotlyY = dataToBePlotted[columnYHeader];
-                singleLinePlotly = {
-                    x: plotlyX,
-                    y: plotlyY,
-                    mode: 'lines+markers',
-                    type: 'scatter',
-                    marker: {
-                        color: figureArguments[targetLineColumn + "Color"]
-                    },
-                    name: figureArguments[targetLineColumn + "Title"],
-                    hovertemplate: 
-                    figureArguments['XAxisTitle'] + ': %{x}<br>' +  // Custom label for x-axis
-                    figureArguments['YAxisTitle'] + ': %{y}' // Custom label for y-axis
-                  };
-                 // console.log(singleLinePlotly);
-                  allLinesPlotly.push(singleLinePlotly);
-            }
-              
-              var layout = {
-                xaxis: {
-                  title: {
-                    text: figureArguments['XAxisTitle']
-                  },
-                  linecolor: 'black', 
-                  linewidth: 1,
-                  range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
-                },
-                yaxis: {
-                  title: {
-                    text: figureArguments['YAxisTitle']
-                  },
-                  linecolor: 'black', 
-                  linewidth: 1,
-                  range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
-                }
-              };
-              const config = {
-                responsive: true  // This makes the plot resize with the browser window
-              };
-
-              Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
-
-        } catch (error) {
-            console.error('Error loading scripts:', error);
-        }
-    }
-
-    function loadExternalScript(url) {
-        return new Promise((resolve, reject) => {
-            // Check if script is already loaded
-            if (document.querySelector(`script[src="${url}"]`)) {
-                resolve();
-                return;
-            }
-    
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = url;
-            script.async = true;
-    
-            script.onload = () => {
-                resolve();
-            };
-    
-            script.onerror = () => {
-                reject(new Error(`Failed to load script: ${url}`));
-            };
-    
-            document.head.appendChild(script);
-        });
-    }
-
-
     //FIGURE PREVIEW BUTTON   
     document.querySelector('[data-depend-id="figure_preview"]').addEventListener('click', function() {
         // Let's remove the preview window if it already exists
@@ -868,6 +749,7 @@
         const figurePath = document.getElementsByName("figure_path")[0].value;
         let figureSrc;
 
+        let interactiveImage = false;
         switch(figurePath){
             case "Internal":
                 figureSrc = document.getElementsByName("figure_image")[0].value;
@@ -882,7 +764,8 @@
                 } else {imageRow.textContent = "No figure image."}
                 break;         
             case "Interactive":
-                    imageRow.textContent = "No figure image."
+                    imageRow.id = "javascript_figure_target"
+                    interactiveImage = true;
                 break;
         }
 
@@ -920,6 +803,11 @@
         newDiv.appendChild(captionRow);
 
         secondParent.appendChild(newDiv);
+        if (interactiveImage == true){
+          //  loadExternalScript('wp-content/plugins/webcr/includes/figure/js/plotly-timeseries-line.js');
+            producePlotlyLineFigure("javascript_figure_target");
+        }
+
     });
 
 // Claude code for json functionality
@@ -990,11 +878,12 @@ $(document).on('click', '#clear-json-btn', function(e) {
     
 })( jQuery );
 
-// CODE PREVIEW BUTTON DISPLAY CODE______CHATGPT
-document.addEventListener("DOMContentLoaded", function () {
-    const previewCodeButton = document.querySelector(".code_preview");
+// Code for making Run Code button do something
+//    const previewCodeButton = document.querySelector(".code_preview");
 
-    previewCodeButton.addEventListener("click", function () {
+  //  previewCodeButton.addEventListener("click", displayCode);
+
+    function displayCode () {
         // Remove existing preview div if present
         let previewWindow = document.getElementById("code_preview_window");
         if (previewWindow) {
@@ -1047,7 +936,6 @@ document.addEventListener("DOMContentLoaded", function () {
             previewDiv.textContent = "Failed to load embed code. Please check your input.";
             previewCodeButton.insertAdjacentElement("afterend", previewDiv);
         }
-    });
-});
+    }
 
 

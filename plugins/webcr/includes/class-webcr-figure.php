@@ -30,6 +30,36 @@ class Webcr_Figure {
         return $columns;
     }
 
+
+    /**
+	 * Enqueue Javascript functions used by figure content type
+	 *
+	 * @since    1.0.0
+	 */
+	function enqueue_figure_javascript() {
+
+        $plugin_url = plugin_dir_url(__FILE__);
+
+        // Enqueue utility.js
+        wp_enqueue_script(
+            'figure-utility', // Unique handle
+            $plugin_url . 'includes/figure/js/utility.js', // Path to the JS file
+            array(),
+            '1.0.0', // Version number
+            true // Load in footer
+        );
+    
+        // Enqueue utility1.js
+        wp_enqueue_script(
+            'plotly-timeseries-line', // Unique handle
+            $plugin_url . 'includes/figures/js/plotly-timeseries-line.js', // Path to the JS file
+            array(), 
+            '1.0.0',
+            true
+        );
+    }
+
+
     /**
 	 * Populate custom fields for Figure content type in the admin screen.
 	 *
@@ -453,7 +483,7 @@ class Webcr_Figure {
                 array(
                     'id'          => 'figure_temp_javascript',
                     'type'        => 'button',
-                    'title'       => 'Run Data Javascript Figure',
+                    'title'       => 'Generate Figure Arguments (Temp)',
                     'class'        => 'figure_temp_javascript',
                     'options'     => array(
                         'href'  =>  '#nowhere',
@@ -490,31 +520,31 @@ class Webcr_Figure {
                     ),
                 ),
                 //Preview button for displaying the internal or external images at the bottom of form
-                array(
-                    'id'          => 'figure_temp_plotly',
-                    'type'        => 'button',
-                    'title'       => 'Preview Temp Plotly',
-                    'class'        => 'figure_temp_plotly',
-                    'options'     => array(
-                        'href'  =>  '#nowhere',
-                        'target' => '_self',
-                        'value' => 'Preview',
-                        'btn-class' => 'exopite-sof-btn'
-                    ),
-                ),
+  //              array(
+    //                'id'          => 'figure_temp_plotly',
+      //              'type'        => 'button',
+        //            'title'       => 'Preview Temp Plotly',
+          //          'class'        => 'figure_temp_plotly',
+            //        'options'     => array(
+              //          'href'  =>  '#nowhere',
+                //        'target' => '_self',
+                  //      'value' => 'Preview',
+                    //    'btn-class' => 'exopite-sof-btn'
+       //             ),
+         //       ),
                 //Preview button for displaying the code at the bottom of form
-                array(
-                    'id'          => 'code_preview',
-                    'type'        => 'button',
-                    'title'       => 'Preview Code',
-                    'class'        => 'code_preview',
-                    'options'     => array(
-                        'href'  =>  '#nowhere',
-                        'target' => '_self',
-                        'value' => 'Preview',
-                        'btn-class' => 'exopite-sof-btn'
-                    ),          
-                ),
+   //             array(
+     //               'id'          => 'code_preview',
+       //             'type'        => 'button',
+         //           'title'       => 'Preview Code',
+           //         'class'        => 'code_preview',
+             //       'options'     => array(
+               //         'href'  =>  '#nowhere',
+                 //       'target' => '_self',
+                   //     'value' => 'Preview',
+                     //   'btn-class' => 'exopite-sof-btn'
+               //     ),          
+           //     ),
             )
         );
 

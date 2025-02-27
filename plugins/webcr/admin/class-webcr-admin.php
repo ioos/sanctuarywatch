@@ -127,7 +127,7 @@ class Webcr_Admin {
 			wp_enqueue_script( "webcr-admin-modal", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-modal.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
 		}
 
-		// Load Figure -specific Javascript only when editing/creating a Modal post 
+		// Load Figure -specific Javascript only when editing/creating a Figure post 
 		if ($current_post_type == "figure" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
 			wp_enqueue_script( "webcr-admin-figure", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
 		}
