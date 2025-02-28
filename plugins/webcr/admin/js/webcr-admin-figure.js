@@ -1,5 +1,5 @@
 
-// These functions only fire upon editing or creating a post of Scene custom content type
+// These functions only fire upon editing or creating a post of Figure custom content type
 (function( $ ) {
     'use strict';
 
