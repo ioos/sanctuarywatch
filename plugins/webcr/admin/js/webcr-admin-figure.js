@@ -265,6 +265,7 @@
         const rootURL = window.location.origin;
         const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
         const finalURL = rootURL + restOfURL;
+        console.log(finalURL);
         try {
             const response = await fetch(finalURL);
             if (!response.ok) {

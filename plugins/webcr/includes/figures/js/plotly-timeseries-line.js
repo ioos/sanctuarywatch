@@ -53,7 +53,7 @@ async function producePlotlyLineFigure(targetFigureElement){
                 figureArguments['XAxisTitle'] + ': %{x}<br>' +  // Custom label for x-axis
                 figureArguments['YAxisTitle'] + ': %{y}' // Custom label for y-axis
               };
-             // console.log(singleLinePlotly);
+              console.log(singleLinePlotly);
               allLinesPlotly.push(singleLinePlotly);
         }
           
