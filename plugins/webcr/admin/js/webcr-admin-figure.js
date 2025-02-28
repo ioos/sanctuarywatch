@@ -3,18 +3,12 @@
 (function( $ ) {
     'use strict';
 
-
-
     displayCorrectImageField ();
     let jsonColumns;
     let fieldLabelNumber;
     let fieldValueSaved;
 
     document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
-
-//    document.querySelector('[data-depend-id="figure_temp_plotly"]').addEventListener('click', function() {
-//        tempProducePlotlyFigure();
- //   });
 
     function figureInstanceChange(){
         const protocol = window.location.protocol;
@@ -265,7 +259,6 @@
         const rootURL = window.location.origin;
         const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
         const finalURL = rootURL + restOfURL;
-        console.log(finalURL);
         try {
             const response = await fetch(finalURL);
             if (!response.ok) {
@@ -341,6 +334,7 @@
         }
     }
 
+    // create parameter fields 
     function secondaryGraphFields(graphType){
 
         var secondaryGraphDiv = document.getElementById('secondaryGraphFields');
@@ -349,165 +343,17 @@
             // Remove the scene window
             secondaryGraphDiv.parentNode.removeChild(secondaryGraphDiv);
         }
-
-        let newDiv = document.createElement("div");
     
         switch(graphType){
             case "None":
-                clearPreviousGraphFields()
+                clearPreviousGraphFields();
                 break;
             case "Plotly bar graph":
-                clearPreviousGraphFields()
+                clearPreviousGraphFields();
                 break;
             case "Plotly line graph (time series)":
-                clearPreviousGraphFields()
-                newDiv.id = 'secondaryGraphFields';
-                const targetElement = document.getElementById('graphGUI');
-
-                let newRow;
-                let newColumn1;
-                let newColumn2;
-
-                // Create input fields for X and Y Axis Titles
-                const axisTitleArray = ["X", "Y"];
-
-                axisTitleArray.forEach((axisTitle) => {
-                    newRow = document.createElement("div");
-                    newRow.classList.add("row", "fieldPadding");
-                    newColumn1 = document.createElement("div");
-                    newColumn1.classList.add("col-3");   
-                    newColumn2 = document.createElement("div");
-                    newColumn2.classList.add("col");
-    
-                    let labelInputAxisTitle = document.createElement("label");
-                    labelInputAxisTitle.for = axisTitle + "AxisTitle";
-                    labelInputAxisTitle.innerHTML = axisTitle + " Axis Title";
-                    let inputAxisTitle = document.createElement("input");
-                    inputAxisTitle.id = axisTitle + "AxisTitle";
-                    inputAxisTitle.name = "plotFields";
-                    inputAxisTitle.size = "70";
-                    fieldValueSaved = fillFormFieldValues(inputAxisTitle.id);
-                    if (fieldValueSaved != undefined){
-                        inputAxisTitle.value = fieldValueSaved;
-                    }
-                    inputAxisTitle.addEventListener('change', function() {
-                        logFormFieldValues();
-                    });
-                    newColumn1.appendChild(labelInputAxisTitle);
-                    newColumn2.appendChild(inputAxisTitle);
-                    newRow.append(newColumn1, newColumn2);
-                    newDiv.append(newRow);    
-
-                    const rangeBound =["Low", "High"];
-                    rangeBound.forEach((bound) => {
-                        newRow = document.createElement("div");
-                        newRow.classList.add("row", "fieldPadding");
-                        newColumn1 = document.createElement("div");
-                        newColumn1.classList.add("col-3");   
-                        newColumn2 = document.createElement("div");
-                        newColumn2.classList.add("col");
-        
-                        let labelBound = document.createElement("label");
-                        labelBound.for =  axisTitle + bound + "Bound";
-                        labelBound.innerHTML = axisTitle + " Axis, " + bound + " Bound";
-                        let inputBound = document.createElement("input");
-                        inputBound.id = axisTitle + "Axis" + bound + "Bound";
-                        inputBound.name = "plotFields";
-                        inputBound.type = "number";
-                        fieldValueSaved = fillFormFieldValues(inputBound.id);
-                        if (fieldValueSaved != undefined){
-                            inputBound.value = fieldValueSaved;
-                        }
-                        inputBound.addEventListener('change', function() {
-                            logFormFieldValues();
-                        });
-                        newColumn1.appendChild(labelBound);
-                        newColumn2.appendChild(inputBound);
-                        newRow.append(newColumn1, newColumn2);
-                        newDiv.append(newRow); 
-                    });
-
-                });
-
-                // Create select field for number of lines to be plotted 
-                let labelSelectNumberLines = document.createElement("label");
-                labelSelectNumberLines.for = "NumberOfLines";
-                labelSelectNumberLines.innerHTML = "Number of Lines to Be Plotted";
-                let selectNumberLines = document.createElement("select");
-                selectNumberLines.id = "NumberOfLines";
-                selectNumberLines.name = "plotFields";
-                selectNumberLines.addEventListener('change', function() {
-                    displayLineFields(selectNumberLines.value) });
-                selectNumberLines.addEventListener('change', function() {
-                        logFormFieldValues();
-                    });
-
-                for (let i = 1; i < 7; i++){
-                    let selectNumberLinesOption = document.createElement("option");
-                    selectNumberLinesOption.value = i;
-                    selectNumberLinesOption.innerHTML = i; 
-                    selectNumberLines.appendChild(selectNumberLinesOption);
-                }
-                fieldValueSaved = fillFormFieldValues(selectNumberLines.id);
-                if (fieldValueSaved != undefined){
-                    selectNumberLines.value = fieldValueSaved;
-                }
-                newRow = document.createElement("div");
-                newRow.classList.add("row", "fieldPadding");
-                newColumn1 = document.createElement("div");
-                newColumn1.classList.add("col-3");   
-                newColumn2 = document.createElement("div");
-                newColumn2.classList.add("col");
-
-                newColumn1.appendChild(labelSelectNumberLines);
-                newColumn2.appendChild(selectNumberLines);
-                newRow.append(newColumn1, newColumn2);
-                newDiv.append(newRow);
-
-                let labelSelectXAxisFormat = document.createElement("label");
-                labelSelectXAxisFormat.for = "XAxisFormat";
-                labelSelectXAxisFormat.innerHTML = "X Axis Date Format";
-                let selectXAxisFormat = document.createElement("select");
-                selectXAxisFormat.id = "XAxisFormat";
-                selectXAxisFormat.name = "plotFields";
-                selectXAxisFormat.addEventListener('change', function() {
-                    logFormFieldValues();
-                });
-
-                const dateFormats =["YYYY", "YYYY-MM-DD"];
-                
-                dateFormats.forEach((dateFormat) => {
-                    let selectXAxisFormatOption = document.createElement("option");
-                    selectXAxisFormatOption.value = dateFormat;
-                    selectXAxisFormatOption.innerHTML = dateFormat; 
-                    selectXAxisFormat.appendChild(selectXAxisFormatOption);
-                });
-                fieldValueSaved = fillFormFieldValues(selectXAxisFormat.id);
-                if (fieldValueSaved != undefined){
-                    selectXAxisFormat.value = fieldValueSaved;
-                }
-
-                newRow = document.createElement("div");
-                newRow.classList.add("row", "fieldPadding");
-                newColumn1 = document.createElement("div");
-                newColumn1.classList.add("col-3");   
-                newColumn2 = document.createElement("div");
-                newColumn2.classList.add("col");
-
-                newColumn1.appendChild(labelSelectXAxisFormat);
-                newColumn2.appendChild(selectXAxisFormat);
-                newRow.append(newColumn1, newColumn2);
-                newDiv.append(newRow);
-
-                let newHR = document.createElement("hr");
-                newHR.style = "margin-top:15px";
-                newDiv.append(newHR);        
-
-                targetElement.appendChild(newDiv);
-
-                // Run display line fields
-                displayLineFields(selectNumberLines.value);
-
+                clearPreviousGraphFields();
+                plotlyLineParameterFields(jsonColumns);
                 break;
         }
     }
@@ -519,163 +365,6 @@
         if (assignColumnsToPlot) {
             // Remove the scene window
             assignColumnsToPlot.parentNode.removeChild(assignColumnsToPlot);
-        }
-    }
-
-    // generate the form fields needed for users to indicate preferences for how a figure should appear 
-     function displayLineFields (numLines) {
-        let assignColumnsToPlot = document.getElementById('assignColumnsToPlot');
-        // If the element exists
-        if (assignColumnsToPlot) {
-            // Remove the scene window
-            assignColumnsToPlot.parentNode.removeChild(assignColumnsToPlot);
-        }
-
-        if (numLines > 0) {
-            let newDiv = document.createElement("div");
-            newDiv.id = "assignColumnsToPlot";
-
-            let fieldLabels = [["XAxis", "X Axis Column"]];
-            for (let i = 1; i <= numLines; i++){
-                fieldLabels.push(["Line" + i, "Line " + i + " Column"]);
-            }
-
-            fieldLabels.forEach((fieldLabel) => {
-                let labelSelectColumn = document.createElement("label");
-                labelSelectColumn.for = fieldLabel[0];
-                labelSelectColumn.innerHTML = fieldLabel[1];
-                let selectColumn = document.createElement("select");
-                selectColumn.id = fieldLabel[0];
-                selectColumn.name = "plotFields";
-                selectColumn.addEventListener('change', function() {
-                    logFormFieldValues();
-                });
-
-                let selectColumnOption = document.createElement("option");
-                selectColumnOption.value = "None";
-                selectColumnOption.innerHTML = "None"; 
-                selectColumn.appendChild(selectColumnOption);
-
-                Object.entries(jsonColumns).forEach(([jsonColumnsKey, jsonColumnsValue]) => {
-                    selectColumnOption = document.createElement("option");
-                    selectColumnOption.value = jsonColumnsValue;// jsonColumnsKey;
-                    selectColumnOption.innerHTML = jsonColumnsValue; 
-                    selectColumn.appendChild(selectColumnOption);
-                });
-                fieldValueSaved = fillFormFieldValues(selectColumn.id);
-                if (fieldValueSaved != undefined){
-                    selectColumn.value = fieldValueSaved;
-                }
-
-                let newRow = document.createElement("div");
-                newRow.classList.add("row", "fieldPadding");
-
-                if (fieldLabel[0] != "XAxis"){      
-                    fieldLabelNumber = parseInt(fieldLabel[0].slice(-1));
-                    if (fieldLabelNumber % 2 != 0 ){
-                        newRow.classList.add("row", "fieldBackgroundColor");
-                    }
-                }
-
-                let newColumn1 = document.createElement("div");
-                newColumn1.classList.add("col-3");   
-                let newColumn2 = document.createElement("div");
-                newColumn2.classList.add("col");
-
-                newColumn1.appendChild(labelSelectColumn);
-                newColumn2.appendChild(selectColumn);
-                newRow.append(newColumn1, newColumn2);
-                newDiv.append(newRow);
-
-                if (fieldLabel[0] != "XAxis"){
-                    // Add line label field
-                    newRow = document.createElement("div");
-                    newRow.classList.add("row", "fieldPadding");
-
-                    if (fieldLabelNumber % 2 != 0 ){
-                        newRow.classList.add("row", "fieldBackgroundColor");
-                    }
-
-                    newColumn1 = document.createElement("div");
-                    newColumn1.classList.add("col-3");   
-                    newColumn2 = document.createElement("div");
-                    newColumn2.classList.add("col");
-
-                    let labelInputTitle = document.createElement("label");
-                    labelInputTitle.for = fieldLabel[0] + "Title";
-                    labelInputTitle.innerHTML = fieldLabel[1] + " Title";
-                    let inputTitle = document.createElement("input");
-                    inputTitle.id = fieldLabel[0] + "Title";
-                    inputTitle.size = "70";
-                    inputTitle.name = "plotFields";
-                    inputTitle.addEventListener('change', function() {
-                        logFormFieldValues();
-                    });
-                    fieldValueSaved = fillFormFieldValues(inputTitle.id);
-                    if (fieldValueSaved != undefined){
-                        inputTitle.value = fieldValueSaved;
-                    }
-
-                    newColumn1.appendChild(labelInputTitle);
-                    newColumn2.appendChild(inputTitle);
-                    newRow.append(newColumn1, newColumn2);
-                    newDiv.append(newRow); 
-
-                    // Add color field
-                    newRow = document.createElement("div");
-                    newRow.classList.add("row", "fieldPadding");
-                    if (fieldLabelNumber % 2 != 0 ){
-                        newRow.classList.add("row", "fieldBackgroundColor");
-                    }
-                    newColumn1 = document.createElement("div");
-                    newColumn1.classList.add("col-3");   
-                    newColumn2 = document.createElement("div");
-                    newColumn2.classList.add("col");
-
-                    let labelInputColor = document.createElement("label");
-                    labelInputColor.for = fieldLabel[0] + "Color";
-                    labelInputColor.innerHTML = fieldLabel[1] + " Color";
-                    let inputColor = document.createElement("input");
-                    inputColor.id = fieldLabel[0] + "Color";
-                    inputColor.name = "plotFields";
-                    inputColor.type = "color";
-                    fieldValueSaved = fillFormFieldValues(inputColor.id);
-                    if (fieldValueSaved != undefined){
-                        inputColor.value = fieldValueSaved;
-                    }
-                    inputColor.addEventListener('change', function() {
-                        logFormFieldValues();
-                    });
-
-                    newColumn1.appendChild(labelInputColor);
-                    newColumn2.appendChild(inputColor);
-                    newRow.append(newColumn1, newColumn2);
-                    newDiv.append(newRow);    
-                }
-
-                const targetElement = document.getElementById('graphGUI');
-                targetElement.appendChild(newDiv);
-            });
-        }
-   }
-
-   function logFormFieldValues() {
-        const allFields = document.getElementsByName("plotFields");
-        let fieldValues = [];
-        allFields.forEach((uniqueField) => {
-            fieldValues.push([uniqueField.id, uniqueField.value]);
-        });
-        document.getElementsByName("figure_interactive_arguments")[0].value = JSON.stringify(fieldValues); 
-    }
-
-    function fillFormFieldValues(elementID){
-        const interactiveFields = document.getElementsByName("figure_interactive_arguments")[0].value;
-        if (interactiveFields != ""  && interactiveFields != null) {
-            const resultJSON = Object.fromEntries(JSON.parse(interactiveFields));
-
-            if (resultJSON[elementID] != undefined && resultJSON[elementID] != ""){
-                return resultJSON[elementID];
-            }
         }
     }
 

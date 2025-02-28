@@ -1184,6 +1184,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
             //title stuff:
                 for (let idx in all_figure_data){
                     figure_data = all_figure_data[idx];
+                    debugger;
                     let img = '';
                     let external_alt = '';
                     if (figure_data['figure_path']==='External'){
@@ -1204,6 +1205,8 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "shortCaption" : figure_data["figure_caption_short"],
                     "longCaption": figure_data["figure_caption_long"],
                     "interactive": figure_data["figure_path"],
+                    "figureType": figure_data["figure_path"],
+                    "interactiveArguments": figure_data["figure_path"],                   
                     };
                     render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure
                 }

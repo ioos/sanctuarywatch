@@ -24,3 +24,24 @@ function loadExternalScript(url) {
     });
   }
   
+//log values for fields associated with javascript figure parameters to the field "figure interactive arguments"
+function logFormFieldValues() {
+    const allFields = document.getElementsByName("plotFields");
+    let fieldValues = [];
+    allFields.forEach((uniqueField) => {
+        fieldValues.push([uniqueField.id, uniqueField.value]);
+    });
+    document.getElementsByName("figure_interactive_arguments")[0].value = JSON.stringify(fieldValues); 
+}
+
+//fill in values for fields associated with javascript figure parameters from the field "figure interactive arguments"
+function fillFormFieldValues(elementID){
+    const interactiveFields = document.getElementsByName("figure_interactive_arguments")[0].value;
+    if (interactiveFields != ""  && interactiveFields != null) {
+        const resultJSON = Object.fromEntries(JSON.parse(interactiveFields));
+
+        if (resultJSON[elementID] != undefined && resultJSON[elementID] != ""){
+            return resultJSON[elementID];
+        }
+    }
+}

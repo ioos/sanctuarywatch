@@ -74,7 +74,10 @@ class Webcr_Figure {
             date_default_timezone_set('America/Los_Angeles'); 
             $last_modified_time = get_post_modified_time('g:i A', false, $post_id, true);
             $last_modified_date = get_post_modified_time('F j, Y', false, $post_id, true);
-            $last_modified_user_id = get_post_field('post_author', $post_id);
+            $last_modified_user_id = get_post_meta($post_id, '_edit_last', true);
+            if (empty($last_modified_user_id)){
+                 $last_modified_user_id = get_post_field('post_author', $post_id);
+            }
             $last_modified_user = get_userdata($last_modified_user_id);
             $last_modified_name = $last_modified_user -> first_name . " " . $last_modified_user -> last_name; 
 
