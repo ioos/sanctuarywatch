@@ -1,6 +1,6 @@
 let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
 (function( $ ) {
-    //	'use strict';
+    	'use strict';
     
     // adding jquery to the console
     // var script = document.createElement('script');
@@ -30,6 +30,15 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
     modalWindow();
     modal_scene_change();
     modal_location_change();
+    hideIconSection();
+
+    // If a given Scene does not have any sections, then let's hide the Icon Section field in the modal page
+    function hideIconSection (){
+        const sectionField = document.getElementsByName("icon_toc_section")[0];
+        if (sectionField.options.length == 1 && sectionField.value === "None"){
+            sectionField.parentElement.parentElement.style.display = "none";
+        }
+    }
 
 	// Function to display either URL or image under scene image link
 	function displayPhotoPath (fieldNumber){
@@ -377,7 +386,6 @@ function modal_scene_change(){
             .then(response => response.json())
             .then(data => {
                 const rawHoverColorString = data['scene_hover_color'];
-            //    let hoverColor = "yellow"; 
                 if (rawHoverColorString) {
                     hoverColor = rawHoverColorString;
                     const commaIndex = hoverColor.indexOf(',');
@@ -389,7 +397,7 @@ function modal_scene_change(){
             })
             .then(response => response.json())
             .then(svgJson => {
-                svgUrl = svgJson["scene_infographic"];
+                const svgUrl = svgJson["scene_infographic"];
                 if(svgUrl == ""){
                     imageColumn.innerHTML = "No infographic for scene";
                     modalIconsDropdown([]);
@@ -408,14 +416,21 @@ function modal_scene_change(){
                             if (isPageLoad == true) {
                                 const iconValue = document.getElementsByName("modal_icons")[0].value;
 
-                                if (iconValue != null && iconValue != " "){
+                                if (iconValue != null && iconValue != ""){
                                     let svgIcons = imageColumn.querySelector('g[id="icons"]');
                                     let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
-                                    const svgIconHighlight = svgIconTarget.cloneNode(true);
-                                    svgIconHighlight.id = "icon_highlight";
-                                    svgIconHighlight.style.stroke =  hoverColor; //"yellow";
-                                    svgIconHighlight.style.strokeWidth = "6";
-                                    svgIcons.prepend(svgIconHighlight);
+
+                                    // Select all child elements 
+                                    let subElements = svgIconTarget.querySelectorAll("*");
+
+                                    // Loop through each sub-element and update its stroke-width and color
+                                    subElements.forEach(subElement => {
+                                        let svgIconHighlight = subElement.cloneNode(true);
+                                        svgIconHighlight.id = "icon_highlight"; //replaced id with name
+                                        svgIconHighlight.style.strokeWidth = "3";
+                                        svgIconHighlight.style.stroke =  hoverColor;
+                                        svgIcons.prepend(svgIconHighlight);
+                                    });
                                 }
                             }
 
@@ -452,18 +467,18 @@ function modal_scene_change(){
 
 function modal_icons_change() {
     const iconValue = document.getElementsByName("modal_icons")[0].value;
-
     if (iconValue != null && iconValue != " "){
 
         let svg = document.getElementById("previewSvg");
 
         let svgIcons = svg.getElementById("icons");
 
-        if(svgIcons.querySelector('g[id="icon_highlight"]')){
-            svgIcons.querySelector('g[id="icon_highlight"]').remove();
-        }
-
-        let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+        let subElementsCheck = svgIcons.querySelectorAll("*");
+        subElementsCheck.forEach(subElementCheck => {
+            if(subElementCheck.id == "icon_highlight"){
+                subElementCheck.remove();
+            }
+        });
 
         const protocol = window.location.protocol;
         const host = window.location.host;
@@ -484,12 +499,26 @@ function modal_icons_change() {
                     }
                 }
 
+                    let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+        
+                    // Select all child elements 
+                    let subElements = svgIconTarget.querySelectorAll("*");
+        
+                    // Loop through each sub-element and update its stroke-width and color
+                    subElements.forEach(subElement => {
+                        let svgIconHighlight = subElement.cloneNode(true);
+                        svgIconHighlight.id = "icon_highlight";
+                        svgIconHighlight.style.strokeWidth = "6";
+                        svgIconHighlight.style.stroke = hoverColor;
+                        svgIcons.prepend(svgIconHighlight);
+                    });
 
-        const svgIconHighlight = svgIconTarget.cloneNode(true);
-        svgIconHighlight.id = "icon_highlight";
-        svgIconHighlight.style.stroke = hoverColor; //"yellow";
-        svgIconHighlight.style.strokeWidth = "6";
-        svgIcons.prepend(svgIconHighlight);
+
+  //      const svgIconHighlight = svgIconTarget.cloneNode(true);
+  //      svgIconHighlight.id = "icon_highlight";
+  //      svgIconHighlight.style.stroke = hoverColor; //"yellow";
+  //      svgIconHighlight.style.strokeWidth = "6";
+  //      svgIcons.prepend(svgIconHighlight);
             })
 
 
@@ -506,14 +535,44 @@ $(".range[data-depend-id='modal_tab_number']").change(function(){
     displayTabEntries(opening_tab_entries);
 });
 
-$(".range[data-depend-id='modal_info_entries']").change(function(){ 
-    let number_of_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
-    displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='modal_info_");
+// Add on change event handlers to the two "modal tab number" entry fields
+let modalTabRangeElement = document.querySelector(".range[data-depend-id='modal_tab_number']");
+modalTabRangeElement.addEventListener("change", function() {
+    let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
+    displayTabEntries(opening_tab_entries);
 });
 
-$(".range[data-depend-id='modal_photo_entries']").change(function(){ 
-    let number_of_scene_info_entries = $(".range[data-depend-id='modal_photo_entries']").val();
-    displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='modal_photo_");
+let modalTabRangeElement2 = modalTabRangeElement.nextElementSibling;
+modalTabRangeElement2.addEventListener("change", function() {
+    let opening_tab_entries2 = document.getElementsByName("modal_tab_number")[0].value;
+    displayTabEntries(opening_tab_entries2);
+});
+
+
+// Add on change event handlers to the two "modal info number" entry fields
+let modalInfoRangeElement = document.querySelector(".range[data-depend-id='modal_info_entries']");
+modalInfoRangeElement.addEventListener("change", function() {
+    let number_of_modal_info_entries = modalInfoRangeElement.value;
+    displayEntries(number_of_modal_info_entries, ".text-class[data-depend-id='modal_info_");
+});
+
+let modalInfoRangeElement2 = modalInfoRangeElement.nextElementSibling;
+modalInfoRangeElement2.addEventListener("change", function() {
+    let number_of_modal_info_entries2 = modalInfoRangeElement2.value;
+    displayEntries(number_of_modal_info_entries2, ".text-class[data-depend-id='modal_info_");
+});
+
+// Add on change event handlers to the two "modal photo number" entry fields
+let modalPhotoRangeElement = document.querySelector(".range[data-depend-id='modal_photo_entries']");
+modalPhotoRangeElement.addEventListener("change", function() {
+    let number_of_modal_photo_entries = modalPhotoRangeElement.value;
+    displayEntries(number_of_modal_photo_entries, ".text-class[data-depend-id='modal_photo_");
+});
+
+let modalPhotoRangeElement2 = modalPhotoRangeElement.nextElementSibling;
+modalPhotoRangeElement2.addEventListener("change", function() {
+    let number_of_modal_photo_entries2 = modalPhotoRangeElement2.value;
+    displayEntries(number_of_modal_photo_entries2, ".text-class[data-depend-id='modal_photo_");
 });
 
 $('.modal_preview').click(function(){ 

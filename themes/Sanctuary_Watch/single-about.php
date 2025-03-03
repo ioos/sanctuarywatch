@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
+
 // wp_reset_postdata();
 	$abt_post_id = get_the_ID();
     $numberAboutBoxes = get_post_meta($abt_post_id, 'numberAboutBoxes', true);
@@ -21,21 +22,48 @@ get_header();
     $about_central_main = $about_central_array['aboutMain'];
     $about_central_details= $about_central_array['aboutDetail'];
 	?>
+<div id="entire_thing" style="
+ 
+ max-width: 1700px !important;
+   margin: 0 auto;
+   background: #f2f2f2;
+   padding-bottom: 9%;
+   margin-top: -20px;
+   padding-top: 1%;
 
-<div class="page-header">
-    <h2><?php echo $about_post_title; ?></h2>
-    <div class="tagline-content">
+   
+"> 
+
+<div class="container-fluid">
+<!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->
+<div class="image-center" style="padding-bottom: 20px;">
+       <span>
+           <img width="10%" src="http://nov9.local/wp-content/themes/Sanctuary_Watch/assets/images/onms-logo-no-text-800.png" alt="Sanctuary Watch Navbar Emblem">        </span>
+       <span style="display: inline-block; text-align: left; vertical-align: middle;">
+           <div style="color: #00467F; font-size: 2.7vw; font-weight: bold;">Sanctuary Watch</div>
+           <div style="color: #008da8; font-size: 1.5vw; font-style: italic; font-weight: bold;">Web-Enabled Information for Sanctuary Management</div>
+       </span>
+   </div>
+</div>
+
+
+<div class="page-container-fluid main-container">
+    <h2 style="color:black"><?php echo $about_post_title; ?></h2>
+
+    <div class="tagline-content row" style ="text-align:left">
         <?php echo $about_central_main; ?>
+        <?php if (!empty($about_central_details)): ?>
         <details>
             <summary>Learn More...</summary>
             <?php echo ($about_central_details); ?>
         </details>
+        <?php endif; ?>
     </div>
 </div>
 
 <!-- Loop through all the possible aboutBoxes and populate them dynamically if there is content in any of them content. -->
 <!-- Number of boxes needed is grabbed from the database.-->
-<div class="about-container">
+<div class="about-container page-container-fluid main-container">
     <?php
     for ($i = 1; $i <= $numberAboutBoxes; $i++) {
         $aboutBox_array = get_post_meta($abt_post_id, "aboutBox$i", true);
@@ -63,7 +91,7 @@ get_header();
     }
     ?>
 </div>
-
+</div>
 
 <style>
 .page-header {
@@ -91,7 +119,6 @@ get_header();
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     padding: 2rem;
-    max-width: 1200px;
     margin: 0 auto;
 }
 

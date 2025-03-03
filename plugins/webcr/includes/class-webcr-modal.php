@@ -115,7 +115,7 @@ class Webcr_Modal {
             'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
         );
 
-        // get list of locations, which is saved as a taxonomy
+        // get list of locations
         $function_utilities = new Webcr_Utility();
         $locations = $function_utilities -> returnAllInstances();
 
@@ -578,6 +578,21 @@ class Webcr_Modal {
     }
 
     /**
+	 * Remove "view" link from admin screen for modal posts.
+	 *
+     * @param string $column The name of the column.
+     * @param int $post_id The database id of the post.
+	 * @since    1.0.0
+	 */
+
+    function remove_view_link_from_modal_post_type($actions, $post) {
+        if ($post->post_type === 'modal' && isset($actions['view'])) {
+            unset($actions['view']); // Remove the "View" link
+        }
+        return $actions;
+    }
+
+    /**
 	 * Populate custom fields for Modal content type in the admin screen.
 	 *
      * @param string $column The name of the column.
@@ -680,7 +695,10 @@ class Webcr_Modal {
             date_default_timezone_set('America/Los_Angeles'); 
             $last_modified_time = get_post_modified_time('g:i A', false, $post_id, true);
             $last_modified_date = get_post_modified_time('F j, Y', false, $post_id, true);
-            $last_modified_user_id = get_post_field('post_author', $post_id);
+            $last_modified_user_id = get_post_meta($post_id, '_edit_last', true);
+            if (empty($last_modified_user_id)){
+                 $last_modified_user_id = get_post_field('post_author', $post_id);
+            }
             $last_modified_user = get_userdata($last_modified_user_id);
             $last_modified_name = $last_modified_user -> first_name . " " . $last_modified_user -> last_name; 
 

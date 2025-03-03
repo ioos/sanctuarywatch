@@ -1,8 +1,14 @@
-// These functions only fire upon editing or creating a post of Scene custom content type
+
+// These functions only fire upon editing or creating a post of Figure custom content type
 (function( $ ) {
     'use strict';
 
     displayCorrectImageField ();
+    let jsonColumns;
+    let fieldLabelNumber;
+    let fieldValueSaved;
+
+    document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
 
     function figureInstanceChange(){
         const protocol = window.location.protocol;
@@ -127,7 +133,6 @@
 
     }
 
-
     // Should the image be an external URL or an internal URL? Show the relevant fields either way
     function displayCorrectImageField () {
         const imageType = document.getElementsByName("figure_path")[0].value;
@@ -147,9 +152,6 @@
         let jsonPreviewImg = jsonPreviewContainer.querySelector('img');
 
         // Select the nested container with class "exopite-sof-field-upload"
-        let fileUploadContainer= document.querySelector('.exopite-sof-field-upload');
-
-        // Select the nested container with class "exopite-sof-field-upload"
         let codeContainer= document.querySelector('.exopite-sof-field-ace_editor');
 
         // Select the nested container with class ".exopite-sof-btn.figure_preview"
@@ -157,8 +159,6 @@
         
         // Select the nested container with class ".exopite-sof-btn.code_preview"
         let codePreviewElement = document.querySelector('.exopite-sof-btn.code_preview'); // Add an ID or a unique class
-
-
 
         switch (imageType) {
             case "Internal":
@@ -182,8 +182,10 @@
                 document.getElementsByName("figure_json_arguments")[0].value = "";
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json")[0].value = "";
+                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "none";
+                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "none";
+
                 codeContainer.style.display = "none";
-                fileUploadContainer.style.display = "none";
                 break;
 
             case "External":
@@ -204,21 +206,13 @@
                 document.getElementsByName("figure_image")[0].value = "";
                 document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json_arguments")[0].value = "";
+                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "none";
+                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "none";
                 codeContainer.style.display = "none";
-                fileUploadContainer.style.display = "none";
                 break;               
 
             case "Interactive":
-                //Show the fields we want to see
-                fileUploadContainer.style.display = "block";
-                //Choose the preview field we want to see
-                if (figurePreviewElement) {
-                    figurePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
-                }
-                if (codePreviewElement) {
-                    codePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
-                }
-                //Hide the fields we do not want to see
+                //Hide the fields we do not want to see and show the fields we want to see
                 codeContainer.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
@@ -230,6 +224,8 @@
                 document.getElementsByName("figure_image")[0].value = "";
                 document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_json_arguments")[0].value = "";
+                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "block";
+                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "block";
                 break;
 
             case "Code":
@@ -237,31 +233,143 @@
                 if (codeContainer) {
                     codeContainer.style.display = "block";
                 }
-                //Choose the preview field we want to see
-                if (figurePreviewElement) {
-                    figurePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
-                }
-                if (codePreviewElement) {
-                    codePreviewElement.parentElement.parentElement.style.display = "block"; // Show the element
-                }
+
                 //Hide the fields we do not want to see
-                fileUploadContainer.style.display = "none";
                 document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";  
+                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none"; 
+                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "none";
+                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "none"; 
                 break;
         } 
     }
 
-    $( "select[name='figure_path']" ).change(displayCorrectImageField);
-    $( "select[name='figure_modal']" ).change(figureIconChange);
-    $( "select[name='figure_scene']" ).change(figureSceneChange);
-    $( "select[name='location']" ).change(figureInstanceChange);
+    document.getElementsByName("figure_path")[0].addEventListener('change', displayCorrectImageField);
+    document.getElementsByName("figure_modal")[0].addEventListener('change', figureIconChange);
+    document.getElementsByName("figure_scene")[0].addEventListener('change', figureSceneChange);
+    document.getElementsByName("location")[0].addEventListener('change', figureInstanceChange);
+
+    //FIGURE JAVASCRIPT JSON BUTTON
+    document.querySelector('[data-depend-id="figure_temp_javascript"]').addEventListener('click', loadJson);
+
+    // JAVASCRIPT JSON CODE
+    async function loadJson() {
+        const rootURL = window.location.origin;
+        const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
+        const finalURL = rootURL + restOfURL;
+        try {
+            const response = await fetch(finalURL);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+
+            jsonColumns = Object.fromEntries(
+                Object.keys(data.data).map((key, index) => [index, key])); 
+
+            const lengthJsonColumns = (Object.entries(jsonColumns).length);
+            if (lengthJsonColumns > 1){
+                var graphGUI = document.getElementById('graphGUI');
+                if (graphGUI) {
+                    // Remove the scene window
+                    graphGUI.parentNode.removeChild(graphGUI);
+                }
+                const targetElement = document.querySelector('.figure_temp_javascript').parentElement.parentElement;
+                let newDiv = document.createElement('div');
+                newDiv.id = "graphGUI";
+                newDiv.classList.add("container", "graphGUI");
+
+                let labelGraphType = document.createElement("label");
+                labelGraphType.for = "graphType";
+                labelGraphType.innerHTML = "Graph Type";
+                let selectGraphType = document.createElement("select");
+                selectGraphType.id = "graphType";
+                selectGraphType.name = "plotFields";
+                let graphType1 = document.createElement("option");
+                graphType1.value = "None";
+                graphType1.innerHTML = "None";
+                let graphType2 = document.createElement("option");
+                graphType2.value = "Plotly bar graph";
+                graphType2.innerHTML = "Plotly bar graph";
+                let graphType3 = document.createElement("option");
+                graphType3.value = "Plotly line graph (time series)";
+                graphType3.innerHTML = "Plotly line graph (time series)"; 
+                selectGraphType.appendChild(graphType1);
+                selectGraphType.appendChild(graphType2);    
+                selectGraphType.appendChild(graphType3);   
+
+                fieldValueSaved = fillFormFieldValues(selectGraphType.id);
+                if (fieldValueSaved != undefined){
+                    selectGraphType.value = fieldValueSaved;
+                }
+                
+                selectGraphType.addEventListener('change', function() {
+                    secondaryGraphFields(this.value);
+                });
+                selectGraphType.addEventListener('change', function() {
+                    logFormFieldValues();
+                });
+
+                let newRow = document.createElement("div");
+                newRow.classList.add("row", "fieldPadding");
+                let newColumn1 = document.createElement("div");
+                newColumn1.classList.add("col-3");   
+                let newColumn2 = document.createElement("div");
+                newColumn2.classList.add("col");
+
+                newColumn1.appendChild(labelGraphType);
+                newColumn2.appendChild(selectGraphType);
+                newRow.append(newColumn1, newColumn2);
+                newDiv.append(newRow);
+
+                targetElement.appendChild(newDiv);
+                if (fieldValueSaved != undefined){
+                    secondaryGraphFields(selectGraphType.value);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading JSON:', error);
+        }
+    }
+
+    // create parameter fields 
+    function secondaryGraphFields(graphType){
+
+        var secondaryGraphDiv = document.getElementById('secondaryGraphFields');
+        // If the element exists
+        if (secondaryGraphDiv) {
+            // Remove the scene window
+            secondaryGraphDiv.parentNode.removeChild(secondaryGraphDiv);
+        }
+    
+        switch(graphType){
+            case "None":
+                clearPreviousGraphFields();
+                break;
+            case "Plotly bar graph":
+                clearPreviousGraphFields();
+                break;
+            case "Plotly line graph (time series)":
+                clearPreviousGraphFields();
+                plotlyLineParameterFields(jsonColumns);
+                break;
+        }
+    }
+
+    // let's clear out, if they exist, the prior form fields used for indicating figure preferences
+    function clearPreviousGraphFields (){
+        let assignColumnsToPlot = document.getElementById('assignColumnsToPlot');
+        // If the element exists
+        if (assignColumnsToPlot) {
+            // Remove the scene window
+            assignColumnsToPlot.parentNode.removeChild(assignColumnsToPlot);
+        }
+    }
 
     //FIGURE PREVIEW BUTTON   
-    $('.figure_preview').click(function(){
+    document.querySelector('[data-depend-id="figure_preview"]').addEventListener('click', function() {
         // Let's remove the preview window if it already exists
         var previewWindow = document.getElementById('preview_window');
         // If the element exists
@@ -270,145 +378,126 @@
             previewWindow.parentNode.removeChild(previewWindow);
         }
 
-    // Find element
-    const firstFigurePreview = document.querySelector('.figure_preview');
+        // Find element
+        const firstFigurePreview = document.querySelector('.figure_preview');
 
-    // Find the second parent element
-    const secondParent = firstFigurePreview.parentElement.parentElement;
+        // Find the second parent element
+        const secondParent = firstFigurePreview.parentElement.parentElement;
 
-    // Create a new div element
-    let newDiv = document.createElement('div');
-    newDiv.id = "preview_window";
-    newDiv.classList.add("container", "figure_preview");
+        // Create a new div element
+        let newDiv = document.createElement('div');
+        newDiv.id = "preview_window";
+        newDiv.classList.add("container", "figure_preview");
 
-    const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
-    const dataUrl = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
+        const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
+        const dataUrl = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
 
-    let txtOutput;
-    if (scienceUrl !="" || dataUrl != ""){
-        let firstRow = document.createElement("div");
-        firstRow.classList.add("grayFigureRow");
+        if (scienceUrl !="" || dataUrl != ""){
+            let firstRow = document.createElement("div");
+            firstRow.classList.add("grayFigureRow");
 
+            if (scienceUrl !=""){
+                let scienceA = document.createElement("a");
+                scienceA.classList.add("grayFigureRowLinks");
+                scienceA.href = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
+                scienceA.target="_blank";
+                let dataIcon = document.createElement("i");
+                dataIcon.classList.add("fa-solid", "fa-clipboard-list", "grayFigureRowIcon");
+                let urlText = document.createElement("span");
+                urlText.classList.add("grayFigureRowText");
+                urlText.innerHTML = document.getElementsByName("figure_science_info[figure_science_link_text]")[0].value;
+                scienceA.appendChild(dataIcon);
+                scienceA.appendChild(urlText);
+                firstRow.appendChild(scienceA);
+            // firstRow.appendChild(urlText);
+            }
 
-        if (scienceUrl !=""){
-            let scienceA = document.createElement("a");
-            scienceA.classList.add("grayFigureRowLinks");
-            scienceA.href = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
-            scienceA.target="_blank";
-            let dataIcon = document.createElement("i");
-            dataIcon.classList.add("fa-solid", "fa-clipboard-list", "grayFigureRowIcon");
-            let urlText = document.createElement("span");
-            urlText.classList.add("grayFigureRowText");
-            urlText.innerHTML = document.getElementsByName("figure_science_info[figure_science_link_text]")[0].value;
-            scienceA.appendChild(dataIcon);
-            scienceA.appendChild(urlText);
-            firstRow.appendChild(scienceA);
-           // firstRow.appendChild(urlText);
+            if (dataUrl !=""){
+                let dataA = document.createElement("a");
+                dataA.classList.add("grayFigureRowLinks");//, "grayFigureRowRightLink");
+                dataA.href = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
+                dataA.target="_blank";
+                let dataIcon = document.createElement("i");
+                dataIcon.classList.add("fa-solid", "fa-database", "grayFigureRowIcon");
+                let urlText = document.createElement("span");
+                urlText.classList.add("grayFigureRowText");
+                urlText.innerHTML = document.getElementsByName("figure_data_info[figure_data_link_text]")[0].value;
+                dataA.appendChild(dataIcon);
+                dataA.appendChild(urlText);
+                firstRow.appendChild(dataA);
+            // firstRow.appendChild(urlText);
+            }
+
+            newDiv.appendChild(firstRow);
+        } 
+
+        let imageRow = document.createElement("div");
+        imageRow.classList.add("imageRow");
+        let figureImage = document.createElement("img");
+        figureImage.classList.add("figureImage");
+
+        const figurePath = document.getElementsByName("figure_path")[0].value;
+        let figureSrc;
+
+        let interactiveImage = false;
+        switch(figurePath){
+            case "Internal":
+                figureSrc = document.getElementsByName("figure_image")[0].value;
+                if (figureSrc != ""){
+                figureImage.src = figureSrc;
+                } else {imageRow.textContent = "No figure image."}
+                break;
+            case "External":
+                figureSrc = document.getElementsByName("figure_external_url")[0].value;
+                if (figureSrc != ""){
+                figureImage.src = figureSrc;
+                } else {imageRow.textContent = "No figure image."}
+                break;         
+            case "Interactive":
+                    imageRow.id = "javascript_figure_target"
+                    interactiveImage = true;
+                break;
         }
 
-        if (dataUrl !=""){
-            let dataA = document.createElement("a");
-            dataA.classList.add("grayFigureRowLinks");//, "grayFigureRowRightLink");
-            dataA.href = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
-            dataA.target="_blank";
-            let dataIcon = document.createElement("i");
-            dataIcon.classList.add("fa-solid", "fa-database", "grayFigureRowIcon");
-            let urlText = document.createElement("span");
-            urlText.classList.add("grayFigureRowText");
-            urlText.innerHTML = document.getElementsByName("figure_data_info[figure_data_link_text]")[0].value;
-            dataA.appendChild(dataIcon);
-            dataA.appendChild(urlText);
-            firstRow.appendChild(dataA);
-           // firstRow.appendChild(urlText);
+        const containerWidth = document.querySelector('[data-depend-id="figure_preview"]').parentElement.parentElement.parentElement.clientWidth;
+
+        if (containerWidth < 800){
+            figureImage.style.width = (containerWidth-88) + "px";
+        }
+        imageRow.appendChild(figureImage);
+        newDiv.appendChild(imageRow);
+
+        let captionRow = document.createElement("div");
+        captionRow.classList.add("captionRow");
+
+        // Get the short caption
+        let shortCaption = document.getElementById('figure_caption_short').value;  
+     
+        // Get the long caption
+        let longCaption = document.getElementById('figure_caption_long').value;  
+
+        let shortCaptionElementContent = document.createElement("p");
+        shortCaptionElementContent.innerHTML = shortCaption;
+        shortCaptionElementContent.classList.add("captionOptions");
+        captionRow.appendChild(shortCaptionElementContent);
+        let longCaptionElement = document.createElement("details");
+
+        let longCaptionElementSummary = document.createElement("summary");
+        longCaptionElementSummary.textContent = "Click here for more details.";
+        let longCaptionElementContent = document.createElement("p");
+        longCaptionElementContent.classList.add("captionOptions");
+        longCaptionElementContent.innerHTML = longCaption;
+        longCaptionElement.appendChild(longCaptionElementSummary);
+        longCaptionElement.appendChild(longCaptionElementContent);
+        captionRow.appendChild(longCaptionElement);
+        newDiv.appendChild(captionRow);
+
+        secondParent.appendChild(newDiv);
+        if (interactiveImage == true){
+          //  loadExternalScript('wp-content/plugins/webcr/includes/figure/js/plotly-timeseries-line.js');
+            producePlotlyLineFigure("javascript_figure_target");
         }
 
-        newDiv.appendChild(firstRow);
-    } 
-
-    let imageRow = document.createElement("div");
-    imageRow.classList.add("imageRow");
-    let figureImage = document.createElement("img");
-    figureImage.classList.add("figureImage");
-
-    const figurePath = document.getElementsByName("figure_path")[0].value;
-    let figureSrc;
-
-    // INTERNAL IMAGE PREVIEW DISPLAY
-    if (figurePath == "Internal"){
-        figureSrc = document.getElementsByName("figure_image")[0].value;
-        if (figureSrc != ""){
-        figureImage.src = figureSrc;
-        } else {imageRow.textContent = "No figure image."}
-    }
-    // ELSE (EXTERNAL OR INTERACTIVE) PREVIEW DISPLAY
-    else {
-        figureSrc = document.getElementsByName("figure_external_url")[0].value;
-        if (figureSrc != ""){
-        figureImage.src = figureSrc;
-        } else {imageRow.textContent = "No figure image."}
-    }
-
-    const containerWidth = document.querySelector('[data-depend-id="figure_preview"]').parentElement.parentElement.parentElement.clientWidth;
-
-    if (containerWidth < 800){
-        figureImage.style.width = (containerWidth-88) + "px";
-    }
-    imageRow.appendChild(figureImage);
-    newDiv.appendChild(imageRow);
-
-    let captionRow = document.createElement("div");
-    captionRow.classList.add("captionRow");
-
-    // Step 1: Access the iframe element
-    let iframeShort = document.getElementById('figure_caption_short_ifr');
-
-    // Step 2: Get the document inside the iframe
-    const iframeShortDocument = iframeShort.contentDocument || iframeShort.contentWindow.document;
-  
-    // Step 3: Select the <body> element with the specified data-id attribute
-    const bodyElementShort = iframeShortDocument.querySelector('body[data-id="figure_caption_short"]');
-  
-    // Step 4: Retrieve and store its contents
-    let shortCaption = bodyElementShort ? bodyElementShort.innerHTML : null;
-    //let shortCaption = document.getElementById("figure_caption_short").value;
-   // if (shortCaption == ""){
-   //     shortCaption = "No short caption";
-   // }
-
-    // Step 1: Access the iframe element
-    let iframeLong = document.getElementById('figure_caption_long_ifr');
-
-    // Step 2: Get the document inside the iframe
-    const iframeLongDocument = iframeLong.contentDocument || iframeLong.contentWindow.document;
-  
-    // Step 3: Select the <body> element with the specified data-id attribute
-    const bodyElementLong = iframeLongDocument.querySelector('body[data-id="figure_caption_long"]');
-  
-    // Step 4: Retrieve and store its contents
-    let longCaption = bodyElementLong ? bodyElementLong.innerHTML : null;
-   
- //   let longCaption = document.getElementById("figure_caption_long").value;
- //   if (longCaption == ""){
- //       longCaption = "No long caption";
- //   }
-
-    let shortCaptionElementContent = document.createElement("p");
-    shortCaptionElementContent.innerHTML = shortCaption;
-    shortCaptionElementContent.classList.add("captionOptions");
-    captionRow.appendChild(shortCaptionElementContent);
-    let longCaptionElement = document.createElement("details");
-   // longCaptionElement.classList.add("captionOptions");
-    let longCaptionElementSummary = document.createElement("summary");
-    longCaptionElementSummary.textContent = "Click here for more details.";
-    let longCaptionElementContent = document.createElement("p");
-    longCaptionElementContent.classList.add("captionOptions");
-    longCaptionElementContent.innerHTML = longCaption;
-    longCaptionElement.appendChild(longCaptionElementSummary);
-    longCaptionElement.appendChild(longCaptionElementContent);
-    captionRow.appendChild(longCaptionElement);
-    newDiv.appendChild(captionRow);
-
-    secondParent.appendChild(newDiv);
     });
 
 // Claude code for json functionality
@@ -479,11 +568,12 @@ $(document).on('click', '#clear-json-btn', function(e) {
     
 })( jQuery );
 
-// CODE PREVIEW BUTTON DISPLAY CODE______CHATGPT
-document.addEventListener("DOMContentLoaded", function () {
-    const previewCodeButton = document.querySelector(".code_preview");
+// Code for making Run Code button do something
+//    const previewCodeButton = document.querySelector(".code_preview");
 
-    previewCodeButton.addEventListener("click", function () {
+  //  previewCodeButton.addEventListener("click", displayCode);
+
+    function displayCode () {
         // Remove existing preview div if present
         let previewWindow = document.getElementById("code_preview_window");
         if (previewWindow) {
@@ -536,8 +626,7 @@ document.addEventListener("DOMContentLoaded", function () {
             previewDiv.textContent = "Failed to load embed code. Please check your input.";
             previewCodeButton.insertAdjacentElement("afterend", previewDiv);
         }
-    });
-});
+    }
 
 
 

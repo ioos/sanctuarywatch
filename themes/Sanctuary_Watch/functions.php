@@ -472,11 +472,15 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
 
           $section_name = get_post_meta($child_post_id, "icon_toc_section")[0];
           $child = $child_id;
-          // if (in_array($child_id, $child_ids)){
-          //   $child = $child_id . $idx;
-          // } 
+
           if (array_key_exists($child_id, $child_ids)){
             $child = ($child_id . $idx);
+          }
+
+          if ($icon_order[0] == null){
+            $modal_icon_order = 1;
+          } else {
+            $modal_icon_order = intval($icon_order[0]);
           }
 
           $child_ids[$child] = [
@@ -487,7 +491,7 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
               "scene" => $scenePost,
               "section_name" => $section_name, 
               "original_name" => $child_id,
-              "modal_icon_order" => intval($icon_order[0])
+              "modal_icon_order" => $modal_icon_order,
             ];
           } 
           return $child_ids;

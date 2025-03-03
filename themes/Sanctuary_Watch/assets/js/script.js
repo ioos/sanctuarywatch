@@ -1,16 +1,3 @@
-// import { make_plots } from './plots.js';
-
-console.log("THIS IS A TEST");
-console.log(post_id);
-// screen.orientation.lock('landscape');
-console.log("new wp")
-
-console.log(child_ids);
-
-// access echoed JSON here for use. 
-//get all links from single-scene.php
-
-
 
 function hexToRgba(hex, opacity) {
     // Remove the hash if it's present
@@ -88,12 +75,11 @@ function trapFocus(modalElement) {
 
 
 let child_obj = JSON.parse(JSON.stringify(child_ids));
-console.log(child_obj);
-// console.log("this is the post id: ", post_id);//prob dont need this
+
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
-console.log(url1);
-// let hover_color;
+
+
 let testData;
 let thisInstance;
 let thisScene;
@@ -156,20 +142,11 @@ function process_child_obj(){
         else{
            
             let oldkey = String(key);
-            console.log(typeof(oldkey));
-            console.log(oldkey);
-            // child_obj[newkey] = child_obj[key];
-                // child_obj[newkey]["original_name"] = null;
-                // delete child_obj[key];
-            // }
             let lastChar = oldkey.charAt(oldkey.length - 1);
 
             let isNumeric = /\d/.test(lastChar);
-            console.log(lastChar);
-            console.log(isNumeric);
             if (isNumeric){
                 let newkey = child_obj[key]["original_name"];
-                console.log(newkey);
                 child_obj[newkey] = child_obj[key];
                 delete child_obj[key];
             }
@@ -182,15 +159,12 @@ function process_child_obj(){
 
 process_child_obj();
 const sorted_child_objs = Object.values(child_obj).sort((a, b) => a.modal_icon_order - b.modal_icon_order);
-console.log("MODIFIED");
-console.log(child_obj);
 child_ids_helper = {};
 for (let child in child_obj) {
     const childData = child_obj[child];
-    // console.log(childData); 
     child_ids_helper[childData.title] = child;
 }
-console.log(child_ids_helper);
+
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
 
 /**
@@ -239,13 +213,11 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
 
                 let scene_info_text = scene_data[info_field][info_text];
                 
-                // console.log(scene_info_text)
-                // console.log(scene_info_url)
+
                 if ((scene_info_text == '') && (scene_info_url == '')){
                     continue;
                 }
-                // console.log(scene_info_text);
-                // console.log(scene_info_url);
+
                 let listItem = document.createElement('li');
                 let anchor = document.createElement('a');
                 anchor.setAttribute('href', 'test'); 
@@ -304,10 +276,14 @@ async function make_title() {
             accgroup.appendChild(acc1); 
         }
    
+        // if there is no "more info" and "more photo" accordions, then we'll need to put some extra padding under the scene tagline
+        let blankAccordion = false;
+        if (scene_data["scene_info_entries"] ==0 && scene_data["scene_photo_entries"] == 0){
+            blankAccordion = true;
+        }
+
         let row = document.createElement("div");
         row.classList.add("row");
-
-       
 
         let col1 = document.createElement("div");
         // col1.classList.add("col-md-2");
@@ -319,6 +295,10 @@ async function make_title() {
         if (!is_mobile()) {
             col1.classList.add("col-md-2");
             col2.classList.add("col-md-10");
+            // adding padding below tagline
+            if (blankAccordion == true){
+                row.classList.add("blankAccordion");
+            }
             // col2.style.marginLeft =  `-12%`;
             // col1.style.marginLeft = '-12%';
             // document.querySelector("#title-container").style.marginLeft = '0%';
@@ -376,23 +356,17 @@ let mobileBool = false;
  * * @throws {Error} - Throws an error if scene data not found or error fetching data
  */
 function has_mobile_layer(mob_icons, elemname){
-    // console.log("mobile icons here:");
-    // console.log(mob_icons);
     if (mob_icons == null){
-        console.log("uh oh");
         return false;
     }
     for (let i = 0; i < mob_icons.children.length; i++) {
         let child = mob_icons.children[i];
-        // console.log("mob icons helper here");
-        // console.log(child); 
         let label = child.getAttribute('inkscape:label');
         if (label === elemname){
             console.log(`found ${label}`);
             return true;
         }             
     }
-    console.log("uh oh");
     return false;
 }
 
@@ -409,12 +383,8 @@ function has_mobile_layer(mob_icons, elemname){
 function get_mobile_layer(mob_icons, elemname){
     for (let i = 0; i < mob_icons.children.length; i++) {
         let child = mob_icons.children[i];
-        // console.log("mob icons helper here");
-        // console.log(child); 
         let label = child.getAttribute('inkscape:label');
         if (label === elemname){
-            // console.log("in get mobile laters");
-            // console.log(child);
             return child;
         }             
     }
@@ -454,7 +424,6 @@ function remove_outer_div(){
  * @returns {void}
  */
 function mobile_helper(svgElement, iconsArr, mobile_icons){
-    // console.log(svgElement);
     remove_outer_div();
     let defs = svgElement.firstElementChild;
    
@@ -528,7 +497,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
         let numCols;
         let numRows;
         // let mobViewImage = document.querySelector("#mobile-view-image");
-        // console.log(mobViewImage.style);
         let ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%'
         let sceneFluid = document.querySelector("#scene-fluid");
         let ogSceneFluid = 'margin-top: 70%; margin-left: -1.5%;'
@@ -542,9 +510,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
             let mobModalDialog = document.querySelector("#mobileModal > div");
             let modalDialogInfo = document.querySelector("#myModal > div");
 
-            console.log("aaahahaha");
             numCols = 4;
-            console.log("landscapeee");  
             mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%")
             sceneFluid.setAttribute("style", "margin-top: 25%;margin-left: -1.5%; display: block");
             colmd2.setAttribute("style", "width: 100%")
@@ -560,7 +526,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
             let mobModalDialog = document.querySelector("#mobileModal > div");
             let modalDialogInfo = document.querySelector("#myModal > div");
 
-            console.log("Portrait mode");
             mobViewImage.setAttribute("style", '');
             mobViewImage.setAttribute("style", ogMobViewImage);
             sceneFluid.setAttribute("style", '');
@@ -575,9 +540,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
         }
         // updateLayout();
         numRows = Math.ceil((iconsArr.length/numCols));
-        console.log(`Number of columns: ${numCols}`);
-        console.log("number of rows: ");
-        console.log(numRows);
 
         updateLayout(numCols, numRows);
         // mobViewImage.remove();
@@ -611,36 +573,23 @@ async function loadSVG(url, containerId) {
             throw new Error('Network response was not ok');
         }
         const svgText = await response.text();
-        // console.log(svgText);
 
         // Step 2: Parse the SVG content
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
         const svgElement = svgDoc.documentElement;
-        // console.log(svgElement);
-        // console.log(svgElement);
         svgElement.setAttribute("id", "svg-elem");
 
         //Append the SVG to the DOM
         const container = document.getElementById(containerId);
-        console.log(container);
         // container.appendChild(svgElement);
-        // console.log(svgElement);
         // checking if user device is touchscreen
         if (is_touchscreen()){
-            console.log("this is touchscreen");
             // flicker_highlight_icons();
-            // console.log("touchscreen recognized");
             if (is_mobile() && (deviceDetector.device != 'tablet')){ //a phone and not a tablet; screen will be its own UI here
-                // console.log("mobile recognized within conditional");
 
                 //smaller image preview here for mobile
                 let fullImgCont = document.querySelector("#mobile-view-image");
-
-                
-                // fullImgCont.setAttribute("style", "");
-
-                console.log(fullImgCont);
                 
                 let titleRowCont = document.querySelector("#title-container > div");
                 let sceneButton = document.createElement("button");
@@ -693,43 +642,23 @@ async function loadSVG(url, containerId) {
                 if (svgElement.getElementById("mobile")){
                     mobileIcons = svgElement.getElementById("mobile").cloneNode(true);
                 } 
-                // const mobileIcons = svgElement.getElementById("mobile").cloneNode(true);
-                // console.log(iconsElement);
-                // console.log("mobile icons here:");
-                // console.log(mobileIcons);
 
-                //for mobile: only leave icons, nothing else
-                // const parentElement = svgElement.querySelector('g.cls-3');
-                // let parentElement = svgElement.querySelector("#g");
-                // console.log(svgElement.lastElementChild);
                 let parentElement = svgElement.lastElementChild;
-                    // console.log(Array.from(parentElement.children));
+
                 const children = Array.from(parentElement.children);
-                // console.log(children);
+
                 children.forEach(child => {
                     if ((child !== iconsElement ) ) {
                             parentElement.removeChild(child);
                     }
                 });
-                // parentElement.appendChild(mobileIcons);
-                // console.log(svgElement);
+
                 let iconsArr = Array.from(iconsElement.children);
                 mobile_helper(svgElement, iconsArr, mobileIcons);
-                // mobile_icons_helper(mobileIcons);
-
-                // add_modal();
-                // window.addEventListener('load', function() {
-                //     make_title();
-                // });
-                // make_title();
-                // highlight_icons();
-                // flicker_highlight_icons();
-                
                 
             } else{ //if it gets here, device is a tablet
                 //hide mobile icons
                 
-                console.log("tablet");
                 // remove_outer_div();
                 window.addEventListener('load', function() {
                     let mob_icons = document.querySelector("#mobile");
@@ -767,8 +696,7 @@ async function loadSVG(url, containerId) {
             
             container.appendChild(svgElement);
             highlight_icons();
-            // table_of_contents();
-            // list_toc();
+ 
             toggle_text();
             full_screen_button('svg1');
             // if (thisInstance.instance_toc_style == "list"){
@@ -782,18 +710,6 @@ async function loadSVG(url, containerId) {
 
             
         }
-        // highlight_icons();
-        // table_of_contents();
-        // add_modal();
-        // make_title();
-        // full_screen_button('svg1');
-        // toggle_text();
-        // window.addEventListener('load', function() {
-        //     make_title();
-        //     // console.log(child_obj);
-        // });
-
-
 
     } catch (error) {
         console.error('Error fetching or parsing the SVG:', error);
@@ -814,38 +730,34 @@ async function loadSVG(url, containerId) {
 function highlight_icons(){
     for (let key in child_obj){
         let elem = document.querySelector('g[id="' + key + '"]');
-        // console.log(elem);
-        elem.addEventListener('mouseover', function(){
-            // console.log('mousing over: ', key); 
-            // elem.style.stroke = "yellow"; //this is no longer hard-coded
-            // elem.style.stroke = thisInstance.instance_hover_color; //this is no longer hard-coded; //ideally, make a dictionary mapping each  key to a section to a color
-            // elem.style.stroke = sectColors[sectionObj[key]];
-            // if (thisInstance.instance_colored_sections === "yes"){ //needs to be changed
-                // console.log("yes!");
-                // elem.style.stroke = scene_sections[sectionObj[key]];//sectColors[sectionObj[key]];
-            // } else{
-            //     elem.style.stroke = colors[0];
-            // }
-            // console.log(thisInstance);
-            // elem.style.stroke = sectColors[sectionObj[key]];
-            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
-                // console.log(scene_sections[sectionObj[key]]);
-                // elem.style.stroke = scene_sections[sectionObj[key]];
-                let section_name = sectionObj[key];
-                let section_num = section_name.substring(section_name.length - 1, section_name.length);
-                // console.log(section_num);
-                let this_color = `scene_section_hover_color${section_num}`;
-                elem.style.stroke = scene_data[sectionObj[key]][this_color];
-            } else{
-                elem.style.stroke = scene_default_hover_color;
-            }
 
-            elem.style.strokeWidth = "3px";
+        elem.addEventListener('mouseover', function(){
+
+            let elemCollection = elem.querySelectorAll("*");
+            elemCollection.forEach(subElem => {
+
+                if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+
+                    let section_name = sectionObj[key];
+                    let section_num = section_name.substring(section_name.length - 1, section_name.length);
+
+                    let this_color = `scene_section_hover_color${section_num}`;
+                    subElem.style.stroke = scene_data[sectionObj[key]][this_color];
+                } else{
+                    subElem.style.stroke = scene_default_hover_color;
+                }
+
+                subElem.style.strokeWidth = "3px";
+            });
         });
         elem.addEventListener('mouseout', function(){
-            // console.log('mousing out: ', key); 
-            elem.style.stroke = "";
-            elem.style.strokeWidth = "";
+
+            let elemCollection = elem.querySelectorAll("*");
+            elemCollection.forEach(subElem => {
+
+            subElem.style.stroke = "";
+            subElem.style.strokeWidth = "";
+            });
         });
     }  
 }
@@ -861,29 +773,19 @@ function flicker_highlight_icons() {
         let elem = document.querySelector('g[id="' + key + '"]');
         if (elem) {
             // Add transition for smooth fading
-            // console.log("elem here is: ");
-            // console.log(elem);
+
             elem.style.transition = 'stroke-opacity 1s ease-in-out';
             
             // Initial state
-            // elem.style.stroke = "yellow";
-            // elem.style.stroke = sectColors[sectionObj[key]];
-            // if (thisInstance.instance_colored_sections === "yes"){ //needs to be changed
-                // elem.style.stroke =  scene_sections[sectionObj[key]];//sectColors[sectionObj[key]];
             if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
-                    // console.log(scene_sections[sectionObj[key]]);
                 let section_name = sectionObj[key];
                 let section_num = section_name.substring(section_name.length - 1, section_name.length);
-                // console.log(section_num);
+
                 let this_color = `scene_section_hover_color${section_num}`;
                 elem.style.stroke = scene_data[sectionObj[key]][this_color];
                 } else {
                     elem.style.stroke = scene_default_hover_color;
                 }
-                // console.log("yes here");
-            // } else{
-            //     elem.style.stroke = colors[0];
-            // }
 
             elem.style.strokeWidth = "3";
             elem.style.strokeOpacity = "0";
@@ -1222,8 +1124,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // Add the details element to the tab content element
     // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
-    console.log("tab content container");
-    console.log(tabContentContainer);
+
     if (interactiveBool){
         let fetchLink = 'http://sanctuarywatch.local/wp-content/uploads/2024/09/test.json';
         // let plotType = 'markers';
@@ -1264,40 +1165,26 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
  * Called at the end of the create_tabs function
  */
 function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id){
-    // let id = child_obj['infauna']['id'];
-    // console.log(id);
-    // console.log(tab_label);
-    // tab_label = "test";
     const protocol = window.location.protocol;
     const host = window.location.host;
-    const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/figure?&order=asc"
+    const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/figure?&order=asc&figure_modal=" + modal_id + "&figure_tab=" + tab_id;
     // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
-            // console.log(tab_label);
-            // figure_data = data.find(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
-            // all_figure_data = data.filter(figure => figure.figure_tab === tab_label); //this needs to be all the instances where === tab_label, not j the first one
-            all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
-            all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
-            
+            all_figure_data = data;
             if (!all_figure_data){
                 //we don't create anything here...
                 //don't have to render any of the info
                 // tabContentContainer.setAttribute("display", "hidden");
-                console.log("womp womp");
                 return;
                 
             } else{
-                console.log(all_figure_data); 
                 // tabContentContainer.setAttribute("display", "");
-
-            // console.log(figure_data['figure_caption_long']);
             //title stuff:
                 for (let idx in all_figure_data){
                     figure_data = all_figure_data[idx];
-                    console.log(all_figure_data[idx]);
+                    debugger;
                     let img = '';
                     let external_alt = '';
                     if (figure_data['figure_path']==='External'){
@@ -1318,8 +1205,9 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "shortCaption" : figure_data["figure_caption_short"],
                     "longCaption": figure_data["figure_caption_long"],
                     "interactive": figure_data["figure_path"],
+                    "figureType": figure_data["figure_path"],
+                    "interactiveArguments": figure_data["figure_path"],                   
                     };
-                    // console.log(info_obj);
                     render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure
                 }
             }
@@ -1364,8 +1252,6 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
     tab_id = tab_label.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_'); //instead of tab id, it should just be the index (figure_data)
     title = title.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_');
     tab_id = iter;
-    console.log(tab_id);
-    console.log("creating a tab");
 
     let tab_target = `#${title}-${tab_id}-pane`;
     let tab_controls = `${title}-${tab_id}-pane`;
@@ -1430,7 +1316,6 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
 
     button.addEventListener('click', function() {
         window.location.hash = `${title}/${tab_id}`; 
-        console.log(`${title}/${tab_id}`);
        
         linkbutton.addEventListener("click", (e) => {
             e.preventDefault(); // Prevent the link from opening
@@ -1477,8 +1362,8 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
  * Called in add_modal and table_of_contents; those functions iterate through keys of child_obj(which has all the icons in a scene )
  */
 function render_modal(key){
+
     let id = child_obj[key]['modal_id'];
-    // console.log(child_obj[key]);
     const protocol = window.location.protocol;
     const host = window.location.host;
     const fetchURL  =  protocol + "//" + host  + `/wp-json/wp/v2/modal/${id}`;
@@ -1486,11 +1371,9 @@ function render_modal(key){
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
-            // console.log(data);
-            console.log(id);
-            modal_data = data //.find(modal => modal.id === id);
-            console.log("modal data here:");
-            console.log(modal_data); 
+
+            let modal_data = data; //.find(modal => modal.id === id);
+
             //title stuff:
             let title = child_obj[key]['title'];  //importat! pass as argument
             let modal_title = document.getElementById("modal-title");
@@ -1500,7 +1383,7 @@ function render_modal(key){
             //tagline container
             let tagline_container = document.getElementById('tagline-container');
             //add stuff for formatting here...
-            // console.log(modal_data);
+
             let modal_tagline = modal_data["modal_tagline"];
             if (!is_mobile()){
                 tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
@@ -1517,17 +1400,9 @@ function render_modal(key){
             acc.classList.add("accordion");
 
             if (is_mobile()){
-                console.log("is mobile");
+
                 // tagline_container.setAttribute("class", "");
                 accordion_container.setAttribute("class", "");
-
-                // tagline_container.classList.add("col-6");
-                // tagline_container
-                // tagline_container.remove();
-                // accordion_container.classList.add("col-6");
-                // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
-                // tagline_container.setAttribute("style", "min-width: 300px");
-
 
             } else{
                 tagline_container.setAttribute("class", "");
@@ -1550,8 +1425,7 @@ function render_modal(key){
                 if ((modal_info_text == '') && (modal_info_url == '')){
                     continue;
                 }
-                // console.log(modal_info_text);
-                // console.log(modal_info_url);
+
                 let listItem = document.createElement('li');
                 let anchor = document.createElement('a');
                 anchor.setAttribute('href', modal_info_url); 
@@ -1564,7 +1438,7 @@ function render_modal(key){
                 collapseListHTML += '</div>';
             }
             //for photos:
-            console.log(modal_data)
+
             let modal_id = modal_data.id;
             let collapsePhotoHTML = '<div>';
             for (let i = 1; i < 7; i++){
@@ -1585,8 +1459,7 @@ function render_modal(key){
                 if ((modal_info_text == '') && (modal_info_url == '')){
                     continue;
                 }
-                // console.log(modal_info_text);
-                // console.log(modal_info_url);
+
                 let listItem = document.createElement('li');
                 let anchor = document.createElement('a');
                 anchor.setAttribute('href', modal_info_url); 
@@ -1601,7 +1474,7 @@ function render_modal(key){
             
             let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
             let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", collapsePhotoHTML);
-           
+
             acc.appendChild(accordionItem1);
             acc.appendChild(accordionItem2);
             if (is_mobile()){
@@ -1610,8 +1483,6 @@ function render_modal(key){
 
             }
 
-
-
             accordion_container.appendChild(acc);
             // allkeyobj[key] = true;
 
@@ -1619,22 +1490,17 @@ function render_modal(key){
             // window.addEventListener('load', function() {
             
             let num_tabs = Number(modal_data["modal_tab_number"]);
-            console.log(num_tabs);
+
             for (let i =1; i <= num_tabs; i++){
                 let tab_key = "modal_tab_title" + i;
                 let tab_title = modal_data[tab_key];
-                console.log(tab_title);
 
-               
                 create_tabs(i, tab_key, tab_title, title, modal_id);
-                console.log(`iteration ${i}, tab key ${tab_key} tab title ${tab_title}`);
+
                 if (i === num_tabs){
                     break;
                 }
-                // let tabContentContainer = document.getElementById("myTabContent");
-                // tabContentContainer.innerHTML = '';
-                // document.querySelector("#myModal > div > div>div").innerHTML = '';
-                // let myModal = document.querySelector("#myModal");
+
                 let mdialog = document.querySelector("#myModal > div"); //document.querySelector("#myModal");
                 // trapFocus(myModal);
                 trapFocus(mdialog);
@@ -1857,7 +1723,6 @@ function sectioned_list(){
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
-        console.log('section herreeeeeee');
 
         if (!sections.includes(section) && section!='None') {
             sections.push(section);
@@ -1865,8 +1730,6 @@ function sectioned_list(){
         sectionObj[key] = section;
     }
     sections.sort();
-    console.log(sectionObj);
-    console.log(sections);
     sections.push('None');
 
     let toc_container = document.querySelector("#toc-container");
@@ -1921,7 +1784,6 @@ function sectioned_list(){
         toc_group.appendChild(sect);
     }
     toc_container.appendChild(toc_group);
-    console.log(sectColors);
 }
 
 /**
@@ -1941,22 +1803,15 @@ function sectioned_list(){
  */
 function toc_sections() {
     let sections = [];
-    // console.log(child_obj);
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
-        console.log('section herreeeeeee');
-        console.log(child_obj[key]['section_name']);
         if (!sections.includes(section) && section!='None') {
             sections.push(section);
         }
         sectionObj[key] = section;
     }
     sections.sort();
-    console.log(sectionObj); //use this for naming stuff
     sections.push('None');
-
-    console.log(sections);
-    console.log(scene_sections);
 
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("div");
@@ -1986,21 +1841,11 @@ function toc_sections() {
         button.setAttribute("aria-expanded", "false");
         button.setAttribute("aria-controls", `toccollapse${i}`);
         if (sections[i]!="None"){
-            console.log(sections[i]);
-            console.log(`scene_section_title${i}`);
             button.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
-            // if (scene_same_hover_color_sections != "yes"){
-            //     // heading.style.backgroundColor = hexToRgba(color, 0.3);
-            //     button.style.backgroundColor = hexToRgba(color, 0.2);
-            // }
+
             let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
             button.style.backgroundColor = hexToRgba(color, 0.2);
-            // let span = document.createElement('span');
-            // span.style.color = 'black';
-            // span.innerHTML = sections[i];
-            // span.style.backgroundColor = hexToRgba(color, 0.2); // Only highlight the text
-            // button.innerHTML = ''; // Clear the button content
-            // button.appendChild(span);
+
 
         } else {
             // button.innerHTML = "Table of Contents";
@@ -2017,8 +1862,6 @@ function toc_sections() {
         button.appendChild(arrowSpan);
      
         if (sections[i].length > 20){
-            console.log('section name: ');
-            console.log(sections[i]);
             arrowSpan.style.marginRight = '15%';
         } else {
             arrowSpan.style.marginRight = '63%';
@@ -2046,7 +1889,6 @@ function toc_sections() {
         toc_group.appendChild(sect);
     }
     toc_container.appendChild(toc_group);
-    console.log(sectColors);
 }
 
 
@@ -2072,42 +1914,22 @@ function toc_sections() {
  */
 
 function table_of_contents(){
-    // toc_sections();
-    // sectioned_list();
-    // console.log(thisInstance);
+
     // if (thisInstance.instance_toc_style == "accordion"){ //this should be done on the SCENE side of things
-    console.log('child_obj HERE');
-    console.log(child_obj);
+
     if (scene_toc_style == "accordion"){ //this should be done on the SCENE side of things
         toc_sections();
     } else {
         sectioned_list();
     }               
-    // let elem = document.getElementById("toc1");
-    // let elem = document.createElement("ul")
-    // use  sorted_child_objs
-    console.log(sorted_child_objs);
- 
    
-    // for (let key in child_obj){
     for (let obj of sorted_child_objs){
-        console.log('obj here..');
-        console.log(obj.modal_icon_order);
         key = obj.original_name;
-        console.log("key here...");
-        console.log(key);
-        // document.querySelector("#Section\\ 1")
-        // console.log(key);
         if (sectionObj[key]=="None"){
             // continue;
-            console.log("bruhhhhhh");
-            console.log(key);
         }
         let elem = document.getElementById(child_obj[key]['section_name']);
-        console.log(elem);
         let item = document.createElement("li");
-
-        
         let title = child_obj[key]['title'];  
         let link = document.createElement("a");
         link.setAttribute("id", title.replace(/\s+/g, '_'));
@@ -2119,7 +1941,6 @@ function table_of_contents(){
             link.innerHTML = title;
 
             item.appendChild(link);
-            
             item.addEventListener('click', function() {
                 
                 let modal = document.getElementById("myModal");
@@ -2160,58 +1981,52 @@ function table_of_contents(){
         
         else{
             link.href = child_obj[key]['external_url'];
-            // console.log(link.href);
             link.innerHTML = title;
             item.appendChild(link);
         }
         let svg_elem = document.querySelector('g[id="' + key + '"]');
-        // console.log(elem);
+
         //CHANGE HERE FOR TABLET STUFF
         link.style.textDecoration = 'none';
         // link.style.color = "#343a40";
         
+        item.addEventListener('mouseover', ((key) => {
+            return function() {
+                let svg_elem = document.querySelector('g[id="' + key + '"]');
 
-        item.addEventListener('mouseover', function(){
-            // console.log('mousing over: ', key); 
-            // svg_elem.style.stroke = "yellow";
-            // svg_elem.style.stroke = thisInstance.instance_hover_color;
-            // console.log(sectionObj);
-            // console.log(sectColors);
-            // if (thisInstance.instance_colored_sections === "yes"){ //this should be done on the SCENE side of things, will havet o bring this back
-            
+                let subElements = svg_elem.querySelectorAll("*");
+                subElements.forEach(subElement => {
+                    if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
 
-            if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
-                // console.log(scene_sections[sectionObj[key]]);
+                        let section_name = sectionObj[key];
+                        let section_num = section_name.substring(section_name.length - 1, section_name.length);
 
-                let section_name = sectionObj[key];
-                let section_num = section_name.substring(section_name.length - 1, section_name.length);
-                // console.log(section_num);
-                let this_color = `scene_section_hover_color${section_num}`;
-                svg_elem.style.stroke = scene_data[sectionObj[key]][this_color];
-                // console.log(scene_data[sectionObj[key]]);
-                // let num = scene_data[sectionObj[key]];
-                // console.log(num);
-                // svg_elem.style.stroke = scene_data[sectionObj[key]];
+                        let this_color = `scene_section_hover_color${section_num}`;
+                        subElement.style.stroke = scene_data[sectionObj[key]][this_color];
 
-            } else{
-                svg_elem.style.stroke = scene_default_hover_color;
-            }
-            
-                svg_elem.style.strokeWidth = "3";
-        });
-        item.addEventListener('mouseout', function(){
-            // console.log('mousing out: ', key); 
-            svg_elem.style.stroke = "";
-            svg_elem.style.strokeWidth = "";
-        });
-        
-        
+                    } else{
+                        subElement.style.stroke = scene_default_hover_color;
+                    }
+                    
+                    subElement.style.strokeWidth = "3";
+                });
+            };
+        })(key));
+
+        item.addEventListener('mouseout', ((key) => {
+            return function() {
+                let svg_elem = document.querySelector('g[id="' + key + '"]');
+
+                let subElements = svg_elem.querySelectorAll("*");
+                subElements.forEach(subElement => {
+                    subElement.style.stroke = "";
+                    subElement.style.strokeWidth = "";
+                });
+            };
+        })(key));
+                
         elem.appendChild(item);
-        // console.log(elem);
-        // return elem;
     }
-        
-    
 }
 
 /**
@@ -2244,33 +2059,24 @@ function list_toc(){
         sectionObj[key] = section;
     }
     sections.sort();
-    // console.log(sections);
 
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("ul");
     let colorIdx = 0;
     let i = 0;
-    console.log("sorted list here...");
-    console.log(sorted_child_objs);
-    // for (let obj of sorted_child_objs){
-    //     
-    // for (let key in child_obj) {
+    let item;
+
     for (let obj of sorted_child_objs){
-        // let elem = document.getElementById(child_obj[key]['section_name']);
-        // sectColors[sections[i]] = colors[colorIdx]; 
-        // colorIdx = (colorIdx + 1) % colors.length;
-        console.log('obj here..');
-        console.log(obj.modal_icon_order);
+
         key = obj.original_name;
-        console.log("key here...");
-        console.log(key);
+
         i++;
 
-        let item = document.createElement("li");
+        item = document.createElement("li");
     
-        let title = child_obj[key]['title'];  
+        let title = obj['title'];  
         let link = document.createElement("a");
-        let modal = child_obj[key]['modal'];
+        let modal = obj['modal'];
     
         if (modal) {
             link.setAttribute("href", '#'); //just added
@@ -2281,12 +2087,13 @@ function list_toc(){
             link.classList.add("modal-link");
             link.innerHTML = title;
             item.appendChild(link);
-    
-            item.addEventListener('click', function() {
-                let modal = document.getElementById("myModal");
-                modal.style.display = "block";
-                render_modal(key);
-            });
+            item.addEventListener('click', ((key) => {
+                return function() {
+                    modal = document.getElementById("myModal");
+                    modal.style.display = "block";
+                    render_modal(key);
+                };
+            })(key));
     
             let closeButton = document.getElementById("close");
             closeButton.addEventListener('click', function() {
@@ -2305,24 +2112,35 @@ function list_toc(){
                 }
             };
         } else {
-            link.href = child_obj[key]['external_url'];
+            link.href = obj['external_url'];
             link.innerHTML = title;
             item.appendChild(link);
         }
     
-        let svg_elem = document.querySelector('g[id="' + key + '"]');
-    
-        item.addEventListener('mouseover', function() {
-          
-            svg_elem.style.stroke = scene_default_hover_color;
-            svg_elem.style.strokeWidth = "3";
-        });
-    
-        item.addEventListener('mouseout', function() {
-            svg_elem.style.stroke = "";
-            svg_elem.style.strokeWidth = "";
-        });
-    
+        item.addEventListener('mouseover', ((key) => {
+            return function() {
+                let svg_elem = document.querySelector('g[id="' + key + '"]');
+
+                let subElements = svg_elem.querySelectorAll("*");
+                subElements.forEach(subElement => {
+                    subElement.style.stroke = scene_default_hover_color;
+                    subElement.style.strokeWidth = "3";
+                });
+            };
+        })(key));
+
+        item.addEventListener('mouseout', ((key) => {
+            return function() {
+                let svg_elem = document.querySelector('g[id="' + key + '"]');
+
+                let subElements = svg_elem.querySelectorAll("*");
+                subElements.forEach(subElement => {
+                    subElement.style.stroke = "";
+                    subElement.style.strokeWidth = "";
+                });
+            };
+        })(key));
+
         toc_group.appendChild(item);
     }
     toc_container.appendChild(toc_group);
@@ -2361,30 +2179,19 @@ function add_modal(){
             let modal = document.getElementById("myModal");
             let closeButton = document.getElementById("close");
             
-            // elem.addEventListener('click', function() {
-            //         modal.style.display = "block";
-            //         render_modal(key );
-
-            // });
-            
             if (mobileBool){
                 let itemContainer = document.querySelector(`#${key}-container`);
                 itemContainer.addEventListener('click', function() {
                     modal.style.display = "block";
+
                     render_modal(key );
 
             });
             } else {
                 elem.addEventListener('click', function(event) {
-                    // gtag('event', 'modal_icon_click', {
-                    //     'event_category': 'Button Interaction',
-                    //     'event_label': 'Track Me Button',
-                    //     'value': 1
-                    //   });
 
                     modal.style.display = "block";
                     render_modal(key );
-
             });
             }
             
@@ -2495,15 +2302,12 @@ async function waitForElement(selector) {
 async function handleHashNavigation() {
     //maybe in here check that the scene is/is not an overview
     if (window.location.hash) {
-        console.log(window.location.hash)
         let tabId = window.location.hash.substring(1);
-        console.log(tabId);
 
         let modalName = tabId.split('/')[0];
-        console.log(modalName);
 
         tabId = tabId.replace(/\//g, '-');
-        console.log(window.location.pathname + window.location.search);
+
         history.pushState("", document.title, window.location.pathname + window.location.search);
         let modName;
         if (is_mobile()){
@@ -2514,15 +2318,13 @@ async function handleHashNavigation() {
         }
         // window.location.href = window.location.href;
         let modalButton = await waitForElement(`#${modName}`);
-        console.log(modalButton);
 
         modalButton.click();
 
         let tabButton = await waitForElement(`#${tabId}`);
-        console.log(tabButton);
         tabButton.click();
     } else {
-        console.log("nope");
+
     }
 }
 
@@ -2581,23 +2383,9 @@ async function load_instance_details() { //this should be done on the SCENE side
  */
 async function init() {
     try {
-        // testData = await load_instance_details();
-        // testData =
-        console.log("here is the global variable");
-        // console.log(testData);
-        // hover_color = "red";
-        // console.log(hover_color);
+
         sceneLoc = make_title(); //this should be done on the SCENE side of things, maybe have make_title return scene object instead
         thisInstance = sceneLoc;
-        console.log("scene location is ");
-        console.log(sceneLoc);
-
-        // thisInstance = testData.find(data => data.id === Number(sceneLoc)); //this should be done on the SCENE side of things; 
-        console.log(thisInstance);
-        // colors = thisInstance.instance_hover_color.split(',');
-        // colors = ['red', 'yellow']
-        // console.log(colors[0]);
-        // console.log(colors);
         
         loadSVG(url, "svg1"); // Call load_svg with the fetched data
 

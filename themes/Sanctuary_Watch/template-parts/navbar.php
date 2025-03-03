@@ -34,13 +34,6 @@
             $title = get_post_meta($sceneLocation, 'post_title')[0];
             // $scene_published = get_post_meta($sceneLocation, 'scene_published', true);
 
-            echo "<script>
-                    console.log('Post Meta: ', " . json_encode($postMeta) . ");
-                    console.log('Scene Location: ', " . json_encode($sceneLocation) . ");
-                    console.log('Instance Overview Scene: ', " . json_encode($title) . ");
-                    // console.log('Scene published: ', " . json_encode($scene_published) . ");
-                </script>";
-
             if($sceneLocation){
 
                 echo "<a class='navbar-brand' href='/?post_type=scene&p=" . $inst_overview_scene . "'>$title</a>";

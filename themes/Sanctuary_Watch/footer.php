@@ -6,8 +6,6 @@ $instance_footer_about = get_post_meta($instance_num, 'instance_footer', true);
 ?>
 <script> 
 let instance_footer_about = <?php echo json_encode($instance_footer_about); ?>;
-console.log("footer stuff");
-console.log(instance_footer_about);
 
 </script>
 

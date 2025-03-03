@@ -1,49 +1,29 @@
 (function( $ ) {
-    //	'use strict';
+	'use strict';
     
     // adding jquery to the console
     // var script = document.createElement('script');
     // script.src='https://code.jquery.com/jquery-latest.min.js';
     // document.getElementsByTagName('head')[0].appendChild(script);
 
-// document.getElementById("wp-aboutBoxMain1-wrap").parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="block"
-
-
+    // The following code changes the number of visible about boxes depending on the value of "Number of About Boxes"
+    displayAboutBoxes();
+    
     function displayAboutBoxes (){
+        const numAboutBoxes = document.getElementsByName("numberAboutBoxes")[0].value;
         let target_element = "";
-		for (let i = 6; i > entry_number; i--){
-			target_element = "modal_tab_title" + i;
-            document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "none";
-            document.getElementsByName(target_element)[0].value = "";
-		}
+		for (let i = 10; i > numAboutBoxes; i--){
+			target_element =  "aboutBoxMain" + i;
+            document.getElementById(target_element).closest('.exopite-sof-field-fieldset').style.display="none";
+        }
 
-		for (let i = 1; i <= entry_number; i++){
-			target_element = "modal_tab_title" + i;
-            document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "block";
+		for (let i = 1; i <= numAboutBoxes; i++){
+			target_element =  "aboutBoxMain" + i;
+            document.getElementById(target_element).closest('.exopite-sof-field-fieldset').style.display="block";
 		}
 	}
 
-
-$('select[name="modal_location"]').change(modal_location_change);
-$( "select[name='modal_scene']" ).change(modal_scene_change);
-$( "select[name='modal_icons']" ).change(modal_icons_change);
-$( "select[name='icon_function']" ).change(iconFunction);
-
-$(".range[data-depend-id='modal_tab_number']").change(function(){ 
-    let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
-    displayTabEntries(opening_tab_entries);
-});
-
-$(".range[data-depend-id='modal_info_entries']").change(function(){ 
-    let number_of_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
-    displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='modal_info_");
-});
-
-$(".range[data-depend-id='modal_photo_entries']").change(function(){ 
-    let number_of_scene_info_entries = $(".range[data-depend-id='modal_photo_entries']").val();
-    displayEntries(number_of_scene_info_entries, ".text-class[data-depend-id='modal_photo_");
-});
-
+    $(".range[data-depend-id='numberAboutBoxes']").change(displayAboutBoxes);
 
         /**
          * All of the code for your admin-facing JavaScript source

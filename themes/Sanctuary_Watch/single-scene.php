@@ -70,7 +70,6 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 
   <div class="modal" id="mobileModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
   <div class="modal-dialog modal-lg" style="z-index: 9999;margin-top: 60%;max-width: 88%;/* margin-right: 10%; */">
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <div class="modal-content" >
 
     <div class="modal-header">
@@ -209,21 +208,11 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     let num_sections =  <?php echo json_encode($num_sections); ?>;
     let scene_sections =  <?php echo json_encode($scene_sections); ?>;
     let scene_same_hover_color_sections = <?php echo json_encode($scene_same_hover_color_sections); ?>;
-    console.log("the SECTIONS")
-    console.log(scene_sections);
 
     let scene_default_hover_color =  <?php echo json_encode($scene_default_hover_color); ?>;
     let scene_text_toggle =  <?php echo json_encode($scene_text_toggle); ?>;
     let scene_toc_style =  <?php echo json_encode($scene_toc_style); ?>;
-    let scene_full_screen_button  = <?php echo json_encode($scene_full_screen_button); ?>;
-
-    console.log(scene_default_hover_color);
-    console.log(scene_text_toggle);
-    console.log(scene_toc_style);
-    console.log(scene_full_screen_button);
-    console.log(scene_same_hover_color_sections);
-    
-    
+    let scene_full_screen_button  = <?php echo json_encode($scene_full_screen_button); ?>;    
   </script>
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
@@ -261,8 +250,6 @@ foreach ($results as $row) {
 
 
 let title_arr  = <?php echo json_encode($title_arr); ?>;
-console.log("title array here!");
-console.log(title_arr);
 
 </script>
 
