@@ -8,7 +8,10 @@ class Webcr_Figure {
 
     public function __construct( $plugin_name ) {
 		$this->plugin_name = $plugin_name;
-	}
+        // Actions for the upload and delete file functions and arrays related to the Interactive figures
+        add_action('wp_ajax_custom_file_upload', [__CLASS__, 'custom_file_upload_handler']);
+        add_action('wp_ajax_custom_file_delete', [__CLASS__, 'custom_file_delete_handler']);
+    }
 
     /**
 	 * Set columns in admin screen for Figure custom content type.
@@ -435,6 +438,20 @@ class Webcr_Figure {
                     'description' => 'What is the figure json?',
                     'options' => array('filecount' => '1',),
                 ),
+                //FILE UPLOAD ARRAY BOX
+                // This is a custom programmed upload box, the call for this field uses the Exopite_Simple_Options_Framework_Field_upload class.
+                // The functionality inside upload.php has been drastically reprogrammed to the current upload file functionality. 
+                // See the functions below: custom_file_upload_handler, custom_file_delete_handler.
+                // It also ties into the action at the top of this script: add_action('wp_ajax_custom_file_upload'), add_action('wp_ajax_custom_file_delete').
+                array(
+                    'id'      => 'figure_upload_file',               
+                    'type'    => 'upload',
+                    'title'   => 'Upload Interactive Figure File:',
+                    'options' => array(
+                        //'upload_path'               =>  See the custom_file_upload_handler & custom_file_delete_handler functions below.
+                        'maxsize'                   =>  10485760, //Keeping for future development.
+                    ),
+                ),
                 array(
                     'id'          => 'figure_json_arguments',
                     'type'        => 'text',
@@ -637,6 +654,157 @@ class Webcr_Figure {
         return $args;
     }
 
+    /**
+	 * Interactive figures - Upload a file to a custom created directory and update the filename, csv, and/or json database fields for it's path in the postmeta DB.
+	 *
+	 * @since    1.0.0
+	 */
+    public static function custom_file_upload_handler() {
+        ob_clean(); // Ensure no unwanted output
+
+        // Error if no post ID
+        if (!isset($_POST['post_id']) || empty($_POST['post_id'])) {
+            wp_send_json_error(['message' => 'Missing post ID.'], 400);
+        }
+        //Get the post's ID and the file to be uploaded's name
+        $post_id = intval($_POST['post_id']);
+        $file = $_FILES['uploaded_file'];
+        if (!$file) {
+            wp_send_json_error(['message' => 'No file uploaded.'], 400);
+        }
+
+        // Get the file extension and check it to make sure it is of the type that are allowed
+        $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $allowed_types = ['json', 'csv'];
+        if (!in_array($file_ext, $allowed_types)) {
+            wp_send_json_error(['message' => 'Invalid file type.'], 400);
+        }
+
+        // Get instance ID, scene ID, and modal ID and define the upload path
+        // $instance_id = get_post_meta($post_id, 'location', true);
+        // $scene_id = get_post_meta($post_id, 'figure_scene', true);
+        // $modal_id = get_post_meta($post_id, 'figure_modal', true);
+        // if (!$instance_id) {
+        //     wp_send_json_error(['message' => 'Invalid instance ID.'], 400);
+        // }
+        // if (!$scene_id) {
+        //     wp_send_json_error(['message' => 'Invalid scene ID.'], 400);
+        // }
+        // if (!$modal_id) {
+        //     wp_send_json_error(['message' => 'Invalid modal ID.'], 400);
+        // }
+
+        $csv_path = get_post_meta($post_id, 'uploaded_path_csv', true);
+        $json_path = get_post_meta($post_id, 'uploaded_path_json', true);
+
+        // Define the directory where the file is to be uploaded
+        //$upload_dir = ABSPATH . 'wp-content/data/instance_' . $instance_id . '/figure_' . $post_id  . '/';
+        $upload_dir = ABSPATH . 'wp-content/data/figure_' . $post_id  . '/';
+
+        // Create the folders in which the file will be stored if they don't exist
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0775, true);
+        }
+
+        // Move the file to the upload folder and update the database fields. 
+        $destination = $upload_dir . basename($file['name']);
+        $destination_json = $upload_dir . basename(preg_replace('/\.csv$/', '.json', $file['name']));
+
+        if (move_uploaded_file($file['tmp_name'], $destination)) {
+            //Store file path in post metadata  
+            if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'csv') {
+                update_post_meta($post_id, 'uploaded_path_csv', $destination);
+                update_post_meta($post_id, 'uploaded_file', $file['name']);
+            } 
+            
+            if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'json' && $csv_path == '') {
+                update_post_meta($post_id, 'uploaded_path_json', $destination);
+                update_post_meta($post_id, 'uploaded_file', $file['name']);
+            }
+
+            if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'json' && $csv_path != '') {
+                update_post_meta($post_id, 'uploaded_path_json', $destination);
+            }
+            wp_send_json_success(['message' => 'File uploaded successfully.', 'path' => $destination]);
+
+        } else {
+            wp_send_json_error(['message' => 'File upload failed.'], 500);
+        }
+    }
+    
+
+    /**
+	 * Interactive figures - Delete the file from the upload folder and update the filename, csv, and/or json database fields for it's path in the postmeta DB.
+	 *
+	 * @since    1.0.0
+	 */
+    public static function custom_file_delete_handler() {
+        ob_clean(); // Ensure no unwanted output
+
+        // Get the post's ID
+        if (!isset($_POST['post_id']) || empty($_POST['post_id'])) {
+            wp_send_json_error(['message' => 'Missing post ID.'], 400);
+        }
+
+        // Get the file to be deleted's name
+        if (!isset($_POST['file_name']) || empty($_POST['file_name'])) {
+            wp_send_json_error(['message' => 'Missing file name.'], 400);
+        }
+
+        // Variable-ize the post's ID & the file's name.
+        $post_id = intval($_POST['post_id']);
+        $file_name = sanitize_file_name($_POST['file_name']);
+
+        // Get instance ID, scene ID, and modal ID
+        // $instance_id = get_post_meta($post_id, 'location', true);
+        // $scene_id = get_post_meta($post_id, 'figure_scene', true);
+        // $modal_id = get_post_meta($post_id, 'figure_modal', true);
+        // if (!$instance_id) {
+        //     wp_send_json_error(['message' => 'Invalid instance ID.'], 400);
+        // }
+        // if (!$scene_id) {
+        //     wp_send_json_error(['message' => 'Invalid scene ID.'], 400);
+        // }
+        // if (!$modal_id) {
+        //     wp_send_json_error(['message' => 'Invalid modal ID.'], 400);
+        // }
+
+        // Define the directory where the file is to be deleted
+        //$delete_dir = ABSPATH . 'wp-content/data/instance_' . $instance_id . '/figure_' . $post_id  . '/';
+        $delete_dir = ABSPATH . 'wp-content/data/figure_' . $post_id  . '/';
+        $file_path = $delete_dir . $file_name;
+        $file_path_json = $delete_dir . basename(preg_replace('/\.csv$/', '.json', $file_name));
+
+        // Check if file exists
+        if (!file_exists($file_path)) {
+            wp_send_json_error(['message' => 'File does not exist.'], 404);
+        }
+
+        // Delete the converted json file if it was originally a csv. file.
+        if (pathinfo($file_name, PATHINFO_EXTENSION) === 'csv'){
+            unlink($file_path_json);
+            update_post_meta($post_id, 'uploaded_path_csv', '');
+            update_post_meta($post_id, 'uploaded_path_json', '');
+            update_post_meta($post_id, 'uploaded_file', '');
+        }
+
+        // Delete the uploaded file.
+        if (unlink($file_path)) {
+            //Update the metadata instead of deleting it
+            update_post_meta($post_id, 'uploaded_path_csv', '');
+            update_post_meta($post_id, 'uploaded_path_json', '');
+            update_post_meta($post_id, 'uploaded_file', '');
+
+            wp_send_json_success([
+                'message' => 'File deleted successfully.',
+                'path' => $file_path
+            ]);
+        } else {
+            wp_send_json_error(['message' => 'Failed to delete the file.'], 500);
+        }
+    }
+    
+
     public function figure_admin_notice() {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
         // posts after it has been updated. The if statement is looking for three things: 1. Figure post type? 2. An individual post (as opposed to the scene
@@ -699,3 +867,43 @@ class Webcr_Figure {
         }
     }
 }
+
+// add_action('wp_ajax_custom_file_upload', 'custom_file_upload_handler');
+//     //add_action('wp_ajax_nopriv_custom_file_upload', 'custom_file_upload_handler'); // Allow non-logged-in users
+
+// function custom_file_upload_handler() {
+//     if (!isset($_FILES['custom_file'])) {
+//         wp_send_json_error(['message' => 'No file uploaded.'], 400);
+//     }
+
+//     $file = $_FILES['custom_file'];
+//     $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+//     $allowed_types = ['json', 'csv'];
+
+//     if (!in_array($file_ext, $allowed_types)) {
+//         wp_send_json_error(['message' => 'Invalid file type.'], 400);
+//     }
+    
+//     $post_id = get_the_ID();
+//     error_log('$post_id: ' . $post_id);
+//     $instance_id = get_post_meta( $post_id, 'location', true );
+//     error_log('$instance_id: ' . $instance_id);
+//     $instance_name_formatted = sanitize_title(get_the_title($instance_id));
+//     error_log('$instance_name_formatted: ' . $instance_name_formatted);
+
+//     $upload_dir = ABSPATH . 'wp-content/data/' . $instance_name_formatted . '/';
+
+//     if (!file_exists($upload_dir)) {
+//         mkdir($upload_dir, 0755, true);
+//     }
+
+//     $destination = $upload_dir . basename($file['name']);
+//     if (move_uploaded_file($file['tmp_name'], $destination)) {
+//         wp_send_json_success(['message' => 'File uploaded successfully.', 'path' => $destination]);
+//     } else {
+//         wp_send_json_error(['message' => 'File upload failed.'], 500);
+//     }
+// }
+
+?>
+
