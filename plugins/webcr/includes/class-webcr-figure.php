@@ -1,11 +1,22 @@
 <?php
 /**
- * Register class that defines the Figure custom content type as well as associated Figure functions 
- * 
+ * This php file contains the class Webcr_Figure
  */
+
+ // load in utility functions, if they aren't already loaded
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
+
+/**
+ * Register class that defines the Figure custom content type as well as associated Figure functions 
+ */
 class Webcr_Figure {
 
+    /**
+	 * 	 This function has been included as part of the boilerplate tutorial and should be deleted.
+	 *
+     * @param string $plugin_name The name of the plugin
+	 * @since    1.0.0
+	 */
     public function __construct( $plugin_name ) {
 		$this->plugin_name = $plugin_name;
 	}
@@ -14,6 +25,7 @@ class Webcr_Figure {
 	 * Set columns in admin screen for Figure custom content type.
 	 *
      * @link https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
+     * @param array $columns The name of the plugin
 	 * @since    1.0.0
 	 */
     function change_figure_columns( $columns ) {
@@ -442,7 +454,7 @@ class Webcr_Figure {
                     'class'       => 'text-class',
                     'description' => 'This should be a comma-delimited list of arguments',
                 ),
-                array(
+                array( //ROBBIE - this field should go
                     'id'          => 'figure_temp_filepath',
                     'type'        => 'text',
                     'title'       => 'Temp datafile path',
@@ -453,7 +465,7 @@ class Webcr_Figure {
                     'type'        => 'textarea',
                     'title'       => 'Figure: interactive arguments',
                 ),    
-                array(
+                array( //ROBBIE - this field should go
                     'id'          => 'figure_temp_javascript',
                     'type'        => 'button',
                     'title'       => 'Generate Figure Arguments (Temp)',
@@ -492,32 +504,6 @@ class Webcr_Figure {
                         'btn-class' => 'exopite-sof-btn'
                     ),
                 ),
-                //Preview button for displaying the internal or external images at the bottom of form
-  //              array(
-    //                'id'          => 'figure_temp_plotly',
-      //              'type'        => 'button',
-        //            'title'       => 'Preview Temp Plotly',
-          //          'class'        => 'figure_temp_plotly',
-            //        'options'     => array(
-              //          'href'  =>  '#nowhere',
-                //        'target' => '_self',
-                  //      'value' => 'Preview',
-                    //    'btn-class' => 'exopite-sof-btn'
-       //             ),
-         //       ),
-                //Preview button for displaying the code at the bottom of form
-   //             array(
-     //               'id'          => 'code_preview',
-       //             'type'        => 'button',
-         //           'title'       => 'Preview Code',
-           //         'class'        => 'code_preview',
-             //       'options'     => array(
-               //         'href'  =>  '#nowhere',
-                 //       'target' => '_self',
-                   //     'value' => 'Preview',
-                     //   'btn-class' => 'exopite-sof-btn'
-               //     ),          
-           //     ),
             )
         );
 
@@ -611,6 +597,9 @@ class Webcr_Figure {
 
     /**
 	 * Add a filter to support filtering by "figure_modal" and id in REST API queries.
+     * 
+     * @param array $args The arguments for the query to filter what figure posts come back from the REST API.
+     * @param array $request The database id of the post.
 	 *
 	 * @since    1.0.0
 	 */
@@ -637,6 +626,11 @@ class Webcr_Figure {
         return $args;
     }
 
+    /**
+	 * Display any warning and error notices to the user in the figure admin screen caused by user entry errors.
+	 *
+	 * @since    1.0.0
+	 */
     public function figure_admin_notice() {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
         // posts after it has been updated. The if statement is looking for three things: 1. Figure post type? 2. An individual post (as opposed to the scene
@@ -664,23 +658,7 @@ class Webcr_Figure {
                                 $error_message = $error_message . '</ul></p>';
                             }
                             echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
-
-      //                      if (isset($_COOKIE["modal_error_all_fields"])) {
-        //                        $modal_fields_coded = stripslashes($_COOKIE["modal_error_all_fields"]);
-          //                      $modal_fields_array = json_decode($modal_fields_coded, true);	
-            //                    $_POST['modal_location'] = $modal_fields_array['modal_location'];
-              //                  $_POST['modal_scene'] = $modal_fields_array['modal_scene'];
-                //                $_POST['modal_icons'] = $modal_fields_array['modal_icons'];
-                  //              $_POST['icon_function'] = $modal_fields_array['icon_function'];
-                    //            $_POST['icon_external_url'] = $modal_fields_array['icon_external_url'];
-                      //          $_POST['icon_scene_out'] = $modal_fields_array['icon_scene_out'];
-                        //        $_POST['modal_tagline'] = $modal_fields_array['modal_tagline'];
-                          //      $_POST['modal_info_entries'] = $modal_fields_array['modal_info_entries'];
-                     //           $_POST['modal_photo_entries'] = $modal_fields_array['modal_photo_entries'];
-                       //         $_POST['modal_tab_number'] = $modal_fields_array['modal_tab_number'];
-                       //     }
                         }
-                    //   setcookie("scene_post_status", "", time() - 300, "/");
                     }
                     if (isset($_COOKIE["figure_warnings"])){
                         $warning_message = "<p>Warning or warnings in figure</p>";

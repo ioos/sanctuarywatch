@@ -84,8 +84,6 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
   }
   add_action('wp_enqueue_scripts', 'enqueue_api_script');
 
-
-
   /**
    * Registers the 'scene' custom post type.
    *
@@ -585,7 +583,18 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
   }
 
   //enqueue javascript for infographiq
-  function enqueue_info_scripts() {
+  function enqueue_scripts() {
+
+    // Enqueue utility.js
+
+    // Get the plugin URL
+    $plugin_url = plugin_dir_url('webcr/webcr.php'); 
+
+		wp_enqueue_script('figure-utility', $plugin_url  . 'includes/utilities/js/utility.js',array(), '1.0.0', array('strategy'  => 'defer'));
+		
+		// Enqueue plotly-timeseries-line.js
+		wp_enqueue_script('plotly-timeseries-line',  $plugin_url  . '/includes/figures/js/plotly-timeseries-line.js', array(), '1.0.0', array('strategy'  => 'defer'));
+
     wp_enqueue_script(
         'script-js',
         get_template_directory_uri() . '/assets/js/script.js',
@@ -593,42 +602,17 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
         null,
         array('strategy' => 'defer') 
     );
-}
-add_action('wp_enqueue_scripts', 'enqueue_info_scripts');
 
-function enqueue_info_scripts2() {
-  wp_enqueue_script(
+    wp_enqueue_script(
       'index-js',
       get_template_directory_uri() . '/assets/js/index.js',
       array(),
       null,
       array('strategy' => 'defer') 
-  );
-}
-add_action('wp_enqueue_scripts', 'enqueue_info_scripts2');
+    );
 
-function enqueue_info_scripts3() {
-  wp_enqueue_script(
-      'plots-js',
-      get_template_directory_uri() . '/assets/js/plots.js',
-      array(),
-      null,
-      array('strategy' => 'defer') 
-  );
-}
-add_action('wp_enqueue_scripts', 'enqueue_info_scripts3');
-
-// function enqueue_plotly_script() {
-//   wp_enqueue_script(
-//       'plotly-js', // Handle name
-//       'https://cdn.plot.ly/plotly-latest.min.js', // CDN URL
-//       array(), 
-//       null, 
-//       true // Load in footer
-//   );
-// }
-// add_action('wp_enqueue_scripts', 'enqueue_plotly_script');
-
+  }
+  add_action('wp_enqueue_scripts', 'enqueue_scripts');
 
 ?>
 

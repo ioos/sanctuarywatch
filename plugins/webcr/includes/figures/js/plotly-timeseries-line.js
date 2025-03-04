@@ -1,14 +1,41 @@
-// Code for plotting time series data with a plotly line
+/**
+ * @file This file contains functions for creating and managing interactive
+ * time-series line plots using the Plotly library. These functions display the plot but also get user input for function parameters.
+ * @version 1.0.0
+ */
 
-async function producePlotlyLineFigure(targetFigureElement){
+/**
+ * Produces a time-series line plot using Plotly.
+ *
+ * @async
+ * @function producePlotlyLineFigure
+ * @param {string} targetFigureElement - The ID of the HTML element where the plot will be inserted.
+ * @param {string} jsonFilePath - The relative path to the JSON data file.
+ * @param {FigureArguments} figureArguments - An object containing the figure's arguments.
+ * @throws {Error} Throws an error if there is a network issue fetching the data, or if data is formatted improperly.
+ * @example
+ * producePlotlyLineFigure('myFigureContainer', '/data/timeseries.json', {
+ *   NumberOfLines: 2,
+ *   XAxis: 'Date',
+ *   XAxisTitle: 'Date',
+ *   YAxisTitle: 'Value',
+ *   XAxisLowBound: 0,
+ *   XAxisHighBound: 100,
+ *   YAxisLowBound: 0,
+ *   YAxisHighBound: 20,
+ *   Line1: 'Line1Data',
+ *   Line1Title: 'Line 1',
+ *   Line1Color: '#0000FF',
+ *   Line2: 'Line2Data',
+ *   Line2Title: 'Line 2',
+ *   Line2Color: '#FF0000',
+ * });
+ */
+async function producePlotlyLineFigure(targetFigureElement, jsonFilePath, figureArguments){
     try {
         await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
-
-        const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
-        const figureArguments = Object.fromEntries(JSON.parse(rawField));
         const rootURL = window.location.origin;
-        const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
-        const finalURL = rootURL + restOfURL;
+        const finalURL = rootURL + jsonFilePath;
         const rawResponse = await fetch(finalURL);
         if (!rawResponse.ok) {
             throw new Error('Network response was not ok');
@@ -19,7 +46,7 @@ async function producePlotlyLineFigure(targetFigureElement){
         let newDiv = document.createElement('div');
         newDiv.id = "plotlyFigure";
         newDiv.classList.add("container", "figure_interactive");
-
+console.log(targetFigureElement);
         const targetElement = document.getElementById(targetFigureElement);
         targetElement.appendChild(newDiv);
         
@@ -53,7 +80,6 @@ async function producePlotlyLineFigure(targetFigureElement){
                 figureArguments['XAxisTitle'] + ': %{x}<br>' +  // Custom label for x-axis
                 figureArguments['YAxisTitle'] + ': %{y}' // Custom label for y-axis
               };
-              console.log(singleLinePlotly);
               allLinesPlotly.push(singleLinePlotly);
         }
           
@@ -86,6 +112,14 @@ async function producePlotlyLineFigure(targetFigureElement){
     }
 }
 
+/**
+ * Creates the form fields that allow users to define parameters for a Plotly line graph.
+ *
+ * @function plotlyLineParameterFields
+ * @param {Object} jsonColumns - An object containing the column names from the json file that is used to create the plotly figure.
+ * @example
+ * plotlyLineParameterFields(["Year", "AverageTemp"]);
+ */
 function plotlyLineParameterFields(jsonColumns){
   let newDiv = document.createElement("div");
   newDiv.id = 'secondaryGraphFields';
@@ -236,8 +270,12 @@ function plotlyLineParameterFields(jsonColumns){
   displayLineFields(selectNumberLines.value, jsonColumns);
 }
 
-
-// generate the form fields needed for users to indicate preferences for how a figure should appear 
+/**
+ * Code used within the Wordpress figure admin side of the house to generate form fields to assign data columns to lines on the graph.
+ * @function displayLineFields
+ * @param {number} numLines - The number of lines to display fields for.
+ * @param {Object} jsonColumns - An object containing the column names from the json file that is used to create the plotly figure.
+ */
 function displayLineFields (numLines, jsonColumns) {
   let assignColumnsToPlot = document.getElementById('assignColumnsToPlot');
   // If the element exists
