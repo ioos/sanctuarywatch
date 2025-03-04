@@ -590,7 +590,7 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
     // Get the plugin URL
     $plugin_url = plugin_dir_url('webcr/webcr.php'); 
 
-		wp_enqueue_script('figure-utility', $plugin_url  . 'includes/utilities/js/utility.js',array(), '1.0.0', array('strategy'  => 'defer'));
+		wp_enqueue_script('figure-utility', $plugin_url  . 'includes/figures/js/utility.js',array(), '1.0.0', array('strategy'  => 'defer'));
 		
 		// Enqueue plotly-timeseries-line.js
 		wp_enqueue_script('plotly-timeseries-line',  $plugin_url  . '/includes/figures/js/plotly-timeseries-line.js', array(), '1.0.0', array('strategy'  => 'defer'));
