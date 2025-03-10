@@ -376,12 +376,6 @@ class Webcr_Figure {
                         ),
                     ),
                 ),
-                // array(
-                //     'id'    => 'interactive_image',
-                //     'type'  => 'checkbox',
-                //     'title' => 'Interactive image?',
-                //     'description' => 'Is this a static figure that needs to be converted to interactive?',
-                // ),
                 array(
                     'id'             => 'figure_path',
                     'type'           => 'select',
@@ -444,28 +438,7 @@ class Webcr_Figure {
                         //'upload_path'               =>  See the custom_file_upload_handler & custom_file_delete_handler functions below.
                         'maxsize'                   =>  10485760, //Keeping for future development.
                     ),
-                ),
-                //Was used for developing the path to the json file.
-                // array(
-                //     'id'          => 'figure_json_arguments',
-                //     'type'        => 'text',
-                //     'title'       => 'Arguments for Creating Interactive Figure',
-                //     'class'       => 'text-class',
-                //     'description' => 'This should be a comma-delimited list of arguments',
-                // ), 
-                // array(
-                //     'id'          => 'figure_temp_filepath',
-                //     'type'        => 'text',
-                //     'title'       => 'Temp datafile path',
-                //     'class'       => 'text-class',
-                // ),
-                // array(
-                //     'id'    => 'figure_json',
-                //     'type'  => 'image',
-                //     'title' => 'Figure Json',
-                //     'description' => 'What is the figure json?',
-                //     'options' => array('filecount' => '1',),
-                // ),    
+                ),   
                 array(
                     'id'          => 'figure_interactive_arguments',
                     'type'        => 'textarea',
@@ -510,32 +483,6 @@ class Webcr_Figure {
                         'btn-class' => 'exopite-sof-btn'
                     ),
                 ),
-            //     //Preview button for displaying the internal or external images at the bottom of form
-            //     array(
-            //        'id'          => 'figure_temp_plotly',
-            //        'type'        => 'button',
-            //        'title'       => 'Preview Temp Plotly',
-            //        'class'        => 'figure_temp_plotly',
-            //        'options'     => array(
-            //            'href'  =>  '#nowhere',
-            //            'target' => '_self',
-            //            'value' => 'Preview',
-            //            'btn-class' => 'exopite-sof-btn'
-            //        ),
-            //    ),
-            //     //Preview button for displaying the code at the bottom of form
-            //     array(
-            //        'id'          => 'code_preview',
-            //        'type'        => 'button',
-            //        'title'       => 'Preview Code',
-            //        'class'        => 'code_preview',
-            //        'options'     => array(
-            //            'href'  =>  '#nowhere',
-            //            'target' => '_self',
-            //            'value' => 'Preview',
-            //            'btn-class' => 'exopite-sof-btn'
-            //        ),          
-            //    ),
             )
         );
 
@@ -556,7 +503,6 @@ class Webcr_Figure {
             array('figure_caption_short', 'string', 'The short figure caption'),
             array('figure_caption_long', 'string', 'The long figure caption'),
             array('figure_interactive_arguments', 'string', 'Arguments used in interactive figures'),
-            //array('figure_temp_filepath', 'string', 'Temp path to JSON file'),
             
         );
         // Register fields in REST API
