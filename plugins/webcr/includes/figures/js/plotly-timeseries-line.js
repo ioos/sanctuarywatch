@@ -1,14 +1,22 @@
 // Code for plotting time series data with a plotly line
 
-async function producePlotlyLineFigure(targetFigureElement){
+async function producePlotlyLineFigure(targetFigureElement, uploaded_path_json){
     try {
         await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
 
         const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
         const figureArguments = Object.fromEntries(JSON.parse(rawField));
         const rootURL = window.location.origin;
-        const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
+
+        //Rest call to get uploaded_path_json
+        const figureRestCall = rootURL + "/wp-json/wp/v2/figure?_fields=uploaded_path_json";
+        const response = await fetch(figureRestCall);
+        const data = await response.json();
+        const uploaded_path_json = data[0].uploaded_path_json;
+
+        const restOfURL = "/wp-content" + uploaded_path_json.split("wp-content")[1];
         const finalURL = rootURL + restOfURL;
+
         const rawResponse = await fetch(finalURL);
         if (!rawResponse.ok) {
             throw new Error('Network response was not ok');
@@ -164,7 +172,7 @@ function plotlyLineParameterFields(jsonColumns){
   selectNumberLines.id = "NumberOfLines";
   selectNumberLines.name = "plotFields";
   selectNumberLines.addEventListener('change', function() {
-      displayLineFields(selectNumberLines.value) });
+      displayLineFields(selectNumberLines.value, jsonColumns) });
   selectNumberLines.addEventListener('change', function() {
           logFormFieldValues();
       });

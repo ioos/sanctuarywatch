@@ -1,6 +1,9 @@
 
 // These functions only fire upon editing or creating a post of Figure custom content type
-(function( $ ) {
+
+run_webcr_admin_figures()
+
+function run_webcr_admin_figures() {
     'use strict';
 
     displayCorrectImageField ();
@@ -96,11 +99,9 @@
     // reset tabs on icon change
     function figureIconChange(){
 
-        const figureModal = document.getElementsByName("figure_modal")[0].value;
-        
+        const figureModal = document.getElementsByName("figure_modal")[0].value;      
         const protocol = window.location.protocol;
         const host = window.location.host;
-
         const restModal = protocol + "//" + host  + "/wp-json/wp/v2/modal/" + figureModal;
 
         fetch(restModal)
@@ -135,7 +136,9 @@
 
     // Should the image be an external URL or an internal URL? Show the relevant fields either way
     function displayCorrectImageField () {
+
         const imageType = document.getElementsByName("figure_path")[0].value;
+
         // Select the container with data-depend-id="figure_image"
         let figureImageContainer = document.querySelector('[data-depend-id="figure_image"]');
 
@@ -144,104 +147,67 @@
         // Select the img tag within the class "exopite-sof-image-preview"
         let imagePreviewImg = imagePreviewContainer.querySelector('img');
 
-        let figureJsonContainer = document.querySelector('[data-depend-id="figure_json"]');
-
-        // Select the nested container with class "exopite-sof-image-preview"
-        let jsonPreviewContainer = figureJsonContainer.querySelector('.exopite-sof-image-preview');
-        // Select the img tag within the class "exopite-sof-image-preview"
-        let jsonPreviewImg = jsonPreviewContainer.querySelector('img');
+        // Select the nested container with class "exopite-sof-field-ace_editor"
+        let codeContainer= document.querySelector('.exopite-sof-field-ace_editor');
 
         // Select the nested container with class "exopite-sof-field-upload"
-        let codeContainer= document.querySelector('.exopite-sof-field-ace_editor');
+        let uploadFileContainer= document.querySelector('.exopite-sof-field-upload');
 
         // Select the nested container with class ".exopite-sof-btn.figure_preview"
         let figurePreviewElement = document.querySelector('.exopite-sof-btn.figure_preview'); // Add an ID or a unique class
         
-        // Select the nested container with class ".exopite-sof-btn.code_preview"
-        let codePreviewElement = document.querySelector('.exopite-sof-btn.code_preview'); // Add an ID or a unique class
-
         switch (imageType) {
             case "Internal":
                 //Show the fields we want to see
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "block";
-                //Choose the preview field we want to see
-                if (codePreviewElement) {
-                    codePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
-                }
-                if (figurePreviewElement) {
-                    figurePreviewElement.parentElement.parentElement.style.display = "block"; // Show the element
-                }
+
                 //Hide the fields we do not want to see
-                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json")[0].value = "";
+                codeContainer.style.display = "none";
+                uploadFileContainer.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].value = "";
-                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json_arguments")[0].value = "";
-                document.getElementsByName("figure_json")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json")[0].value = "";
-                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "none";
-                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "none";
-
-                codeContainer.style.display = "none";
+                document.querySelector('.figure_interactive_settings').parentElement.parentElement.style.display = "none";
                 break;
 
             case "External":
                 //Show the fields we want to see
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "block";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "block";
-                //Choose the preview field we want to see
-                if (figurePreviewElement) {
-                    figurePreviewElement.parentElement.parentElement.style.display = "block"; // Show the element
-                }
-                if (codePreviewElement) {
-                    codePreviewElement.parentElement.parentElement.style.display = "none"; // Hide the element
-                } 
+
                 //Hide the fields we do not want to see
-                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json")[0].value = "";
+                codeContainer.style.display = "none";
+                uploadFileContainer.style.display = "none";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
-                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json_arguments")[0].value = "";
-                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "none";
-                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "none";
-                codeContainer.style.display = "none";
+                document.querySelector('.figure_interactive_settings').parentElement.parentElement.style.display = "none"
                 break;               
 
             case "Interactive":
-                //Hide the fields we do not want to see and show the fields we want to see
+                //Show the fields we want to see
                 codeContainer.style.display = "none";
+                uploadFileContainer.style.display = "block";
+
+                //Hide the fields we do not want to see and show the fields we want to see
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].value = "";
-                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json")[0].value = "";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
-                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json_arguments")[0].value = "";
-                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "block";
-                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "block";
                 break;
 
             case "Code":
                 //Show the fields we want to see
-                if (codeContainer) {
-                    codeContainer.style.display = "block";
-                }
+                codeContainer.style.display = "block";
 
                 //Hide the fields we do not want to see
-                document.getElementsByName("figure_json")[0].parentElement.parentElement.parentElement.style.display = "none";
+                uploadFileContainer.style.display = "none";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("figure_json_arguments")[0].parentElement.parentElement.style.display = "none"; 
-                document.getElementsByName("figure_temp_filepath")[0].parentElement.parentElement.style.display = "none";
-                document.querySelector('.figure_temp_javascript').parentElement.parentElement.style.display = "none"; 
+                document.querySelector('.figure_interactive_settings').parentElement.parentElement.style.display = "none"; 
                 break;
         } 
     }
@@ -251,13 +217,62 @@
     document.getElementsByName("figure_scene")[0].addEventListener('change', figureSceneChange);
     document.getElementsByName("location")[0].addEventListener('change', figureInstanceChange);
 
-    //FIGURE JAVASCRIPT JSON BUTTON
-    document.querySelector('[data-depend-id="figure_temp_javascript"]').addEventListener('click', loadJson);
+    //LOAD THE INTERACTIVE FIGURE SETTINGS 
+    checkIfFileExistsAndLoadJson();
+
+
+    async function checkIfFileExistsAndLoadJson() {
+        try {
+            let button = document.querySelector(".exopite-sof-btn.figure_interactive_settings");
+            if (button) {
+                button.remove();
+            } 
+
+            let rootURL = window.location.origin;
+            const figureRestCall = rootURL + "/wp-json/wp/v2/figure?_fields=uploaded_path_json";
+            const response = await fetch(figureRestCall);
+            const data = await response.json();
+            const uploaded_path_json = data[0].uploaded_path_json;
+
+            // Find the target div inside "exopite-sof-field-button"
+            let targetContainer = document.querySelector(".exopite-sof-field.exopite-sof-field-button .exopite-sof-fieldset");
+
+            // Check if the post meta variable exists (assuming it's in the "meta" field)
+            if (uploaded_path_json != "") {
+
+                if (targetContainer) {
+                    // Call the loadJson function and populate its contents inside the div
+                    let jsonContent = loadJson(targetContainer); // Call function with meta value
+                }
+            }
+            if (uploaded_path_json == "") {
+                let divContainer = document.querySelector(".exopite-sof-field.exopite-sof-field-button");
+                if (divContainer) {
+                    divContainer.remove();
+                } 
+                //targetContainer.innerHTML = "Please upload a valid 'Interactive Figure File' and click  the 'Update' button in the top right of the page to access this feature.";
+            }
+        } catch (error) {       
+            console.error("Error fetching post meta:", error.message);
+        }
+    }
 
     // JAVASCRIPT JSON CODE
-    async function loadJson() {
+    async function loadJson(targetContainer) {
         const rootURL = window.location.origin;
-        const restOfURL = document.getElementsByName("figure_temp_filepath")[0].value;
+
+        //Rest call to get uploaded_path_json
+        const figureRestCall = rootURL + "/wp-json/wp/v2/figure?_fields=uploaded_path_json";
+        const response = await fetch(figureRestCall);
+        const data = await response.json();
+        const uploaded_path_json = data[0].uploaded_path_json;
+        const restOfURL = "/wp-content" + uploaded_path_json.split("wp-content")[1];
+
+        if (uploaded_path_json == ""){
+            alert("Please upload a file before creating a graph");
+            console.error('Error loading JSON:', error);
+        }
+
         const finalURL = rootURL + restOfURL;
         try {
             const response = await fetch(finalURL);
@@ -266,8 +281,18 @@
             }
             const data = await response.json();
 
+            // Convert metadata keys into metadataRows
+            let metadataRows = [];
+            if (data.metadata && Object.keys(data.metadata).length > 0) {
+                metadataRows = Object.keys(data.metadata).map((key) => ({
+                    key: key,
+                    value: data.metadata[key],
+                }));
+            }
+
             jsonColumns = Object.fromEntries(
                 Object.keys(data.data).map((key, index) => [index, key])); 
+                jsonColumns
 
             const lengthJsonColumns = (Object.entries(jsonColumns).length);
             if (lengthJsonColumns > 1){
@@ -276,10 +301,13 @@
                     // Remove the scene window
                     graphGUI.parentNode.removeChild(graphGUI);
                 }
-                const targetElement = document.querySelector('.figure_temp_javascript').parentElement.parentElement;
+                const targetElement = targetContainer
                 let newDiv = document.createElement('div');
                 newDiv.id = "graphGUI";
                 newDiv.classList.add("container", "graphGUI");
+
+                // If metadata exists, display it in a floating box
+                displayMetadataBox(metadataRows, newDiv);
 
                 let labelGraphType = document.createElement("label");
                 labelGraphType.for = "graphType";
@@ -334,6 +362,27 @@
         }
     }
 
+    function displayMetadataBox(metadataRows, newDiv) {
+        // Convert metadata object to readable text with both key and value
+        let metadataText = "Current Metadata:<br><br>";
+        if (metadataRows.length >= 1) {
+            metadataRows.forEach((row) => {
+                let cleanedValue = row.value.replace(/,/g, "");
+                metadataText += `<span style="font-size: 13px;">${row.key}: ${cleanedValue}</span><br>`;
+            });
+        } else {
+            metadataText += `<span style="font-size: 13px;">No metadata found.</span><br>`;
+        }
+    
+        // Add a light grey horizontal line at the bottom after all metadata rows
+        metadataText += `<br><hr style="border: 0.5px solid lightgrey; margin-top: 8px;">`;
+        // Insert the formatted metadata text into the existing div
+        newDiv.innerHTML = metadataText; 
+        // Ensure it's visible
+        newDiv.style.display = "block";
+    }
+    
+
     // create parameter fields 
     function secondaryGraphFields(graphType){
 
@@ -343,7 +392,7 @@
             // Remove the scene window
             secondaryGraphDiv.parentNode.removeChild(secondaryGraphDiv);
         }
-    
+    ``
         switch(graphType){
             case "None":
                 clearPreviousGraphFields();
@@ -368,7 +417,66 @@
         }
     }
 
-    //FIGURE PREVIEW BUTTON   
+    // DISPLAY EMBED CODE IN PREVIEW BOX
+    function displayCode (previewCodeButton) {
+        // Remove existing preview div if present
+        let previewWindow = document.getElementById("code_preview_window");
+        if (previewWindow) {
+            previewWindow.parentNode.removeChild(previewWindow);
+        }
+    
+        // Create a new div to display the embed code
+        const previewDiv = document.createElement("div");
+        previewDiv.id = "code_preview_window";
+        previewDiv.style.width = "100%";
+        previewDiv.style.minHeight = "300px";
+        previewDiv.style.padding = "10px";
+        previewDiv.style.backgroundColor = "#ffffff";
+        previewDiv.style.overflow = "auto";
+        // Center the content using Flexbox
+        previewDiv.style.display = "flex";
+        previewDiv.style.justifyContent = "center"; // Centers horizontally
+        previewDiv.style.alignItems = "center"; // Centers vertically (if height is greater than content)
+    
+        // Get the embed code from the figure_code field
+        const embedCode = document.getElementsByName("figure_code")[0]?.value || "No code available. Set the 'Figure Type' to 'Code' and paste your code into the HTML/JavaScript Code Code text area.";
+    
+        try {
+            // Parse the embed code and extract <script> tags
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = embedCode;
+    
+            // Move <script> tags to the head and inject the rest into the preview div
+            const scripts = tempDiv.querySelectorAll("script");
+            scripts.forEach((script) => {
+                const newScript = document.createElement("script");
+                newScript.type = script.type || "text/javascript";
+                if (script.src) {
+                    newScript.src = script.src; // External script
+                } else {
+                    newScript.textContent = script.textContent; // Inline script
+                }
+                document.head.appendChild(newScript); // Add to <head>
+                script.remove(); // Remove the script tag from tempDiv
+            });
+    
+            // Inject remaining HTML into the preview div
+            previewDiv.innerHTML = tempDiv.innerHTML;
+    
+            // Append the preview div below the button
+            document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+    
+        } catch (error) {
+            console.error("Failed to inject embed code:", error);
+            previewDiv.textContent = "Failed to load embed code. Please check your input.";
+            document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+        }
+    }   
+
+    //FIGURE PREVIEW BUTTON 
+    //const previewCodeButton = document.querySelector(".figure_preview");
+    //previewCodeButton.addEventListener("click", displayCode);
+    
     document.querySelector('[data-depend-id="figure_preview"]').addEventListener('click', function() {
         // Let's remove the preview window if it already exists
         var previewWindow = document.getElementById('preview_window');
@@ -457,8 +565,11 @@
                     imageRow.id = "javascript_figure_target"
                     interactiveImage = true;
                 break;
+            case "Code":
+                imageRow.id = "code_preview_window"
+                break;
         }
-
+        
         const containerWidth = document.querySelector('[data-depend-id="figure_preview"]').parentElement.parentElement.parentElement.clientWidth;
 
         if (containerWidth < 800){
@@ -494,150 +605,17 @@
 
         secondParent.appendChild(newDiv);
         if (interactiveImage == true){
-          //  loadExternalScript('wp-content/plugins/webcr/includes/figure/js/plotly-timeseries-line.js');
-            producePlotlyLineFigure("javascript_figure_target");
-        }
-
-    });
-
-// Claude code for json functionality
-$('#select-json-btn').on('click', function(e) {
-    e.preventDefault();
-    
-    // Create file input
-    var fileInput = $('<input type="file" accept=".json" style="display: none;">');
-    $('body').append(fileInput);
-    
-    fileInput.trigger('click');
-    
-    fileInput.on('change', function() {
-        var file = this.files[0];
-        if (!file) return;
-        
-        // Validate file size (optional, adjust limit as needed)
-        if (file.size > 5 * 1024 * 1024) { // 5MB limit
-            alert('File size too large. Please select a file under 5MB.');
-            fileInput.remove();
-            return;
-        }
-        
-        var formData = new FormData();
-        formData.append('action', 'figure_json_upload');
-        formData.append('nonce', figureJsonUploader.nonce);
-        formData.append('json_file', file);
-        
-        // Show loading state
-        $('#select-json-btn').prop('disabled', true).text('Uploading...');
-        
-        $.ajax({
-            url: figureJsonUploader.ajax_url,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                if (response.success) {
-                    $('#figure_json_path').val(response.data.file_path);
-                    
-                    // Add clear button if it doesn't exist
-                    if ($('#clear-json-btn').length === 0) {
-                        $('<button type="button" class="button" id="clear-json-btn">Clear</button>')
-                            .insertAfter('#select-json-btn');
-                    }
-                } else {
-                    alert('Upload failed: ' + response.data);
-                }
-            },
-            error: function() {
-                alert('Upload failed. Please try again.');
-            },
-            complete: function() {
-                $('#select-json-btn').prop('disabled', false).text('Select JSON');
-                fileInput.remove();
+            try {
+                //loadExternalScript('wp-content/plugins/webcr/includes/figure/js/plotly-timeseries-line.js');  
+                producePlotlyLineFigure("javascript_figure_target");
+            } catch (error) {
+                alert('Please upload a a valid file before generating a graph.')
             }
-        });
+        }
+        if (figurePath == 'Code') {
+            displayCode();        
+        }
+
     });
-});
-
-// Handle clear button click
-$(document).on('click', '#clear-json-btn', function(e) {
-    e.preventDefault();
-    $('#figure_json_path').val('');
-    $(this).remove();
-});
     
-})( jQuery );
-
-// Code for making Run Code button do something
-//    const previewCodeButton = document.querySelector(".code_preview");
-
-  //  previewCodeButton.addEventListener("click", displayCode);
-
-    function displayCode () {
-        // Remove existing preview div if present
-        let previewWindow = document.getElementById("code_preview_window");
-        if (previewWindow) {
-            previewWindow.parentNode.removeChild(previewWindow);
-        }
-
-        // Create a new div to display the embed code
-        const previewDiv = document.createElement("div");
-        previewDiv.id = "code_preview_window";
-        previewDiv.style.width = "100%";
-        previewDiv.style.minHeight = "300px";
-        previewDiv.style.padding = "10px";
-        previewDiv.style.backgroundColor = "#ffffff";
-        previewDiv.style.overflow = "auto";
-        // Center the content using Flexbox
-        previewDiv.style.display = "flex";
-        previewDiv.style.justifyContent = "center"; // Centers horizontally
-        previewDiv.style.alignItems = "center"; // Centers vertically (if height is greater than content)
-
-        // Get the embed code from the figure_code field
-        const embedCode = document.getElementsByName("figure_code")[0]?.value || "No code available. Set the 'Figure Type' to 'Code' and paste your code into the HTML/JavaScript Code Code text area.";
-
-        try {
-            // Parse the embed code and extract <script> tags
-            const tempDiv = document.createElement("div");
-            tempDiv.innerHTML = embedCode;
-
-            // Move <script> tags to the head and inject the rest into the preview div
-            const scripts = tempDiv.querySelectorAll("script");
-            scripts.forEach((script) => {
-                const newScript = document.createElement("script");
-                newScript.type = script.type || "text/javascript";
-                if (script.src) {
-                    newScript.src = script.src; // External script
-                } else {
-                    newScript.textContent = script.textContent; // Inline script
-                }
-                document.head.appendChild(newScript); // Add to <head>
-                script.remove(); // Remove the script tag from tempDiv
-            });
-
-            // Inject remaining HTML into the preview div
-            previewDiv.innerHTML = tempDiv.innerHTML;
-
-            // Append the preview div below the button
-            previewCodeButton.insertAdjacentElement("afterend", previewDiv);
-
-        } catch (error) {
-            console.error("Failed to inject embed code:", error);
-            previewDiv.textContent = "Failed to load embed code. Please check your input.";
-            previewCodeButton.insertAdjacentElement("afterend", previewDiv);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+};

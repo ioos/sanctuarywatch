@@ -376,12 +376,12 @@ class Webcr_Figure {
                         ),
                     ),
                 ),
-                array(
-                    'id'    => 'interactive_image',
-                    'type'  => 'checkbox',
-                    'title' => 'Interactive image?',
-                    'description' => 'Is this a static figure that needs to be converted to interactive?',
-                ),
+                // array(
+                //     'id'    => 'interactive_image',
+                //     'type'  => 'checkbox',
+                //     'title' => 'Interactive image?',
+                //     'description' => 'Is this a static figure that needs to be converted to interactive?',
+                // ),
                 array(
                     'id'             => 'figure_path',
                     'type'           => 'select',
@@ -431,13 +431,6 @@ class Webcr_Figure {
                         'style'        => 'height: 150px; max-width: 100%;',
                     ),
                 ),
-                array(
-                    'id'    => 'figure_json',
-                    'type'  => 'image',
-                    'title' => 'Figure Json',
-                    'description' => 'What is the figure json?',
-                    'options' => array('filecount' => '1',),
-                ),
                 //FILE UPLOAD ARRAY BOX
                 // This is a custom programmed upload box, the call for this field uses the Exopite_Simple_Options_Framework_Field_upload class.
                 // The functionality inside upload.php has been drastically reprogrammed to the current upload file functionality. 
@@ -452,29 +445,37 @@ class Webcr_Figure {
                         'maxsize'                   =>  10485760, //Keeping for future development.
                     ),
                 ),
-                array(
-                    'id'          => 'figure_json_arguments',
-                    'type'        => 'text',
-                    'title'       => 'Arguments for Creating Interactive Figure',
-                    'class'       => 'text-class',
-                    'description' => 'This should be a comma-delimited list of arguments',
-                ),
-                array(
-                    'id'          => 'figure_temp_filepath',
-                    'type'        => 'text',
-                    'title'       => 'Temp datafile path',
-                    'class'       => 'text-class',
-                ),     
+                //Was used for developing the path to the json file.
+                // array(
+                //     'id'          => 'figure_json_arguments',
+                //     'type'        => 'text',
+                //     'title'       => 'Arguments for Creating Interactive Figure',
+                //     'class'       => 'text-class',
+                //     'description' => 'This should be a comma-delimited list of arguments',
+                // ), 
+                // array(
+                //     'id'          => 'figure_temp_filepath',
+                //     'type'        => 'text',
+                //     'title'       => 'Temp datafile path',
+                //     'class'       => 'text-class',
+                // ),
+                // array(
+                //     'id'    => 'figure_json',
+                //     'type'  => 'image',
+                //     'title' => 'Figure Json',
+                //     'description' => 'What is the figure json?',
+                //     'options' => array('filecount' => '1',),
+                // ),    
                 array(
                     'id'          => 'figure_interactive_arguments',
                     'type'        => 'textarea',
                     'title'       => 'Figure: interactive arguments',
                 ),    
                 array(
-                    'id'          => 'figure_temp_javascript',
+                    'id'          => 'figure_interactive_settings',
                     'type'        => 'button',
-                    'title'       => 'Generate Figure Arguments (Temp)',
-                    'class'        => 'figure_temp_javascript',
+                    'title'       => 'Interactive Figure Settings',
+                    'class'        => 'figure_interactive_settings',
                     'options'     => array(
                         'href'  =>  '#nowhere',
                         'target' => '_self',
@@ -509,32 +510,32 @@ class Webcr_Figure {
                         'btn-class' => 'exopite-sof-btn'
                     ),
                 ),
-                //Preview button for displaying the internal or external images at the bottom of form
-  //              array(
-    //                'id'          => 'figure_temp_plotly',
-      //              'type'        => 'button',
-        //            'title'       => 'Preview Temp Plotly',
-          //          'class'        => 'figure_temp_plotly',
+            //     //Preview button for displaying the internal or external images at the bottom of form
+            //     array(
+            //        'id'          => 'figure_temp_plotly',
+            //        'type'        => 'button',
+            //        'title'       => 'Preview Temp Plotly',
+            //        'class'        => 'figure_temp_plotly',
             //        'options'     => array(
-              //          'href'  =>  '#nowhere',
-                //        'target' => '_self',
-                  //      'value' => 'Preview',
-                    //    'btn-class' => 'exopite-sof-btn'
-       //             ),
-         //       ),
-                //Preview button for displaying the code at the bottom of form
-   //             array(
-     //               'id'          => 'code_preview',
-       //             'type'        => 'button',
-         //           'title'       => 'Preview Code',
-           //         'class'        => 'code_preview',
-             //       'options'     => array(
-               //         'href'  =>  '#nowhere',
-                 //       'target' => '_self',
-                   //     'value' => 'Preview',
-                     //   'btn-class' => 'exopite-sof-btn'
-               //     ),          
-           //     ),
+            //            'href'  =>  '#nowhere',
+            //            'target' => '_self',
+            //            'value' => 'Preview',
+            //            'btn-class' => 'exopite-sof-btn'
+            //        ),
+            //    ),
+            //     //Preview button for displaying the code at the bottom of form
+            //     array(
+            //        'id'          => 'code_preview',
+            //        'type'        => 'button',
+            //        'title'       => 'Preview Code',
+            //        'class'        => 'code_preview',
+            //        'options'     => array(
+            //            'href'  =>  '#nowhere',
+            //            'target' => '_self',
+            //            'value' => 'Preview',
+            //            'btn-class' => 'exopite-sof-btn'
+            //        ),          
+            //    ),
             )
         );
 
@@ -555,7 +556,7 @@ class Webcr_Figure {
             array('figure_caption_short', 'string', 'The short figure caption'),
             array('figure_caption_long', 'string', 'The long figure caption'),
             array('figure_interactive_arguments', 'string', 'Arguments used in interactive figures'),
-            array('figure_temp_filepath', 'string', 'Temp path to JSON file'),
+            //array('figure_temp_filepath', 'string', 'Temp path to JSON file'),
             
         );
         // Register fields in REST API
@@ -605,7 +606,7 @@ class Webcr_Figure {
 	 * @since    1.0.0
 	 */
     function register_figure_rest_fields() {
-        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long', 'figure_interactive_arguments','figure_temp_filepath');
+        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long', 'figure_interactive_arguments','uploaded_path_json'); //figure_temp_filepath
         $function_utilities = new Webcr_Utility();
         $function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
     }
@@ -794,6 +795,8 @@ class Webcr_Figure {
             update_post_meta($post_id, 'uploaded_path_csv', '');
             update_post_meta($post_id, 'uploaded_path_json', '');
             update_post_meta($post_id, 'uploaded_file', '');
+            update_post_meta($post_id, 'figure_interactive_arguments', '');
+            update_post_meta($post_id, 'plotFields', '');
 
             wp_send_json_success([
                 'message' => 'File deleted successfully.',
