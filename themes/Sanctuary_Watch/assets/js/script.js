@@ -1442,45 +1442,54 @@ function render_modal(key){
                 collapseListHTML += '</div>';
             }
             //for photos:
-
+            let modal_photo_entries = modal_data["modal_photo_entries"];
             let modal_id = modal_data.id;
             let collapsePhotoHTML = '<div>';
-            for (let i = 1; i < 7; i++){
-                let info_field = "modal_photo" + i;
-                let info_text = "modal_photo_text" + i;
-
-                // let info_url = "modal_photo_url" + i;
-                let info_url;
-                let loc = "modal_photo_location" + i;
-                if (modal_data[info_field][loc] === "External"){
-                    info_url = "modal_photo_url" + i;
-                } else {
-                    info_url = "modal_photo_internal" + i;
+    
+            //Show the "Images" accordion item if the number of image entries is greater than 0 in the admin slider for modals.
+            if (modal_photo_entries != 0){
+                for (let i = 1; i < 7; i++){
+                    let info_field = "modal_photo" + i;
+                    let info_text = "modal_photo_text" + i;
+    
+                    // let info_url = "modal_photo_url" + i;
+                    let info_url;
+                    let loc = "modal_photo_location" + i;
+                    if (modal_data[info_field][loc] === "External"){
+                        info_url = "modal_photo_url" + i;
+                    } else {
+                        info_url = "modal_photo_internal" + i;
+                    }
+    
+                    let modal_info_text = modal_data[info_field][info_text];
+                    let modal_info_url = modal_data[info_field][info_url];
+                    if ((modal_info_text == '') && (modal_info_url == '')){
+                        continue;
+                    }
+    
+                    let listItem = document.createElement('li');
+                    let anchor = document.createElement('a');
+                    anchor.setAttribute('href', modal_info_url); 
+                    anchor.textContent = modal_info_text;
+    
+                    listItem.appendChild(anchor);
+    
+                    // collapseList.appendChild(listItem);
+                    collapsePhotoHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
+                    collapsePhotoHTML += '</div>';
                 }
-
-                let modal_info_text = modal_data[info_field][info_text];
-                let modal_info_url = modal_data[info_field][info_url];
-                if ((modal_info_text == '') && (modal_info_url == '')){
-                    continue;
-                }
-
-                let listItem = document.createElement('li');
-                let anchor = document.createElement('a');
-                anchor.setAttribute('href', modal_info_url); 
-                anchor.textContent = modal_info_text;
-
-                listItem.appendChild(anchor);
-
-                // collapseList.appendChild(listItem);
-                collapsePhotoHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
-                collapsePhotoHTML += '</div>';
+            let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
+            acc.appendChild(accordionItem1);
+            let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", collapsePhotoHTML);
+            acc.appendChild(accordionItem2);
+            } 
+            
+            //Otherwise show the "More Info" accordion only item if "Images == 0"
+            else {           
+            let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
+            acc.appendChild(accordionItem1);
             }
             
-            let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
-            let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", collapsePhotoHTML);
-
-            acc.appendChild(accordionItem1);
-            acc.appendChild(accordionItem2);
             if (is_mobile()){
                 let accordionItem3 = createAccordionItem("accordion-item-3", "accordion-header-3", "accordion-collapse-3", "Tagline", modal_tagline);
                 acc.prepend(accordionItem3);

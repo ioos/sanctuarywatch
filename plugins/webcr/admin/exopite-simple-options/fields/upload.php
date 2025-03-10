@@ -92,13 +92,17 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				$example_csv = 'example.csv';
 				$example_json = 'example.json';
 
-				echo '<strong>Example Files:</strong><br>';
-				echo 'Please format your file as shown in the examples below. If they are not formatted properly, your file will be rejected.<br>';
-				echo ' - For .csv and/or .json files, be sure none of your columns header names or row data values contain commas.<br>';
-				echo ' - Please see the date examples in the example files for accepted date formats. <br>';
+				echo '<strong>Example Files & Formatting:</strong>';
+				echo '<br>';
+				echo ' - Be sure none of your column header names, row data values, or metadata contain commas.<br>';
+				echo ' - Please see the date examples in the example files for accepted date formats and no data handling. <br>';
 				echo ' - The date formats are best viewed in Notepad or a similar text editor, MS Excel may automatically change date formats. <br>';
+				echo '<br>';
+				echo 'Please format your .csv or .json file as shown in the examples below. If they are not formatted properly, your file will be rejected.<br>';
 				echo '<a href="' . esc_url($example_folder . $example_csv) . '" target="_blank">Download example.csv</a><br>';
 				echo '<a href="' . esc_url($example_folder . $example_json) . '" target="_blank">Download example.json</a>';
+				echo '<br>';
+				echo '<br>';
 				?>
 			</div>
 
@@ -156,19 +160,26 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
 						// Convert numeric values to integers or floats, assign null for missing numerical values, and keep non-numeric as strings
 						const columnValues = result[header].filter(val => val !== "" && val !== null);
+						//const isNumericColumn = columnValues.every(val => !isNaN(val));
 						const isNumericColumn = columnValues.every(val => typeof val === "number");
 
 						if (parsedValue === "") {
-							parsedValue = isNumericColumn ? null : "";
+							// Use "" also for missing numeric values and "" for categorical data in Plotly.js
+							if (isNumericColumn == false) {
+								parsedValue = "";	
+							}
+							if (isNumericColumn == true) {
+								parsedValue === null;	
+								//parsedValue.push(null);
+							}
 						} else if (!isNaN(parsedValue)) {
 							parsedValue = parsedValue.includes('.') ? parseFloat(parsedValue) : parseInt(parsedValue, 10);
-						}
+						}					
 
 						// Push the parsed value into the respective header array
 						result[header].push(parsedValue);
 					});
 				}
-
 				// Wrap the result object inside a "data" key and return it along with metadata
 				return { metadata: metadata_result, data: result };
 			}
@@ -224,6 +235,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				jsonStr += '\n    }\n}';
 				
 				// Return the fully formatted compact JSON string
+				console.log(jsonStr);
 				return jsonStr;
 			}
 			</script>
@@ -328,9 +340,8 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 			</script>
 
 			<script>
-			// Do not allow access to the upload button if it is a new post. 
-			document.addEventListener("DOMContentLoaded", function () {
-				var uploadBtn = document.getElementById('upload-btn');
+			// Do not allow access to the upload butto
+			// upload-btn');
 				var fileInput = document.getElementById('uploaded-file');
 
 				// Check if URL contains "post-new.php?post_type=figure"
@@ -362,6 +373,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				var fileInput = document.getElementById('uploaded-file');
 				var uploadBtn = document.getElementById('upload-btn');
 				var uploadMessage = document.createElement("p");
+				var uploadMessage2 = document.createElement("p");
 
 				if (!fileInput.files.length) {
 					alert("Please select a file before uploading.");
@@ -426,6 +438,8 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
 								// Convert Blob to a File
 								var jsonFile = new File([jsonBlob], json_fileName, { type: "application/json" });
+								var jsonFile_metadata = jsonFile.metadata
+								console.log(jsonFile_metadata)
 
 								// Prepare FormData for AJAX request
 								var formData_csvtojson = new FormData();
@@ -445,14 +459,16 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 									console.log("Server response:", data);
 									if (data.success) {
 										alert("Success: " + (data.message || "File Upload Successful.") +  "\n" +
-											"\nClick 'Update' button in the top-right to save your changes or access the delete button.");
+											"\nClick 'Update' button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.");
 
 										// Hide the upload button and the file input
 										uploadBtn.style.display = "none";
 										fileInput.style.display = "none";
 
 										// Display message after hiding the buttons
-										uploadMessage.textContent = `Current File: ${fileName}, Click 'Update' button in the top-right to save your changes and/or access the delete button.`;
+										uploadMessage.textContent = `Current File: ${fileName}`;
+										uploadMessage2.textContent = 'Click "Update" button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.'
+										uploadBtn.parentNode.insertBefore(uploadMessage2, uploadBtn.nextSibling);
 										uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);
 									} else {
 										alert("Error: " + (data.message || "Something went wrong."));
@@ -481,14 +497,16 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 									}
 
 									alert("Success: " + (data.message || "File Upload Successful.") + "\n\n" +
-										"Click 'Update' button in the top-right to save your changes or access the delete button.");
+										"Click 'Update' button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.");
 
 									// Hide the upload button and the file input
 									uploadBtn.style.display = "none";
 									fileInput.style.display = "none";
 
 									// Display message after hiding the buttons
-									uploadMessage.textContent = `Current File: ${fileName}\n\nClick 'Update' button in the top-right to save your changes and/or access the delete button.`;
+									uploadMessage.textContent = `Current File: ${fileName}`;
+									uploadMessage2.textContent = 'Click "Update" button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.'
+									uploadBtn.parentNode.insertBefore(uploadMessage2, uploadBtn.nextSibling);
 									uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);
 								} catch (error) {
 									deleteUploadedFile();
@@ -500,17 +518,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 											
 						} 
 						else {
-							// If the file is NOT a CSV or a Json, proceed with the normal success message. This would be if you allowed for more file types.
-// 							alert("Success: " + (data.message || "File Upload Successful.") + "\n" +
-// 									"\nClick 'Update' button in the top-right to save your changes or access the delete button.");
-
-// ``							// Hide the upload button and the file input
-// 							uploadBtn.style.display = "none";
-// 							fileInput.style.display = "none";
-
-// 							// Display message after hiding the buttons
-// 							uploadMessage.textContent = `Current File: ${fileName}, Click 'Update' button in the top-right to save your changes and/or access the delete button.`;
-// 							uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);``
+							// If the file is NOT a CSV or a Json....
 						} 
 					}
 					// If the Ajax Request was not successful			
