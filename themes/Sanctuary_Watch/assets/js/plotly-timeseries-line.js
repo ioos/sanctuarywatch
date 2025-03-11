@@ -1,10 +1,10 @@
 // Code for plotting time series data with a plotly line
 
-async function producePlotlyLineFigure(targetFigureElement){
+async function producePlotlyLineFigure(targetFigureElement, interactive_arguments){
     try {
         await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
 
-        const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
+        const rawField = interactive_arguments;
         const figureArguments = Object.fromEntries(JSON.parse(rawField));
         const rootURL = window.location.origin;
 
@@ -61,7 +61,7 @@ async function producePlotlyLineFigure(targetFigureElement){
                 figureArguments['XAxisTitle'] + ': %{x}<br>' +  // Custom label for x-axis
                 figureArguments['YAxisTitle'] + ': %{y}' // Custom label for y-axis
               };
-              console.log(singleLinePlotly);
+              //console.log(singleLinePlotly);
               allLinesPlotly.push(singleLinePlotly);
         }
           
@@ -380,4 +380,53 @@ function displayLineFields (numLines, jsonColumns) {
           targetElement.appendChild(newDiv);
       });
   }
+}
+//utility functions used in lots of places
+function loadExternalScript(url) {
+    return new Promise((resolve, reject) => {
+      // Check if script is already loaded
+      if (document.querySelector(`script[src="${url}"]`)) {
+          resolve();
+          return;
+      }
+  
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = url;
+      script.async = true;
+  
+      script.onload = () => {
+          resolve();
+      };
+  
+      script.onerror = () => {
+          reject(new Error(`Failed to load script: ${url}`));
+      };
+  
+      document.head.appendChild(script);
+    });
+  }
+  
+//log values for fields associated with javascript figure parameters to the field "figure interactive arguments"
+function logFormFieldValues() {
+    const allFields = document.getElementsByName("plotFields");
+    let fieldValues = [];
+    allFields.forEach((uniqueField) => {
+        fieldValues.push([uniqueField.id, uniqueField.value]);
+    });
+    //document.getElementsByName("figure_interactive_arguments")[0].value = JSON.stringify(fieldValues);
+    interactive_arguments[0].value = JSON.stringify(fieldValues); 
+}
+
+//fill in values for fields associated with javascript figure parameters from the field "figure interactive arguments"
+function fillFormFieldValues(elementID){
+    const interactiveFields = interactive_arguments[0].value; //document.getElementsByName("figure_interactive_arguments")[0].value;
+
+    if (interactiveFields != ""  && interactiveFields != null) {
+        const resultJSON = Object.fromEntries(JSON.parse(interactiveFields));
+
+        if (resultJSON[elementID] != undefined && resultJSON[elementID] != ""){
+            return resultJSON[elementID];
+        }
+    }
 }

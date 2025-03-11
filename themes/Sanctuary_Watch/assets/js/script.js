@@ -363,7 +363,7 @@ function has_mobile_layer(mob_icons, elemname){
         let child = mob_icons.children[i];
         let label = child.getAttribute('inkscape:label');
         if (label === elemname){
-            console.log(`found ${label}`);
+            //console.log(`found ${label}`);
             return true;
         }             
     }
@@ -960,6 +960,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  * This function is called for each tab, populating one or more figures (and other corresponding info)
  */
 function render_tab_info(tabContentElement, tabContentContainer, info_obj){
+    
     const containerDiv = document.createElement('div');
     containerDiv.style.background = '#e3e3e354';
     containerDiv.style.width = '100%';
@@ -1027,10 +1028,10 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     figureDiv.classList.add('figure');
 
     let img;
-    if (info_obj["figureType"] != "Interactive"){
+    let figureType = info_obj["figureType"];
 
-        //LOGIC FOR IMAGE DISPLAY
-        if (info_obj["figureType"] != "Code"){
+    switch (figureType) {
+        case "Internal":
             img = document.createElement('img');
             img.src = info_obj['imageLink'];
             if (info_obj['externalAlt']){
@@ -1038,11 +1039,39 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             } else {
                 img.alt = '';
             }
-            figureDiv.appendChild(img);
-        }
+            figureDiv.appendChild(img);       
+        break;
 
-        //LOGIC FOR CODE DISPLAY
-        if (info_obj["figureType"] == "Code"){
+        case "External":
+            img = document.createElement('img');
+            img.src = info_obj['imageLink'];
+            if (info_obj['externalAlt']){
+                img.alt = info_obj['externalAlt'];
+            } else {
+                img.alt = '';
+            }
+            figureDiv.appendChild(img);       
+        break;
+
+        case "Interactive":
+            img = document.createElement('div'); // Create a div to hold the plot
+            img.style.width = "100%";
+            img.style.minHeight = "300px";
+            img.style.padding = "10px";
+            img.style.backgroundColor = "#ffffff";
+            // Center the content using Flexbox
+            img.style.display = "flex";
+            img.style.justifyContent = "center"; // Centers horizontally
+            img.style.alignItems = "center"; // Centers vertically (if height is greater than content)
+            img.id =  "javascript_figure_target";
+            let interactive_arguments = info_obj["figure_interactive_arguments"];
+            producePlotlyLineFigure("javascript_figure_target", interactive_arguments);
+            figureDiv.appendChild(img);  
+        break;
+
+
+        case "Code":
+            img = '';
             // Create a new div to display the embed code
             const codeDiv = document.createElement("div");
             codeDiv.id = "code_display_window";
@@ -1079,16 +1108,10 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
                 document.head.appendChild(newScript); // Add to <head>
                 script.remove(); // Remove the script tag from tempDiv
             });
-
             // Inject remaining HTML into the codeDiv
-            codeDiv.innerHTML = tempDiv.innerHTML;
-        }
+            codeDiv.innerHTML = tempDiv.innerHTML;      
+        break;
 
-    // LOGIC FOR INTERACTIVE FIGURES
-    }  else {  
-        divJavascriptTarget = document.createElement('div'); // Create a div to hold the plot
-        divJavascriptTarget.id = 'javascript_figure_target'; 
-        figureDiv.appendChild(divJavascriptTarget);
     }
    
     //ATTRIBUTES FOR THE FIGURE DIV
@@ -1117,28 +1140,24 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         details.appendChild(summary);
         details.appendChild(longCaption);
         tabContentElement.appendChild(details);
+
     }
     
     // Add the details element to the tab content element
     // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
 
-    if (info_obj['figureType'] == "Interactive"){
-        if (info_obj['interactiveArguments'] != ""  && info_obj['interactiveArguments']  != null) {
-            const resultJSON = Object.fromEntries(JSON.parse(info_obj['interactiveArguments']));
-            switch(resultJSON['graphType']) {
-                case "Plotly line graph (time series)":
-                    const plotlyTargetElement = "javascript_figure_target";
-                    const jsonFilePath = info_obj['jsonPath'];
-                    const figureArguments = resultJSON;
-                    producePlotlyLineFigure(plotlyTargetElement, jsonFilePath, figureArguments);
-                    break;
-            }
+    // if (interactiveBool){
+    //     let fetchLink = 'http://sanctuarywatch.local/wp-content/uploads/2024/09/test.json';
+    //     // let plotType = 'markers';
+    //     // make_plots(img, fetchLink, plotType);
+    //     x = ['Year']; //have to make sure this is in the data
+    //     y = ['Whales', 'Fish']; //have to make sure this is in the data
+    //     cols = ['blue', 'red'];
+    //     let plotInstance = new Plot(img, fetchLink, x, y, cols);
+    //     plotInstance.execute('lines');
 
-            console.log(resultJSON);
-        }
-    } else {console.log("no check");}
-
+    // }
     img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");   
 }
 
@@ -1184,36 +1203,31 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                 
             } else{
                 // tabContentContainer.setAttribute("display", "");
-            //title stuff:
-                for (let idx in all_figure_data){
-                    figure_data = all_figure_data[idx];
-                    let img = '';
-                    let external_alt = '';
-                    if (figure_data['figure_path']==='External'){
-                        img = figure_data['figure_external_url'];
-                        external_alt = figure_data['figure_external_alt'];
-                    }
-                    else {
-                        img = figure_data['figure_image'];
-                    } // add smth here for external
-
-                    info_obj = {
-                    "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
-                    "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
-                    "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
-                    "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
-                    "imageLink" : img,
-                    "code" : figure_data["figure_code"],
-                    "externalAlt": external_alt,
-                    "shortCaption" : figure_data["figure_caption_short"],
-                    "longCaption": figure_data["figure_caption_long"],
-                //    "interactive": figure_data["figure_path"],
-                    "jsonPath": figure_data["figure_temp_filepath"],
-                    "figureType": figure_data["figure_path"],
-                    "interactiveArguments": figure_data["figure_interactive_arguments"],                   
-                    };
-                    render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure
+            //title stufff
+                figure_data = all_figure_data[tab_id-1]; //IS this really the best way to do this? It works though...Logic is sound
+                let external_alt = '';
+                if (figure_data['figure_path']==='External'){
+                    img = figure_data['figure_external_url'];
+                    external_alt = figure_data['figure_external_alt'];
                 }
+                else {
+                    img = figure_data['figure_image'];
+                } // add smth here for external
+                info_obj = {
+                "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
+                "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
+                "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
+                "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
+                "imageLink" : img,
+                "code" : figure_data["figure_code"],
+                "externalAlt": external_alt,
+                "shortCaption" : figure_data["figure_caption_short"],
+                "longCaption": figure_data["figure_caption_long"],
+                //"interactive": figure_data["figure_path"],
+                "figureType": figure_data["figure_path"],
+                "figure_interactive_arguments": figure_data["figure_interactive_arguments"]                
+                };
+                render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure
             }
 
         })

@@ -156,6 +156,10 @@ function run_webcr_admin_figures() {
         // Select the nested container with class ".exopite-sof-btn.figure_preview"
         let figurePreviewElement = document.querySelector('.exopite-sof-btn.figure_preview'); // Add an ID or a unique class
         
+        // Select the nested container with class ".exopite-sof-btn.figure_preview"
+        let figure_interactive_settings = document.querySelector('.exopite-sof-field.exopite-sof-field-button'); // Add an ID or a unique class
+        
+
         switch (imageType) {
             case "Internal":
                 //Show the fields we want to see
@@ -164,11 +168,11 @@ function run_webcr_admin_figures() {
                 //Hide the fields we do not want to see
                 codeContainer.style.display = "none";
                 uploadFileContainer.style.display = "none";
+                figure_interactive_settings.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].value = "";
-                document.querySelector('.figure_interactive_settings').parentElement.parentElement.style.display = "none";
                 break;
 
             case "External":
@@ -179,15 +183,16 @@ function run_webcr_admin_figures() {
                 //Hide the fields we do not want to see
                 codeContainer.style.display = "none";
                 uploadFileContainer.style.display = "none";
+                figure_interactive_settings.style.display = "none";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
-                document.querySelector('.figure_interactive_settings').parentElement.parentElement.style.display = "none"
                 break;               
 
             case "Interactive":
                 //Show the fields we want to see
                 codeContainer.style.display = "none";
                 uploadFileContainer.style.display = "block";
+                figure_interactive_settings.style.display = "block";
 
                 //Hide the fields we do not want to see and show the fields we want to see
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
@@ -204,10 +209,10 @@ function run_webcr_admin_figures() {
 
                 //Hide the fields we do not want to see
                 uploadFileContainer.style.display = "none";
+                figure_interactive_settings.style.display = "none";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
-                document.querySelector('.figure_interactive_settings').parentElement.parentElement.style.display = "none"; 
                 break;
         } 
     }
@@ -606,7 +611,6 @@ function run_webcr_admin_figures() {
         secondParent.appendChild(newDiv);
         if (interactiveImage == true){
             try {
-                //loadExternalScript('wp-content/plugins/webcr/includes/figure/js/plotly-timeseries-line.js');  
                 producePlotlyLineFigure("javascript_figure_target");
             } catch (error) {
                 alert('Please upload a a valid file before generating a graph.')
