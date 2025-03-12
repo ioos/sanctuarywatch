@@ -41,17 +41,17 @@ previous links used:
 </li> -->
 
 <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Sanctuaries</a>
+    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Condition tracking</a>
 </li>
 
 <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Designations</a>
+    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">New sanctuaries</a>
 </li>
 
 <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Topics</a>
+    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">System-wide topics</a>
 </li>
 
 <li class="nav-item ">
-    <a class="nav-link "  href="#" role="button" aria-haspopup="true" aria-expanded="false">About</a>
+    <a class="nav-link "  href="/about" role="button" aria-haspopup="true" aria-expanded="false">About</a>
 </li>
