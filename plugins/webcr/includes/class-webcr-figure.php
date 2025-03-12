@@ -853,6 +853,3 @@ class Webcr_Figure {
 //         wp_send_json_error(['message' => 'File upload failed.'], 500);
 //     }
 // }
-
-?>
-
