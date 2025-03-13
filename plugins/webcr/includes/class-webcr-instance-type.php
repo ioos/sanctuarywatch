@@ -15,7 +15,7 @@ class Webcr_Instance_Type {
         add_settings_section(
             'instance_settings_section',
             'Instance Settings',
-            'webcr_settings_section_callback',
+            [$this, 'webcr_settings_section_callback'],
             'instance_settings'
         );
     }
@@ -27,7 +27,7 @@ class Webcr_Instance_Type {
             'Theme Settings', // Menu title
             'manage_options', // Capability required
             'theme_settings', // Menu slug
-            'webcr_settings_page' // Function to display the page
+            [$this, 'webcr_settings_page'] // Function to display the page
         );
     }
 
@@ -40,7 +40,7 @@ class Webcr_Instance_Type {
         add_settings_section(
             'webcr_settings_section',
             'Theme Display Settings',
-            'webcr_settings_section_callback',
+            [$this, 'webcr_settings_section_callback'],
             'theme_settings'
         );
 
@@ -48,7 +48,7 @@ class Webcr_Instance_Type {
         add_settings_field(
             'intro_text',
             'Front Page Introduction',
-            'intro_text_field_callback',
+            [$this, 'intro_text_field_callback'],
             'theme_settings',
             'webcr_settings_section'
         );
@@ -56,7 +56,7 @@ class Webcr_Instance_Type {
         add_settings_field(
             'footer_background',
             'Footer Background Color',
-            'footer_background_field_callback',
+            [$this, 'footer_background_field_callback'],
             'theme_settings',
             'webcr_settings_section'
         );

@@ -93,7 +93,7 @@ if ($instances_query->have_posts()) {
         </span>
         <span style="display: inline-block; text-align: left; vertical-align: middle;">
             <div style="color: #00467F; font-size: 2.7vw; font-weight: bold;">Sanctuary Watch</div>
-            <div style="color: #008da8; font-size: 1.5vw; font-style: italic; font-weight: bold;">Web-Enabled Information for Sanctuary Management</div>
+            <div style="color: #008da8; font-size: 1.5vw; font-style: italic; font-weight: bold;">Informing Sanctuary Management</div>
         </span>
     </div>
 </div>
