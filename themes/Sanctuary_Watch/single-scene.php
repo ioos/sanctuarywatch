@@ -257,4 +257,3 @@ let title_arr  = <?php echo json_encode($title_arr); ?>;
 
 <?php
 get_footer();
-?>
