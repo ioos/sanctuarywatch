@@ -609,18 +609,6 @@ add_action('wp_enqueue_scripts', 'enqueue_info_scripts2');
 
 
 
-function enqueue_info_scripts3() {
-  wp_enqueue_script(
-      'plots-js',
-      get_template_directory_uri() . '/assets/js/plots.js',
-      array(),
-      null,
-      array('strategy' => 'defer') 
-  );
-}
-add_action('wp_enqueue_scripts', 'enqueue_info_scripts3');
-
-
 function enqueue_info_scripts4() {
   wp_enqueue_script(
       'plotly-timeseries-line',
