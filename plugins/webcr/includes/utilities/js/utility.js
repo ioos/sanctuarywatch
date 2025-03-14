@@ -35,8 +35,10 @@ function logFormFieldValues() {
 }
 
 //fill in values for fields associated with javascript figure parameters from the field "figure interactive arguments"
-function fillFormFieldValues(elementID){
-    const interactiveFields = document.getElementsByName("figure_interactive_arguments")[0].value;
+function fillFormFieldValues(elementID, interactive_arguments){
+        //const interactiveFields = document.getElementsByName("figure_interactive_arguments")[0].value;
+        interactiveFields = interactive_arguments;
+        console.log('interactiveFields', interactiveFields);
     if (interactiveFields != ""  && interactiveFields != null) {
         const resultJSON = Object.fromEntries(JSON.parse(interactiveFields));
 
