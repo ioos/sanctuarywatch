@@ -333,16 +333,19 @@ function run_webcr_admin_figures() {
                 selectGraphType.appendChild(graphType2);    
                 selectGraphType.appendChild(graphType3);   
 
-                fieldValueSaved = fillFormFieldValues(selectGraphType.id);
+                //Admin is able to call to the interactive_arguments using document.getElementsByName("figure_interactive_arguments")[0].value;
+                //interactive_arguments is for the theme side, it is blank here because it is a place holder variable
+                let interactive_arguments = document.getElementsByName("figure_interactive_arguments")[0].value;
+                fieldValueSaved = fillFormFieldValues(selectGraphType.id, interactive_arguments);
+
                 if (fieldValueSaved != undefined){
                     selectGraphType.value = fieldValueSaved;
                 }
-                
                 selectGraphType.addEventListener('change', function() {
-                    secondaryGraphFields(this.value);
+                    secondaryGraphFields(this.value, interactive_arguments);
                 });
                 selectGraphType.addEventListener('change', function() {
-                    logFormFieldValues();
+                    logFormFieldValues(interactive_arguments);
                 });
 
                 let newRow = document.createElement("div");
@@ -359,7 +362,7 @@ function run_webcr_admin_figures() {
 
                 targetElement.appendChild(newDiv);
                 if (fieldValueSaved != undefined){
-                    secondaryGraphFields(selectGraphType.value);
+                    secondaryGraphFields(selectGraphType.value, interactive_arguments);
                 }
             }
         } catch (error) {
@@ -389,7 +392,7 @@ function run_webcr_admin_figures() {
     
 
     // create parameter fields 
-    function secondaryGraphFields(graphType){
+    function secondaryGraphFields(graphType, interactive_arguments){
 
         var secondaryGraphDiv = document.getElementById('secondaryGraphFields');
         // If the element exists
@@ -407,7 +410,7 @@ function run_webcr_admin_figures() {
                 break;
             case "Plotly line graph (time series)":
                 clearPreviousGraphFields();
-                plotlyLineParameterFields(jsonColumns);
+                plotlyLineParameterFields(jsonColumns, interactive_arguments);
                 break;
         }
     }
@@ -611,7 +614,10 @@ function run_webcr_admin_figures() {
         secondParent.appendChild(newDiv);
         if (interactiveImage == true){
             try {
-                producePlotlyLineFigure("javascript_figure_target");
+                //Admin is able to call to the interactive_arguments using document.getElementsByName("figure_interactive_arguments")[0].value;
+                //interactive_arguments is for the theme side, it is blank here because it is a place holder variable
+                let interactive_arguments = document.getElementsByName("figure_interactive_arguments")[0].value;
+                producePlotlyLineFigure("javascript_figure_target", interactive_arguments);
             } catch (error) {
                 alert('Please upload a a valid file before generating a graph.')
             }

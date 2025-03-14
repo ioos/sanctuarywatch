@@ -1,10 +1,12 @@
 // Code for plotting time series data with a plotly line
 
-async function producePlotlyLineFigure(targetFigureElement){
+async function producePlotlyLineFigure(targetFigureElement, interactive_arguments){
     try {
         await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
 
-        const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
+        //const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
+        const rawField = interactive_arguments;
+
         const figureArguments = Object.fromEntries(JSON.parse(rawField));
         const rootURL = window.location.origin;
 
@@ -94,7 +96,10 @@ async function producePlotlyLineFigure(targetFigureElement){
     }
 }
 
-function plotlyLineParameterFields(jsonColumns){
+function plotlyLineParameterFields(jsonColumns, interactive_arguments){
+
+
+  console.log('plotlyLineParameterFields', interactive_arguments)
   let newDiv = document.createElement("div");
   newDiv.id = 'secondaryGraphFields';
   const targetElement = document.getElementById('graphGUI');
@@ -121,7 +126,7 @@ function plotlyLineParameterFields(jsonColumns){
       inputAxisTitle.id = axisTitle + "AxisTitle";
       inputAxisTitle.name = "plotFields";
       inputAxisTitle.size = "70";
-      fieldValueSaved = fillFormFieldValues(inputAxisTitle.id);
+      fieldValueSaved = fillFormFieldValues(inputAxisTitle.id, interactive_arguments);
       if (fieldValueSaved != undefined){
           inputAxisTitle.value = fieldValueSaved;
       }
@@ -149,7 +154,7 @@ function plotlyLineParameterFields(jsonColumns){
           inputBound.id = axisTitle + "Axis" + bound + "Bound";
           inputBound.name = "plotFields";
           inputBound.type = "number";
-          fieldValueSaved = fillFormFieldValues(inputBound.id);
+          fieldValueSaved = fillFormFieldValues(inputBound.id, interactive_arguments);
           if (fieldValueSaved != undefined){
               inputBound.value = fieldValueSaved;
           }
@@ -164,7 +169,9 @@ function plotlyLineParameterFields(jsonColumns){
 
   });
 
-  // Create select field for number of lines to be plotted 
+
+
+  // Create select field for number of lines to be plotted
   let labelSelectNumberLines = document.createElement("label");
   labelSelectNumberLines.for = "NumberOfLines";
   labelSelectNumberLines.innerHTML = "Number of Lines to Be Plotted";
@@ -172,7 +179,7 @@ function plotlyLineParameterFields(jsonColumns){
   selectNumberLines.id = "NumberOfLines";
   selectNumberLines.name = "plotFields";
   selectNumberLines.addEventListener('change', function() {
-      displayLineFields(selectNumberLines.value, jsonColumns) });
+      displayLineFields(selectNumberLines.value, jsonColumns, interactive_arguments) });
   selectNumberLines.addEventListener('change', function() {
           logFormFieldValues();
       });
@@ -183,7 +190,7 @@ function plotlyLineParameterFields(jsonColumns){
       selectNumberLinesOption.innerHTML = i; 
       selectNumberLines.appendChild(selectNumberLinesOption);
   }
-  fieldValueSaved = fillFormFieldValues(selectNumberLines.id);
+  fieldValueSaved = fillFormFieldValues(selectNumberLines.id, interactive_arguments);
   if (fieldValueSaved != undefined){
       selectNumberLines.value = fieldValueSaved;
   }
@@ -217,7 +224,7 @@ function plotlyLineParameterFields(jsonColumns){
       selectXAxisFormatOption.innerHTML = dateFormat; 
       selectXAxisFormat.appendChild(selectXAxisFormatOption);
   });
-  fieldValueSaved = fillFormFieldValues(selectXAxisFormat.id);
+  fieldValueSaved = fillFormFieldValues(selectXAxisFormat.id, interactive_arguments);
   if (fieldValueSaved != undefined){
       selectXAxisFormat.value = fieldValueSaved;
   }
@@ -241,12 +248,12 @@ function plotlyLineParameterFields(jsonColumns){
   targetElement.appendChild(newDiv);
 
   // Run display line fields
-  displayLineFields(selectNumberLines.value, jsonColumns);
+  displayLineFields(selectNumberLines.value, jsonColumns, interactive_arguments);
 }
 
 
 // generate the form fields needed for users to indicate preferences for how a figure should appear 
-function displayLineFields (numLines, jsonColumns) {
+function displayLineFields (numLines, jsonColumns, interactive_arguments) {
   let assignColumnsToPlot = document.getElementById('assignColumnsToPlot');
   // If the element exists
   if (assignColumnsToPlot) {
@@ -285,7 +292,7 @@ function displayLineFields (numLines, jsonColumns) {
               selectColumnOption.innerHTML = jsonColumnsValue; 
               selectColumn.appendChild(selectColumnOption);
           });
-          fieldValueSaved = fillFormFieldValues(selectColumn.id);
+          fieldValueSaved = fillFormFieldValues(selectColumn.id, interactive_arguments);
           if (fieldValueSaved != undefined){
               selectColumn.value = fieldValueSaved;
           }
@@ -334,7 +341,7 @@ function displayLineFields (numLines, jsonColumns) {
               inputTitle.addEventListener('change', function() {
                   logFormFieldValues();
               });
-              fieldValueSaved = fillFormFieldValues(inputTitle.id);
+              fieldValueSaved = fillFormFieldValues(inputTitle.id, interactive_arguments);
               if (fieldValueSaved != undefined){
                   inputTitle.value = fieldValueSaved;
               }
@@ -362,7 +369,7 @@ function displayLineFields (numLines, jsonColumns) {
               inputColor.id = fieldLabel[0] + "Color";
               inputColor.name = "plotFields";
               inputColor.type = "color";
-              fieldValueSaved = fillFormFieldValues(inputColor.id);
+              fieldValueSaved = fillFormFieldValues(inputColor.id, interactive_arguments);
               if (fieldValueSaved != undefined){
                   inputColor.value = fieldValueSaved;
               }

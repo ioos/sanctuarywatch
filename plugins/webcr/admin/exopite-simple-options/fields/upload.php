@@ -265,6 +265,18 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 			}
 			</script>
 
+			<script>
+			function clickUpdateButton() {
+				let updateButton = document.getElementById("publish"); // Find the button by ID
+				if (updateButton) {
+					updateButton.click(); // Simulate a click event
+					console.log("Update button clicked!");
+				} else {
+					console.error("Update button not found!");
+				}
+			}
+			</script>
+
 
 			<script>
 			/**
@@ -340,33 +352,42 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 			</script>
 
 			<script>
-			// Do not allow access to the upload butto
-			// upload-btn');
-				var fileInput = document.getElementById('uploaded-file');
+			/**
+			 * Do not allow access to the delete button if it is a new post because there is no post id to store the data.
+			 * 
+			 * @param {} obj - None
+			 * @returns {} - Prevents access to the browse button to upload a file.
+			 */
+			var fileInput = document.getElementById('uploaded-file');
+			var uploadBtn = document.getElementById('upload-btn');
 
-				// Check if URL contains "post-new.php?post_type=figure"
-				if (window.location.href.includes("post-new.php?post_type=figure")) {
-					if (uploadBtn) {
-						uploadBtn.disabled = true; // Disable the button
-						uploadBtn.style.opacity = "0.5"; // Make it look inactive
-					}
-
-					if (fileInput) {
-						fileInput.disabled = true; // Disable file input as well
-					}
-
-					// Show a message above the button
-					var message = document.createElement("p");
-					message.textContent = "⚠️ You must save this post before uploading a file to create an interactive figure.";
-					message.style.color = "red";
-					message.style.fontWeight = "bold";
-					uploadBtn.parentNode.insertBefore(message, uploadBtn);
+			// Check if URL contains "post-new.php?post_type=figure"
+			if (window.location.href.includes("post-new.php?post_type=figure")) {
+				if (uploadBtn) {
+					uploadBtn.disabled = true; // Disable the button
+					uploadBtn.style.opacity = "0.5"; // Make it look inactive
 				}
-			});			
+
+				if (fileInput) {
+					fileInput.disabled = true; // Disable file input as well
+				}
+
+				// Show a message above the button
+				var message = document.createElement("p");
+				message.textContent = "⚠️ You must save this post before uploading a file to create an interactive figure.";
+				message.style.color = "red";
+				message.style.fontWeight = "bold";
+				uploadBtn.parentNode.insertBefore(message, uploadBtn);
+			}		
 			</script>
 
 			<script>
-			// Upload button and .csv call to csvtojson converter and .json call to json validator______________________________________________________________________
+			/**
+			 * Upload button and .csv call to csvtojson converter and .json call to json validator
+			 * 
+			 * @param {} obj - None
+			 * @returns {} - Trigger the file upload and posts the files and the file name and path to the database.
+			 */
 			document.getElementById('upload-btn').addEventListener('click', function() {
 				
 				// Validation of variables form html and php
@@ -458,18 +479,18 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 								.then(data => {
 									console.log("Server response:", data);
 									if (data.success) {
-										alert("Success: " + (data.message || "File Upload Successful.") +  "\n" +
-											"\nClick 'Update' button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.");
-
+										//alert("Success: " + (data.message || "File Upload Successful.") +  "\n" +	"\nClick 'Update' button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.");
+										alert("Success: " + (data.message || "File Upload Successful" + '\n\n' + 'Click "OK" to save your changes.'));
 										// Hide the upload button and the file input
 										uploadBtn.style.display = "none";
 										fileInput.style.display = "none";
+										clickUpdateButton();
 
 										// Display message after hiding the buttons
-										uploadMessage.textContent = `Current File: ${fileName}`;
-										uploadMessage2.textContent = 'Click "Update" button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.'
-										uploadBtn.parentNode.insertBefore(uploadMessage2, uploadBtn.nextSibling);
-										uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);
+										//uploadMessage.textContent = `Current File: ${fileName}`;
+										//uploadMessage2.textContent = 'Click "Update" button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.'
+										//uploadBtn.parentNode.insertBefore(uploadMessage2, uploadBtn.nextSibling);
+										//uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);
 									} else {
 										alert("Error: " + (data.message || "Something went wrong."));
 									}
@@ -496,18 +517,18 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 										throw new Error("JSON validation failed.");
 									}
 
-									alert("Success: " + (data.message || "File Upload Successful.") + "\n\n" +
-										"Click 'Update' button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.");
+									//alert("Success: " + (data.message || "File Upload Successful.") + "\n\n" + "Click 'Update' button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.");
+									alert("Success: " + (data.message || "File Upload Successful." + '\n\n' + 'Click "OK" to save your changes.'));
 
 									// Hide the upload button and the file input
 									uploadBtn.style.display = "none";
 									fileInput.style.display = "none";
-
+									clickUpdateButton();
 									// Display message after hiding the buttons
-									uploadMessage.textContent = `Current File: ${fileName}`;
-									uploadMessage2.textContent = 'Click "Update" button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.'
-									uploadBtn.parentNode.insertBefore(uploadMessage2, uploadBtn.nextSibling);
-									uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);
+									//uploadMessage.textContent = `Current File: ${fileName}`;
+									//uploadMessage2.textContent = 'Click "Update" button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.'
+									//uploadBtn.parentNode.insertBefore(uploadMessage2, uploadBtn.nextSibling);
+									//uploadBtn.parentNode.insertBefore(uploadMessage, uploadBtn.nextSibling);
 								} catch (error) {
 									deleteUploadedFile();
 									alert("JSON Validation Failed: " + error.message);

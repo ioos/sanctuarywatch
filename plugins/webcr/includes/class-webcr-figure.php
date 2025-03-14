@@ -758,7 +758,6 @@ class Webcr_Figure {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
         // posts after it has been updated. The if statement is looking for three things: 1. Figure post type? 2. An individual post (as opposed to the scene
         // admin screen)? 3. A new post
-
         if (function_exists('get_current_screen')) {
             $current_screen = get_current_screen();
             if ($current_screen){
@@ -781,21 +780,6 @@ class Webcr_Figure {
                                 $error_message = $error_message . '</ul></p>';
                             }
                             echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
-
-      //                      if (isset($_COOKIE["modal_error_all_fields"])) {
-        //                        $modal_fields_coded = stripslashes($_COOKIE["modal_error_all_fields"]);
-          //                      $modal_fields_array = json_decode($modal_fields_coded, true);	
-            //                    $_POST['modal_location'] = $modal_fields_array['modal_location'];
-              //                  $_POST['modal_scene'] = $modal_fields_array['modal_scene'];
-                //                $_POST['modal_icons'] = $modal_fields_array['modal_icons'];
-                  //              $_POST['icon_function'] = $modal_fields_array['icon_function'];
-                    //            $_POST['icon_external_url'] = $modal_fields_array['icon_external_url'];
-                      //          $_POST['icon_scene_out'] = $modal_fields_array['icon_scene_out'];
-                        //        $_POST['modal_tagline'] = $modal_fields_array['modal_tagline'];
-                          //      $_POST['modal_info_entries'] = $modal_fields_array['modal_info_entries'];
-                     //           $_POST['modal_photo_entries'] = $modal_fields_array['modal_photo_entries'];
-                       //         $_POST['modal_tab_number'] = $modal_fields_array['modal_tab_number'];
-                       //     }
                         }
                     //   setcookie("scene_post_status", "", time() - 300, "/");
                     }
@@ -816,40 +800,3 @@ class Webcr_Figure {
         }
     }
 }
-
-// add_action('wp_ajax_custom_file_upload', 'custom_file_upload_handler');
-//     //add_action('wp_ajax_nopriv_custom_file_upload', 'custom_file_upload_handler'); // Allow non-logged-in users
-
-// function custom_file_upload_handler() {
-//     if (!isset($_FILES['custom_file'])) {
-//         wp_send_json_error(['message' => 'No file uploaded.'], 400);
-//     }
-
-//     $file = $_FILES['custom_file'];
-//     $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-//     $allowed_types = ['json', 'csv'];
-
-//     if (!in_array($file_ext, $allowed_types)) {
-//         wp_send_json_error(['message' => 'Invalid file type.'], 400);
-//     }
-    
-//     $post_id = get_the_ID();
-//     error_log('$post_id: ' . $post_id);
-//     $instance_id = get_post_meta( $post_id, 'location', true );
-//     error_log('$instance_id: ' . $instance_id);
-//     $instance_name_formatted = sanitize_title(get_the_title($instance_id));
-//     error_log('$instance_name_formatted: ' . $instance_name_formatted);
-
-//     $upload_dir = ABSPATH . 'wp-content/data/' . $instance_name_formatted . '/';
-
-//     if (!file_exists($upload_dir)) {
-//         mkdir($upload_dir, 0755, true);
-//     }
-
-//     $destination = $upload_dir . basename($file['name']);
-//     if (move_uploaded_file($file['tmp_name'], $destination)) {
-//         wp_send_json_success(['message' => 'File uploaded successfully.', 'path' => $destination]);
-//     } else {
-//         wp_send_json_error(['message' => 'File upload failed.'], 500);
-//     }
-// }
