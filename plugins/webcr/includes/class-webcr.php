@@ -221,8 +221,6 @@ class Webcr {
 		$this->loader->add_action( 'admin_menu', $plugin_admin_scene, 'create_scene_fields', 1 ); 
 		$this->loader->add_action( 'manage_scene_posts_columns', $plugin_admin_scene, 'change_scene_columns' ); 
 		$this->loader->add_action( 'manage_scene_posts_custom_column', $plugin_admin_scene, 'custom_scene_column', 10, 2 ); 
-		$this->loader->add_filter( 'manage_edit-scene_sortable_columns', $plugin_admin_scene, 'scene_location_column_sortable' ); 
-		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_orderby' ); 
 		$this->loader->add_action( 'init', $plugin_admin_scene, 'custom_content_type_scene' ); 
 		$this->loader->add_filter( 'bulk_actions-edit-scene', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'wp_ajax_scene_preview', $plugin_admin_scene, 'scene_preview' ); 
@@ -232,6 +230,8 @@ class Webcr {
 		$this->loader->add_filter( 'rest_scene_query', $plugin_admin_scene, 'filter_scene_by_scene_location', 10, 2); 
 		$this->loader->add_filter( 'rewrite_rules_array', $plugin_admin_scene, 'add_scene_rewrite_rules'); 
 		$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
+		$this->loader->add_filter( 'manage_edit-scene_sortable_columns', $plugin_admin_scene, 'register_status_as_sortable_column'); 
+		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'orderby_status_column'); //This action orders by the status column for scene, modal, and figure content types 
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		
@@ -246,6 +246,7 @@ class Webcr {
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_modal, 'register_modal_rest_fields' );
 		$this->loader->add_filter( 'rest_modal_query', $plugin_admin_modal, 'filter_modal_by_modal_scene', 10, 2); 
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin_modal, 'remove_view_link_from_modal_post_type', 10, 2); 
+		$this->loader->add_filter( 'manage_edit-modal_sortable_columns', $plugin_admin_scene, 'register_status_as_sortable_column'); 
 
 		// Load  class and functions associated with Figure custom content type
 		$plugin_admin_figure = new Webcr_Figure( $this->get_plugin_name());		
@@ -260,6 +261,7 @@ class Webcr {
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_figure, 'register_figure_rest_fields' ); 
 		$this->loader->add_filter( 'rest_figure_query', $plugin_admin_figure, 'filter_figure_by_figure_modal', 10, 2); 
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin_figure, 'remove_view_link_from_figure_post_type', 10, 2); 
+		$this->loader->add_filter( 'manage_edit-figure_sortable_columns', $plugin_admin_scene, 'register_status_as_sortable_column'); 
 
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );
@@ -271,6 +273,7 @@ class Webcr {
 		// Load class and functions connected with Export Figures Tool
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
+		
     }
 
 	/**

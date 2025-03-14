@@ -348,33 +348,6 @@ class Webcr_Scene {
     }
 
     /**
-	 * Make Location a sortable column in the admin screen for the Scene custom content type.
-	 *
-	 * @since    1.0.0
-	 */
-    function scene_location_column_sortable($columns) {
-        $columns['scene_location'] = 'scene_location';
-        return $columns;
-    }
-
-    /**
-	 * Provide sorting logic for Location column in the admin screen for the Scene custom content type.
-	 *
-     * @param WP_Query $query The WordPress Query instance that is passed to the function.
-	 * @since    1.0.0
-	 */
-    function scene_location_orderby($query) {
-        if (!is_admin() || !$query->is_main_query()) {
-            return;
-        }
-
-        if ($query->get('orderby') == 'scene_location') {
-            $query->set('meta_key', 'scene_location');
-            $query->set('orderby', 'meta_value');
-        }
-    }
-
-    /**
 	 * Remove Bulk Actions dropdown from Scene, Modal, Figure, and Instance admin screens.
 	 *
      * @param array $actions An array of the available bulk actions.
@@ -865,4 +838,41 @@ class Webcr_Scene {
         wp_die();
     }
 
+    /**
+     * Registers the "status" column as sortable in the Scene, Modal, and Figure custom post admin lists.
+     *
+     * @param array $sortable_columns An array of sortable columns.
+     * @return array Modified array with the "status" column set as sortable by "modified".
+     */
+    function register_status_as_sortable_column($sortable_columns) {
+        $sortable_columns['status'] = 'modified'; // Sorting by post_modified column
+        return $sortable_columns;
+    }
+
+    /**
+     * Modifies the main WordPress query to enable sorting by the last modified date.
+     *
+     * This function ensures that when sorting is triggered by the "status" column,
+     * WordPress orders the Scene, Modal, or Figure posts based on the `post_modified` field in ascending
+     * or descending order, depending on user selection.
+     *
+     * @param WP_Query $query The current query instance.
+     * @return void
+     */
+    function orderby_status_column($query) {
+        // Ensure we are in the admin area and working with the main query
+        if (!is_admin() || !$query->is_main_query()) {
+            return;
+        }
+
+        // Retrieve the sorting parameters
+        $orderby = $query->get('orderby');
+        $order = strtoupper($query->get('order')) === 'ASC' ? 'ASC' : 'DESC'; // Default to DESC if not set
+
+        // Apply sorting if the "modified" column is selected
+        if ($orderby == 'modified') {
+            $query->set('orderby', 'modified');
+            $query->set('order', $order);
+        }
+    }
 }
