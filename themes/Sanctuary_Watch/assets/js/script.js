@@ -23,6 +23,7 @@ function hexToRgba(hex, opacity) {
  * @returns {Function} cleanup - A function that removes the event listeners and deactivates the focus trap.
  */
 
+
 function trapFocus(modalElement) {
     function getFocusableElements() {
         return Array.from(modalElement.querySelectorAll(
@@ -924,6 +925,8 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     return accordionItem;
 }
 
+
+
 /**
  * Renders tab content into the provided container element based on the information passed in the `info_obj` object. 
  * This function creates a styled layout that includes links, an image with a caption, and an expandable details section.
@@ -1055,18 +1058,10 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
 
         case "Interactive":
             img = document.createElement('div'); // Create a div to hold the plot
-            img.style.width = "100%";
-            img.style.minHeight = "300px";
-            img.style.padding = "10px";
-            img.style.backgroundColor = "#ffffff";
-            // Center the content using Flexbox
-            img.style.display = "flex";
-            img.style.justifyContent = "center"; // Centers horizontally
-            img.style.alignItems = "center"; // Centers vertically (if height is greater than content)
             img.id =  "javascript_figure_target";
             let interactive_arguments = info_obj["figure_interactive_arguments"];
             producePlotlyLineFigure("javascript_figure_target", interactive_arguments);
-            figureDiv.appendChild(img);  
+            figureDiv.appendChild(img);
         break;
 
 
@@ -1088,9 +1083,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             
             //Append the codeDiv to the figureDiv
             figureDiv.appendChild(codeDiv);
-
             embedCode = info_obj['code'];
-
             // Parse the embed code and extract <script> tags
             const tempDiv = document.createElement("div");
             tempDiv.innerHTML = embedCode;
@@ -1115,7 +1108,6 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     }
    
     //ATTRIBUTES FOR THE FIGURE DIV
-    figureDiv.setAttribute("display","flex");
     figureDiv.style.justifyContent = "center"; // Center horizontally
     figureDiv.style.alignItems = "center";
     figureDiv.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
@@ -1146,19 +1138,47 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // Add the details element to the tab content element
     // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
+    
+    switch (figureType) {
+        case "Internal":
+                img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
+            break;
+        case "External":
+                img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
+            break;
+        case "Interactive":
+                img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
+                
+                let plotDiv = document.getElementById("plotlyFigure");
+                plotDiv.style.width = "100%";
+            break;
+        case "Code":
+                img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
+             break;
+    }
 
-    // if (interactiveBool){
-    //     let fetchLink = 'http://sanctuarywatch.local/wp-content/uploads/2024/09/test.json';
-    //     // let plotType = 'markers';
-    //     // make_plots(img, fetchLink, plotType);
-    //     x = ['Year']; //have to make sure this is in the data
-    //     y = ['Whales', 'Fish']; //have to make sure this is in the data
-    //     cols = ['blue', 'red'];
-    //     let plotInstance = new Plot(img, fetchLink, x, y, cols);
-    //     plotInstance.execute('lines');
-
-    // }
-    img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");   
+    //Resize the plotly graph if the tab that it is inside of it activated. This code is essential. 
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.target.classList.contains("show") && mutation.target.classList.contains("active")) {
+                console.log(`Detected tab activation: ${mutation.target.id}`);
+    
+                // Find Plotly container inside the newly activated tab
+                let plotDiv = mutation.target.querySelector("#plotlyFigure");
+                if (plotDiv) {
+                    console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
+                    Plotly.relayout(plotDiv, { autosize: true });
+                    Plotly.Plots.resize(plotDiv);
+                }
+            }
+        });
+    });    
+    // Observe all tab-pane elements for class changes
+    document.querySelectorAll(".tab-pane").forEach(tab => {
+        observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+    });
+    
+     
 }
 
 /**
@@ -1194,7 +1214,9 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
-            all_figure_data = data;
+            //all_figure_data = data;
+            all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
+            all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
             if (!all_figure_data){
                 //we don't create anything here...
                 //don't have to render any of the info
@@ -1203,33 +1225,34 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                 
             } else{
                 // tabContentContainer.setAttribute("display", "");
-            //title stufff
-                figure_data = all_figure_data[tab_id-1]; //IS this really the best way to do this? It works though...Logic is sound
-                let external_alt = '';
-                if (figure_data['figure_path']==='External'){
-                    img = figure_data['figure_external_url'];
-                    external_alt = figure_data['figure_external_alt'];
+                for (let idx in all_figure_data){
+                    figure_data = all_figure_data[idx];
+                    console.log(figure_data)
+                    let external_alt = '';
+                    if (figure_data['figure_path']==='External'){
+                        img = figure_data['figure_external_url'];
+                        external_alt = figure_data['figure_external_alt'];
+                    }
+                    else {
+                        img = figure_data['figure_image'];
+                    } // add smth here for external
+                    info_obj = {
+                    "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
+                    "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
+                    "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
+                    "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
+                    "imageLink" : img,
+                    "code" : figure_data["figure_code"],
+                    "externalAlt": external_alt,
+                    "shortCaption" : figure_data["figure_caption_short"],
+                    "longCaption": figure_data["figure_caption_long"],
+                    //"interactive": figure_data["figure_path"],
+                    "figureType": figure_data["figure_path"],
+                    "figure_interactive_arguments": figure_data["figure_interactive_arguments"]                
+                    };
+                    render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure
                 }
-                else {
-                    img = figure_data['figure_image'];
-                } // add smth here for external
-                info_obj = {
-                "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
-                "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
-                "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
-                "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
-                "imageLink" : img,
-                "code" : figure_data["figure_code"],
-                "externalAlt": external_alt,
-                "shortCaption" : figure_data["figure_caption_short"],
-                "longCaption": figure_data["figure_caption_long"],
-                //"interactive": figure_data["figure_path"],
-                "figureType": figure_data["figure_path"],
-                "figure_interactive_arguments": figure_data["figure_interactive_arguments"]                
-                };
-                render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure
             }
-
         })
     .catch(error => console.error('Error fetching data:', error));
         //new stuff here
@@ -1303,7 +1326,8 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
     let tabContentContainer = document.getElementById("myTabContent");
     const tabContentElement = document.createElement('div');
     tabContentElement.classList.add('tab-pane', 'fade');
-    
+
+
     if (iter === 1) {
         tabContentElement.classList.add('show', 'active');
     }

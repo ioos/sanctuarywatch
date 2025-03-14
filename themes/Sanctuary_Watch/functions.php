@@ -621,27 +621,25 @@ function enqueue_info_scripts3() {
 add_action('wp_enqueue_scripts', 'enqueue_info_scripts3');
 
 
-function enqueue_info_scripts4() {
+function enqueue_plotly_utility_script() {
   wp_enqueue_script(
-      'plotly-timeseries-line',
-      get_template_directory_uri() . '/assets/js/plotly-timeseries-line.js',
-      array(),
-      null,
-      array('strategy' => 'defer') 
+    'utility', 
+    content_url() . '/plugins/webcr/includes/utilities/js/utility.js', 
+    array(), '1.0.0', 
+    array('strategy'  => 'defer')
   );
 }
-add_action('wp_enqueue_scripts', 'enqueue_info_scripts4');
+add_action('wp_enqueue_scripts', 'enqueue_plotly_utility_script');
 
-// function enqueue_plotly_script() {
-//   wp_enqueue_script(
-//       'plotly-js', // Handle name
-//       'https://cdn.plot.ly/plotly-latest.min.js', // CDN URL
-//       array(), 
-//       null, 
-//       true // Load in footer
-//   );
-// }
-// add_action('wp_enqueue_scripts', 'enqueue_plotly_script');
+function enqueue_plotly_script() {
+  wp_enqueue_script(
+    'plotly-timeseries-line', 
+    content_url() . '/plugins/webcr/includes/figures/js/plotly-timeseries-line.js', 
+    array(), '1.0.0', 
+    array('strategy'  => 'defer')
+  );
+}
+add_action('wp_enqueue_scripts', 'enqueue_plotly_script');
 
 
 ?>
