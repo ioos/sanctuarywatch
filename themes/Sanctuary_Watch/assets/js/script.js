@@ -72,9 +72,6 @@ function trapFocus(modalElement) {
     };
 }
 
-
-
-
 let child_obj = JSON.parse(JSON.stringify(child_ids));
 
 let url1 =(JSON.stringify(svg_url));

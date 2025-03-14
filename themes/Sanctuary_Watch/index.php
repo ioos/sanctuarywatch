@@ -92,8 +92,14 @@ if ($instances_query->have_posts()) {
             ?>
         </span>
         <span style="display: inline-block; text-align: left; vertical-align: middle;">
-            <div style="color: #00467F; font-size: 2.7vw; font-weight: bold;">Sanctuary Watch</div>
-            <div style="color: #008da8; font-size: 1.5vw; font-style: italic; font-weight: bold;">Web-Enabled Information for Sanctuary Management</div>
+
+            <div style='color: #00467F; font-size: 2.7vw; font-weight: bold;'><?= get_bloginfo('name'); ?></div>
+            <?php 
+            $site_tagline = get_bloginfo('description');
+            if ($site_tagline != "") {
+                echo "<div style='color: #008da8; font-size: 1.5vw; font-style: italic; font-weight: bold;'>$site_tagline</div>";
+            }
+            ?>
         </span>
     </div>
 </div>
@@ -255,9 +261,9 @@ foreach ($terms_array as $term){
 </style>
 
 <script>
-    let post_id =  <?php echo $post_id; ?>;
+   // let post_id =  <?php echo $post_id; ?>;
     // let is_logged_in = <?php echo is_user_logged_in(); ?>;
-    let is_logged_in = <?php echo json_encode(is_user_logged_in()); ?>;
+   // let is_logged_in = <?php echo json_encode(is_user_logged_in()); ?>;
 
 
 </script>

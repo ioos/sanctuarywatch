@@ -99,15 +99,16 @@ class Webcr_Instance {
         }
 
         // create an array containing all instance types and ids from the taxonomy table
-        global $wpdb;
-    
-        // Query to fetch term IDs and slugs, sorted by slug
-        $instance_type_results = $wpdb->get_results( "SELECT term_id, slug FROM {$wpdb->terms} ORDER BY slug ASC", ARRAY_A );
-    
-        // Convert results into an associative array
+        $instance_type_terms = get_terms( array(
+            'taxonomy' => 'instance_type',
+            'hide_empty' => false,
+        ) );
+
         $instance_type_array = [];
-        foreach ($instance_type_results as $row) {
-            $instance_type_array[$row['term_id']] = ucwords($row['slug']);
+        if (!is_wp_error($instance_type_terms) && !empty($instance_type_terms)) {
+             foreach ($instance_type_terms as $term) {
+                $instance_type_array[$term->term_id] = ucwords($term->slug);
+            }
         }
 
         $fields[] = array(
