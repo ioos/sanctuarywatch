@@ -289,6 +289,32 @@ class Webcr_Admin {
    }
 
 	/**
+	 * Filters the text of the Publish and Update buttons to display "Save" instead.
+	 *
+	 * This function hooks into the `gettext` filter to modify the button text
+	 * in the WordPress post editor, changing "Publish" and "Update" to "Save".
+	 *
+	 * @param string $translated_text The translated text that WordPress is about to output.
+	 * @param string $text The original text string before translation.
+	 * @param string $domain The text domain of the translation.
+	 *
+	 * @return string The modified button label if the original text is "Publish" or "Update", otherwise returns the original translated text.
+	 *
+	 * @example
+	 * add_filter( 'gettext', 'modify_publish_button_text', 10, 3 );
+	 *
+	 * @since 1.0.0
+	 */
+	function modify_publish_button_text( $translated_text, $text, $domain ) {
+		if ( is_admin() ) {
+			if ( $text === 'Publish' || $text === 'Update' ) {
+				return 'Save';
+			}
+		}
+		return $translated_text;
+	}
+
+	/**
 	 * Add Content Manager as a role
 	 *
 	 * @since    1.0.0
