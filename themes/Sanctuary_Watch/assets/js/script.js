@@ -1027,6 +1027,22 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const figureDiv = document.createElement('div');
     figureDiv.classList.add('figure');
 
+    //Create a separator to make this figure distinct from others
+    const separator = document.createElement('div');
+    separator.classList.add("separator");
+    separator.innerHTML = '<hr style="border-bottom: 1px rgb(252, 252, 252);">';
+    figureDiv.appendChild(separator);
+
+
+    //CREATE THE FIGURE TITLE
+    const figureTitle = document.createElement("div");
+    figureTitle.classList.add('figureTitle');
+    figureTitle.innerHTML = info_obj['figureTitle'];
+    figureTitle.style.marginBottom = '2px';
+    figureDiv.appendChild(figureTitle);
+
+
+    //CREATE THE FIGURE
     let img;
     let figureType = info_obj["figureType"];
 
@@ -1146,7 +1162,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         case "Interactive":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
                 
-                let plotDiv = document.getElementById("plotlyFigure");
+                let plotDiv = document.querySelector("#plotlyFigure");
                 plotDiv.style.width = "100%";
             break;
         case "Code":
@@ -1154,7 +1170,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
              break;
     }
 
-    //Resize the plotly graph if the tab that it is inside of it activated. This code is essential. 
+    //Resize the plotly graph if the tab that it is inside of is activated. This code is essential. 
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             if (mutation.target.classList.contains("show") && mutation.target.classList.contains("active")) {
@@ -1245,6 +1261,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "longCaption": figure_data["figure_caption_long"],
                     //"interactive": figure_data["figure_path"],
                     "figureType": figure_data["figure_path"],
+                    "figureTitle": figure_data["figure_title"],
                     "figure_interactive_arguments": figure_data["figure_interactive_arguments"]                
                     };
                     render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure

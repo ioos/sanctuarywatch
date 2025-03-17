@@ -385,6 +385,16 @@ class Webcr_Figure {
                     'description' => 'Is the figure image stored within this website or at some external location or within the code?',
                 ),
                 array(
+                    'id'          => 'figure_title',
+                    'type'        => 'text',
+                    'title'       => 'Figure Title',      
+                    // 'before'      => 'Text Before',  // optional                
+                    // 'after'       => 'Text After',   // optional                 
+                    // 'class'       => 'text-class',   // optional               
+                    // 'description' => 'Description',  // optional   
+                    // 'default'     => 'Default Text', // optional
+                ),
+                array(
                     'id'    => 'figure_image',
                     'type'  => 'image',
                     'title' => 'Figure image',
@@ -433,7 +443,7 @@ class Webcr_Figure {
                 array(
                     'id'      => 'figure_upload_file',               
                     'type'    => 'upload',
-                    'title'   => 'Upload Interactive Figure File:',
+                    'title'   => 'Upload Interactive Figure File',
                     'options' => array(
                         //'upload_path'               =>  See the custom_file_upload_handler & custom_file_delete_handler functions below.
                         'maxsize'                   =>  10485760, //Keeping for future development.
@@ -503,7 +513,7 @@ class Webcr_Figure {
             array('figure_caption_short', 'string', 'The short figure caption'),
             array('figure_caption_long', 'string', 'The long figure caption'),
             array('figure_interactive_arguments', 'string', 'Arguments used in interactive figures'),
-            
+            array('figure_title', 'string', 'The title of the figure, for any figure type.')
         );
         // Register fields in REST API
         foreach ($fieldsToBeRegistered as $targetFieldsToBeRegistered){
@@ -552,7 +562,7 @@ class Webcr_Figure {
 	 * @since    1.0.0
 	 */
     function register_figure_rest_fields() {
-        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long', 'figure_interactive_arguments','uploaded_path_json'); //figure_temp_filepath
+        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long', 'figure_interactive_arguments','uploaded_path_json','figure_title'); //figure_temp_filepath
         $function_utilities = new Webcr_Utility();
         $function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
     }

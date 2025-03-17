@@ -66,30 +66,67 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
               console.log(singleLinePlotly);
               allLinesPlotly.push(singleLinePlotly);
         }
-          
-          var layout = {
-            xaxis: {
-              title: {
-                text: figureArguments['XAxisTitle']
-              },
-              linecolor: 'black', 
-              linewidth: 1,
-              range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
-            },
-            yaxis: {
-              title: {
-                text: figureArguments['YAxisTitle']
-              },
-              linecolor: 'black', 
-              linewidth: 1,
-              range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
-            }
-          };
-          const config = {
-            responsive: true  // This makes the plot resize with the browser window
-          };
 
-          Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
+        var container = document.getElementById('javascript_figure_target');
+
+        //ADMIN SIDE GRAPH DISPLAY SETTINGS
+        if (window.location.href.includes("wp-admin/post.php")) {
+            var layout = {
+                xaxis: {
+                    title: {
+                    text: figureArguments['XAxisTitle']
+                    },
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
+                },
+                yaxis: {
+                    title: {
+                    text: figureArguments['YAxisTitle']
+                    },
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
+                },
+                autosize: true, 
+                };
+            const config = {
+                responsive: true  // This makes the plot resize with the browser window
+                };
+            Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
+
+        }
+        //THEME SIDE GRAPH DISPLAY SETTINGS
+        else {
+            var layout = {
+                xaxis: {
+                    title: {
+                    text: figureArguments['XAxisTitle']
+                    },
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
+                },
+                yaxis: {
+                    title: {
+                    text: figureArguments['YAxisTitle']
+                    },
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
+                },
+                //autosize: true, 
+                width: container.clientWidth, 
+                height: container.clientHeight
+                };
+            const config = {
+            responsive: true  // This makes the plot resize with the browser window
+            };
+            document.getElementById("plotlyFigure").style.setProperty("width", "100%", "important");
+            document.getElementById("plotlyFigure").style.setProperty("max-width", "none", "important");
+
+            Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
+        }        
 
     } catch (error) {
         console.error('Error loading scripts:', error);

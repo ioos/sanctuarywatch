@@ -524,6 +524,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 									uploadBtn.style.display = "none";
 									fileInput.style.display = "none";
 									clickUpdateButton();
+
 									// Display message after hiding the buttons
 									//uploadMessage.textContent = `Current File: ${fileName}`;
 									//uploadMessage2.textContent = 'Click "Update" button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.'

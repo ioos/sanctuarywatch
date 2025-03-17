@@ -505,6 +505,15 @@ function run_webcr_admin_figures() {
         newDiv.id = "preview_window";
         newDiv.classList.add("container", "figure_preview");
 
+        //Figure title options
+        const figure_title = document.getElementsByName("figure_title")[0].value;
+        let figureTitle = document.createElement("div");
+        figureTitle.innerHTML = figure_title;
+        figureTitle.classList.add("figureTitle");
+        newDiv.appendChild(figureTitle); //Append the figure title
+
+        
+        //URL options
         const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
         const dataUrl = document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value;
 
@@ -547,6 +556,7 @@ function run_webcr_admin_figures() {
             newDiv.appendChild(firstRow);
         } 
 
+        //Append the Figure Options
         let imageRow = document.createElement("div");
         imageRow.classList.add("imageRow");
         let figureImage = document.createElement("img");
@@ -583,9 +593,11 @@ function run_webcr_admin_figures() {
         if (containerWidth < 800){
             figureImage.style.width = (containerWidth-88) + "px";
         }
+
         imageRow.appendChild(figureImage);
         newDiv.appendChild(imageRow);
 
+        //Append the caption
         let captionRow = document.createElement("div");
         captionRow.classList.add("captionRow");
 
@@ -594,14 +606,13 @@ function run_webcr_admin_figures() {
      
         // Get the long caption
         let longCaption = document.getElementById('figure_caption_long').value;  
-
         let shortCaptionElementContent = document.createElement("p");
         shortCaptionElementContent.innerHTML = shortCaption;
         shortCaptionElementContent.classList.add("captionOptions");
         captionRow.appendChild(shortCaptionElementContent);
         let longCaptionElement = document.createElement("details");
-
         let longCaptionElementSummary = document.createElement("summary");
+
         longCaptionElementSummary.textContent = "Click here for more details.";
         let longCaptionElementContent = document.createElement("p");
         longCaptionElementContent.classList.add("captionOptions");
@@ -612,6 +623,8 @@ function run_webcr_admin_figures() {
         newDiv.appendChild(captionRow);
 
         secondParent.appendChild(newDiv);
+
+        //For code and interactive figures, these are when the physical code that create the figures is launched
         if (interactiveImage == true){
             try {
                 //Admin is able to call to the interactive_arguments using document.getElementsByName("figure_interactive_arguments")[0].value;
