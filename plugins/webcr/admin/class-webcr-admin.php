@@ -91,7 +91,6 @@ class Webcr_Admin {
 	 */
 	public function enqueue_scripts($hook_suffix) {
 
-			$tempo = $hook_suffix;
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -104,7 +103,8 @@ class Webcr_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/webcr-admin.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+		// Enqueue utlity javascript functions used across javascript files on the admin side
+		 wp_enqueue_script( "webcr-utility", plugin_dir_url( __FILE__ ) . 'js/utility.js', array(  ), $this->version, array('strategy'  => 'defer') );
 
 		$current_post_type = get_post_type();
 		// Load About-specific Javascript only when editing/creating an About post 
@@ -119,7 +119,7 @@ class Webcr_Admin {
 
 		// Load Scene-specific Javascript only when editing/creating a Scene post 
 		if ($current_post_type == "scene" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
-			wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array(  ), $this->version, array('strategy'  => 'defer') );
 		}
 
 		// Load Modal-specific Javascript only when editing/creating a Modal post 
@@ -136,7 +136,7 @@ class Webcr_Admin {
 			// Enqueue plotly-timeseries-line.js
 			wp_enqueue_script('plotly-timeseries-line', dirname(plugin_dir_url(__FILE__)) .  '/includes/figures/js/plotly-timeseries-line.js', array(), '1.0.0', array('strategy'  => 'defer'));
 
-			wp_enqueue_script( "webcr-admin-figure", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-figure", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure.js', array( ), $this->version, array('strategy'  => 'defer') );
 
 		}
 

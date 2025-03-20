@@ -300,7 +300,7 @@ class Webcr_Figure {
                 array(
                     'id'             => 'location',
                     'type'           => 'select',
-                    'title'          => 'Instance',
+                    'title'          => 'Instance*',
                     'options'        => $locations,
                     'description' => 'What instance is this figure part of?',
                  //   'class'      => 'chosen', 
@@ -308,21 +308,21 @@ class Webcr_Figure {
                 array(
                     'id'             => 'figure_scene',
                     'type'           => 'select',
-                    'title'          => 'Scene',
+                    'title'          => 'Scene*',
                     'options'        => $scene_titles,
                     'description' => 'What scene is this figure part of?',
                 ),
                 array(
                     'id'             => 'figure_modal',
                     'type'           => 'select',
-                    'title'          => 'Icon',
+                    'title'          => 'Icon*',
                     'options'        => $modal_icons, // array (" " => "Modal Icons")
                     'description' => 'What icon is this figure part of?',
                 ),
                 array(
                     'id'             => 'figure_tab',
                     'type'           => 'select',
-                    'title'          => 'Tab',
+                    'title'          => 'Tab*',
                     'options'        => $modal_tabs, // array (" " => "Modal Icons")
                     'description' => 'What modal tab is this figure part of?',
                 ),
@@ -379,7 +379,7 @@ class Webcr_Figure {
                 array(
                     'id'             => 'figure_path',
                     'type'           => 'select',
-                    'title'          => 'Figure Type',
+                    'title'          => 'Figure Type*',
                     'options'        => array("Internal" => "Internal", "External" => "External", "Interactive" => "Interactive", "Code" => "Code"),
                     'default'        => "Internal",
                     'description' => 'Is the figure image stored within this website or at some external location or within the code?',

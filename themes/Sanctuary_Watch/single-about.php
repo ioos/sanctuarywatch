@@ -37,13 +37,22 @@ get_header();
 <div class="container-fluid">
 <!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->
 <div class="image-center" style="padding-bottom: 20px;">
-       <span>
-           <img width="10%" src="http://nov9.local/wp-content/themes/Sanctuary_Watch/assets/images/onms-logo-no-text-800.png" alt="Sanctuary Watch Navbar Emblem">        </span>
-       <span style="display: inline-block; text-align: left; vertical-align: middle;">
-           <div style="color: #00467F; font-size: 2.7vw; font-weight: bold;">Sanctuary Watch</div>
-           <div style="color: #008da8; font-size: 1.5vw; font-style: italic; font-weight: bold;">Web-Enabled Information for Sanctuary Management</div>
-       </span>
-   </div>
+        <span>
+            <?php 
+                echo '<img width="10%" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Navbar Emblem">';
+            ?>
+        </span>
+        <span style="display: inline-block; text-align: left; vertical-align: middle;">
+
+            <div style='color: #00467F; font-size: 2.7vw; font-weight: bold;'><?= get_bloginfo('name'); ?></div>
+            <?php 
+            $site_tagline = get_bloginfo('description');
+            if ($site_tagline != "") {
+                echo "<div style='color: #008da8; font-size: 1.5vw; font-style: italic; font-weight: bold;'>$site_tagline</div>";
+            }
+            ?>
+        </span>
+    </div>
 </div>
 
 

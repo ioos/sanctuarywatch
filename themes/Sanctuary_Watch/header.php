@@ -78,7 +78,7 @@ if ( get_header_textcolor() ) : ?>
 				// Create the breadcrumb with the default links and the 
 				echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
 				echo '<p> > </p>';
-				echo '<a href="/">Sanctuary Watch</a>';
+				echo '<a href="https://sanctuarywatch.ioos.us/">Sanctuary Watch</a>';
 				echo '<p> > </p>';
 				echo '<a href="/overview">'. esc_html($scene_loc_webcr.'WebCR') .'</a>';
 			}

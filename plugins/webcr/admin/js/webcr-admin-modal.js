@@ -7,6 +7,9 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
     // script.src='https://code.jquery.com/jquery-latest.min.js';
     // document.getElementsByTagName('head')[0].appendChild(script);
 
+	// Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
+	document.addEventListener('DOMContentLoaded', redText);
+
 	let opening_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
 	displayEntries(opening_scene_info_entries, ".text-class[data-depend-id='modal_info_");
 	let opening_scene_photo_entries = $(".range[data-depend-id='modal_photo_entries']").val();
@@ -262,7 +265,7 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
 
             sceneDropdown.innerHTML ='';
             let optionScene = document.createElement('option');
-            optionScene.text = "Modal Scene";
+            optionScene.text = "";
             optionScene.value = "";
             sceneDropdown.add(optionScene);
             const elementNumber = dropdownElements.length;
@@ -282,7 +285,7 @@ let hoverColor = "red"; // hacky solution to solving problem of hoverColor in pr
         const iconsDropdown = document.getElementsByName("modal_icons")[0];
         iconsDropdown.innerHTML ='';
         let optionIcon = document.createElement('option');
-        optionIcon.text = "Icons";
+        optionIcon.text = "";
         optionIcon.value = "";
         iconsDropdown.add(optionIcon);
         const elementNumber = dropdownElements.length;

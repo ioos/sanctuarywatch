@@ -462,7 +462,7 @@ class Webcr_Scene {
             array(
                 'id'             => 'scene_published',
                 'type'           => 'select',
-                'title'          => 'Scene Status',
+                'title'          => 'Scene Status*',
                 'options'        => array("draft" => "Draft", "published" => "Published"),
                 'default' => 'draft',
                 'description' => 'Should the Scene be live?',
@@ -470,14 +470,14 @@ class Webcr_Scene {
             array(
                 'id'   => 'scene_location',
                 'type' => 'select',
-                'title'          => 'Instance',
+                'title'          => 'Instance*',
                 'options'        => $instances, 
                 'description' => 'What instance is the scene part of? '
             ),
             array(
                 'id'   => 'scene_infographic',
                 'type' => 'image',
-                'title' => 'Scene Infographic',
+                'title' => 'Scene Infographic*',
                 'description' => 'What is the image for the scene? Only properly-formatted SVG-type images are allowed.'
             ),
             array(
@@ -489,7 +489,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_info_entries',
                 'type'    => 'range',
-                'title'   => 'Number of Scene Info Entries',
+                'title'   => 'Number of Scene Info Entries*',
                 'description' => 'How many info links are there for the scene?',
                 'min'     => 0,    
                  'default' => 1,    
@@ -499,7 +499,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_photo_entries',
                 'type'    => 'range',
-                'title'   => 'Number of Scene Photo Entries',
+                'title'   => 'Number of Scene Photo Entries*',
                 'description' => 'How many photo links are there for the scene?',
                 'min'     => 0,    
                  'default' => 1,    
@@ -519,7 +519,7 @@ class Webcr_Scene {
             array(
                 'id'             => 'scene_toc_style',
                 'type'           => 'select',
-                'title'          => 'Table of Contents Style',
+                'title'          => 'Table of Contents Style*',
                 'options'        => array("accordion" => "Accordion", "list" => "List (default option)", "sectioned_list" => "Sectioned List"),
                 'default' => 'list',
                 'description' => 'What should the table of contents look like?',

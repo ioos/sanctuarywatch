@@ -53,7 +53,7 @@ class Webcr_Utility {
     
         $query = new WP_Query($args);
         $instance = array();
-        $instance[""] = "Instances";
+        $instance[""] = "";
         if ($query->have_posts()) {
             foreach ($query->posts as $post_id) {
                 $instance[$post_id]= get_the_title($post_id);
@@ -127,7 +127,7 @@ class Webcr_Utility {
     }
 
     public function returnIcons($scene_id){
-        $modal_icons = array("" => "Icons");
+        $modal_icons = array("" => "");
         $scene_infographic = get_post_meta($scene_id, "scene_infographic", true);
         if ($scene_infographic == true){
             $relative_path =  ltrim(parse_url($scene_infographic)['path'], "/");
