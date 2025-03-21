@@ -347,8 +347,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 			 * @param {} obj - None
 			 * @returns {} - Alert a file has been deleted.
 			 */
-			document.getElementById('delete-btn').addEventListener('click', deleteUploadedFile);
-				console.log("Delete button clicked!"); // Debugging
+			if (document.getElementById('delete-btn')) {
+				document.getElementById('delete-btn').addEventListener('click', deleteUploadedFile);
+			}
 			</script>
 
 			<script>

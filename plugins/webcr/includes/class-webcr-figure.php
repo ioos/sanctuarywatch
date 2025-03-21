@@ -4,6 +4,8 @@
  * 
  */
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
+
+
 class Webcr_Figure {
 
     public function __construct( $plugin_name ) {
@@ -282,14 +284,13 @@ class Webcr_Figure {
 
         // used by both scene and icon dropdowns
         if (array_key_exists("post", $_GET)) {
-            $figure_id = intval($_GET["post"]);
-            // $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
-            $location = get_post_meta($figure_id, "location", true);
-            $scene_titles = $function_utilities -> returnScenesFigure($location);
-            $scene_id = get_post_meta($figure_id, "figure_scene", true);
-            $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
-            $modal_id = get_post_meta($figure_id, "figure_modal", true);
-            $modal_tabs = $function_utilities -> returnModalTabs($modal_id);
+                $figure_id = intval($_GET["post"]);
+                $location = get_post_meta($figure_id, "location", true);
+                $scene_titles = $function_utilities -> returnScenesFigure($location);
+                $scene_id = get_post_meta($figure_id, "figure_scene", true);
+                $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
+                $modal_id = get_post_meta($figure_id, "figure_modal", true);
+                $modal_tabs = $function_utilities -> returnModalTabs($modal_id);
         }
 
         $fields[] = array(

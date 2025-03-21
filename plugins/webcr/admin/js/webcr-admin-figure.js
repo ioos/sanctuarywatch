@@ -126,7 +126,7 @@ function run_webcr_admin_figures() {
                         if (data[targetField]!= ""){
                             let optionTitleTab = document.createElement('option');
                             optionTitleTab.text = data[targetField];
-                            optionTitleTab.value = data[targetField];
+                            optionTitleTab.value = i;
                             figureTab.appendChild(optionTitleTab);
                         }
                     }
