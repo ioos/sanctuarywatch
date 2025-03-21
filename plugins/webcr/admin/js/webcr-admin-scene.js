@@ -9,6 +9,12 @@ let openingSceneSections = document.getElementsByName("scene_section_number")[0]
 displaySceneEntries(openingSceneSections);
 tableOfContentsFieldOptions();
 
+// Initialize visibility of orphan icon color field when page loads 
+orphanColorFieldVisibility();
+
+// Change visibility of orphan icon color field based upon value of field scene_orphan_icon_action
+document.querySelector('[data-depend-id="scene_orphan_icon_action"]').addEventListener('change', orphanColorFieldVisibility);
+
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
 document.addEventListener('DOMContentLoaded', redText);
 
@@ -464,4 +470,14 @@ function getCookie(cookieName) {
 	}
 	
 	return null;
+}
+
+// make the field scene_orphan_icon_color visible or not visible based upon the value for the field scene_orphan_icon_action
+function orphanColorFieldVisibility() {
+	const iconOrphanAction = document.getElementsByName("scene_orphan_icon_action")[0].value;
+	if (iconOrphanAction == "color"){
+		document.getElementsByName("scene_orphan_icon_color")[0].parentElement.parentElement.style.display = "block";
+	} else {
+		document.getElementsByName("scene_orphan_icon_color")[0].parentElement.parentElement.style.display = "none";
+	}
 }

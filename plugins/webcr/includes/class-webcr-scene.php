@@ -517,6 +517,22 @@ class Webcr_Scene {
                 'step'    => '1',   
             ),
             array(
+                'id'    => 'scene_orphan_icon_action',
+                'type'  => 'select',
+                'title' => 'Icon Visibility in Scene, If No Associated Modal',
+                'options'        => array("visible" => "Keep icons as they are", "hide" => "Hide icons", "translucent" => "Make icons semi-transparent", "color" => "Color in icons with specific color"),
+                'description' => 'What should happen to clickable icons in the scene that have no associated modal?',
+                "default"   => "visible",
+            ),
+            array(
+                'id'     => 'scene_orphan_icon_color',
+                'type'   => 'color',
+                'title'  => 'Color for icons with no associated modal',
+                'description' => 'What should the icon color be?',
+                'picker' => 'html5',
+                "default"   => '#808080',
+            ),
+            array(
                 'id'             => 'scene_toc_style',
                 'type'           => 'select',
                 'title'          => 'Table of Contents Style*',
