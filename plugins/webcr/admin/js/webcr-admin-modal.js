@@ -1,303 +1,283 @@
+'use strict';
+
 let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
-(function( $ ) {
-    	'use strict';
+
+// Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
+document.addEventListener('DOMContentLoaded', redText);
+
+let opening_scene_info_entries = document.querySelector(".range[data-depend-id='modal_info_entries']").value;
+displayEntries(opening_scene_info_entries, ".text-class[data-depend-id='modal_info_");
+let opening_scene_photo_entries = document.querySelector(".range[data-depend-id='modal_photo_entries']").value;
+displayEntries(opening_scene_photo_entries, ".text-class[data-depend-id='modal_photo_");	
+
+let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
+displayTabEntries(opening_tab_entries);
+
+// used by modal_scene_change function to determine if the page has just loaded
+let isPageLoad = true;
+function changePageLoad() {
+    isPageLoad = false;
+}
+
+// Use the window.onload event to change isPageLoad to false 3 seconds after page loads 
+window.onload = function() {
+    setTimeout(changePageLoad, 1000);
+};
+
+iconFunction();
+modalWindow();
+modal_scene_change();
+modal_location_change();
+hideIconSection();
+
+// If a given Scene does not have any sections, then let's hide the Icon Section field in the modal page
+function hideIconSection (){
+    const sectionField = document.getElementsByName("icon_toc_section")[0];
+    if (sectionField.options.length == 1 && sectionField.value === "None"){
+        sectionField.parentElement.parentElement.style.display = "none";
+    }
+}
+
+// Function to display either URL or image under scene image link
+function displayPhotoPath (fieldNumber){
+    const targetElement = "modal_photo" + fieldNumber + "[modal_photo_location" + fieldNumber + "]";
+    const targetLocation = document.getElementsByName(targetElement)[0];
+    const imageElement = '[data-depend-id="modal_photo_internal' + fieldNumber + '"]';
+    const imageField = document.querySelector(imageElement);
+    const urlElement = "modal_photo" + fieldNumber + "[modal_photo_url" + fieldNumber + "]";
+    const urlField = document.getElementsByName(urlElement)[0];
+    if (targetLocation.value == "Internal"){
+        urlField.value = "";
+        urlField.parentElement.parentElement.style.display = "none";
+        imageField.parentElement.parentElement.style.display="block";
+    } else if (targetLocation.value == "External"){
+        imageField.children[1].value = "";
+        imageField.children[0].children[0].children[1].src="";
+        imageField.children[0].classList.add("hidden");
+        imageField.parentElement.parentElement.style.display = "none";
+        urlField.parentElement.parentElement.style.display="block";
+
+    }
+}
+
+//initialize photopath six times and also set it for onchange of dropdown
+for (let i = 1; i < 7; i++){
+    displayPhotoPath(i);
+    let targetPhotoElement = document.querySelector('select[name="modal_photo' + i + '[modal_photo_location' + i + ']"]');
+    targetPhotoElement.addEventListener("change", function() {
+        displayPhotoPath(i);
+    });
+}
+
+function createAccordion(accordionType, parentDiv, listElements){
+
+    let accordionItem = document.createElement("div");
+    accordionItem.classList.add("accordion-item");
+
+    let accordionFirstPart = document.createElement("div");
+    accordionFirstPart.classList.add("accordion-header");
+
+    let accordionHeaderButton = document.createElement("button");
+    accordionHeaderButton.classList.add("accordion-button", "accordionTitle");
+    accordionHeaderButton.setAttribute("type", "button");
+    accordionHeaderButton.setAttribute("data-bs-toggle", "collapse");
+    accordionHeaderButton.setAttribute("data-bs-target", "#collapse" + accordionType);
+    accordionHeaderButton.setAttribute("aria-expanded", "true");
+    accordionHeaderButton.setAttribute("aria-controls", "collapse" + accordionType);
+    if (accordionType == "info"){ 
+        accordionHeaderButton.textContent = "More info";
+    } else {
+        accordionHeaderButton.textContent = "Images";
+    }
+    accordionFirstPart.appendChild(accordionHeaderButton);
+    accordionItem.appendChild(accordionFirstPart);
+
+    let accordionSecondPart = document.createElement("div");
+    accordionSecondPart.classList.add("accordion-collapse", "collapse");
+    accordionSecondPart.setAttribute("data-bs-parent", "#accordion" + accordionType);
+    accordionSecondPart.id = "collapse" + accordionType;
+
+    let accordionBody = document.createElement("div");
+    accordionBody.classList.add("accordion_body");
+
+    let accordionList = document.createElement("ul");
+    accordionList.classList.add("previewAccordionElements");
+    for (let i = 0; i < listElements.length; i++){
+        let listItem = document.createElement("li");
+        let listLink = document.createElement("a");
+
+        let targetElement = listElements[i];	
+        let text_field = document.getElementsByName("modal_" + accordionType + targetElement + "[modal_" + accordionType + "_text" + targetElement + "]")[0].value;
+        let url_field = document.getElementsByName("modal_" + accordionType + targetElement + "[modal_" + accordionType + "_url" + targetElement + "]")[0].value;
+
+        listLink.setAttribute("href", url_field);
+        listLink.textContent = text_field;
+        listLink.setAttribute("target", "_blank");
+        listItem.appendChild(listLink);
+        accordionList.appendChild(listItem);
+    }
+
+    accordionBody.appendChild(accordionList); 
+    accordionSecondPart.appendChild(accordionBody);
+    accordionItem.appendChild(accordionSecondPart);
+
+    parentDiv.appendChild(accordionItem);
     
-    // adding jquery to the console
-    // var script = document.createElement('script');
-    // script.src='https://code.jquery.com/jquery-latest.min.js';
-    // document.getElementsByTagName('head')[0].appendChild(script);
+}
 
-	// Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
-	document.addEventListener('DOMContentLoaded', redText);
+function iconSceneOutDropdown(){
+    const modal_location = document.getElementsByName("modal_location")[0].value;
+    const iconSceneOut = document.getElementsByName("icon_scene_out")[0];
+    iconSceneOut.innerHTML ='';
+    let optionIcon = document.createElement('option');
+    optionIcon.text = "Icon Scene Out";
+    optionIcon.value = " ";
+    iconSceneOut.add(optionIcon);
 
-	let opening_scene_info_entries = $(".range[data-depend-id='modal_info_entries']").val();
-	displayEntries(opening_scene_info_entries, ".text-class[data-depend-id='modal_info_");
-	let opening_scene_photo_entries = $(".range[data-depend-id='modal_photo_entries']").val();
-	displayEntries(opening_scene_photo_entries, ".text-class[data-depend-id='modal_photo_");	
+    const modalScene = document.getElementsByName("modal_scene")[0].value;
+    if (modalScene != "") {
+    //     const modal_location_no_space = urlifyRecursiveFunc(modal_location);
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&scene_location=" + modal_location;
+        fetch(restURL)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach( element => {
+                    if (element.id != modalScene){
+                        let option = document.createElement('option');
+                        option.value = element.id;
+                        option.text = element.title.rendered;
+                        iconSceneOut.appendChild(option);
+                    }
+                });
 
-    let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
-    displayTabEntries(opening_tab_entries);
-
-    // used by modal_scene_change function to determine if the page has just loaded
-    let isPageLoad = true;
-    function changePageLoad() {
-        isPageLoad = false;
+            })
+            .catch(error => console.error('Error fetching data:', error));
     }
 
-    // Use the window.onload event to change isPageLoad to false 3 seconds after page loads 
-    window.onload = function() {
-        setTimeout(changePageLoad, 1000);
-    };
+}
 
-    iconFunction();
-    modalWindow();
-    modal_scene_change();
-    modal_location_change();
-    hideIconSection();
+function modalWindow(){
+    const iconFunctionValue = document.getElementsByName("icon_function")[0].value;
+    if (iconFunctionValue == "Modal"){ 
+        //  document.getElementsByName("icon_out_type")[0].value = "External";
+        document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
+        document.getElementsByName("icon_external_url")[0].value = "";
+        document.getElementsByName("icon_scene_out")[0].value = "";
+        document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
+        document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "block";
+        document.getElementsByName("modal_info_entries")[0].parentElement.parentElement.style.display = "block";
+        document.getElementsByName("modal_photo_entries")[0].parentElement.parentElement.style.display = "block";
+        document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "block";
+        document.getElementsByClassName("modal_preview")[0].parentElement.parentElement.style.display = "block";
+    } else {
 
-    // If a given Scene does not have any sections, then let's hide the Icon Section field in the modal page
-    function hideIconSection (){
-        const sectionField = document.getElementsByName("icon_toc_section")[0];
-        if (sectionField.options.length == 1 && sectionField.value === "None"){
-            sectionField.parentElement.parentElement.style.display = "none";
-        }
+        document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "none";
+
+        // Set the Modal Info entries to 0, run displayEntries to hide all of the resulting Modal Info fields 
+        // and then hide the Modal Info range 
+        document.getElementsByName("modal_info_entries")[0].value = 0;
+        document.getElementsByName("modal_info_entries")[0].nextSibling.value = 0;
+        displayEntries(0, ".text-class[data-depend-id='modal_info_");
+        document.getElementsByName("modal_info_entries")[0].parentElement.parentElement.style.display = "none";
+
+        // Set the Modal Photo entries to 0, run displayEntries to hide all of the resulting Modal Photo fields 
+        // and then hide the Modal Photo range 
+        document.getElementsByName("modal_photo_entries")[0].value = 0;
+        document.getElementsByName("modal_photo_entries")[0].nextSibling.value = 0;
+        displayEntries(0, ".text-class[data-depend-id='modal_photo_");
+        document.getElementsByName("modal_photo_entries")[0].parentElement.parentElement.style.display = "none";
+
+        // Set the Modal Tab entries to 0, run displayTabEntries to hide all of the resulting Modal Tab fields 
+        // and then hide the Modal Tab range 
+        document.getElementsByName("modal_tab_number")[0].value = 0;
+        document.getElementsByName("modal_tab_number")[0].nextSibling.value = 0;
+        displayTabEntries(0);
+        document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "none";
+
+        // Turn off the Modal preview button
+        document.getElementsByClassName("modal_preview")[0].parentElement.parentElement.style.display = "none";
     }
+}
 
-	// Function to display either URL or image under scene image link
-	function displayPhotoPath (fieldNumber){
-		const targetElement = "modal_photo" + fieldNumber + "[modal_photo_location" + fieldNumber + "]";
-		const targetLocation = document.getElementsByName(targetElement)[0];
-		const imageElement = '[data-depend-id="modal_photo_internal' + fieldNumber + '"]';
-		const imageField = document.querySelector(imageElement);
-		const urlElement = "modal_photo" + fieldNumber + "[modal_photo_url" + fieldNumber + "]";
-		const urlField = document.getElementsByName(urlElement)[0];
-		if (targetLocation.value == "Internal"){
-			urlField.value = "";
-			urlField.parentElement.parentElement.style.display = "none";
-			imageField.parentElement.parentElement.style.display="block";
-		} else if (targetLocation.value == "External"){
-			imageField.children[1].value = "";
-			imageField.children[0].children[0].children[1].src="";
-			imageField.children[0].classList.add("hidden");
-			imageField.parentElement.parentElement.style.display = "none";
-			urlField.parentElement.parentElement.style.display="block";
-
-		}
-	}
-
-	//initialize photopath six times and also set it for onchange of dropdown
-	for (let i = 1; i < 7; i++){
-		displayPhotoPath(i);
-		let targetPhotoElement = 'select[name="modal_photo' + i + '[modal_photo_location' + i + ']"]';
-		$(targetPhotoElement).change(function(){
-			displayPhotoPath(i);
-		});
-	}
-
-	function createAccordion(accordionType, parentDiv, listElements){
-
-		let accordionItem = document.createElement("div");
-		accordionItem.classList.add("accordion-item");
-
-		let accordionFirstPart = document.createElement("div");
-		accordionFirstPart.classList.add("accordion-header");
-
-		let accordionHeaderButton = document.createElement("button");
-		accordionHeaderButton.classList.add("accordion-button", "accordionTitle");
-		accordionHeaderButton.setAttribute("type", "button");
-		accordionHeaderButton.setAttribute("data-bs-toggle", "collapse");
-		accordionHeaderButton.setAttribute("data-bs-target", "#collapse" + accordionType);
-		accordionHeaderButton.setAttribute("aria-expanded", "true");
-		accordionHeaderButton.setAttribute("aria-controls", "collapse" + accordionType);
-		if (accordionType == "info"){ 
-			accordionHeaderButton.textContent = "More info";
-		} else {
-			accordionHeaderButton.textContent = "Images";
-		}
-		accordionFirstPart.appendChild(accordionHeaderButton);
-		accordionItem.appendChild(accordionFirstPart);
-
-		let accordionSecondPart = document.createElement("div");
-		accordionSecondPart.classList.add("accordion-collapse", "collapse");
-		accordionSecondPart.setAttribute("data-bs-parent", "#accordion" + accordionType);
-		accordionSecondPart.id = "collapse" + accordionType;
-
-		let accordionBody = document.createElement("div");
-		accordionBody.classList.add("accordion_body");
-
-		let accordionList = document.createElement("ul");
-		accordionList.classList.add("previewAccordionElements");
-		for (let i = 0; i < listElements.length; i++){
-			let listItem = document.createElement("li");
-			let listLink = document.createElement("a");
-
-			let targetElement = listElements[i];	
-			let text_field = document.getElementsByName("modal_" + accordionType + targetElement + "[modal_" + accordionType + "_text" + targetElement + "]")[0].value;
-			let url_field = document.getElementsByName("modal_" + accordionType + targetElement + "[modal_" + accordionType + "_url" + targetElement + "]")[0].value;
-
-			listLink.setAttribute("href", url_field);
-			listLink.textContent = text_field;
-			listLink.setAttribute("target", "_blank");
-			listItem.appendChild(listLink);
-			accordionList.appendChild(listItem);
-		}
-
-		accordionBody.appendChild(accordionList); 
-		accordionSecondPart.appendChild(accordionBody);
-		accordionItem.appendChild(accordionSecondPart);
-
-		parentDiv.appendChild(accordionItem);
-		
-	}
-
-    function iconSceneOutDropdown(){
-        const modal_location = document.getElementsByName("modal_location")[0].value;
-        const iconSceneOut = document.getElementsByName("icon_scene_out")[0];
-        iconSceneOut.innerHTML ='';
-        let optionIcon = document.createElement('option');
-        optionIcon.text = "Icon Scene Out";
-        optionIcon.value = " ";
-        iconSceneOut.add(optionIcon);
-
-        const modalScene = document.getElementsByName("modal_scene")[0].value;
-        if (modalScene != "") {
-       //     const modal_location_no_space = urlifyRecursiveFunc(modal_location);
-            const protocol = window.location.protocol;
-            const host = window.location.host;
-            const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&scene_location=" + modal_location;
-            fetch(restURL)
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach( element => {
-                        if (element.id != modalScene){
-                            let option = document.createElement('option');
-                            option.value = element.id;
-                            option.text = element.title.rendered;
-                            iconSceneOut.appendChild(option);
-                        }
-                    });
-
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-
-    }
-
-    function modalWindow(){
-        const iconFunctionValue = document.getElementsByName("icon_function")[0].value;
-        if (iconFunctionValue == "Modal"){ 
-          //  document.getElementsByName("icon_out_type")[0].value = "External";
-            document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
-            document.getElementsByName("icon_external_url")[0].value = "";
+function iconFunction(){
+    let iconFunctionType = document.getElementsByName("icon_function")[0].value;
+    switch (iconFunctionType){
+        case "External URL":
             document.getElementsByName("icon_scene_out")[0].value = "";
             document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
-            document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "block";
-            document.getElementsByName("modal_info_entries")[0].parentElement.parentElement.style.display = "block";
-            document.getElementsByName("modal_photo_entries")[0].parentElement.parentElement.style.display = "block";
-            document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "block";
-            document.getElementsByClassName("modal_preview")[0].parentElement.parentElement.style.display = "block";
-        } else {
+            document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "block";
+            break;
+        case "Modal":
+            document.getElementsByName("icon_scene_out")[0].value = "";
+            document.getElementsByName("icon_external_url")[0].value = "";
+            document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
+            document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
+            break;
+        case "Scene":
+            document.getElementsByName("icon_external_url")[0].value = "";
+            document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "block";
+            document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
+            break;
+    }
+    modalWindow();
+}
 
-            document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "none";
-
-            // Set the Modal Info entries to 0, run displayEntries to hide all of the resulting Modal Info fields 
-            // and then hide the Modal Info range 
-            document.getElementsByName("modal_info_entries")[0].value = 0;
-            document.getElementsByName("modal_info_entries")[0].nextSibling.value = 0;
-            displayEntries(0, ".text-class[data-depend-id='modal_info_");
-            document.getElementsByName("modal_info_entries")[0].parentElement.parentElement.style.display = "none";
-
-            // Set the Modal Photo entries to 0, run displayEntries to hide all of the resulting Modal Photo fields 
-            // and then hide the Modal Photo range 
-            document.getElementsByName("modal_photo_entries")[0].value = 0;
-            document.getElementsByName("modal_photo_entries")[0].nextSibling.value = 0;
-            displayEntries(0, ".text-class[data-depend-id='modal_photo_");
-            document.getElementsByName("modal_photo_entries")[0].parentElement.parentElement.style.display = "none";
-
-            // Set the Modal Tab entries to 0, run displayTabEntries to hide all of the resulting Modal Tab fields 
-            // and then hide the Modal Tab range 
-            document.getElementsByName("modal_tab_number")[0].value = 0;
-            document.getElementsByName("modal_tab_number")[0].nextSibling.value = 0;
-            displayTabEntries(0);
-            document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "none";
-
-            // Turn off the Modal preview button
-            document.getElementsByClassName("modal_preview")[0].parentElement.parentElement.style.display = "none";
-        }
+function displayTabEntries (entry_number){
+    let target_element = "";
+    for (let i = 6; i > entry_number; i--){
+        target_element = "modal_tab_title" + i;
+        document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "none";
+        document.getElementsByName(target_element)[0].value = "";
     }
 
-    function iconFunction(){
-        let iconFunctionType = document.getElementsByName("icon_function")[0].value;
-        switch (iconFunctionType){
-            case "External URL":
-                document.getElementsByName("icon_scene_out")[0].value = "";
-                document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "block";
-                break;
-            case "Modal":
-                document.getElementsByName("icon_scene_out")[0].value = "";
-                document.getElementsByName("icon_external_url")[0].value = "";
-                document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "none";
-                document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
-                break;
-            case "Scene":
-                document.getElementsByName("icon_external_url")[0].value = "";
-                document.getElementsByName("icon_scene_out")[0].parentElement.parentElement.style.display = "block";
-                document.getElementsByName("icon_external_url")[0].parentElement.parentElement.style.display = "none";
-                break;
-        }
-        modalWindow();
+    for (let i = 1; i <= entry_number; i++){
+        target_element = "modal_tab_title" + i;
+        document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "block";
     }
+}
 
-    function displayTabEntries (entry_number){
-        let target_element = "";
-		for (let i = 6; i > entry_number; i--){
-			target_element = "modal_tab_title" + i;
-            document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "none";
-            document.getElementsByName(target_element)[0].value = "";
-		}
+function modalSceneDropdown (dropdownElements=[]){
 
-		for (let i = 1; i <= entry_number; i++){
-			target_element = "modal_tab_title" + i;
-            document.getElementsByName(target_element)[0].parentElement.parentElement.style.display = "block";
-		}
-	}
+    const sceneDropdown = document.getElementsByName("modal_scene")[0];
+    //   if (!(sceneDropdown.value > 0)) {
 
-    function displayEntries (entry_number, string_prefix){
-		for (let i = 6; i > entry_number; i--){
-			let target_text = string_prefix + "text" + i + "']";
-			let target_url = string_prefix + "url" + i + "']";
-			$(target_text).parents().eq(6).css("display", "none");
-			$(target_text).val(function(){return  "";});
-			$(target_url).val(function(){return  "";});
-		}
-
-		for (let i = 1; i <= entry_number; i++){
-			let target = string_prefix + "text" + i + "']";
-			$(target).parents().eq(6).css("display", "block");
-		}
-	}
-
-    function modalSceneDropdown (dropdownElements=[]){
-
-        const sceneDropdown = document.getElementsByName("modal_scene")[0];
-     //   if (!(sceneDropdown.value > 0)) {
-
-            sceneDropdown.innerHTML ='';
-            let optionScene = document.createElement('option');
-            optionScene.text = "";
-            optionScene.value = "";
-            sceneDropdown.add(optionScene);
-            const elementNumber = dropdownElements.length;
-            if (elementNumber > 0) {
-                for (let i = 0; i <= elementNumber -1; i++){
-                    let option = document.createElement('option');
-                    option.value = dropdownElements[i][0];
-                    option.text = dropdownElements[i][1];
-                    sceneDropdown.appendChild(option);
-                }
-       //     }
-
-            }
-    }
-
-    function modalIconsDropdown (dropdownElements=[]){
-        const iconsDropdown = document.getElementsByName("modal_icons")[0];
-        iconsDropdown.innerHTML ='';
-        let optionIcon = document.createElement('option');
-        optionIcon.text = "";
-        optionIcon.value = "";
-        iconsDropdown.add(optionIcon);
+        sceneDropdown.innerHTML ='';
+        let optionScene = document.createElement('option');
+        optionScene.text = "";
+        optionScene.value = "";
+        sceneDropdown.add(optionScene);
         const elementNumber = dropdownElements.length;
         if (elementNumber > 0) {
             for (let i = 0; i <= elementNumber -1; i++){
                 let option = document.createElement('option');
-                option.value = dropdownElements[i];
-                option.text = dropdownElements[i];
-                iconsDropdown.appendChild(option);
+                option.value = dropdownElements[i][0];
+                option.text = dropdownElements[i][1];
+                sceneDropdown.appendChild(option);
             }
+    //     }
+
+        }
+}
+
+function modalIconsDropdown (dropdownElements=[]){
+    const iconsDropdown = document.getElementsByName("modal_icons")[0];
+    iconsDropdown.innerHTML ='';
+    let optionIcon = document.createElement('option');
+    optionIcon.text = "";
+    optionIcon.value = "";
+    iconsDropdown.add(optionIcon);
+    const elementNumber = dropdownElements.length;
+    if (elementNumber > 0) {
+        for (let i = 0; i <= elementNumber -1; i++){
+            let option = document.createElement('option');
+            option.value = dropdownElements[i];
+            option.text = dropdownElements[i];
+            iconsDropdown.appendChild(option);
         }
     }
+}
 
 // change spaces to %20
 function urlifyRecursiveFunc(str) { 
@@ -319,7 +299,7 @@ function modal_location_change(){
 			// Remove the scene window
 			previewWindow.parentNode.removeChild(previewWindow);
 		}
-        const modal_location =  $('select[name="modal_location"]').val();
+        const modal_location = document.querySelector('select[name="modal_location"]').value;
         if (modal_location != ""){
 
             const modal_location_no_space = urlifyRecursiveFunc(modal_location);
@@ -345,7 +325,7 @@ function modal_location_change(){
                     iconsDropdown.innerHTML ='';
                     iconsDropdown.value ='';
                     let optionIcon = document.createElement('option');
-                    optionIcon.text = "Icons";
+                    optionIcon.text = "";
                     optionIcon.value = "";
                     iconsDropdown.add(optionIcon);
 
@@ -356,7 +336,7 @@ function modal_location_change(){
 }
 
 function modal_scene_change(){
-    const sceneID = $( "select[name='modal_scene']" ).val();
+    const sceneID = document.querySelector("select[name='modal_scene']").value;
 
     if (sceneID != "" && sceneID != null) {
         if (!isPageLoad){
@@ -502,38 +482,31 @@ function modal_icons_change() {
                     }
                 }
 
-                    let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
-        
-                    // Select all child elements 
-                    let subElements = svgIconTarget.querySelectorAll("*");
-        
-                    // Loop through each sub-element and update its stroke-width and color
-                    subElements.forEach(subElement => {
-                        let svgIconHighlight = subElement.cloneNode(true);
-                        svgIconHighlight.id = "icon_highlight";
-                        svgIconHighlight.style.strokeWidth = "6";
-                        svgIconHighlight.style.stroke = hoverColor;
-                        svgIcons.prepend(svgIconHighlight);
-                    });
-
-
-  //      const svgIconHighlight = svgIconTarget.cloneNode(true);
-  //      svgIconHighlight.id = "icon_highlight";
-  //      svgIconHighlight.style.stroke = hoverColor; //"yellow";
-  //      svgIconHighlight.style.strokeWidth = "6";
-  //      svgIcons.prepend(svgIconHighlight);
+                let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+    
+                // Select all child elements 
+                let subElements = svgIconTarget.querySelectorAll("*");
+    
+                // Loop through each sub-element and update its stroke-width and color
+                subElements.forEach(subElement => {
+                    let svgIconHighlight = subElement.cloneNode(true);
+                    svgIconHighlight.id = "icon_highlight";
+                    svgIconHighlight.style.strokeWidth = "6";
+                    svgIconHighlight.style.stroke = hoverColor;
+                    svgIcons.prepend(svgIconHighlight);
+                });
             })
 
 
     }
 }
 
-$('select[name="modal_location"]').change(modal_location_change);
-$( "select[name='modal_scene']" ).change(modal_scene_change);
-$( "select[name='modal_icons']" ).change(modal_icons_change);
-$( "select[name='icon_function']" ).change(iconFunction);
+document.querySelector('select[name="modal_location"]').addEventListener("change", modal_location_change);
+document.querySelector('select[name="modal_scene"]').addEventListener("change", modal_scene_change);
+document.querySelector('select[name="modal_icons"]').addEventListener("change", modal_icons_change);
+document.querySelector('select[name="icon_function"]').addEventListener("change", iconFunction);
 
-$(".range[data-depend-id='modal_tab_number']").change(function(){ 
+document.querySelector(".range[data-depend-id='modal_tab_number']").addEventListener("change", function(){ 
     let opening_tab_entries = document.getElementsByName("modal_tab_number")[0].value;
     displayTabEntries(opening_tab_entries);
 });
@@ -578,8 +551,7 @@ modalPhotoRangeElement2.addEventListener("change", function() {
     displayEntries(number_of_modal_photo_entries2, ".text-class[data-depend-id='modal_photo_");
 });
 
-$('.modal_preview').click(function(){ 
-
+document.querySelector('[data-depend-id="modal_preview"]').addEventListener('click', function() {
     // Let's remove the preview window if it already exists
     var previewWindow = document.getElementById('modal_preview');
     // If the element exists
@@ -710,34 +682,4 @@ $('.modal_preview').click(function(){
 
 });
 
-
-        /**
-         * All of the code for your admin-facing JavaScript source
-         * should reside in this file.
-         *
-         * Note: It has been assumed you will write jQuery code here, so the
-         * $ function reference has been prepared for usage within the scope
-         * of this function.
-         *
-         * This enables you to define handlers, for when the DOM is ready:
-         *
-         * $(function() {
-         *
-         * });
-         *
-         * When the window is loaded:
-         *
-         * $( window ).load(function() {
-         *
-         * });
-         *
-         * ...and/or other possibilities.
-         *
-         * Ideally, it is not considered best practise to attach more than a
-         * single DOM-ready or window-load handler for a particular page.
-         * Although scripts in the WordPress core, Plugins and Themes may be
-         * practising this, we should strive to set a better example in our own work.
-         */
-    
-    })( jQuery );
     

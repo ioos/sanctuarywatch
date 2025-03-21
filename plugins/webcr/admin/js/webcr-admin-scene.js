@@ -358,24 +358,6 @@ displayEntries(opening_scene_info_entries, ".text-class[data-depend-id='scene_in
 let opening_scene_photo_entries = document.querySelector(".range[data-depend-id='scene_photo_entries']").value;
 displayEntries(opening_scene_photo_entries, ".text-class[data-depend-id='scene_photo_");	
 
-function displayEntries (entry_number, string_prefix){
-
-	for (let i = 6; i > entry_number; i--){
-		let target_text = string_prefix + "text" + i + "']";
-		let target_text_div = document.querySelector(target_text);
-		target_text_div.value ="";
-		let target_url = string_prefix + "url" + i + "']";
-		let target_url_div = document.querySelector(target_url);
-		target_url_div.value ="";
-		target_text_div.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="none";
-	}
-
-	for (let i = 1; i <= entry_number; i++){
-		let target_text = string_prefix + "text" + i + "']";
-		let target_text_div = document.querySelector(target_text);
-		target_text_div.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="block";
-	}
-}
 
 //initialize photopath six times and also set it for onchange of dropdown
 for (let i = 1; i < 7; i++){

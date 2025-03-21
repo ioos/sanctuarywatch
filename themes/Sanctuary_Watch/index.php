@@ -88,7 +88,7 @@ if ($instances_query->have_posts()) {
 <div class="image-center" style="padding-bottom: 20px;">
         <span>
             <?php 
-                echo '<img width="10%" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Sanctuary Watch Navbar Emblem">';
+                echo '<img width="10%" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Navbar Emblem">';
             ?>
         </span>
         <span style="display: inline-block; text-align: left; vertical-align: middle;">

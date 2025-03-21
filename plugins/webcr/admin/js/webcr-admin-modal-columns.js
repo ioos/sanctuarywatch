@@ -29,6 +29,6 @@ function modal_instance_change(){
 
 }
 
-(function( $ ) {
-    $('#modal_instance').change(modal_instance_change);
-})( jQuery );
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("modal_instance").addEventListener("change", modal_instance_change);
+});

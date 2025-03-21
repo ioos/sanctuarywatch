@@ -60,7 +60,7 @@ function figure_scene_change(){
 
 }
 
-(function( $ ) {
-    $('#figure_instance').change(figure_instance_change);
-    $('#figure_scene').change(figure_scene_change);
-})( jQuery );
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("figure_instance").addEventListener("change", figure_instance_change);
+    document.getElementById("figure_scene").addEventListener("change", figure_scene_change);
+});

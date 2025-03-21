@@ -66,3 +66,23 @@ function redText () {
     }
     });
 }
+
+// Show relevant photo and info fields for scene and modal forms
+function displayEntries (entry_number, string_prefix){
+
+	for (let i = 6; i > entry_number; i--){
+		let target_text = string_prefix + "text" + i + "']";
+		let target_text_div = document.querySelector(target_text);
+		target_text_div.value ="";
+		let target_url = string_prefix + "url" + i + "']";
+		let target_url_div = document.querySelector(target_url);
+		target_url_div.value ="";
+		target_text_div.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="none";
+	}
+
+	for (let i = 1; i <= entry_number; i++){
+		let target_text = string_prefix + "text" + i + "']";
+		let target_text_div = document.querySelector(target_text);
+		target_text_div.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="block";
+	}
+}

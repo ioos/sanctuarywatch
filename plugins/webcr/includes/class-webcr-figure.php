@@ -323,7 +323,7 @@ class Webcr_Figure {
                     'id'             => 'figure_tab',
                     'type'           => 'select',
                     'title'          => 'Tab*',
-                    'options'        => $modal_tabs, // array (" " => "Modal Icons")
+                    'options'        => $modal_tabs,
                     'description' => 'What modal tab is this figure part of?',
                 ),
                 array(
