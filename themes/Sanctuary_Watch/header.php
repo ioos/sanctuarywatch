@@ -15,6 +15,21 @@ defined( 'ABSPATH' ) || exit;
 <!doctype html>
 <html <?php language_attributes();?>>
 <head>
+
+
+<?php
+// Google Tags Settings 
+$settings = get_option('webcr_settings');
+$google_tags_measurement_id = isset($settings['google_tags_measurement_id']) ? esc_js($settings['google_tags_measurement_id']) : '';
+?>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', <?php echo $google_tags_measurement_id; ?>);
+</script>
+
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
