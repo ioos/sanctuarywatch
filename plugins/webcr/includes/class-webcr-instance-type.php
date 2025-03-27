@@ -62,9 +62,17 @@ class Webcr_Instance_Type {
         );
 
         add_settings_field(
-            'google_tags_measurement_id',
-            'Measurement ID',
-            [$this, 'google_tags_measurement_id_field_callback'],
+            'google_analytics_measurement_id',
+            'Google Analytics Measurement ID',
+            [$this, 'google_analytics_measurement_id_field_callback'],
+            'theme_settings',
+            'webcr_settings_section'
+        );
+
+        add_settings_field(
+            'google_tags_container_id',
+            'Google Tags Container ID',
+            [$this, 'google_tags_container_id_field_callback'],
             'theme_settings',
             'webcr_settings_section'
         );
@@ -103,15 +111,29 @@ class Webcr_Instance_Type {
         <?php
     }
 
-    function google_tags_measurement_id_field_callback() {
+
+    function google_analytics_measurement_id_field_callback() {
         $options = get_option('webcr_settings');
-        $value = isset($options['google_tags_measurement_id']) ? $options['google_tags_measurement_id'] : '';
+        $value = isset($options['google_analytics_measurement_id']) ? $options['google_analytics_measurement_id'] : '';
         ?>
-        <input type="text" name="webcr_settings[google_tags_measurement_id]" value="<?php echo esc_attr($value); ?>" class="regular-text">
+        <input type="text" name="webcr_settings[google_analytics_measurement_id]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="G-XXXXXXXXXXXX">>
         <p class="description">
             Enter the Google Analytics Measurement ID for your site.
             <br>
             <a href="https://support.google.com/analytics/answer/9539598" target="_blank" rel="noopener noreferrer">Learn how to find your Measurement ID</a>.
+        </p>
+        <?php
+    }
+
+    function google_tags_container_id_field_callback() {
+        $options = get_option('webcr_settings');
+        $value = isset($options['google_tags_container_id']) ? $options['google_tags_container_id'] : '';
+        ?>
+        <input type="text" name="webcr_settings[google_tags_container_id]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="GTM-XXXXXXXX">>
+        <p class="description">
+            Enter the Google Tags Container ID for your site.
+            <br>
+            <a href="https://support.google.com/analytics/answer/9539598" target="_blank" rel="noopener noreferrer">Learn how to find your Container ID</a>.
             <br>
             <br>
             You will also need to download, then import this container into your Google Tag Manager instance.
