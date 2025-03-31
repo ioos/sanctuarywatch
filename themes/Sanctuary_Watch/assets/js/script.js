@@ -337,6 +337,7 @@ async function make_title() {
 
         titleDom.append(row);
         // return scene_location;
+        sceneLoaded(title, sceneID);
         return scene_data;
 
     } catch (error) {
@@ -960,6 +961,9 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  * This function is called for each tab, populating one or more figures (and other corresponding info)
  */
 function render_tab_info(tabContentElement, tabContentContainer, info_obj){
+
+    let postID = info_obj["postID"];
+    let title = info_obj['figureTitle'];
     
     const containerDiv = document.createElement('div');
     containerDiv.style.background = '#e3e3e354';
@@ -992,7 +996,6 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         firstLink.innerHTML = icon1 + firstLink.innerHTML;
         firstLink.style.textDecoration = 'none';
         firstLink.style.color = '#03386c';
-
         leftCellDiv.appendChild(firstLink);
     }
 
@@ -1055,7 +1058,8 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             } else {
                 img.alt = '';
             }
-            figureDiv.appendChild(img);       
+            figureDiv.appendChild(img);
+            figureInternalImageLoaded(title, postID); 
         break;
 
         case "External":
@@ -1066,15 +1070,17 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             } else {
                 img.alt = '';
             }
-            figureDiv.appendChild(img);       
+            figureDiv.appendChild(img);
+            figureExternalImageLoaded(title, postID);    
         break;
 
         case "Interactive":
             img = document.createElement('div'); // Create a div to hold the plot
             img.id =  "javascript_figure_target";
             let interactive_arguments = info_obj["figure_interactive_arguments"];
-            producePlotlyLineFigure("javascript_figure_target", interactive_arguments);
+            producePlotlyLineFigure("javascript_figure_target", interactive_arguments, postID);
             figureDiv.appendChild(img);
+            figureTimeseriesGraphLoaded(title, postID);
         break;
 
 
@@ -1115,7 +1121,8 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
                 script.remove(); // Remove the script tag from tempDiv
             });
             // Inject remaining HTML into the codeDiv
-            codeDiv.innerHTML = tempDiv.innerHTML;      
+            codeDiv.innerHTML = tempDiv.innerHTML;
+            figureCodeDisplayLoaded(title, postID);  
         break;
 
     }
@@ -1240,7 +1247,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                 // tabContentContainer.setAttribute("display", "");
                 for (let idx in all_figure_data){
                     figure_data = all_figure_data[idx];
-                    console.log(figure_data)
+                    //console.log(figure_data)
                     let external_alt = '';
                     if (figure_data['figure_path']==='External'){
                         img = figure_data['figure_external_url'];
@@ -1250,6 +1257,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                         img = figure_data['figure_image'];
                     } // add smth here for external
                     info_obj = {
+                    "postID" : figure_data.id,
                     "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
                     "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
                     "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
@@ -1389,7 +1397,7 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
         }
     }
     
-
+    modalTabLoaded(title, modal_id);
     fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
 }
 
@@ -1571,11 +1579,9 @@ function render_modal(key){
                 trapFocus(mdialog);
               
             }
+            modalWindowLoaded(modal_title, id);
         // });
             
-
-
-
         })
     .catch(error => console.error('Error fetching data:', error));
     

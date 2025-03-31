@@ -51,7 +51,18 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 //     const overviewSceneId = <?php echo json_encode($overview); ?>;
 </script>
 
-<body      >
+<body>
+
+  <!-- // Google Tags Container ID call from wp_options single-scene.php-->
+  <?php
+  $settings = get_option('webcr_settings');
+  $google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_js($settings['google_tags_container_id']) : '';
+  ?>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo $google_tags_container_id; ?>"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
   <!-- for the mobile image stuff -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">

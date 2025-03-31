@@ -719,7 +719,8 @@ class Webcr_Figure {
 
         // Variable-ize the post's ID & the file's name.
         $post_id = intval($_POST['post_id']);
-        $file_name = sanitize_file_name($_POST['file_name']);
+        //$file_name = sanitize_file_name($_POST['file_name']); // old version breaks special characters
+        $file_name = basename(urldecode($_POST['file_name']));
 
         // Get instance ID, scene ID, and modal ID
         // $instance_id = get_post_meta($post_id, 'location', true);
@@ -771,6 +772,7 @@ class Webcr_Figure {
             wp_send_json_error(['message' => 'Failed to delete the file.'], 500);
         }
     }
+    
 
     /**
      * Displays admin notices for the WebCR plugin.

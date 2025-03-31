@@ -92,12 +92,14 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				$example_csv = 'example.csv';
 				$example_json = 'example.json';
 
-				echo '<strong>Example Files & Formatting:</strong>';
+				echo '<strong>Correct Formatting for .csv Files:</strong>';
 				echo '<br>';
-				echo ' - Be sure none of your column header names, row data values, or metadata contain commas.<br>';
+				echo ' - Be sure that every column header has a name and that none of your column header names, row data values, or metadata contain commas.<br>';
+				echo ' - No values should be contained in quotes or double quote. (Examples - Correct: value, Incorrect: "value") .<br>';
 				echo ' - Please see the date examples in the example files for accepted date formats and no data handling. <br>';
 				echo ' - The date formats are best viewed in Notepad or a similar text editor, MS Excel may automatically change date formats. <br>';
 				echo '<br>';
+				echo '<strong>Example Files:</strong><br>';
 				echo 'Please format your .csv or .json file as shown in the examples below. If they are not formatted properly, your file will be rejected.<br>';
 				echo '<a href="' . esc_url($example_folder . $example_csv) . '" target="_blank">Download example.csv</a><br>';
 				echo '<a href="' . esc_url($example_folder . $example_json) . '" target="_blank">Download example.json</a>';
@@ -157,6 +159,10 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 					// Assign values to corresponding headers
 					headers.forEach((header, index) => {
 						let parsedValue = values[index] !== undefined ? values[index] : "";
+
+						// if (value.includes('"')) {
+						// 	parsedValue = parsedValue.replace(/"/g, '');
+						// }
 
 						// Convert numeric values to integers or floats, assign null for missing numerical values, and keep non-numeric as strings
 						const columnValues = result[header].filter(val => val !== "" && val !== null);

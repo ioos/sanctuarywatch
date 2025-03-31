@@ -64,6 +64,17 @@ if ($instances_query->have_posts()) {
 
 
 <body>
+
+<!-- // Google Tags Container ID call from wp_options  index.php-->
+<?php
+$settings = get_option('webcr_settings');
+$google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_js($settings['google_tags_container_id']) : '';
+?>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo $google_tags_container_id; ?>"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
 <div id="entire_thing" style="
  
   max-width: 1700px !important;

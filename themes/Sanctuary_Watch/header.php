@@ -16,18 +16,23 @@ defined( 'ABSPATH' ) || exit;
 <html <?php language_attributes();?>>
 <head>
 
-
+<!-- // Google Tags/Analytics Measurement ID call from wp_options header.php -->
 <?php
-// Google Tags Settings 
 $settings = get_option('webcr_settings');
-$google_tags_measurement_id = isset($settings['google_tags_measurement_id']) ? esc_js($settings['google_tags_measurement_id']) : '';
+$google_analytics_measurement_id = isset($settings['google_analytics_measurement_id']) ? esc_js($settings['google_analytics_measurement_id']) : '';
+$google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_js($settings['google_tags_container_id']) : '';
 ?>
+
+<!-- // Google Tags/Analytics (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $google_analytics_measurement_id; ?>"></script>
+
+<!-- // Google Tags header.php-->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', <?php echo $google_tags_measurement_id; ?>);
+  gtag('config', '<?php echo $google_tags_container_id; ?>');
 </script>
 
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
@@ -35,6 +40,7 @@ $google_tags_measurement_id = isset($settings['google_tags_measurement_id']) ? e
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link rel="profile" href="http://gmpg.org/xfn/11" />
 <?php 
+
 // WordPress hook for adding elements to the <head> section
 wp_head(); 
 /**
