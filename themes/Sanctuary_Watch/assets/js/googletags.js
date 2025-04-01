@@ -1,5 +1,6 @@
 window.dataLayer = window.dataLayer || [];
 
+const gaMeasurementID = window.webcrSettings.googleAnalyticsMeasurementId;
 
 //FIGURE TRACKING AND ANALYSIS_______________________________________________________________
 /**
@@ -9,14 +10,14 @@ window.dataLayer = window.dataLayer || [];
  * @param {number} postID - The ID of the post associated with the figure or source.
  *
  */
-function figureSourceLinkClick(title, postID) {
-    dataLayer.push({
-      event: 'figureSourceLinkClick',
-      pageSection: 'figure',
-      title:  title,
-      postID:  postID
-    });
-}
+// function figureSourceLinkClick(title, postID) {
+//     dataLayer.push({
+//       event: 'figureSourceLinkClick',
+//       pageSection: 'figure',
+//       title:  title,
+//       postID:  postID
+//     });
+// }
 
 /**
  * Pushes a custom event to the dataLayer for tracking figure data link interactions when clicked.
@@ -28,32 +29,33 @@ function figureSourceLinkClick(title, postID) {
  *              Google Tag Manager dataLayer. It includes metadata such as the page section, 
  *              title, and post ID for analytics purposes.
  */
-function figureDataLinkClick(title, postID) {
-    dataLayer.push({
-        event: 'figureDataLink',
-        pageSection: 'figure',
-        title:  title,
-        postID:  postID
-    });
-}
+// function figureDataLinkClick(title, postID) {
+//     dataLayer.push({
+//         event: 'figureDataLink',
+//         pageSection: 'figure',
+//         title:  title,
+//         postID:  postID
+//     });
+// }
 
 /**
  * Tracks the loading of an interactive timeseries graph by pushing an event to the dataLayer.
  * @param {string} title - The title of the figure.
- * @param {number} postID - The ID of the post associated with the figure.
+ * @param {number} figureID - The ID of the post associated with the figure.
  * @description
  * This function is used to log the loading of an interactive timeseries graph by pushing
  * an event to the `dataLayer` object. The event includes metadata such as
  * the figure type and the page section where the image is displayed.
  * It is typically used for analytics purposes.
  */
-function figureTimeseriesGraphLoaded(title, postID) {
+function figureTimeseriesGraphLoaded(title, figureID, gaMeasurementID) {
   dataLayer.push({
+    GA4_MeasurementID: gaMeasurementID,
     event: 'figureTimeseriesGraphLoaded',
     figureType: "lineChart",
     pageSection: 'figure',
     title:  title,
-    postID:  postID
+    figureID:  figureID
   });
 }
 
@@ -61,40 +63,42 @@ function figureTimeseriesGraphLoaded(title, postID) {
 /**
  * Tracks the loading of an internal image and pushes an event to the dataLayer.
  * @param {string} title - The title of the figure.
- * @param {number} postID - The ID of the post associated with the figure.
+ * @param {number} figureID - The ID of the post associated with the figure.
  * @description
  * This function is used to log the loading of an internal image by pushing
  * an event to the `dataLayer` object. The event includes metadata such as
  * the figure type and the page section where the image is displayed.
  * It is typically used for analytics purposes.
  */
-function figureInternalImageLoaded(title, postID) {
+function figureInternalImageLoaded(title, figureID, gaMeasurementID) {
     dataLayer.push({
+      GA4_MeasurementID: gaMeasurementID,
       event: 'figureInternalImageLoaded',
       figureType: "internalImage",
       pageSection: 'figure',
       title:  title,
-      postID:  postID
+      figureID:  figureID
     });
 }
 
 /**
  * Tracks the loading of an external image and pushes an event to the dataLayer.
  * @param {string} title - The title of the figure.
- * @param {number} postID - The ID of the post associated with the figure.
+ * @param {number} figureID - The ID of the post associated with the figure.
  * @description
  * This function is used to log the loading of an external image by pushing
  * an event to the `dataLayer` object. The event includes metadata such as
  * the figure type and the page section  where the image is displayed.
  * It is typically used for analytics purposes.
  */
-function figureExternalImageLoaded(title, postID) {
+function figureExternalImageLoaded(title, figureID, gaMeasurementID) {
     dataLayer.push({
+      GA4_MeasurementID: gaMeasurementID,
       event: 'figureExternalImageLoaded',
       figureType: "externalImage",
       pageSection: 'figure',
       title:  title,
-      postID:  postID
+      figureID:  figureID
     });
 }
 
@@ -103,15 +107,16 @@ function figureExternalImageLoaded(title, postID) {
  * Pushes an event to the dataLayer indicating that a code display has been loaded.
  *
  * @param {string} title - The title of the figure.
- * @param {number} postID - The ID of the post associated with the figure.
+ * @param {number} figureID - The ID of the post associated with the figure.
  */
-function figureCodeDisplayLoaded(title, postID) {
+function figureCodeDisplayLoaded(title, figureID, gaMeasurementID) {
     dataLayer.push({
+      GA4_MeasurementID: gaMeasurementID,
       event: 'figureCodeDisplayLoaded',
       figureType: "codeDisplay",
       pageSection: 'figure',
       title:  title,
-      postID:  postID
+      figureID:  figureID
     });
 }
 
@@ -124,8 +129,9 @@ function figureCodeDisplayLoaded(title, postID) {
  * @param {string} title - The title of the modal window.
  * @param {string|number} modal_id - The ID of the post associated with the modal window.
  */
-function modalWindowLoaded(title, modal_id) {
+function modalWindowLoaded(title, modal_id, gaMeasurementID) {
     dataLayer.push({
+      GA4_MeasurementID: gaMeasurementID,
       event: 'modalWindowLoaded', 
       pageSection: 'modal',
       title:  title,
@@ -139,8 +145,9 @@ function modalWindowLoaded(title, modal_id) {
  * @param {string} title - The title of the modal tab being loaded.
  * @param {string|number} modal_id - The ID of the post associated with the modal tab.
  */
-function modalTabLoaded(title, modal_id) {
+function modalTabLoaded(title, modal_id, gaMeasurementID) {
     dataLayer.push({
+      GA4_MeasurementID: gaMeasurementID,
       event: 'modalTabLoaded', 
       pageSection: 'modal',
       title:  title,
@@ -151,21 +158,17 @@ function modalTabLoaded(title, modal_id) {
 /**
  * Tracks the "More Info" button click event within a modal and pushes the event data to the dataLayer.
  *
- * @param {string} title - The title of the modal or content being tracked.
- * @param {number} modal_id - The unique identifier of the post associated with the modal.
  */
-function modalMoreInfoClicked(title, modal_id, url) {
-  // Get the modal title from the #modal-title element
-  const modalTitleElement = document.getElementById('modal-title');
-  const modalTitle = modalTitleElement ? modalTitleElement.textContent.trim() : 'Unknown Title';
+function modalMoreInfoClicked(title, modalID, url, modalTitle, gaMeasurementID) {
 
   dataLayer.push({
+    GA4_MeasurementID: gaMeasurementID,
     event: 'modalMoreInfoClicked',
     pageSection: 'modal',
     title: title,
-    modalID: modal_id,
+    modalID: modalID,
     modalTitle: modalTitle,
-    outboundLink: url
+    url: url
   });
 }
 
@@ -198,17 +201,16 @@ document.querySelectorAll('.accordion-body a').forEach(function(link) {
 /**
  * Tracks the event when modal images are clicked and pushes relevant data to the dataLayer.
  *
- * @param {string} title - The title of the modal or image being clicked.
- * @param {number} modal_id - The ID of the post associated with the modal or image.
  */
-function modalImagesClicked(title, modal_id, url, modalTitle) {
+function modalImagesClicked(title, modalID, url, modalTitle, gaMeasurementID) {
   dataLayer.push({
+    GA4_MeasurementID: gaMeasurementID,
     event: 'modalImagesClicked',
     pageSection: 'modal',
     title: title,
-    modalID: modal_id,
+    modalID: modalID,
     modalTitle: modalTitle,
-    outboundLink: url
+    modalTitle: url
   });
 }
 
@@ -246,12 +248,13 @@ document.querySelectorAll('.accordion-body a').forEach(function(link) {
  * @param {string} title - The title of the scene being loaded.
  * @param {number} sceneID - The ID of the post associated with the scene.
  */
-function sceneLoaded(title, sceneID) {
+function sceneLoaded(title, sceneID, gaMeasurementID) {
     dataLayer.push({
+      GA4_MeasurementID: gaMeasurementID,
       event: 'sceneLoaded', 
       pageSection: 'scene',
       title:  title,
-      sceneID:  sceneID  
+      title:  sceneID  
     });
 }
 

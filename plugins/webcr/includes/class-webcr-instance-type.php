@@ -116,7 +116,7 @@ class Webcr_Instance_Type {
         $options = get_option('webcr_settings');
         $value = isset($options['google_analytics_measurement_id']) ? $options['google_analytics_measurement_id'] : '';
         ?>
-        <input type="text" name="webcr_settings[google_analytics_measurement_id]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="G-XXXXXXXXXXXX">>
+        <input type="text" name="webcr_settings[google_analytics_measurement_id]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="G-XXXXXXXXXXXX">
         <p class="description">
             Enter the Google Analytics Measurement ID for your site.
             <br>
@@ -129,7 +129,7 @@ class Webcr_Instance_Type {
         $options = get_option('webcr_settings');
         $value = isset($options['google_tags_container_id']) ? $options['google_tags_container_id'] : '';
         ?>
-        <input type="text" name="webcr_settings[google_tags_container_id]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="GTM-XXXXXXXX">>
+        <input type="text" name="webcr_settings[google_tags_container_id]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="GTM-XXXXXXXX">
         <p class="description">
             Enter the Google Tags Container ID for your site.
             <br>

@@ -23,6 +23,13 @@ $google_analytics_measurement_id = isset($settings['google_analytics_measurement
 $google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_js($settings['google_tags_container_id']) : '';
 ?>
 
+<!-- // Google Tags/Analytics Measurement ID variable for access in JS for googletags.js-->
+<script>
+  window.webcrSettings = {
+    googleAnalyticsMeasurementId: "<?php echo $google_analytics_measurement_id; ?>"
+  };
+</script>
+
 <!-- // Google Tags/Analytics (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $google_analytics_measurement_id; ?>"></script>
 

@@ -1,4 +1,6 @@
 
+
+
 function hexToRgba(hex, opacity) {
     // Remove the hash if it's present
     hex = hex.replace(/^#/, '');
@@ -337,7 +339,7 @@ async function make_title() {
 
         titleDom.append(row);
         // return scene_location;
-        sceneLoaded(title, sceneID);
+        sceneLoaded(title, scene_location);
         return scene_data;
 
     } catch (error) {
