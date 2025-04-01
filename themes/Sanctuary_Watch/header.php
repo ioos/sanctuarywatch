@@ -30,7 +30,7 @@ $google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_j
   };
 </script>
 
-<!-- // Google Tags/Analytics (gtag.js) -->
+<!-- // Google Tags/Analytics (gtag.js) header.php-->
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $google_analytics_measurement_id; ?>"></script>
 
 <!-- // Google Tags header.php-->
