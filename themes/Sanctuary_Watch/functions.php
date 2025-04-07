@@ -47,7 +47,7 @@ add_action('wp_enqueue_scripts', 'enqueue_font_awesome');
    * @return void
    */
   function enqueue_bootstrap_css(){
-    wp_register_style('bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css', array('jquery'), 
+    wp_register_style('bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css', array(), 
             null,  array('strategy' => 'defer,'));
     wp_enqueue_style('bootstrap');
   }
@@ -477,7 +477,9 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
             $child = ($child_id . $idx);
           }
 
-          if ($icon_order[0] == null){
+          if (count($icon_order) == 0){
+            $modal_icon_order = 1;
+          } else if ($icon_order[0] == null){
             $modal_icon_order = 1;
           } else {
             $modal_icon_order = intval($icon_order[0]);
