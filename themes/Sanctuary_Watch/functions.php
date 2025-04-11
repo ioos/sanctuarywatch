@@ -39,20 +39,25 @@ add_action('wp_enqueue_scripts', 'enqueue_font_awesome');
   } 
   add_action( 'wp_enqueue_scripts', 'files' );
 
-  /**
-   * Enqueues Bootstrap's CSS library with dependency management.
-   *
-   * This function registers and enqueues the Bootstrap CSS library from a CDN.
-   *
-   * @return void
-   */
-  function enqueue_bootstrap_css(){
-    wp_register_style('bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css', array(), 
-            null,  array('strategy' => 'defer,'));
-    wp_enqueue_style('bootstrap');
-  }
-  add_action('wp_enqueue_scripts', 'enqueue_bootstrap_css');
-
+/**
+ * Enqueues Bootstrap's CSS library with dependency management.
+ *
+ * This function registers and enqueues the Bootstrap CSS library from a CDN.
+ *
+ * @return void
+ */
+function enqueue_bootstrap_css(){
+  // Register the style with a valid $media parameter (e.g., 'all')
+  wp_register_style(
+      'bootstrap',
+      get_template_directory_uri() . '/css/bootstrap.min.css',
+      array(), // Dependencies
+      null,    // Version
+      'all'    // Media type (Corrected: Changed from array to string)
+  );
+  wp_enqueue_style('bootstrap');
+}
+add_action('wp_enqueue_scripts', 'enqueue_bootstrap_css');
 
 
   /**
