@@ -72,10 +72,10 @@ function trapFocus(modalElement) {
     };
 }
 
-let child_ids = my_script_vars.child_ids;
+//let child_ids = my_script_vars.child_ids;
 let child_obj = JSON.parse(JSON.stringify(child_ids));
 
-let svg_url = my_script_vars.svg_url;
+// let svg_url = my_script_vars.svg_url;
 
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);

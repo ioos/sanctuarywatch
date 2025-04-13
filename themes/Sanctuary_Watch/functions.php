@@ -50,14 +50,14 @@ function enqueue_bootstrap_css(){
   // Register the style with a valid $media parameter (e.g., 'all')
   wp_register_style(
       'bootstrap',
-      get_template_directory_uri() . '/css/bootstrap.min.css',
+      get_template_directory_uri() . '/assets/css/bootstrap.min.css',
       array(), // Dependencies
       null,    // Version
       'all'    // Media type (Corrected: Changed from array to string)
   );
   wp_enqueue_style('bootstrap');
 }
-add_action('wp_enqueue_scripts', 'enqueue_bootstrap_css');
+//add_action('wp_enqueue_scripts', 'enqueue_bootstrap_css');
 
 
   /**
