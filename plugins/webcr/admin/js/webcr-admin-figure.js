@@ -1,18 +1,15 @@
 
 // These functions only fire upon editing or creating a post of Figure custom content type
+
+'use strict';
+
+// Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
+document.addEventListener('DOMContentLoaded', redText);
+
 run_webcr_admin_figures()
 
-/**
- * Initializes the admin figures functionality for the WebCR plugin.
- * Handles dynamic updates to the UI based on user interactions and REST API data.
- */
 function run_webcr_admin_figures() {
-    'use strict';
-    
-    // Display the correct image field based on the current configuration
     displayCorrectImageField ();
-
-    // Declare variables for JSON columns, field label number, and saved field values
     let jsonColumns;
     let fieldLabelNumber;
     let fieldValueSaved;
