@@ -4,6 +4,8 @@
  * 
  */
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
+
+
 class Webcr_Figure {
 
     /**
@@ -290,14 +292,13 @@ class Webcr_Figure {
 
         // used by both scene and icon dropdowns
         if (array_key_exists("post", $_GET)) {
-            $figure_id = intval($_GET["post"]);
-            // $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
-            $location = get_post_meta($figure_id, "location", true);
-            $scene_titles = $function_utilities -> returnScenesFigure($location);
-            $scene_id = get_post_meta($figure_id, "figure_scene", true);
-            $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
-            $modal_id = get_post_meta($figure_id, "figure_modal", true);
-            $modal_tabs = $function_utilities -> returnModalTabs($modal_id);
+                $figure_id = intval($_GET["post"]);
+                $location = get_post_meta($figure_id, "location", true);
+                $scene_titles = $function_utilities -> returnScenesFigure($location);
+                $scene_id = get_post_meta($figure_id, "figure_scene", true);
+                $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
+                $modal_id = get_post_meta($figure_id, "figure_modal", true);
+                $modal_tabs = $function_utilities -> returnModalTabs($modal_id);
         }
 
         $fields[] = array(
@@ -308,7 +309,7 @@ class Webcr_Figure {
                 array(
                     'id'             => 'location',
                     'type'           => 'select',
-                    'title'          => 'Instance',
+                    'title'          => 'Instance*',
                     'options'        => $locations,
                     'description' => 'What instance is this figure part of?',
                  //   'class'      => 'chosen', 
@@ -316,22 +317,22 @@ class Webcr_Figure {
                 array(
                     'id'             => 'figure_scene',
                     'type'           => 'select',
-                    'title'          => 'Scene',
+                    'title'          => 'Scene*',
                     'options'        => $scene_titles,
                     'description' => 'What scene is this figure part of?',
                 ),
                 array(
                     'id'             => 'figure_modal',
                     'type'           => 'select',
-                    'title'          => 'Icon',
+                    'title'          => 'Icon*',
                     'options'        => $modal_icons, // array (" " => "Modal Icons")
                     'description' => 'What icon is this figure part of?',
                 ),
                 array(
                     'id'             => 'figure_tab',
                     'type'           => 'select',
-                    'title'          => 'Tab',
-                    'options'        => $modal_tabs, // array (" " => "Modal Icons")
+                    'title'          => 'Tab*',
+                    'options'        => $modal_tabs,
                     'description' => 'What modal tab is this figure part of?',
                 ),
                 array(
@@ -387,7 +388,7 @@ class Webcr_Figure {
                 array(
                     'id'             => 'figure_path',
                     'type'           => 'select',
-                    'title'          => 'Figure Type',
+                    'title'          => 'Figure Type*',
                     'options'        => array("Internal" => "Internal", "External" => "External", "Interactive" => "Interactive", "Code" => "Code"),
                     'default'        => "Internal",
                     'description' => 'Is the figure type an image stored within this website, or at some external location, is it piece a code, or does it need to be an interactive figure generated from data?',

@@ -137,7 +137,7 @@ class Webcr_Modal {
             array(
                 'id'             => 'modal_published',
                 'type'           => 'select',
-                'title'          => 'Modal Status',
+                'title'          => 'Modal Status*',
                 'options'        => array("draft" => "Draft", "published" => "Published"),
                 'default' => 'draft',
                 'description' => 'Should the modal be live?',
@@ -145,21 +145,21 @@ class Webcr_Modal {
             array(
                 'id'             => 'modal_location',
                 'type'           => 'select',
-                'title'          => 'Instance',
+                'title'          => 'Instance*',
                 'options'        => $locations,
                 'description' => 'In which instance is the modal located?'
             ),
             array(
                 'id'             => 'modal_scene',
                 'type'           => 'select',
-                'title'          => 'Scene',
+                'title'          => 'Scene*',
                 'options'        => $scene_titles,
                 'description' => 'In which scene is the modal located?',
             ),
             array(
                 'id'             => 'modal_icons',
                 'type'           => 'select',
-                'title'          => 'Icons',
+                'title'          => 'Icons*',
                 'options'        => $modal_icons, 
                 'description' => 'Which icon from the above scene is the modal associated with?',
             ),
@@ -184,7 +184,7 @@ class Webcr_Modal {
             array(
                 'id'             => 'icon_function',
                 'type'           => 'select',
-                'title'          => 'Icon Action',
+                'title'          => 'Icon Action*',
                 'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
                 'description' => 'What should happen when the user clicks on the icon?',
                 'default'     => 'Modal',

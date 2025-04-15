@@ -153,8 +153,7 @@ class Webcr {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_admin_hooks() {
-
+	public function define_admin_hooks() {
 		// Load class and functions to change overall look and function of admin screens
 		$plugin_admin = new Webcr_Admin( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles', 10 );  
@@ -178,6 +177,7 @@ class Webcr {
 		$this->loader->add_filter( 'upload_mimes', $plugin_admin, 'allow_svg_uploads'); 
 		$this->loader->add_filter( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_bootstrap_admin', 5); 
 		$this->loader->add_filter( 'admin_bar_menu', $plugin_admin, 'restrict_new_post_from_admin_bar', 999); 
+		$this->loader->add_filter( 'gettext', $plugin_admin, 'modify_publish_button_text', 10, 3); 
 		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
 		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
 
@@ -272,8 +272,8 @@ class Webcr {
 
 		// Load class and functions connected with Export Figures Tool
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 
-		
+		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 	
+
     }
 
 	/**

@@ -91,7 +91,6 @@ class Webcr_Admin {
 	 */
 	public function enqueue_scripts($hook_suffix) {
 
-			$tempo = $hook_suffix;
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -104,27 +103,28 @@ class Webcr_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/webcr-admin.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+		// Enqueue utlity javascript functions used across javascript files on the admin side
+		 wp_enqueue_script( "webcr-utility", plugin_dir_url( __FILE__ ) . 'js/utility.js', array(  ), $this->version, array('strategy'  => 'defer') );
 
 		$current_post_type = get_post_type();
 		// Load About-specific Javascript only when editing/creating an About post 
 		if ($current_post_type == "about" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
-			wp_enqueue_script( "webcr-admin-about", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-about.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-about", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-about.js', array(  ), $this->version, array('strategy'  => 'defer') );
 		}
 
 		// Load Instance-specific Javascript only when editing/creating a Instance post 
 		if ($current_post_type == "instance" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
-			wp_enqueue_script( "webcr-admin-instance", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-instance.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-instance", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-instance.js', array(  ), $this->version, array('strategy'  => 'defer') );
 		}
 
 		// Load Scene-specific Javascript only when editing/creating a Scene post 
 		if ($current_post_type == "scene" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
-			wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-scene", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-scene.js', array(  ), $this->version, array('strategy'  => 'defer') );
 		}
 
 		// Load Modal-specific Javascript only when editing/creating a Modal post 
 		if ($current_post_type == "modal" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
-			wp_enqueue_script( "webcr-admin-modal", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-modal.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-modal", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-modal.js', array( ), $this->version, array('strategy'  => 'defer') );
 		}
 
 		// Load Figure -specific Javascript only when editing/creating a Figure post 
@@ -136,26 +136,26 @@ class Webcr_Admin {
 			// Enqueue plotly-timeseries-line.js
 			wp_enqueue_script('plotly-timeseries-line', dirname(plugin_dir_url(__FILE__)) .  '/includes/figures/js/plotly-timeseries-line.js', array(), '1.0.0', array('strategy'  => 'defer'));
 
-			wp_enqueue_script( "webcr-admin-figure", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-figure", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure.js', array( ), $this->version, array('strategy'  => 'defer') );
 
 		}
 
 		// Load Modal-specific Javascript only for admin columns screen 
 		if ($current_post_type == "modal" && $hook_suffix == "edit.php" ){
-			wp_enqueue_script( "webcr-admin-modal_columns", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-modal-columns.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-modal_columns", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-modal-columns.js', array(  ), $this->version, array('strategy'  => 'defer') );
 		}
 
 		// Load Figure-specific Javascript only for admin columns screen 
 		if ($current_post_type == "figure" && $hook_suffix == "edit.php" ){
-			wp_enqueue_script( "webcr-admin-figure_columns", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure-columns.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-figure_columns", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure-columns.js', array( ), $this->version, array('strategy'  => 'defer') );
 		}
 
 		// Load Figure Export Javascript, but only when on Figure Export Tool page 
 		$current_screen = get_current_screen();
 		if ($current_screen-> base == "tools_page_export-figures"){
-			wp_enqueue_script( "webcr-admin-figure_export", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-export-figures.js', array( 'jquery' ), $this->version, array('strategy'  => 'defer') );
+			wp_enqueue_script( "webcr-admin-figure_export", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-export-figures.js', array(  ), $this->version, array('strategy'  => 'defer') );
 			// Enqueue Bootstrap JavaScript
-			wp_enqueue_script('PptxGenJS', 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js', array('jquery'), '3.12.0', true);
+			wp_enqueue_script('PptxGenJS', 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js', array(), '3.12.0', true);
 
 		}
 	}
@@ -189,7 +189,7 @@ class Webcr_Admin {
 		wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', array(), '5.3.0');
 		
 		// Enqueue Bootstrap JavaScript
-		wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.3.0', true);
+		wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array(), '5.3.0', true);
 	}
 
     /**
@@ -287,6 +287,32 @@ class Webcr_Admin {
         $favicon_url = plugin_dir_url( __FILE__ ) . 'images/onms-logo-80.png';
         echo '<link rel="shortcut icon" href="' . $favicon_url . '" />';
    }
+
+	/**
+	 * Filters the text of the Publish and Update buttons to display "Save" instead.
+	 *
+	 * This function hooks into the `gettext` filter to modify the button text
+	 * in the WordPress post editor, changing "Publish" and "Update" to "Save".
+	 *
+	 * @param string $translated_text The translated text that WordPress is about to output.
+	 * @param string $text The original text string before translation.
+	 * @param string $domain The text domain of the translation.
+	 *
+	 * @return string The modified button label if the original text is "Publish" or "Update", otherwise returns the original translated text.
+	 *
+	 * @example
+	 * add_filter( 'gettext', 'modify_publish_button_text', 10, 3 );
+	 *
+	 * @since 1.0.0
+	 */
+	function modify_publish_button_text( $translated_text, $text, $domain ) {
+		if ( is_admin() ) {
+			if ( $text === 'Publish' || $text === 'Update' ) {
+				return 'Save';
+			}
+		}
+		return $translated_text;
+	}
 
 	/**
 	 * Add Content Manager as a role

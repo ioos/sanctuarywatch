@@ -53,7 +53,7 @@ class Webcr_Utility {
     
         $query = new WP_Query($args);
         $instance = array();
-        $instance[""] = "Instances";
+        $instance[""] = "";
         if ($query->have_posts()) {
             foreach ($query->posts as $post_id) {
                 $instance[$post_id]= get_the_title($post_id);
@@ -127,7 +127,7 @@ class Webcr_Utility {
     }
 
     public function returnIcons($scene_id){
-        $modal_icons = array("" => "Icons");
+        $modal_icons = array("" => "");
         $scene_infographic = get_post_meta($scene_id, "scene_infographic", true);
         if ($scene_infographic == true){
             $relative_path =  ltrim(parse_url($scene_infographic)['path'], "/");
@@ -178,7 +178,7 @@ class Webcr_Utility {
 
     // return an array of scenes, other than the current scene, for a given location
     public function returnScenesExceptCurrent($scene_id){
-        $potential_scenes = [];// array(" " => "Scenes");
+        $potential_scenes = [];
         $scene_location = get_post_meta($scene_id, "scene_location", true);
         if ($scene_location == true){
             $args = array(
@@ -230,7 +230,7 @@ class Webcr_Utility {
 
     // Dropdown options for Scene in figure content type
     public function returnScenesFigure($location){
-        $potential_scenes[""] = "Scenes";
+        $potential_scenes[""] = "";
 
         if ($location != ""){
             $args = array(
@@ -260,7 +260,7 @@ class Webcr_Utility {
     }
 
     public function returnModalTabs($modal_id){
-        $potential_tabs[""] = "Tabs";
+        $potential_tabs[""] = "";
         if ($modal_id != "") {
             for ($i = 1; $i < 7; $i++){
                 $target_field = "modal_tab_title" . $i;
@@ -276,7 +276,7 @@ class Webcr_Utility {
 
     //dropdown options for Icon in figure content type
     public function returnFigureIcons($scene_id){
-        $potential_icons[""] = "Icons";
+        $potential_icons[""] = "";
         if ($scene_id != ""){
 
             $args = array(

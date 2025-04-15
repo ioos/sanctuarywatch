@@ -39,20 +39,25 @@ add_action('wp_enqueue_scripts', 'enqueue_font_awesome');
   } 
   add_action( 'wp_enqueue_scripts', 'files' );
 
-  /**
-   * Enqueues Bootstrap's CSS library with dependency management.
-   *
-   * This function registers and enqueues the Bootstrap CSS library from a CDN.
-   *
-   * @return void
-   */
-  function enqueue_bootstrap_css(){
-    wp_register_style('bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css', array('jquery'), 
-            null,  array('strategy' => 'defer,'));
-    wp_enqueue_style('bootstrap');
-  }
-  add_action('wp_enqueue_scripts', 'enqueue_bootstrap_css');
-
+/**
+ * Enqueues Bootstrap's CSS library with dependency management.
+ *
+ * This function registers and enqueues the Bootstrap CSS library from a CDN.
+ *
+ * @return void
+ */
+function enqueue_bootstrap_css(){
+  // Register the style with a valid $media parameter (e.g., 'all')
+  wp_register_style(
+      'bootstrap',
+      get_template_directory_uri() . '/assets/css/bootstrap.min.css',
+      array(), // Dependencies
+      null,    // Version
+      'all'    // Media type (Corrected: Changed from array to string)
+  );
+  wp_enqueue_style('bootstrap');
+}
+//add_action('wp_enqueue_scripts', 'enqueue_bootstrap_css');
 
 
   /**
@@ -477,7 +482,9 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
             $child = ($child_id . $idx);
           }
 
-          if ($icon_order[0] == null){
+          if (count($icon_order) == 0){
+            $modal_icon_order = 1;
+          } else if ($icon_order[0] == null){
             $modal_icon_order = 1;
           } else {
             $modal_icon_order = intval($icon_order[0]);
@@ -593,6 +600,18 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
         null,
         array('strategy' => 'defer') 
     );
+
+    // Get the SVG URL (replace this with how you're getting it)
+    $child_ids = get_post_meta( get_the_ID(), 'scene_child_ids', true ); // Get child_ids from post meta
+    $svg_url = get_post_meta( get_the_ID(), 'scene_svg_url', true ); // Example: from post meta
+  
+    // Localize the script, passing the SVG URL and child_ids
+    wp_localize_script( 'script-js', 'my_script_vars', array( // Correct handle
+        'child_ids' => $child_ids,
+        'svg_url' => $svg_url,
+    ) );
+
+
 }
 add_action('wp_enqueue_scripts', 'enqueue_info_scripts');
 
@@ -606,19 +625,6 @@ function enqueue_info_scripts2() {
   );
 }
 add_action('wp_enqueue_scripts', 'enqueue_info_scripts2');
-
-
-
-function enqueue_info_scripts3() {
-  wp_enqueue_script(
-      'plots-js',
-      get_template_directory_uri() . '/assets/js/plots.js',
-      array(),
-      null,
-      array('strategy' => 'defer') 
-  );
-}
-add_action('wp_enqueue_scripts', 'enqueue_info_scripts3');
 
 
 function enqueue_plotly_utility_script() {
@@ -642,6 +648,33 @@ function enqueue_plotly_script() {
   );
 }
 add_action('wp_enqueue_scripts', 'enqueue_plotly_script');
+function my_theme_enqueue_scripts() {
+    // Get the SVG URL (replace this with how you're getting it)
+  //  $svg_url = get_post_meta( get_the_ID(), 'scene_svg_url', true ); // Example: from post meta
+    $child_ids = get_post_meta( get_the_ID(), 'scene_child_ids', true ); // Get child_ids from post meta
+  //  $title_arr = get_post_meta( get_the_ID(), 'scene_data', true );
+  //  $scene_toc_style = get_post_meta( get_the_ID(), 'scene_toc_style', true );
+  //  $scene_full_screen_button = get_post_meta( get_the_ID(), 'scene_full_screen_button', true );
+  //  $scene_text_toggle = get_post_meta( get_the_ID(), 'scene_text_toggle', true );
+  //  $scene_same_hover_color_sections = get_post_meta( get_the_ID(), 'scene_same_hover_color_sections', true );
+  //  $scene_default_hover_color = get_post_meta( get_the_ID(), 'scene_default_hover_color', true );
+
+    // Localize the script, passing the SVG URL and child_ids
+    wp_localize_script( 'my-theme-script', 'my_script_vars', array(
+ //       'svg_url' => $svg_url,
+        'child_ids' => $child_ids,
+   //     'is_logged_in' => is_user_logged_in(),
+     //   'post_id' => get_the_ID(),
+       // 'title_arr' => $title_arr,
+    //    'scene_toc_style' => $scene_toc_style,
+      //  'scene_full_screen_button' => $scene_full_screen_button,
+        //'scene_text_toggle' => $scene_text_toggle,
+   //     'scene_same_hover_color_sections' => $scene_same_hover_color_sections,
+     //   'scene_default_hover_color' => $scene_default_hover_color,
+    ) );
+}
+
+//add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_scripts',100 );
 
 
 function enqueue_google_tags_scripts() {

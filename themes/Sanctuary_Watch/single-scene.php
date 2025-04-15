@@ -231,12 +231,19 @@ $results = $wpdb->get_results($wpdb->prepare($query, $post_id, $post_id, strval(
 
 $title_arr = [];
 foreach ($results as $row) {
-  $nestedArray = unserialize($row->meta_value);
-  
-  if ($nestedArray === false && $row->meta_value !== 'b:0;') {
-      $title_arr[$row->meta_key] = $row->meta_value;
+    // Check if the meta_value looks like a serialized string
+    if (is_serialized($row->meta_value)) {
+      $nestedArray = @unserialize($row->meta_value); // Use @ to suppress the notice
+
+      if ($nestedArray !== false) {
+          $title_arr[$row->meta_key] = $nestedArray;
+      } else {
+          // Handle unserialization failure if needed
+          $title_arr[$row->meta_key] = $row->meta_value; // Or some default value
+      }
   } else {
-    $title_arr[$row->meta_key] = $nestedArray;
+      // Not serialized, use the raw value
+      $title_arr[$row->meta_key] = $row->meta_value;
   }
 
 

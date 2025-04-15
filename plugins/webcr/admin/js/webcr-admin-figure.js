@@ -36,7 +36,7 @@ function run_webcr_admin_figures() {
             figureScene.value ="";
             figureScene.innerHTML ="";
             let optionScene1 = document.createElement('option');
-            optionScene1.text = "Scenes";
+            optionScene1.text = "";
             optionScene1.value = "";
             figureScene.add(optionScene1);
             
@@ -53,7 +53,7 @@ function run_webcr_admin_figures() {
             figureModal.value ="";
             figureModal.innerHTML ="";
             let optionModal = document.createElement('option');
-            optionModal.text = "Icons";
+            optionModal.text = "";
             optionModal.value = "";
             figureModal.add(optionModal);
 
@@ -62,7 +62,7 @@ function run_webcr_admin_figures() {
             figureTab.value ="";
             figureTab.innerHTML ="";
             let optionTab = document.createElement('option');
-            optionTab.text = "Tabs";
+            optionTab.text = "";
             optionTab.value = "";
             figureTab.add(optionTab);
         })
@@ -86,7 +86,7 @@ function run_webcr_admin_figures() {
             figureModal.value ="";
             figureModal.innerHTML ="";
             let optionIcon1 = document.createElement('option');
-            optionIcon1.text = "Icons";
+            optionIcon1.text = "";
             optionIcon1.value = "";
             figureModal.add(optionIcon1);
         
@@ -103,7 +103,7 @@ function run_webcr_admin_figures() {
             figureTab.value ="";
             figureTab.innerHTML ="";
             let optionTab = document.createElement('option');
-            optionTab.text = "Tabs";
+            optionTab.text = "";
             optionTab.value = "";
             figureTab.add(optionTab);
         })
@@ -130,7 +130,7 @@ function run_webcr_admin_figures() {
 
                 // Add default "Tabs" option
                 let optionTab = document.createElement('option');
-                optionTab.text = "Tabs";
+                optionTab.text = "";
                 optionTab.value = "";
                 figureTab.add(optionTab);
                 
@@ -142,7 +142,7 @@ function run_webcr_admin_figures() {
                         if (data[targetField]!= ""){
                             let optionTitleTab = document.createElement('option');
                             optionTitleTab.text = data[targetField];
-                            optionTitleTab.value = data[targetField];
+                            optionTitleTab.value = i;
                             figureTab.appendChild(optionTitleTab);
                         }
                     }

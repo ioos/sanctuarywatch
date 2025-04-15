@@ -88,23 +88,25 @@ if ( get_header_textcolor() ) : ?>
 		<?php
 		// Breadcrumbs are dynamically generated based on the current post's metadata to facilitate navigation and enhance SEO
 			// Fetch and store the post meta data and the scene location for the current post using its ID.
-			$postMeta = get_post_meta(get_the_ID());
-			//Trying to access array offset on value of type null ??
-			$sceneLocation = $postMeta['scene_location'][0];
-			// Split the 'scene_location' string into an array based on spaces.
-			$sceneArr = explode(' ', $sceneLocation);
-			if (!empty($sceneLocation)){
-				// Loop through each word in the 'sceneLocation' array except the last one.
-				$scene_loc_webcr = '';
-				for($i = 0; $i < count($sceneArr)-1; $i++){
-					$scene_loc_webcr = $scene_loc_webcr.$sceneArr[$i].' ';
+			if (get_the_ID() != false){
+				$postMeta = get_post_meta(get_the_ID());
+				//Trying to access array offset on value of type null ??
+				$sceneLocation = $postMeta['scene_location'][0];
+				// Split the 'scene_location' string into an array based on spaces.
+				$sceneArr = explode(' ', $sceneLocation);
+				if (!empty($sceneLocation)){
+					// Loop through each word in the 'sceneLocation' array except the last one.
+					$scene_loc_webcr = '';
+					for($i = 0; $i < count($sceneArr)-1; $i++){
+						$scene_loc_webcr = $scene_loc_webcr.$sceneArr[$i].' ';
+					}
+					// Create the breadcrumb with the default links and the 
+					echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
+					echo '<p> > </p>';
+					echo '<a href="' . home_url() . '">' . get_bloginfo('name') . '</a>';
+					echo '<p> > </p>';
+					echo '<a href="/overview">'. esc_html($scene_loc_webcr.'WebCR') .'</a>';
 				}
-				// Create the breadcrumb with the default links and the 
-				echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
-				echo '<p> > </p>';
-				echo '<a href="/">Sanctuary Watch</a>';
-				echo '<p> > </p>';
-				echo '<a href="/overview">'. esc_html($scene_loc_webcr.'WebCR') .'</a>';
 			}
 		?>
 	</span>
