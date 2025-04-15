@@ -1,6 +1,4 @@
 
-
-
 function hexToRgba(hex, opacity) {
     // Remove the hash if it's present
     hex = hex.replace(/^#/, '');
@@ -226,7 +224,7 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 listItem.appendChild(anchor);
 
                 // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${scene_info_url}">${scene_info_text}</a> </div>`;
+                collapseListHTML += `<div> <a href="${scene_info_url}" target="_blank">${scene_info_text}</a> </div>`;
                 collapseListHTML += '</div>';
     }
     // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
@@ -339,7 +337,15 @@ async function make_title() {
 
         titleDom.append(row);
         // return scene_location;
-        sceneLoaded(title, scene_location);
+        //console.log(scene_data);
+
+ 
+        let instance_overview_scene = scene_data['instance_overview_scene'];
+        if (instance_overview_scene == null){
+            instance_overview_scene = 'None';
+        } 
+        sceneLoaded(title, scene_data['post_ID'], instance_overview_scene, gaMeasurementID);
+
         return scene_data;
 
     } catch (error) {
@@ -1061,7 +1067,8 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
                 img.alt = '';
             }
             figureDiv.appendChild(img);
-            figureInternalImageLoaded(title, postID); 
+            window.dataLayer = window.dataLayer || [];
+            figureInternalImageLoaded(title, postID, gaMeasurementID); 
         break;
 
         case "External":
@@ -1073,7 +1080,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
                 img.alt = '';
             }
             figureDiv.appendChild(img);
-            figureExternalImageLoaded(title, postID);    
+            figureExternalImageLoaded(title, postID, gaMeasurementID);    
         break;
 
         case "Interactive":
@@ -1082,7 +1089,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             let interactive_arguments = info_obj["figure_interactive_arguments"];
             producePlotlyLineFigure("javascript_figure_target", interactive_arguments, postID);
             figureDiv.appendChild(img);
-            figureTimeseriesGraphLoaded(title, postID);
+            figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
         break;
 
 
@@ -1124,7 +1131,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             });
             // Inject remaining HTML into the codeDiv
             codeDiv.innerHTML = tempDiv.innerHTML;
-            figureCodeDisplayLoaded(title, postID);  
+            figureCodeDisplayLoaded(title, postID, gaMeasurementID);  
         break;
 
     }
@@ -1312,6 +1319,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
  *
  */
 function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
+
     // tab_id = tab_label.replace(/\s+/g, '_').replace(/[()]/g, '_');
     // title = title.replace(/\s+/g, '_').replace(/[()]/g, '_');
     tab_id = tab_label.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_'); //instead of tab id, it should just be the index (figure_data)
@@ -1398,9 +1406,12 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
             alert('Failed to copy link. Please try again.');
         }
     }
-    
-    modalTabLoaded(title, modal_id);
     fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
+    
+    //Google tags triggers
+    modalTabLoaded(tab_label, modal_id, tab_id, gaMeasurementID);
+    setupModalMoreInfoLinkTracking(modal_id);
+    setupModalImagesLinkTracking(modal_id);
 }
 
 
@@ -1500,7 +1511,7 @@ function render_modal(key){
                 listItem.appendChild(anchor);
 
                 // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
+                collapseListHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
                 collapseListHTML += '</div>';
             }
             //for photos:
@@ -1537,7 +1548,7 @@ function render_modal(key){
                     listItem.appendChild(anchor);
     
                     // collapseList.appendChild(listItem);
-                    collapsePhotoHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
+                    collapsePhotoHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
                     collapsePhotoHTML += '</div>';
                 }
             let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
@@ -1581,7 +1592,7 @@ function render_modal(key){
                 trapFocus(mdialog);
               
             }
-            modalWindowLoaded(modal_title, id);
+            modalWindowLoaded(title, modal_id, gaMeasurementID);
         // });
             
         })

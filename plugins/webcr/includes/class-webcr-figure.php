@@ -390,7 +390,7 @@ class Webcr_Figure {
                     'title'          => 'Figure Type',
                     'options'        => array("Internal" => "Internal", "External" => "External", "Interactive" => "Interactive", "Code" => "Code"),
                     'default'        => "Internal",
-                    'description' => 'Is the figure image stored within this website or at some external location or within the code?',
+                    'description' => 'Is the figure type an image stored within this website, or at some external location, is it piece a code, or does it need to be an interactive figure generated from data?',
                 ),
                 array(
                     'id'          => 'figure_title',

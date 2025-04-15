@@ -1,5 +1,4 @@
 window.dataLayer = window.dataLayer || [];
-
 const gaMeasurementID = window.webcrSettings.googleAnalyticsMeasurementId;
 
 //FIGURE TRACKING AND ANALYSIS_______________________________________________________________
@@ -17,6 +16,29 @@ const gaMeasurementID = window.webcrSettings.googleAnalyticsMeasurementId;
 //       title:  title,
 //       postID:  postID
 //     });
+// }
+
+// function setupModalImagesLinkTracking(modalID) {
+//   document.querySelectorAll('.accordion-body a').forEach(function(link) {
+//     link.addEventListener('click', function(event) {
+//       // Find the closest .accordion-item
+//       const accordionItem = event.currentTarget.closest('.accordion-item');
+//       const accordionButton = accordionItem ? accordionItem.querySelector('.accordion-header .accordion-button') : null;
+//       const buttonText = accordionButton.textContent.trim();
+//       // Check if the button has the class "More Info"
+//       if (buttonText === 'Images') {
+//         const linkTitle = link.textContent.trim();
+//         const url = link.href;
+
+//         // Get modal title from #modal-title
+//         const modalTitleElement = document.getElementById('modal-title');
+//         const modalTitle = modalTitleElement ? modalTitleElement.textContent.trim() : 'Unknown Title';
+
+//         // Push to dataLayer
+//         modalImagesLinkClicked(linkTitle, modalID, url, modalTitle, gaMeasurementID);
+//       }
+//     });
+//   });
 // }
 
 /**
@@ -49,6 +71,8 @@ const gaMeasurementID = window.webcrSettings.googleAnalyticsMeasurementId;
  * It is typically used for analytics purposes.
  */
 function figureTimeseriesGraphLoaded(title, figureID, gaMeasurementID) {
+  //console.log('gaMeasurementID figureTimeseriesGraphLoaded', gaMeasurementID);
+  //console.log(title, figureID, gaMeasurementID);
   dataLayer.push({
     GA4_MeasurementID: gaMeasurementID,
     event: 'figureTimeseriesGraphLoaded',
@@ -71,6 +95,8 @@ function figureTimeseriesGraphLoaded(title, figureID, gaMeasurementID) {
  * It is typically used for analytics purposes.
  */
 function figureInternalImageLoaded(title, figureID, gaMeasurementID) {
+    //console.log('gaMeasurementID figureInternalImageLoaded', gaMeasurementID);
+    //console.log(title, figureID, gaMeasurementID);
     dataLayer.push({
       GA4_MeasurementID: gaMeasurementID,
       event: 'figureInternalImageLoaded',
@@ -78,7 +104,7 @@ function figureInternalImageLoaded(title, figureID, gaMeasurementID) {
       pageSection: 'figure',
       title:  title,
       figureID:  figureID
-    });
+  });
 }
 
 /**
@@ -92,14 +118,16 @@ function figureInternalImageLoaded(title, figureID, gaMeasurementID) {
  * It is typically used for analytics purposes.
  */
 function figureExternalImageLoaded(title, figureID, gaMeasurementID) {
-    dataLayer.push({
+  //console.log('gaMeasurementID figureExternalImageLoaded', gaMeasurementID);
+  //console.log(title, figureID, gaMeasurementID);
+  dataLayer.push({
       GA4_MeasurementID: gaMeasurementID,
       event: 'figureExternalImageLoaded',
       figureType: "externalImage",
       pageSection: 'figure',
       title:  title,
       figureID:  figureID
-    });
+  });
 }
 
 
@@ -110,14 +138,16 @@ function figureExternalImageLoaded(title, figureID, gaMeasurementID) {
  * @param {number} figureID - The ID of the post associated with the figure.
  */
 function figureCodeDisplayLoaded(title, figureID, gaMeasurementID) {
-    dataLayer.push({
+  //console.log('gaMeasurementID figureCodeDisplayLoaded', gaMeasurementID);
+  //console.log(title, figureID, gaMeasurementID); 
+  dataLayer.push({
       GA4_MeasurementID: gaMeasurementID,
       event: 'figureCodeDisplayLoaded',
-      figureType: "codeDisplay",
+      figureType: 'codeDisplay',
       pageSection: 'figure',
       title:  title,
       figureID:  figureID
-    });
+  });
 }
 
 
@@ -130,13 +160,15 @@ function figureCodeDisplayLoaded(title, figureID, gaMeasurementID) {
  * @param {string|number} modal_id - The ID of the post associated with the modal window.
  */
 function modalWindowLoaded(title, modal_id, gaMeasurementID) {
-    dataLayer.push({
+  //console.log('gaMeasurementID modalWindowLoaded', gaMeasurementID);
+  //console.log(title, modal_id, gaMeasurementID);  
+  dataLayer.push({
       GA4_MeasurementID: gaMeasurementID,
       event: 'modalWindowLoaded', 
       pageSection: 'modal',
       title:  title,
       modalID:  modal_id  
-    });
+  });
 }
 
 /**
@@ -145,13 +177,16 @@ function modalWindowLoaded(title, modal_id, gaMeasurementID) {
  * @param {string} title - The title of the modal tab being loaded.
  * @param {string|number} modal_id - The ID of the post associated with the modal tab.
  */
-function modalTabLoaded(title, modal_id, gaMeasurementID) {
-    dataLayer.push({
+function modalTabLoaded(tab_label, modal_id, tab_id, gaMeasurementID) {
+  //console.log('gaMeasurementID modalTabLoaded', gaMeasurementID);
+  //console.log(tab_label, modal_id, tab_id, gaMeasurementID);    
+  dataLayer.push({
       GA4_MeasurementID: gaMeasurementID,
       event: 'modalTabLoaded', 
       pageSection: 'modal',
-      title:  title,
-      modalID:  modal_id  
+      title:  tab_label,
+      modalID:  modal_id,
+      tabID:  tab_id 
     });
 }
 
@@ -159,86 +194,82 @@ function modalTabLoaded(title, modal_id, gaMeasurementID) {
  * Tracks the "More Info" button click event within a modal and pushes the event data to the dataLayer.
  *
  */
-function modalMoreInfoClicked(title, modalID, url, modalTitle, gaMeasurementID) {
-
+function modalMoreInfoLinkClicked(linkTitle, modalID, url, modalTitle, gaMeasurementID) {
+  //console.log(linkTitle, modalID, url, modalTitle, gaMeasurementID);
   dataLayer.push({
     GA4_MeasurementID: gaMeasurementID,
     event: 'modalMoreInfoClicked',
     pageSection: 'modal',
-    title: title,
+    linkTitle: linkTitle,
     modalID: modalID,
     modalTitle: modalTitle,
     url: url
   });
 }
 
-// On click modalMoreInfoClicked triggered
-document.querySelectorAll('.accordion-body a').forEach(function(link) {
-  link.addEventListener('click', function(event) {
-    // Find the closest .accordion-item and check if the .accordion-button has 'Images' in the class
-    const accordionItem = event.currentTarget.closest('.accordion-item');
-    const accordionButton = accordionItem ? accordionItem.querySelector('.accordion-button') : null;
+function setupModalMoreInfoLinkTracking(modalID) {
+  document.querySelectorAll('.accordion-body a').forEach(function(link) {
+    link.addEventListener('click', function(event) {
+      // Find the closest .accordion-item
+      const accordionItem = event.currentTarget.closest('.accordion-item');
+      const accordionButton = accordionItem ? accordionItem.querySelector('.accordion-header .accordion-button') : null;
+      const buttonText = accordionButton.textContent.trim();
+      // Check if the button has the class "More Info"
+      if (buttonText === 'More Info') {
+        const linkTitle = link.textContent.trim();
+        const url = link.href;
 
-    // Check if the class list contains the word 'Images'
-    if (accordionButton && accordionButton.classList.contains('accordion-button') && accordionButton.classList.contains('More Info')) {
-      const title = link.textContent.trim();
-      const url = link.href;
+        // Get modal title from #modal-title
+        const modalTitleElement = document.getElementById('modal-title');
+        const modalTitle = modalTitleElement ? modalTitleElement.textContent.trim() : 'Unknown Title';
 
-      // Get the modal ID (either from data attribute or ID)
-      const modalID = accordionItem ? (accordionItem.dataset.postId || accordionItem.id.split('-').pop()) : 'unknown-post-id';
-
-      // Get the modal title from the element with id="modal-title"
-      const modalTitleElement = document.getElementById('modal-title');
-      const modalTitle = modalTitleElement ? modalTitleElement.textContent.trim() : 'Unknown Title';
-
-      // Push to dataLayer
-      modalMoreInfoClicked(title, modalID, url, modalTitle);
-    }
+        // Push to dataLayer
+        modalMoreInfoLinkClicked(linkTitle, modalID, url, modalTitle, gaMeasurementID);
+      }
+    });
   });
-});
+}
 
 
 /**
  * Tracks the event when modal images are clicked and pushes relevant data to the dataLayer.
  *
  */
-function modalImagesClicked(title, modalID, url, modalTitle, gaMeasurementID) {
+function modalImagesLinkClicked(linkTitle, modalID, url, modalTitle, gaMeasurementID) {
+  console.log(linkTitle, modalID, url, modalTitle, gaMeasurementID);
   dataLayer.push({
     GA4_MeasurementID: gaMeasurementID,
-    event: 'modalImagesClicked',
+    event: 'modalMoreInfoClicked',
     pageSection: 'modal',
-    title: title,
+    linkTitle: linkTitle,
     modalID: modalID,
     modalTitle: modalTitle,
-    modalTitle: url
+    url: url
   });
 }
 
-// On click modalImagesClicked triggered
-document.querySelectorAll('.accordion-body a').forEach(function(link) {
-  link.addEventListener('click', function(event) {
-    // Find the closest .accordion-item and check if the .accordion-button has 'Images' in the class
-    const accordionItem = event.currentTarget.closest('.accordion-item');
-    const accordionButton = accordionItem ? accordionItem.querySelector('.accordion-button') : null;
+function setupModalImagesLinkTracking(modalID) {
+  document.querySelectorAll('.accordion-body a').forEach(function(link) {
+    link.addEventListener('click', function(event) {
+      // Find the closest .accordion-item
+      const accordionItem = event.currentTarget.closest('.accordion-item');
+      const accordionButton = accordionItem ? accordionItem.querySelector('.accordion-header .accordion-button') : null;
+      const buttonText = accordionButton.textContent.trim();
+      // Check if the button has the class "More Info"
+      if (buttonText === 'Images') {
+        const linkTitle = link.textContent.trim();
+        const url = link.href;
 
-    // Check if the class list contains the word 'Images'
-    if (accordionButton && accordionButton.classList.contains('accordion-button') && accordionButton.classList.contains('Images')) {
-      const title = link.textContent.trim();
-      const url = link.href;
+        // Get modal title from #modal-title
+        const modalTitleElement = document.getElementById('modal-title');
+        const modalTitle = modalTitleElement ? modalTitleElement.textContent.trim() : 'Unknown Title';
 
-      // Get the modal ID (either from data attribute or ID)
-      const modalID = accordionItem ? (accordionItem.dataset.postId || accordionItem.id.split('-').pop()) : 'unknown-post-id';
-
-      // Get the modal title from the element with id="modal-title"
-      const modalTitleElement = document.getElementById('modal-title');
-      const modalTitle = modalTitleElement ? modalTitleElement.textContent.trim() : 'Unknown Title';
-
-      // Push to dataLayer
-      modalImagesClicked(title, modalID, url, modalTitle);
-    }
+        // Push to dataLayer
+        modalImagesLinkClicked(linkTitle, modalID, url, modalTitle, gaMeasurementID);
+      }
+    });
   });
-});
-
+}
 
 
 //SCENE TRACKING AND ANALYSIS_______________________________________________________________
@@ -248,31 +279,18 @@ document.querySelectorAll('.accordion-body a').forEach(function(link) {
  * @param {string} title - The title of the scene being loaded.
  * @param {number} sceneID - The ID of the post associated with the scene.
  */
-function sceneLoaded(title, sceneID, gaMeasurementID) {
-    dataLayer.push({
-      GA4_MeasurementID: gaMeasurementID,
-      event: 'sceneLoaded', 
-      pageSection: 'scene',
-      title:  title,
-      title:  sceneID  
-    });
+function sceneLoaded(title, sceneID, instance_overview_scene, gaMeasurementID) {
+  //console.log(title, sceneID, instance_overview_scene, gaMeasurementID); 
+  dataLayer.push({
+    GA4_MeasurementID: gaMeasurementID,
+    event: 'sceneLoaded', 
+    pageSection: 'scene',
+    title:  title,
+    sceneID:  sceneID,
+    instance: instance_overview_scene
+  });
 }
 
-
-/**
- * Tracks a click event on a scene graphic and pushes the event data to the dataLayer.
- *
- * @param {string} title - The title of the scene graphic that was clicked.
- * @param {number} sceneID - The ID of the post associated with the scene graphic.
- */
-// function sceneGraphicClick(title, sceneID) {
-//     dataLayer.push({
-//       event: 'sceneGraphicClick', 
-//       pageSection: 'scene',
-//       title:  title,
-//       sceneID:  sceneID  
-//     });
-// }
 
 /**
  * Tracks the "More Info" click event for a scene and pushes the event data to the dataLayer.
