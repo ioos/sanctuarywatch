@@ -348,6 +348,8 @@ async function make_title() {
             instance_overview_scene = 'None';
         } 
         sceneLoaded(title, scene_data['post_ID'], instance_overview_scene, gaMeasurementID);
+        setupSceneMoreInfoLinkTracking(title, scene_data['post_ID']);
+        setupSceneImagesLinkTracking(title, scene_data['post_ID']);
 
         return scene_data;
 
@@ -1171,6 +1173,17 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
     
+
+    //Google tag registration for figure science and data links
+    if (info_obj['scienceText']!=''){
+        setupFigureScienceLinkTracking(postID);
+    }
+    if (info_obj['dataLink']!=''){
+        setupFigureDataLinkTracking(postID);
+    }
+
+
+    //Finish the containers and give them the correct properties.
     switch (figureType) {
         case "Internal":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
@@ -1209,8 +1222,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     document.querySelectorAll(".tab-pane").forEach(tab => {
         observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
     });
-    
-     
+         
 }
 
 /**
@@ -1249,6 +1261,9 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
             //all_figure_data = data;
             all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
             all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
+            
+
+
             if (!all_figure_data){
                 //we don't create anything here...
                 //don't have to render any of the info
@@ -1256,10 +1271,13 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                 return;
                 
             } else{
-                // tabContentContainer.setAttribute("display", "");
+                // tabContentContainer.setAttribute("display", "");       
+
                 for (let idx in all_figure_data){
                     figure_data = all_figure_data[idx];
-                    //console.log(figure_data)
+
+    
+
                     let external_alt = '';
                     if (figure_data['figure_path']==='External'){
                         img = figure_data['figure_external_url'];
@@ -1283,9 +1301,10 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "figureType": figure_data["figure_path"],
                     "figureTitle": figure_data["figure_title"],
                     "figure_interactive_arguments": figure_data["figure_interactive_arguments"]                
-                    };
-                    render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure
-                }
+                    };    
+                    render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure 
+                   
+                }  
             }
         })
     .catch(error => console.error('Error fetching data:', error));
