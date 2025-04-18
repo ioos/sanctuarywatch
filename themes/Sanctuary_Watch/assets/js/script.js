@@ -1344,7 +1344,12 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "figureType": figure_data["figure_path"],
                     "figureTitle": figure_data["figure_title"],
                     "figure_interactive_arguments": figure_data["figure_interactive_arguments"]                
-                    };    
+                    };
+                    
+                    // window.addEventListener("load", function () {
+                    //     // Safe to access styles, layout, Plotly, etc.
+                    //     render_tab_info(tabContentElement, tabContentContainer, info_obj);
+                    // });
                     render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure 
                    
                 }  

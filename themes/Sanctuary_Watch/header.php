@@ -30,6 +30,16 @@ $google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_j
   };
 </script>
 
+<!-- Google tag specifically from analytics datastream (gtag.js) header.php-->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $google_analytics_measurement_id; ?>"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '<?php echo $google_analytics_measurement_id; ?>');
+</script>
+
 <!-- Google Tag Manager header.php-->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
