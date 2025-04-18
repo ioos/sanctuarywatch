@@ -458,11 +458,12 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework' ) ) :
 				$fields_good = $check_fields->master_validate($custom_post_type);
 				if ($fields_good == True) {
 					add_action( 'save_post', array( $this, 'save' ) );
-
-				} else {
-				//	 add_filter( 'post_updated_messages', array($this,'remove_all_messages_so_16015959' ) );
-				}
-
+					// ROBBIE - steps for code to 
+			//		1. check to see if scene is the custom content type
+			//		2. Is the overview scene box checked to true?
+			//		3. If so, find every other scene associated with this instance and turn 
+			//			overview scene box to false
+				} 
 			}
 		}
 

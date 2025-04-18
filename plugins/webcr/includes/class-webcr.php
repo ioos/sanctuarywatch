@@ -143,6 +143,10 @@ class Webcr {
 		// The class that defines the validation methods used for the custom post types
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-validation.php';
 
+		// The class that defines the validation methods used for the content editor user types
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-content-editor-role.php';
+
+
 		$this->loader = new Webcr_Loader();
 	}
 
@@ -172,7 +176,7 @@ class Webcr {
 		$this->loader->add_filter( 'months_dropdown_results', $plugin_admin, 'remove_all_dates');
 		$this->loader->add_filter( 'use_block_editor_for_post', $plugin_admin, 'remove_gutenberg');
 		$this->loader->add_filter( 'screen_options_show_screen', $plugin_admin, 'remove_screen_options'); 
-		$this->loader->add_filter( 'init', $plugin_admin, 'add_content_manager_custom_role'); 
+	//	$this->loader->add_filter( 'init', $plugin_admin, 'add_content_manager_custom_role'); 
 		$this->loader->add_filter( 'admin_menu', $plugin_admin, 'restrict_content_manager_admin_menu', 999); 
 		$this->loader->add_filter( 'upload_mimes', $plugin_admin, 'allow_svg_uploads'); 
 		$this->loader->add_filter( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_bootstrap_admin', 5); 
