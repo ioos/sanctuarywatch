@@ -1172,7 +1172,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // Add the details element to the tab content element
     // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
-    
+
 
     //Google tag registration for figure science and data links
     if (info_obj['scienceText']!=''){
@@ -1195,33 +1195,76 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
                 
                 let plotDiv = document.querySelector("#plotlyFigure");
-                plotDiv.style.width = "100%";
+                try {
+                    plotDiv.style.width = "100%";
+                } catch {};
             break;
         case "Code":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
              break;
     }
 
-    //Resize the plotly graph if the tab that it is inside of is activated. This code is essential. 
+    // //Resize the plotly graph if the tab that it is inside of is activated. This code is essential. 
+    // const observer = new MutationObserver(mutations => {
+    //     mutations.forEach(mutation => {
+    //         if (mutation.target.classList.contains("show") && mutation.target.classList.contains("active")) {
+    //             console.log(`Detected tab activation: ${mutation.target.id}`);
+    
+    //             // Find Plotly container inside the newly activated tab
+    //             let plotDiv = mutation.target.querySelector("#plotlyFigure");
+    //             if (plotDiv) {
+    //                 console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
+    //                 Plotly.relayout(plotDiv, { autosize: true });
+    //                 Plotly.Plots.resize(plotDiv);
+    //             }
+    //         }
+    //     });
+    // });    
+    // // Observe all tab-pane elements for class changes
+    // document.querySelectorAll(".tab-pane").forEach(tab => {
+    //     observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+    // });
+    // Resize the Plotly graph if the tab it's inside of is activated
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-            if (mutation.target.classList.contains("show") && mutation.target.classList.contains("active")) {
+            const isActivated = mutation.target.classList.contains("show") &&
+                                mutation.target.classList.contains("active");
+
+            if (isActivated) {
                 console.log(`Detected tab activation: ${mutation.target.id}`);
-    
-                // Find Plotly container inside the newly activated tab
-                let plotDiv = mutation.target.querySelector("#plotlyFigure");
-                if (plotDiv) {
-                    console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
-                    Plotly.relayout(plotDiv, { autosize: true });
-                    Plotly.Plots.resize(plotDiv);
-                }
+
+                let attempts = 10; // Max retry attempts
+                const interval = 100; // ms between retries
+
+                const waitForPlotDiv = () => {
+                    const plotDiv = mutation.target.querySelector("#plotlyFigure");
+
+                    if (plotDiv) {
+                        console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
+                        try {
+                            Plotly.relayout(plotDiv, { autosize: true });
+                            Plotly.Plots.resize(plotDiv);
+                        } catch (err) {
+                            console.error("Plotly resize error:", err);
+                        }
+                    } else if (attempts > 0) {
+                        attempts--;
+                        setTimeout(waitForPlotDiv, interval);
+                    } else {
+                        console.warn(`Plotly figure not found in ${mutation.target.id} after retries.`);
+                    }
+                };
+
+                waitForPlotDiv();
             }
         });
-    });    
+    });
+
     // Observe all tab-pane elements for class changes
     document.querySelectorAll(".tab-pane").forEach(tab => {
         observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
     });
+
          
 }
 

@@ -44,7 +44,6 @@ if ($instances_query->have_posts()) {
         $instance_overview_scene = get_post_meta($instance_id, 'instance_overview_scene', true); 
         $instance_legacy_content_url = get_post_meta($instance_id, 'instance_legacy_content_url', true);
 
-
         if ($instance_slug) {
             $instance_slugs[] = [$instance_slug, $instance_overview_scene]; 
         }
@@ -207,9 +206,16 @@ foreach ($terms_array as $term){
             if ($instance != null) {
                 $tile_image = get_post_meta($instance["id"], "instance_tile")[0];
                 if ($instance["instance_legacy_content"] == "no") {
-                    $instance_slug = get_post_meta($instance["id"], "instance_slug")[0]; 
+                    $instance_slug = get_post_meta($instance["id"], "instance_slug")[0];
+                    $instance_overview_scene = get_post_meta($instance["id"], 'instance_overview_scene', true); 
                     $instance_post_name = get_post($instance_overview_scene)->post_name;
                     $instance_link = $instance_slug . "/" . $instance_post_name;
+
+                    // error_log('instance'.  $instance["id"]);
+                    // error_log('instance_slug'. $instance_slug);
+                    // error_log('$instance_overview_scene'.  $instance_overview_scene);
+                    // error_log('instance_post_name'.  $instance_post_name);
+                    // error_log('instance_link'.  $instance_link);
                 } else {
                     $instance_link = $instance["instance_legacy_content_url"]; 
                 }
