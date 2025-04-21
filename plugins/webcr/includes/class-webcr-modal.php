@@ -538,8 +538,6 @@ class Webcr_Modal {
             'modal_icons' => 'Icon',	
             'icon_function' => 'Function',		
             'modal_tagline' => 'Tagline',			
-            'modal_info_link' => 'Info Link #',		
-            'modal_info_photo_link' => 'Photo Link #',
             'tab_number' => 'Tab #',	
             'status' => 'Status',
         );
@@ -645,38 +643,6 @@ class Webcr_Modal {
                     }
                     break;
             }
-        }
-
-        if ($column == 'modal_info_photo_link'){
-            $url_count = 0;
-            for ($i = 1; $i < 7; $i++){
-                $search_fieldset = "modal_photo" . $i;
-                $search_field = "modal_photo_url" . $i;
-                $fieldset_value = get_post_meta( $post_id, $search_fieldset, true ); 
-                if ($fieldset_value != "" ){
-                    $database_value = $fieldset_value[$search_field]; 
-                    if ($database_value != ""){
-                        $url_count++;
-                    }
-                }
-            }
-            echo $url_count; 
-        }
-
-        if ($column == 'modal_info_link'){
-            $url_count = 0;
-            for ($i = 1; $i < 7; $i++){
-                $search_fieldset = "modal_info" . $i;
-                $search_field = "modal_info_url" . $i;
-                $fieldset_value = get_post_meta( $post_id, $search_fieldset, true ); 
-                if ($fieldset_value != "" ){
-                    $database_value = $fieldset_value[$search_field]; 
-                    if ($database_value != ""){
-                        $url_count++;
-                    }
-                }
-            }
-            echo $url_count; 
         }
 
         if ($column == 'tab_number'){

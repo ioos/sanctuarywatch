@@ -264,8 +264,6 @@ class Webcr_Scene {
             'scene_location' => 'Instance',
             'scene_infographic' => 'Infographic',		
             'scene_tagline' => 'Tagline',			
-            'scene_info_link' => 'Info Link #',		
-            'scene_info_photo_link' => 'Photo Link #',
             'scene_order' => 'Order',	
             'status' => 'Status',
         );
@@ -318,38 +316,6 @@ class Webcr_Scene {
             }
         }
 
-        if ($column == 'scene_info_photo_link'){
-            $url_count = 0;
-            for ($i = 1; $i < 7; $i++){
-                $search_fieldset = "scene_photo" . $i;
-                $search_field = "scene_photo_url" . $i;
-                if (isset(get_post_meta( $post_id, $search_fieldset, true )[$search_field])){
-                    $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
-                    if ($database_value != ""){
-                        $url_count++;
-                    }
-                }
-            }
-            echo $url_count; 
-        }
-
-        if ($column == 'scene_info_link'){
-
-            $url_count = 0;
-            for ($i = 1; $i < 7; $i++){
-                $search_fieldset = "scene_info" . $i;
-                $field_value = get_post_meta( $post_id, $search_fieldset, true );
-                if ($field_value != ""){
-                    $search_field = "scene_info_url" . $i;
-                    $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
-                    if ($database_value != ""){
-                        $url_count++;
-                    } 
-                }
-            }
-            echo $url_count; 
-
-        }
         if ( $column === 'scene_order' ) {
             echo get_post_meta( $post_id, 'scene_order', true ); 
         }
