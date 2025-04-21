@@ -109,6 +109,7 @@ class Webcr_Utility {
         $scene_titles = array();
         $args = array(
             'post_type' => 'scene',  // Your custom post type
+            'posts_per_page' => -1,  // Retrieve all matching posts (-1 means no limit)
             'meta_query' => array(
                 array(
                     'key' => 'scene_location',      // The custom field key
@@ -141,6 +142,7 @@ class Webcr_Utility {
 
             $args = array(
                 'post_type' => 'scene',  // Your custom post type
+                'posts_per_page' => -1,  // Retrieve all matching posts (-1 means no limit)
                 'meta_query' => array(
                     array(
                         'key' => 'scene_location',      // The custom field key
@@ -224,6 +226,7 @@ class Webcr_Utility {
         if ($scene_location == true){
             $args = array(
                 'post_type' => 'scene',  // Your custom post type
+                'posts_per_page' => -1,       // Retrieve all matching posts (-1 means no limit)
                 'meta_query' => array(
                     array(
                         'key' => 'scene_location',      // The custom field key
@@ -276,6 +279,7 @@ class Webcr_Utility {
         if ($location != ""){
             $args = array(
                 'post_type' => 'scene',  // Your custom post type
+                'posts_per_page' => -1,   // Retrieve all matching posts (-1 means no limit)
                 'meta_query' => array(
                     array(
                         'key' => 'scene_location',      // The custom field key
@@ -323,6 +327,7 @@ class Webcr_Utility {
             $args = array(
                 'post_type' => 'modal',  // Your custom post type
                 'fields' => 'ids',           // Only return post IDs
+                'posts_per_page' => -1,       // Retrieve all matching posts 
                 'meta_query' => array(
                     array(
                         'key' => 'modal_scene',      // The custom field key
