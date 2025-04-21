@@ -41,25 +41,66 @@ class Webcr_Utility {
         return implode(array_slice($parts, 0, $last_part));
     }
 
-    //Get a list of all instances
+    /**
+     * Get a list of all instances, filtered for 'content_editor' role.
+     *
+     * @return array An associative array of instance IDs and titles.
+     */
     public function returnAllInstances(){
+        // Initialize the result array with a default empty option
+        $instances_array = array("" => "");
+
+        // Get the current user
+        $current_user = wp_get_current_user();
+        if (!$current_user || $current_user->ID === 0) {
+            // If no user is logged in, return just the empty option (or handle as needed)
+            return $instances_array;
+        }
+
+        // Default query arguments to get all published instances
         $args = array(
-            'post_type'      => 'instance', // Custom post type name
-            'posts_per_page' => -1,         // Retrieve all posts
-            'orderby'        => 'title',    // Order by title
-            'order'          => 'ASC',      // Sort in ascending order
-            'fields'         => 'ids',      // Only retrieve IDs to minimize memory usage
+            'post_type'      => 'instance',
+            'posts_per_page' => -1,
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+            'post_status'    => 'publish', // Ensure only published instances are fetched
+            'fields'         => 'ids',     // Only retrieve IDs initially
         );
-    
-        $query = new WP_Query($args);
-        $instance = array();
-        $instance[""] = "";
-        if ($query->have_posts()) {
-            foreach ($query->posts as $post_id) {
-                $instance[$post_id]= get_the_title($post_id);
+
+        // --- Role-Based Filtering Logic ---
+        // Check if the current user is a 'content_editor' BUT NOT an 'administrator'
+        if ( user_can($current_user, 'content_editor') && !user_can($current_user, 'administrator') ) {
+            // Get the instances assigned to this content editor
+            $user_assigned_instances = get_user_meta($current_user->ID, 'webcr_assigned_instances', true);
+
+            // Ensure it's a non-empty array
+            if (!empty($user_assigned_instances) && is_array($user_assigned_instances)) {
+                // Modify the query to only include posts with these IDs
+                $args['post__in'] = array_map('absint', $user_assigned_instances); // Sanitize IDs just in case
+            } else {
+                // If the content editor has no assigned instances, return only the default empty option
+                return $instances_array;
             }
         }
-        return $instance;
+        // --- End Role-Based Filtering Logic ---
+        // Administrators and other roles will use the default $args (fetching all instances)
+
+        // Execute the query
+        $query = new WP_Query($args);
+
+        // Build the associative array of ID => Title
+        if ($query->have_posts()) {
+            foreach ($query->posts as $post_id) {
+                $title = get_the_title($post_id);
+                // Add to array only if title is not empty
+                if ($title) {
+                    $instances_array[$post_id] = $title;
+                }
+            }
+        }
+        // WP_Query already handled the 'orderby' => 'title', so no need to sort again here.
+
+        return $instances_array;
     }
 
     //Get a list of all scenes associated with an instance
