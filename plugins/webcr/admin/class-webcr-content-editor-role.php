@@ -229,10 +229,10 @@ class WEBCR_Custom_Roles {
      * @param WP_User $user The user object being edited
      */
     public function add_instance_selection_fields($user) {
-        // ... (rest of the function remains the same) ...
-        // Only show these fields if the user is a content editor
-        if (!in_array('content_editor', $user->roles)) {
-            return;
+
+        // Only show these fields if the CURRENTLY LOGGED-IN user is an Administrator.
+        if (!current_user_can('administrator')) {
+            return; // Exit if the current user is not an administrator
         }
 
         // Get all instance posts
