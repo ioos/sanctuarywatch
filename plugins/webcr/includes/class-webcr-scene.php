@@ -138,54 +138,97 @@ class Webcr_Scene {
 	 */
     function scene_filter_dropdowns () {
         $screen = get_current_screen();
-        if ( $screen->id == 'edit-scene' ){
-            $fieldOptions = array(
-                array("", "large", "Full tagline"),
-                array("", "medium", "Medium tagline"),
-                array("", "small", "Short tagline")
-            );
+        // Only proceed if we are on the 'scene' edit screen.
+        if ( ! $screen || $screen->id !== 'edit-scene' ) {
+            return;
+        }
 
-            if (isset($_GET["field_length"])) {
-                $field_length = $_GET["field_length"];
-                switch ($field_length){
-                    case "large":
-                        $fieldOptions[0][0] = "selected ";
-                        break;
-                    case "medium":
-                        $fieldOptions[1][0] = "selected ";
-                        break;
-                    case "small":
-                        $fieldOptions[2][0] = "selected ";
-                        break;
+        // --- Field Length Dropdown (remains the same) ---
+        $fieldOptions = array(
+            array("", "large", "Full tagline"),
+            array("", "medium", "Medium tagline"),
+            array("", "small", "Short tagline")
+        );
+
+        if (isset($_GET["field_length"])) {
+            $field_length = sanitize_key($_GET["field_length"]); // Sanitize input
+            switch ($field_length){
+                case "large":
+                    $fieldOptions[0][0] = "selected ";
+                    break;
+                case "medium":
+                    $fieldOptions[1][0] = "selected ";
+                    break;
+                case "small":
+                    $fieldOptions[2][0] = "selected ";
+                    break;
+            }
+        }
+
+        $field_length_dropdown = '<select name="field_length" id="field_length">';
+        for ($i=0; $i <3; $i++){
+            $field_length_dropdown .= '<option ' . $fieldOptions[$i][0] .  'value="' . esc_attr($fieldOptions[$i][1]) .'">' . esc_html($fieldOptions[$i][2]) . '</option>';
+        }
+        $field_length_dropdown .= '</select>';
+
+        echo $field_length_dropdown; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+        // --- Instances Dropdown (Modified Logic) ---
+        global $wpdb;
+        $instances = array(); // Initialize as empty array
+
+        $current_user = wp_get_current_user();
+
+        // Check if user is content manager but not administrator
+        if ( current_user_can('content_editor') && ! current_user_can('administrator') ) {
+            // Get assigned instances for the content manager
+            $user_instances = get_user_meta($current_user->ID, 'webcr_assigned_instances', true);
+
+            // Ensure user_instances is a non-empty array before querying
+            if (!empty($user_instances) && is_array($user_instances)) {
+                // Sanitize instance IDs
+                $instance_ids = array_map('absint', $user_instances);
+                $instance_ids_sql = implode(',', $instance_ids);
+
+                // Query only the assigned instances
+                // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $instance_ids_sql is sanitized via absint and implode
+                $instances = $wpdb->get_results("
+                    SELECT ID, post_title
+                    FROM {$wpdb->posts}
+                    WHERE post_type = 'instance'
+                    AND post_status = 'publish'
+                    AND ID IN ({$instance_ids_sql})
+                    ORDER BY post_title ASC");
+                // phpcs:enable
+            }
+            // If content manager has no assigned instances, $instances remains empty, so only "All Instances" shows.
+
+        } else {
+            // Administrators or other roles see all instances
+            $instances = $wpdb->get_results("
+                SELECT ID, post_title
+                FROM {$wpdb->posts}
+                WHERE post_type = 'instance'
+                AND post_status = 'publish'
+                ORDER BY post_title ASC");
+        }
+
+        // Generate the dropdown HTML
+        echo '<select name="scene_instance" id="scene_instance">';
+        echo '<option value="">' . esc_html__('All Instances', 'webcr') . '</option>'; // Use translation function
+
+        // Check if $instances is not null and is an array before looping
+        if (is_array($instances)) {
+            $current_selection = isset($_GET['scene_instance']) ? absint($_GET['scene_instance']) : ''; // Sanitize current selection
+            foreach ($instances as $instance) {
+                // Ensure $instance is an object with ID and post_title properties
+                if (is_object($instance) && isset($instance->ID) && isset($instance->post_title)) {
+                    $selected = selected($current_selection, $instance->ID, false); // Use selected() helper
+                    echo '<option value="' . esc_attr($instance->ID) . '" ' . $selected . '>' . esc_html($instance->post_title) . '</option>';
                 }
             }
-
-            $field_length_dropdown = '<select name="field_length" id="field_length">';
-            for ($i=0; $i <3; $i++){
-                $field_length_dropdown .= '<option ' . $fieldOptions[$i][0] .  'value="' . $fieldOptions[$i][1] .'">' . $fieldOptions[$i][2] . '</option>';
-            }
-            $field_length_dropdown .= '</select>';
-
-            echo $field_length_dropdown;
-
-            // Instances dropdown 
-            global $wpdb;
-            $instances = $wpdb->get_results("
-                SELECT ID, post_title 
-                FROM {$wpdb->posts} 
-                WHERE post_type = 'instance' 
-                AND post_status = 'publish' 
-                ORDER BY post_title ASC");
-    
-            echo '<select name="scene_instance" id="scene_instance">';
-            echo '<option value="">All Instances</option>';
-            foreach ($instances as $instance) {
-                $selected = isset($_GET['scene_instance']) && $_GET['scene_instance'] == $instance->ID ? 'selected="selected"' : '';
-                echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
-            }
-            echo '</select>';
-
         }
+        echo '</select>';
     }
 
     /**
@@ -222,8 +265,6 @@ class Webcr_Scene {
             'scene_location' => 'Instance',
             'scene_infographic' => 'Infographic',		
             'scene_tagline' => 'Tagline',			
-            'scene_info_link' => 'Info Link #',		
-            'scene_info_photo_link' => 'Photo Link #',
             'scene_order' => 'Order',	
             'status' => 'Status',
         );
@@ -275,39 +316,8 @@ class Webcr_Scene {
                     break;
             }
         }
+        //hello more
 
-        if ($column == 'scene_info_photo_link'){
-            $url_count = 0;
-            for ($i = 1; $i < 7; $i++){
-                $search_fieldset = "scene_photo" . $i;
-                $search_field = "scene_photo_url" . $i;
-                if (isset(get_post_meta( $post_id, $search_fieldset, true )[$search_field])){
-                    $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
-                    if ($database_value != ""){
-                        $url_count++;
-                    }
-                }
-            }
-            echo $url_count; 
-        }
-
-        if ($column == 'scene_info_link'){
-
-            $url_count = 0;
-            for ($i = 1; $i < 7; $i++){
-                $search_fieldset = "scene_info" . $i;
-                $field_value = get_post_meta( $post_id, $search_fieldset, true );
-                if ($field_value != ""){
-                    $search_field = "scene_info_url" . $i;
-                    $database_value = get_post_meta( $post_id, $search_fieldset, true )[$search_field]; 
-                    if ($database_value != ""){
-                        $url_count++;
-                    } 
-                }
-            }
-            echo $url_count; 
-
-        }
         if ( $column === 'scene_order' ) {
             echo get_post_meta( $post_id, 'scene_order', true ); 
         }

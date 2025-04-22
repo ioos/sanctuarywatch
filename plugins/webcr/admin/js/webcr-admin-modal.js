@@ -139,7 +139,7 @@ function iconSceneOutDropdown(){
     //     const modal_location_no_space = urlifyRecursiveFunc(modal_location);
         const protocol = window.location.protocol;
         const host = window.location.host;
-        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&scene_location=" + modal_location;
+        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&per_page=100&scene_location=" + modal_location;
         fetch(restURL)
             .then(response => response.json())
             .then(data => {
@@ -305,7 +305,7 @@ function modal_location_change(){
             const modal_location_no_space = urlifyRecursiveFunc(modal_location);
             const protocol = window.location.protocol;
             const host = window.location.host;
-            const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&scene_location=" + modal_location_no_space;
+            const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id,scene_location&orderby=title&order=asc&per_page=100&scene_location=" + modal_location_no_space;
             fetch(restURL)
                 .then(response => response.json())
                 .then(data => {
@@ -361,7 +361,7 @@ function modal_scene_change(){
 
         const protocol = window.location.protocol;
         const host = window.location.host;
-        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_infographic";
+        const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_infographic&per_page=100";
 
         const restHoverColor = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=scene_hover_color";
 
@@ -466,7 +466,7 @@ function modal_icons_change() {
         const protocol = window.location.protocol;
         const host = window.location.host;
         const modalInstance = document.getElementsByName("modal_location")[0].value;
-        const restHoverColor = protocol + "//" + host  + "/wp-json/wp/v2/instance/" + modalInstance;
+        const restHoverColor = protocol + "//" + host  + "/wp-json/wp/v2/instance/" + modalInstance + "?per_page=100";
 
 
         fetch(restHoverColor)

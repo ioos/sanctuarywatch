@@ -25,7 +25,7 @@ function run_webcr_admin_figures() {
         const protocol = window.location.protocol; // Get the current protocol (e.g., http or https)
         const host = window.location.host;// Get the current host (e.g., domain name)
         const figureInstance = document.getElementsByName("location")[0].value;
-        const restScene = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=id,title&orderby=title&order=asc&scene_location="+figureInstance;
+        const restScene = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=id,title&orderby=title&order=asc&per_page=100&scene_location="+figureInstance;
 
         // Fetch scene data from the REST API
         fetch(restScene)
@@ -78,7 +78,7 @@ function run_webcr_admin_figures() {
 
         //FIX: the REST API for modal is retrieving all records even when icon_function and modal_scene are set for some reason 
         // CHECK - THIS IS FIXED I THINK?
-        const restModal = protocol + "//" + host  + "/wp-json/wp/v2/modal?_fields=id,title,modal_scene,icon_function&orderby=title&order=asc";
+        const restModal = protocol + "//" + host  + "/wp-json/wp/v2/modal?_fields=id,title,modal_scene,icon_function&orderby=title&order=asc&per_page=100";
         fetch(restModal)
         .then(response => response.json())
         .then(data => {
@@ -118,7 +118,7 @@ function run_webcr_admin_figures() {
         const figureModal = document.getElementsByName("figure_modal")[0].value;      
         const protocol = window.location.protocol;
         const host = window.location.host;
-        const restModal = protocol + "//" + host  + "/wp-json/wp/v2/modal/" + figureModal;
+        const restModal = protocol + "//" + host  + "/wp-json/wp/v2/modal/" + figureModal + "?per_page=100";
 
         fetch(restModal)
             .then(response => response.json())
