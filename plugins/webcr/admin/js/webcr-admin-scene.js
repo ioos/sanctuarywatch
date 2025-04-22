@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		if (titleEl.textContent.trim() === "Overview Scene") {
 			const infoText = document.createElement("div");
 			infoText.className = "exopite-sof-fieldset";
-			infoText.textContent = "For this scene to be set as the overview scene, please select an instance above, save this post, then go to the instance above and set this scene as the Overview Scene.";
+			infoText.textContent = "To set this scene to as an overview scene, please select an instance above, save this post, then go to the instance and set this scene as the Overview Scene.";
 			titleEl.parentNode.insertBefore(infoText, titleEl.nextSibling);
 		}
 	});
