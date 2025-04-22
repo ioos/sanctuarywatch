@@ -1,4 +1,5 @@
 
+
 function hexToRgba(hex, opacity) {
     // Remove the hash if it's present
     hex = hex.replace(/^#/, '');
@@ -346,7 +347,8 @@ async function make_title() {
         let instance_overview_scene = scene_data['instance_overview_scene'];
         if (instance_overview_scene == null){
             instance_overview_scene = 'None';
-        } 
+        }
+        // Google Tags
         sceneLoaded(title, scene_data['post_ID'], instance_overview_scene, gaMeasurementID);
         setupSceneMoreInfoLinkTracking(title, scene_data['post_ID']);
         setupSceneImagesLinkTracking(title, scene_data['post_ID']);
@@ -739,40 +741,116 @@ async function loadSVG(url, containerId) {
  *
  * @returns {void} - `void` Modifies DOM element styles in place.
  */
-function highlight_icons(){
-    for (let key in child_obj){
+// function highlight_icons(){
+//     for (let key in child_obj){
+//         let elem = document.querySelector('g[id="' + key + '"]');
+
+//         elem.addEventListener('mouseover', function(){
+//             console.log("hovering over " + key);
+//             alert(scene_data);
+
+//             let elemCollection = elem.querySelectorAll("*");
+//             elemCollection.forEach(subElem => {
+
+//                 if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+
+//                     let section_name = sectionObj[key];
+//                     let section_num = section_name.substring(section_name.length - 1, section_name.length);
+
+//                     let this_color = `scene_section_hover_color${section_num}`;
+//                     subElem.style.stroke = scene_data[sectionObj[key]][this_color];
+//                 } else{
+//                     subElem.style.stroke = scene_default_hover_color;
+//                 }
+
+//                 subElem.style.strokeWidth = "3px";
+//             });
+//         });
+//         elem.addEventListener('mouseout', function(){
+
+//             let elemCollection = elem.querySelectorAll("*");
+//             elemCollection.forEach(subElem => {
+
+//             subElem.style.stroke = "";
+//             subElem.style.strokeWidth = "";
+//             });
+//         });
+//     }  
+// }
+
+function highlight_icons() {
+    for (let key in child_obj) {
         let elem = document.querySelector('g[id="' + key + '"]');
 
-        elem.addEventListener('mouseover', function(){
+        elem.addEventListener('mouseover', function (e) {
+            console.log("hovering over " + key);
 
             let elemCollection = elem.querySelectorAll("*");
+            let hoverColor;
+
             elemCollection.forEach(subElem => {
-
-                if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
-
+                if (scene_same_hover_color_sections !== "yes" && sectionObj[key] !== "None") {
                     let section_name = sectionObj[key];
-                    let section_num = section_name.substring(section_name.length - 1, section_name.length);
-
+                    let section_num = section_name.slice(-1);
                     let this_color = `scene_section_hover_color${section_num}`;
-                    subElem.style.stroke = scene_data[sectionObj[key]][this_color];
-                } else{
-                    subElem.style.stroke = scene_default_hover_color;
+                    hoverColor = scene_data[sectionObj[key]][this_color];
+                    subElem.style.stroke = hoverColor;
+                } else {
+                    hoverColor = scene_default_hover_color;
+                    subElem.style.stroke = hoverColor;
                 }
 
                 subElem.style.strokeWidth = "3px";
             });
-        });
-        elem.addEventListener('mouseout', function(){
 
+            // Create and show the tooltip box
+            const tooltip = document.createElement("div");
+            tooltip.className = "hover-key-box";
+            tooltip.textContent = key;
+            tooltip.style.position = "absolute";
+            tooltip.style.padding = "5px 10px";
+            tooltip.style.backgroundColor = hoverColor;
+            tooltip.style.color = "#000";
+            tooltip.style.borderRadius = "4px";
+            tooltip.style.fontSize = "14px";
+            tooltip.style.pointerEvents = "none";
+            tooltip.style.zIndex = "9999";
+
+            // Position near mouse
+            tooltip.style.left = e.pageX + 10 + "px";
+            tooltip.style.top = e.pageY + 10 + "px";
+
+            tooltip.id = "hoverKeyTooltip";
+            document.body.appendChild(tooltip);
+        });
+
+        elem.addEventListener('mousemove', function (e) {
+            const tooltip = document.getElementById("hoverKeyTooltip");
+            if (tooltip) {
+                tooltip.style.left = e.pageX + 10 + "px";
+                tooltip.style.top = e.pageY + 10 + "px";
+            }
+        });
+
+        elem.addEventListener('mouseout', function () {
             let elemCollection = elem.querySelectorAll("*");
             elemCollection.forEach(subElem => {
-
-            subElem.style.stroke = "";
-            subElem.style.strokeWidth = "";
+                subElem.style.stroke = "";
+                subElem.style.strokeWidth = "";
             });
+
+            // Remove the tooltip
+            const tooltip = document.getElementById("hoverKeyTooltip");
+            if (tooltip) {
+                tooltip.remove();
+            }
         });
-    }  
+    }
 }
+
+
+
+
 /**
  * Adds flicker effects to SVG elements based on `child_obj` keys, meant for tablet layout. 
  * Icons flicker their corresponding color on a short time interval
@@ -1662,6 +1740,7 @@ function render_modal(key){
                 trapFocus(mdialog);
               
             }
+            // Google Tags
             modalWindowLoaded(title, modal_id, gaMeasurementID);
         // });
             
