@@ -141,6 +141,10 @@ class Webcr_Instance_Type {
     function google_tags_container_id_field_callback() {
         $options = get_option('webcr_settings');
         $value = isset($options['google_tags_container_id']) ? $options['google_tags_container_id'] : '';
+        $example_container_json = 'example_google_container_tags.json';
+        $example_folder = get_site_url() . '/wp-content/plugins/webcr/example_files/';
+        $filedownload =  esc_url($example_folder . $example_container_json)
+
         ?>
         <input type="text" name="webcr_settings[google_tags_container_id]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="GTM-XXXXXXXX">
         <p class="description">
@@ -151,7 +155,7 @@ class Webcr_Instance_Type {
             <br>
             You will also need to download, then import this container into your Google Tag Manager instance.
             <br>
-            <a href="https://support.google.com/analytics/answer/9539598" target="_blank" rel="noopener noreferrer">Download Container File</a>
+            <a href="<?php echo esc_url($filedownload); ?>" target="_blank" rel="noopener noreferrer">Download Container File</a>
             <br>
             <a href="https://support.google.com/tagmanager/answer/6106997" target="_blank" rel="noopener noreferrer">Learn how to import a container into Google Tag Manager</a>
         </p>
