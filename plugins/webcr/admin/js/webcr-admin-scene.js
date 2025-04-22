@@ -49,7 +49,7 @@ function tableOfContentsFieldOptions () {
 
 }
 
-
+//Display Overview Scene information
 document.addEventListener("DOMContentLoaded", function () {
 	document.querySelectorAll(".exopite-sof-title").forEach(function (titleEl) {
 		if (titleEl.textContent.trim() === "Overview Scene") {
