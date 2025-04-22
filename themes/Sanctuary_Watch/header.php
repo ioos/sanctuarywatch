@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 <html <?php language_attributes();?>>
 <head>
 
-<!-- // Google Tags/Analytics Measurement ID call from wp_options header.php -->
+<!-- // Google Tags/Analytics Measurement ID call from wp_options index.php -->
 <?php
 $settings = get_option('webcr_settings');
 $google_analytics_measurement_id = isset($settings['google_analytics_measurement_id']) ? esc_js($settings['google_analytics_measurement_id']) : '';
@@ -30,7 +30,7 @@ $google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_j
   };
 </script>
 
-<!-- Google tag specifically from analytics datastream (gtag.js) header.php-->
+<!-- Google tag specifically from analytics datastream (gtag.js) index.php-->
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $google_analytics_measurement_id; ?>"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -40,13 +40,14 @@ $google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_j
   gtag('config', '<?php echo $google_analytics_measurement_id; ?>');
 </script>
 
-<!-- Google Tag Manager header.php-->
+<!-- Google Tag Manager index.php-->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','<?php echo $google_tags_container_id; ?>');</script>
 <!-- End Google Tag Manager -->
+
 
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />

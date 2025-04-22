@@ -56,10 +56,7 @@ if ($instances_query->have_posts()) {
     // echo 'No instances found.';
 }
 
-
-
 ?>
-
 
 
 <body>
