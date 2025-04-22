@@ -3,6 +3,7 @@
  * Register class that defines the Scene custom content type as well as associated Scene functions
  * 
  */
+
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_Scene {
 
@@ -458,6 +459,14 @@ class Webcr_Scene {
         $function_utilities = new Webcr_Utility();
         $instances = $function_utilities ->  returnAllInstances();
 
+        // Selection criteria for instance_overview_scene below. This would've been used if the instance_overview_scene field was used.
+        // This code gets the selected instance from the scene_location field and then gets all the scenes associated with that instance.
+        // $post_id = isset($_GET['post']) ? $_GET['post'] : get_the_ID();
+        // error_log("post_id: " . $post_id);
+        // $instance = get_post_meta($post_id, 'scene_location', true);
+        // error_log("instance: " . $instance);
+        // $scenes = $function_utilities -> returnInstanceScenes($instance);
+
         $fields = array(
             array(
                 'id'             => 'scene_published',
@@ -473,6 +482,13 @@ class Webcr_Scene {
                 'title'          => 'Instance*',
                 'options'        => $instances, 
                 'description' => 'What instance is the scene part of? '
+            ),
+            array(
+                'id'             => 'instance_overview_scene',
+                'type'           => 'select',
+                'title'          => 'Overview Scene',
+                //'options'        => $scenes,
+                'description' => '',
             ),
             array(
                 'id'   => 'scene_infographic',
@@ -891,4 +907,5 @@ class Webcr_Scene {
             $query->set('order', $order);
         }
     }
+
 }

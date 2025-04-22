@@ -49,6 +49,19 @@ function tableOfContentsFieldOptions () {
 
 }
 
+
+document.addEventListener("DOMContentLoaded", function () {
+	document.querySelectorAll(".exopite-sof-title").forEach(function (titleEl) {
+		if (titleEl.textContent.trim() === "Overview Scene") {
+			const infoText = document.createElement("div");
+			infoText.className = "exopite-sof-fieldset";
+			infoText.textContent = "For this scene to be set as the overview scene, please save it first, then go to the instance above and set it as the Overview Scene.";
+			titleEl.parentNode.insertBefore(infoText, titleEl.nextSibling);
+		}
+	});
+});
+
+
 	// function to display Scene Section fields
 function displaySceneEntries (entry_number){
 	let target_title_element = "";
