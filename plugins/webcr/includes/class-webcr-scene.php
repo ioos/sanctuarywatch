@@ -99,6 +99,56 @@ class Webcr_Scene {
         }
     }
 
+    /**
+     * Display an admin notice if the current scene is the overview scene for its instance.
+     *
+     * @since    1.0.0
+     */
+    public function display_overview_scene_notice() {
+        // 1. Check if we are on the correct screen (Scene edit page for an existing post)
+        $screen = get_current_screen();
+        if ( ! $screen || $screen->base !== 'post' || $screen->id !== 'scene' || $screen->action === 'add' ) {
+            return; // Exit if not on the scene edit screen for an existing post
+        }
+
+        // 2. Get the current Scene's ID
+        $current_scene_id = get_the_ID();
+        if ( ! $current_scene_id ) {
+            return; // Exit if we can't get the current post ID
+        }
+
+        // 3. Get the associated Instance ID from the Scene's meta field 'scene_location'
+        $instance_id = get_post_meta( $current_scene_id, 'scene_location', true );
+
+        // 4. Check if we have a valid Instance ID
+        if ( empty( $instance_id ) || ! is_numeric( $instance_id ) ) {
+            // If the scene_location isn't set, we can't determine if it's the overview scene.
+            return;
+        }
+        $instance_id = (int) $instance_id; // Ensure it's an integer
+
+        // 5. Get the Overview Scene ID from the Instance's meta field 'instance_overview_scene'
+        $overview_scene_id = get_post_meta( $instance_id, 'instance_overview_scene', true );
+
+        // 6. Check if the Instance has designated an overview scene
+        if ( empty( $overview_scene_id ) || ! is_numeric( $overview_scene_id ) ) {
+            // If the instance hasn't set an overview scene, the current scene cannot be it.
+            return;
+        }
+        $overview_scene_id = (int) $overview_scene_id; // Ensure it's an integer
+
+        // 7. Compare the current Scene ID with the Instance's Overview Scene ID
+        if ( $current_scene_id === $overview_scene_id ) {
+            // 8. Display the notice if they match
+            wp_admin_notice('This is the overview scene for ' . get_the_title($instance_id) . ".",
+                array(
+                    'additional_classes' => array( 'updated' ),
+                    'dismissible'        => true,
+                )
+            );
+        }
+    }
+
     //change Quick Edit link name in admin columns for Scene post type
     function modify_scene_quick_edit_link($actions, $post) {
         // Check if the post type is 'scene'.
@@ -265,7 +315,8 @@ class Webcr_Scene {
             'scene_infographic' => 'Infographic',		
             'scene_tagline' => 'Tagline',			
             'scene_order' => 'Order',	
-            'status' => 'Status',
+            'scene_overview' => 'Overview'
+,            'status' => 'Status',
         );
         return $columns;
     }
@@ -278,7 +329,6 @@ class Webcr_Scene {
 	 * @since    1.0.0
 	 */
     public function custom_scene_column( $column, $post_id ) {  
-        // scene location column
 
         if (isset($_GET["field_length"])) {
             $field_length = $_GET["field_length"];
@@ -289,7 +339,6 @@ class Webcr_Scene {
         if ( $column === 'scene_location' ) {
             $instance_id = get_post_meta( $post_id, 'scene_location', true ); 
             echo get_the_title($instance_id ); 
-     //       echo get_post_meta( $post_id, 'scene_location', true ); 
         }
 
         if ( $column === 'scene_infographic' ) {
@@ -315,10 +364,17 @@ class Webcr_Scene {
                     break;
             }
         }
-        //hello more
 
         if ( $column === 'scene_order' ) {
             echo get_post_meta( $post_id, 'scene_order', true ); 
+        }
+
+        if ( $column === 'scene_overview' ) {
+            $instance_id = get_post_meta( $post_id, 'scene_location', true ); 
+            $instance_overview_scene = get_post_meta($instance_id, 'instance_overview_scene', true );
+            if ($instance_overview_scene == $post_id) {
+                echo '<span class="dashicons dashicons-yes"></span>';
+            }
         }
 
         if ($column === "status"){
