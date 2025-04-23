@@ -74,15 +74,28 @@ class Webcr_Scene {
                     if (isset($_COOKIE["scene_error_all_fields"])) {
                         $scene_fields_coded = stripslashes($_COOKIE["scene_error_all_fields"]);
                         $scene_fields_array = json_decode($scene_fields_coded, true);	
-                        $_POST['scene_location'] = $scene_fields_array['scene_location'];
-                        $_POST['scene_infographic'] = $scene_fields_array['scene_infographic'];
-                        $_POST['scene_tagline'] = $scene_fields_array['scene_tagline'];
-                        $_POST['scene_info_entries'] = $scene_fields_array['scene_info_entries'];
-                        $_POST['scene_photo_entries'] = $scene_fields_array['scene_photo_entries'];
 
+                        $scene_field_names = ["scene_published", "scene_location", "scene_infographic", "scene_tagline", "scene_info_entries", "scene_photo_entries", 
+                        "scene_order", "scene_orphan_icon_action", "scene_orphan_icon_color", "scene_toc_style", "scene_same_hover_color_sections", "scene_hover_color", 
+                        "scene_full_screen_button", "scene_text_toggle", "scene_section_number"];
+            
+                        foreach ($scene_field_names as $individual_scene_field_name){
+                            $_POST[$individual_scene_field_name] = $scene_fields_array[$individual_scene_field_name]; 
+                        }
+                
+                        for ($i = 1; $i < 7; $i++){
+                            $_POST["scene_info" . $i]["scene_info_url" . $i] = $scene_fields_array['scene_info_url' . $i];
+                            $_POST["scene_info" . $i]["scene_info_text" . $i] = $scene_fields_array['scene_info_text' . $i]; 
+                            $_POST["scene_photo" . $i]["scene_photo_url" . $i] = $scene_fields_array['scene_photo_url' . $i];
+                            $_POST["scene_photo" . $i]["scene_photo_text" . $i] = $scene_fields_array['scene_photo_text' . $i];
+                            $_POST["scene_photo" . $i]["scene_photo_location" . $i] = $scene_fields_array['scene_photo_location' . $i];
+                            $_POST["scene_photo" . $i]["scene_photo_internal" . $i] = $scene_fields_array['scene_photo_internal' . $i];
+                            $_POST["scene_section" . $i]["scene_section_title" . $i] = $scene_fields_array['scene_section_title' . $i];
+                            $_POST["scene_section" . $i]["scene_section_hover_color" . $i] = $scene_fields_array['scene_section_hover_color' . $i];
+                        }
                     }
                 }
-             //   setcookie("scene_post_status", "", time() - 300, "/");
+
             }
             if (isset($_COOKIE["scene_warnings"])){
                 $warning_message = "<p>Warning or warnings in scene</p>";
@@ -763,7 +776,7 @@ class Webcr_Scene {
         // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
         array_splice($fields, 5, 0, $infoFields);
         array_splice($fields, 12, 0, $photoFields);
-        array_splice($fields, 25, 0, $sectionFields);
+        array_splice($fields, 27, 0, $sectionFields);
 
         $fieldsHolder[] = array(
             'name'   => 'basic',

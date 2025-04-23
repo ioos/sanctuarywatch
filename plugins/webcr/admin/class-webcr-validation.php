@@ -227,7 +227,17 @@ class webcr_validation {
         $scene_errors = [];
         $scene_warnings = [];
 
+        if ($_POST["scene_location"] == ""){
+            array_push($scene_errors,  "The Scene Instance cannot be left blank.");
+            $save_scene_fields = FALSE;
+        }
+
         $scene_infographic = $_POST["scene_infographic"];
+
+        if (!(is_null($scene_infographic)) || !($scene_infographic == "") ){
+            array_push($scene_errors,  "The Scene Infographic cannot be left blank.");
+            $save_scene_fields = FALSE;
+        }
 
         if (!(is_null($scene_infographic)) && !($scene_infographic == "") ){
             // Parse the URL to extract the path
@@ -322,22 +332,27 @@ class webcr_validation {
     }
 
     public function scene_fields_to_cookie () {
+
+        $scene_field_names = ["scene_published", "scene_location", "scene_infographic", "scene_tagline", "scene_info_entries", "scene_photo_entries", 
+            "scene_order", "scene_orphan_icon_action", "scene_orphan_icon_color", "scene_toc_style", "scene_same_hover_color_sections", "scene_hover_color", 
+            "scene_full_screen_button", "scene_text_toggle", "scene_section_number"];
+
         $scene_fields = [];
-        $scene_fields['scene_location'] = $_POST['scene_location'];
-        $scene_fields['scene_infographic'] = $_POST['scene_infographic'];
-        $scene_fields['scene_tagline'] = $_POST['scene_tagline'];
-        $scene_fields['scene_info_entries'] = $_POST['scene_info_entries'];
-        $scene_fields['scene_photo_entries'] = $_POST['scene_photo_entries'];
+        foreach ($scene_field_names as $individual_scene_field_name){
+            $scene_fields[$individual_scene_field_name] = $_POST[$individual_scene_field_name];
+        }
+
         for ($i = 1; $i < 7; $i++){
             $scene_fields['scene_info_url' . $i] = $_POST["scene_info" . $i]["scene_info_url" . $i];
             $scene_fields['scene_info_text' . $i] = $_POST["scene_info" . $i]["scene_info_text" . $i];
             $scene_fields['scene_photo_url' . $i] = $_POST["scene_photo" . $i]["scene_photo_url" . $i];
             $scene_fields['scene_photo_text' . $i] = $_POST["scene_photo" . $i]["scene_photo_text" . $i];
+            $scene_fields['scene_photo_location' . $i] = $_POST["scene_photo" . $i]["scene_photo_location" . $i];
+            $scene_fields['scene_photo_internal' . $i] = $_POST["scene_photo" . $i]["scene_photo_internal" . $i];
+            $scene_fields['scene_section_title' . $i] = $_POST["scene_section" . $i]["scene_section_title" . $i];
+            $scene_fields['scene_section_hover_color' . $i] = $_POST["scene_section" . $i]["scene_section_hover_color" . $i];
         }
 
-        // $_POST["scene_info1"]["scene_info_url1"]
-     //   $scene_fields['scene_info_link'] = $_POST['scene_info_link'];
-     //   $scene_fields['scene_info_photo_link'] = $_POST['scene_info_photo_link'];
         $scene_fields_cookie_value = json_encode($scene_fields);
 
         setcookie("scene_error_all_fields", $scene_fields_cookie_value, time() + 10, "/"); 

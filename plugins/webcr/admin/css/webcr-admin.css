@@ -80,6 +80,14 @@
     display:none;
   }
 
+/**
+ * Hide Post Status and Visibility options in the Publish meta box.
+ */
+ .misc-pub-post-status,
+ .misc-pub-visibility {
+     display: none;
+ }
+
   /* Formatting for modal preview */
 
 .modal_preview {
