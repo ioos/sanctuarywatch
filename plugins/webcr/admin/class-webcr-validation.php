@@ -112,8 +112,6 @@ class webcr_validation {
         $modal_errors = [];
         $modal_warnings = [];
         
-        
-
         // For each tab that the user has said they wanted, check to see that there is an actual tab title
         $modal_tab_number = $_POST["modal_tab_number"];
         for ($i = 1; $i <= $modal_tab_number; $i++) {
@@ -134,6 +132,7 @@ class webcr_validation {
 
         foreach ($field_types as $field_type){
             for ($i = 1; $i < 7; $i++){
+
                 $form_fieldset = 'modal_' . $field_type .  $i;
                 $field_couplet = $_POST[$form_fieldset];
                 $field_text = "modal_" . $field_type . "_text" . $i;
@@ -175,6 +174,7 @@ class webcr_validation {
                 }
             }
         }
+
         if (!empty($modal_warnings)){
             $warning_list_cookie_value = json_encode($modal_warnings);
             setcookie("modal_warnings", $warning_list_cookie_value, time() + 10, "/");          
@@ -183,7 +183,6 @@ class webcr_validation {
             $error_list_cookie_value = json_encode($modal_errors);
             setcookie("modal_errors", $error_list_cookie_value, time() + 10, "/");           
             setcookie("modal_post_status", "post_error", time() + 10, "/");
-          //  $this->modal_fields_to_cookie();
         } else {
             setcookie("modal_post_status", "post_good", time() + 10, "/");
         }
@@ -192,6 +191,7 @@ class webcr_validation {
     }
 
     public function modal_fields_to_cookie () {
+
         $modal_fields = [];
         $modal_fields['modal_location'] = $_POST['modal_location'];
         $modal_fields['modal_scene'] = $_POST['modal_scene'];
