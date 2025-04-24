@@ -347,7 +347,7 @@ function modal_section_options (){
     const host = window.location.host;
     const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&per_page=100&scene_location=" + modal_location;
 
-
+// http://nov9.local/wp-json/wp/v2/scene/357?_fields=title,id,scene_toc_style,scene_section_number,scene_section1
 }
 
 function modal_scene_change(){

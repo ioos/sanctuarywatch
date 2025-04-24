@@ -127,14 +127,6 @@ class webcr_validation {
             $save_modal_fields = FALSE;
         }
 
-        $scene_infographic = $_POST["scene_infographic"];
-
-        if (!(is_null($scene_infographic)) || !($scene_infographic == "") ){
-            array_push($scene_errors,  "The Scene Infographic cannot be left blank.");
-            $save_scene_fields = FALSE;
-        }
-
-
         // For each tab that the user has said they wanted, check to see that there is an actual tab title
         $modal_tab_number = $_POST["modal_tab_number"];
         for ($i = 1; $i <= $modal_tab_number; $i++) {
@@ -251,14 +243,14 @@ class webcr_validation {
         $scene_warnings = [];
 
         if ($_POST["scene_location"] == ""){
-            array_push($scene_errors,  "The Scene Instance cannot be left blank.");
+            array_push($scene_errors,  "The Instance field cannot be left blank.");
             $save_scene_fields = FALSE;
         }
 
         $scene_infographic = $_POST["scene_infographic"];
 
-        if (!(is_null($scene_infographic)) || !($scene_infographic == "") ){
-            array_push($scene_errors,  "The Scene Infographic cannot be left blank.");
+        if (is_null($scene_infographic) || $scene_infographic == "" ){
+            array_push($scene_errors,  "The Infographic field cannot be left blank.");
             $save_scene_fields = FALSE;
         }
 
@@ -292,7 +284,17 @@ class webcr_validation {
                 }
             }
         }
-        
+
+        if ($_POST["scene_toc_style"] != "list" && $_POST["scene_section_number"] != "0"){
+            $section_number = intval($_POST["scene_section_number"]);
+            for ($q = 1; $q <= $section_number; $q++){
+                if ($_POST["scene_section". $q ]["scene_section_title" . $q] == ""){
+                    array_push($scene_errors,  "Scene section title " . $q . " is blank.");
+                    $save_scene_fields = FALSE;
+                }
+            }
+        }
+
         $field_types = array("info", "photo");
 
         foreach ($field_types as $field_type){

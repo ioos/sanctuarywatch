@@ -78,7 +78,7 @@ class Webcr_Scene {
                         $scene_field_names = ["scene_published", "scene_location", "scene_infographic", "scene_tagline", "scene_info_entries", "scene_photo_entries", 
                         "scene_order", "scene_orphan_icon_action", "scene_orphan_icon_color", "scene_toc_style", "scene_same_hover_color_sections", "scene_hover_color", 
                         "scene_full_screen_button", "scene_text_toggle", "scene_section_number"];
-            
+
                         foreach ($scene_field_names as $individual_scene_field_name){
                             $_POST[$individual_scene_field_name] = $scene_fields_array[$individual_scene_field_name]; 
                         }
@@ -556,19 +556,19 @@ class Webcr_Scene {
             array(
                 'id'   => 'scene_infographic',
                 'type' => 'image',
-                'title' => 'Scene Infographic*',
+                'title' => 'Infographic*',
                 'description' => 'What is the image for the scene? Only properly-formatted SVG-type images are allowed.'
             ),
             array(
                 'id'   => 'scene_tagline',
                 'type' => 'textarea',
-                'title'       => 'Scene Tagline',
+                'title'       => 'Tagline',
                 'description' => 'What is the tagline for the scene?'
             ),
             array(
                 'id'      => 'scene_info_entries',
                 'type'    => 'range',
-                'title'   => 'Number of Scene Info Entries*',
+                'title'   => 'Number of Info Entries*',
                 'description' => 'How many info links are there for the scene?',
                 'min'     => 0,    
                  'default' => 1,    
@@ -578,7 +578,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_photo_entries',
                 'type'    => 'range',
-                'title'   => 'Number of Scene Photo Entries*',
+                'title'   => 'Number of Photo Entries*',
                 'description' => 'How many photo links are there for the scene?',
                 'min'     => 0,    
                  'default' => 1,    
@@ -588,7 +588,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_order',
                 'type'    => 'number',
-                'title'   => 'Scene Order',
+                'title'   => 'Order',
                 'description' => 'What is the order of the scene in the menu bar?',
                 'default' => '1',                               
                 'min'     => '1',                                    
@@ -690,7 +690,7 @@ class Webcr_Scene {
             $infoFields[] = array(
                 'type' => 'fieldset',
                 'id' => 'scene_info' . $i,
-                'title'   => 'Scene Info Link ' . $i,
+                'title'   => 'Info Link ' . $i,
             // 'description' => 'Scene Info Link 1 description',
                 'fields' => array(
                     array(
@@ -716,7 +716,7 @@ class Webcr_Scene {
             $photoFields[] = array(
                 'type' => 'fieldset',
                 'id' => 'scene_photo' . $i,
-                'title'   => 'Scene Photo Link ' . $i,
+                'title'   => 'Photo Link ' . $i,
                 'fields' => array(
                     array(
                         'id'             => 'scene_photo_location' . $i,
@@ -798,6 +798,7 @@ class Webcr_Scene {
             array('scene_hover_color', 'string', 'The hover color for the icons'),
             array('scene_photo_entries', 'integer', 'The number of scene links'),
             array('scene_published', 'string', 'Is the scene live'),
+            array('scene_toc_style', 'string', 'Table of contents style'),
         );
 
         foreach ($fieldsToBeRegistered as $targetSubArray) {
@@ -818,7 +819,7 @@ class Webcr_Scene {
             array('scene_info', 'Info link '),
             array('scene_photo', 'Photo link '),
             array('scene_photo_internal', 'Internal photo link '),
-            array('scene_section', 'Scene section ')
+            array('scene_section', 'Scene section '),
         );
 
         for ($i = 1; $i < 7; $i++ ) {
@@ -853,7 +854,7 @@ class Webcr_Scene {
 	 */
     function register_scene_rest_fields() {
         $scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
-            'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_published');
+            'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_published', 'scene_toc_style');
 
         for ($i = 1; $i < 7; $i++){
             array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i, 'scene_section' . $i);
