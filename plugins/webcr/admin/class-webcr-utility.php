@@ -268,7 +268,7 @@ class Webcr_Utility {
             }
         }
         asort($modal_sections);
-        $modal_sections = array_merge(array("None" => "None"),$modal_sections );
+        $modal_sections = array_merge(array("" => ""),$modal_sections );
         return $modal_sections;
     }
 

@@ -28,12 +28,13 @@ iconFunction();
 modalWindow();
 modal_scene_change();
 modal_location_change();
-hideIconSection();
+// hideIconSection();
+
 
 // If a given Scene does not have any sections, then let's hide the Icon Section field in the modal page
 function hideIconSection (){
     const sectionField = document.getElementsByName("icon_toc_section")[0];
-    if (sectionField.options.length == 1 && sectionField.value === "None"){
+    if (sectionField.options.length < 2){
         sectionField.parentElement.parentElement.style.display = "none";
     }
 }
@@ -335,6 +336,20 @@ function modal_location_change(){
     }
 }
 
+// Change the options for the select field with the name icon_toc_section when the scene changes. This is done to reflect the sections associated with the new scene
+function modal_section_options (){
+    const sceneID = document.getElementsByName("modal_scene")[0];
+    let modalSection = document.getElementsByName("icon_toc_section")[0];
+    modalSection.innerHTML ='';
+    modalSection.value ='';
+
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&per_page=100&scene_location=" + modal_location;
+
+
+}
+
 function modal_scene_change(){
     const sceneID = document.querySelector("select[name='modal_scene']").value;
 
@@ -342,6 +357,7 @@ function modal_scene_change(){
         if (!isPageLoad){
             iconSceneOutDropdown();
         }
+
         // Let's remove the preview window if it already exists
 		const previewWindow = document.getElementById('preview_window');
 		// If the element exists
@@ -438,8 +454,6 @@ function modal_scene_change(){
             })
             .catch((err) => {console.error(err)});
             
-
-
             imageRow.appendChild(imageColumn);
             newDiv.appendChild(imageRow);
             document.getElementsByClassName("exopite-sof-field-select")[1].appendChild(newDiv);

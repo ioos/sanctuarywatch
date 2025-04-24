@@ -111,7 +111,30 @@ class webcr_validation {
 
         $modal_errors = [];
         $modal_warnings = [];
-        
+
+        if ($_POST["modal_location"] == ""){
+            array_push($modal_errors,  "The Instance field cannot be left blank.");
+            $save_modal_fields = FALSE;
+        }
+
+        if ($_POST["modal_scene"] == ""){
+            array_push($modal_errors,  "The Scene field cannot be left blank.");
+            $save_modal_fields = FALSE;
+        }
+
+        if ($_POST["modal_icons"] == ""){
+            array_push($modal_errors,  "The Icons field cannot be left blank.");
+            $save_modal_fields = FALSE;
+        }
+
+        $scene_infographic = $_POST["scene_infographic"];
+
+        if (!(is_null($scene_infographic)) || !($scene_infographic == "") ){
+            array_push($scene_errors,  "The Scene Infographic cannot be left blank.");
+            $save_scene_fields = FALSE;
+        }
+
+
         // For each tab that the user has said they wanted, check to see that there is an actual tab title
         $modal_tab_number = $_POST["modal_tab_number"];
         for ($i = 1; $i <= $modal_tab_number; $i++) {
