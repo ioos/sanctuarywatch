@@ -28,14 +28,18 @@ iconFunction();
 modalWindow();
 modal_scene_change();
 modal_location_change();
-// hideIconSection();
+
+hideIconSection();
 
 
 // If a given Scene does not have any sections, then let's hide the Icon Section field in the modal page
 function hideIconSection (){
     const sectionField = document.getElementsByName("icon_toc_section")[0];
+    console.log(sectionField.options.length)
     if (sectionField.options.length < 2){
         sectionField.parentElement.parentElement.style.display = "none";
+    } else {
+        sectionField.parentElement.parentElement.style.display = "block";
     }
 }
 
@@ -293,6 +297,13 @@ function urlifyRecursiveFunc(str) {
 
 function modal_location_change(){
     if (isPageLoad == false){
+
+        // let's remove all options from the Icon Section field and make it invisible
+        const sectionField = document.getElementsByName("icon_toc_section")[0];
+        sectionField.innerHTML ='';
+        sectionField.value =''; 
+        sectionField.parentElement.parentElement.style.display = "none";
+
         // Let's remove the preview window if it already exists
 		const previewWindow = document.getElementById('preview_window');
 		// If the element exists
@@ -336,18 +347,60 @@ function modal_location_change(){
     }
 }
 
-// Change the options for the select field with the name icon_toc_section when the scene changes. This is done to reflect the sections associated with the new scene
+// Change the options for the select field with the name icon_toc_section when the scene changes. 
+// This is done to reflect the sections associated with the new scene
 function modal_section_options (){
-    const sceneID = document.getElementsByName("modal_scene")[0];
+    const sceneID = document.getElementsByName("modal_scene")[0].value;
     let modalSection = document.getElementsByName("icon_toc_section")[0];
     modalSection.innerHTML ='';
     modalSection.value ='';
+  
+    let sceneSection = "";
+    for (let i = 1; i < 7; i++){
+        sceneSection = sceneSection + "scene_section" + i + ",";    
+    }
+    sceneSection = sceneSection.slice(0, -1);
 
     const protocol = window.location.protocol;
     const host = window.location.host;
-    const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene?_fields=title,id&orderby=title&order=asc&per_page=100&scene_location=" + modal_location;
+    const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=title,id,scene_toc_style,scene_section_number," + sceneSection;
+    fetch(restURL)
+    .then(response => response.json())
+    .then(data => {   
+        const sceneTocStyle = data["scene_toc_style"];
+        const sceneSectionNumber = parseInt(data["scene_section_number"]);
+        if (sceneTocStyle != "list" && sceneSectionNumber > 0){
+            let option = document.createElement('option');
+            option.text = "";
+            option.value = "";
+            modalSection.add(option);
 
-// http://nov9.local/wp-json/wp/v2/scene/357?_fields=title,id,scene_toc_style,scene_section_number,scene_section1
+            for (let j = 1; j <= sceneSectionNumber; j++){
+                let option = document.createElement('option');
+                option.value = j;
+                option.text = data["scene_section" + j]["scene_section_title" + j];   
+                modalSection.add(option);
+            }
+
+            // let's set the value of the icon_toc_section field to the value of the icon_toc_section field in the database
+            const modalId = document.querySelector('input[name="post_ID"]');
+
+            if (modalId && modalId.value) {
+              const restURL2 = protocol + "//" + host  + "/wp-json/wp/v2/modal/" + modalId.value + "?_fields=id,icon_toc_section";
+              fetch(restURL2)
+                .then(response => response.json())
+                .then(data => {
+                    const iconTocSection = data["icon_toc_section"];
+                    if (iconTocSection != null && iconTocSection != "") {
+                        modalSection.value = iconTocSection;
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error));
+            }
+        } 
+        hideIconSection();
+    })
+    .catch(error => console.error('Error fetching data:', error));
 }
 
 function modal_scene_change(){
@@ -357,6 +410,9 @@ function modal_scene_change(){
         if (!isPageLoad){
             iconSceneOutDropdown();
         }
+
+        modal_section_options();
+
 
         // Let's remove the preview window if it already exists
 		const previewWindow = document.getElementById('preview_window');

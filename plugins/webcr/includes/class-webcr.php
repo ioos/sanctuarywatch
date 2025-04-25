@@ -237,6 +237,7 @@ class Webcr {
 		$this->loader->add_filter( 'manage_edit-scene_sortable_columns', $plugin_admin_scene, 'register_status_as_sortable_column'); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'orderby_status_column'); //This action orders by the status column for scene, modal, and figure content types 
         $this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'display_overview_scene_notice' ); 
+        $this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'write_cookie_values_to_scene_fields' ); 
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		

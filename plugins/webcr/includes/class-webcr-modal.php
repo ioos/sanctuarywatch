@@ -177,7 +177,7 @@ class Webcr_Modal {
             array(
                 'id'             => 'icon_toc_section',
                 'type'           => 'select',
-                'title'          => 'Icon Section',
+                'title'          => 'Icon Section*',
                 'options'        =>  $modal_section,
                 'description' => 'Which scene section is this modal associated with?',
             ),
@@ -411,7 +411,7 @@ class Webcr_Modal {
 	 */
     function register_modal_rest_fields() {
         $modal_rest_fields = array('modal_scene','modal_tagline', 'modal_published', 'modal_icon_order', 'icon_function','modal_info_entries', 
-            'modal_photo_entries', 'modal_tab_number');
+            'modal_photo_entries', 'modal_tab_number', 'icon_toc_section');
 
             for ($i = 1; $i < 7; $i++){
                 array_push($modal_rest_fields,'modal_info' . $i, 'modal_photo' . $i, 'modal_tab_title' . $i );
