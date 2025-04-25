@@ -178,7 +178,8 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
           }
           
           //a bunch of scene meta fields:
-          $scene_default_hover_color = get_post_meta($post_id, 'scene_hover_color', true); 
+          $scene_default_hover_color = get_post_meta($post_id, 'scene_hover_color', true);
+          $scene_default_hover_text_color = get_post_meta($post_id, 'scene_hover_text_color', true); 
           $scene_text_toggle = get_post_meta($post_id, 'scene_text_toggle', true); 
           $scene_toc_style = get_post_meta($post_id, 'scene_toc_style', true); 
           $scene_full_screen_button = get_post_meta($post_id, 'scene_full_screen_button', true); 
@@ -210,6 +211,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     let scene_same_hover_color_sections = <?php echo json_encode($scene_same_hover_color_sections); ?>;
 
     let scene_default_hover_color =  <?php echo json_encode($scene_default_hover_color); ?>;
+    let scene_default_hover_text_color =  <?php echo json_encode($scene_default_hover_text_color); ?>;
     let scene_text_toggle =  <?php echo json_encode($scene_text_toggle); ?>;
     let scene_toc_style =  <?php echo json_encode($scene_toc_style); ?>;
     let scene_full_screen_button  = <?php echo json_encode($scene_full_screen_button); ?>;    

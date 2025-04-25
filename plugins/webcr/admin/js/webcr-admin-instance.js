@@ -2,6 +2,9 @@
 
 'use strict';
 
+// Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
+document.addEventListener('DOMContentLoaded', redText);
+
 displayLegacyContentField();
 
 // should the "legacy content url" field be shown?

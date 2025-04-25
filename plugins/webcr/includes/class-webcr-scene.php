@@ -493,13 +493,13 @@ class Webcr_Scene {
                 'options'        => $instances, 
                 'description' => 'What instance is the scene part of? '
             ),
-            array(
-                'id'             => 'instance_overview_scene',
-                'type'           => 'select',
-                'title'          => 'Overview Scene',
-                //'options'        => $scenes,
-                'description' => '',
-            ),
+            // array(
+            //     'id'             => 'instance_overview_scene',
+            //     'type'           => 'select',
+            //     'title'          => 'Overview Scene',
+            //     //'options'        => $scenes,
+            //     'description' => '',
+            // ),
             array(
                 'id'   => 'scene_infographic',
                 'type' => 'image',
@@ -583,21 +583,12 @@ class Webcr_Scene {
                 "default"   => '#FFFF00',
             ),
             array(
-                'id'    => 'scene_full_screen_button',
-                'type'  => 'select',
-                'title' => 'Full Screen Button',
-                'description' => 'Should there be a full screen button?',
-                'options'        => array("no" => "No", "yes" => "Yes"),
-                "default"   => "no",
-            ),
-            array(
-                'id'             => 'scene_text_toggle',
-                'type'           => 'select',
-                'title'          => 'Text Toggle',
-                'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
-                'default'        => 'none',
-                'description' => 'Should there be a text toggle button?',
-             //   'class'      => 'chosen', 
+                'id'     => 'scene_hover_text_color',
+                'type'   => 'color',
+                'title'  => 'Hover Text Color',
+                'description' => 'What should the hover text color be?',
+                'picker' => 'html5',
+                "default"   => '#000',
             ),
             array(
                 'id'      => 'scene_section_number',
@@ -614,7 +605,24 @@ class Webcr_Scene {
                     6 => "6"
                 ),
                 'default' => 0           
-            ),  
+            ), 
+            array(
+                'id'    => 'scene_full_screen_button',
+                'type'  => 'select',
+                'title' => 'Full Screen Button',
+                'description' => 'Should there be a full screen button?',
+                'options'        => array("no" => "No", "yes" => "Yes"),
+                "default"   => "no",
+            ),
+            array(
+                'id'             => 'scene_text_toggle',
+                'type'           => 'select',
+                'title'          => 'Text Toggle',
+                'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
+                'default'        => 'none',
+                'description' => 'Should there be a text toggle button?',
+             //   'class'      => 'chosen', 
+            ), 
             array(
                 'id'          => 'scene_preview',
                 'type'        => 'button',
@@ -712,9 +720,16 @@ class Webcr_Scene {
                     array(
                         'id'     => 'scene_section_hover_color' . $i,
                         'type'   => 'color',
-                        'title'  => 'Hover Color',
+                        'title'  => 'Section Hover Color',
                         'picker' => 'html5',
                         "default"   => '#FFFF00',
+                    ),
+                    array(
+                        'id'     => 'scene_section_hover_text_color' . $i,
+                        'type'   => 'color',
+                        'title'  => 'Section Hover Text Color',
+                        'picker' => 'html5',
+                        "default"   => '#00000',
                     ),
                 ),
             );
@@ -743,6 +758,7 @@ class Webcr_Scene {
             array('scene_info_entries', 'integer', 'The number of info links'),
             array('scene_section_number', 'integer', 'The number of scene sections'),
             array('scene_hover_color', 'string', 'The hover color for the icons'),
+            array('scene_hover_text_color', 'string', 'The hover text color for the icons'),
             array('scene_photo_entries', 'integer', 'The number of scene links'),
             array('scene_published', 'string', 'Is the scene live'),
         );
@@ -800,7 +816,7 @@ class Webcr_Scene {
 	 */
     function register_scene_rest_fields() {
         $scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
-            'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_published');
+            'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_hover_text_color','scene_published');
 
         for ($i = 1; $i < 7; $i++){
             array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i, 'scene_section' . $i);

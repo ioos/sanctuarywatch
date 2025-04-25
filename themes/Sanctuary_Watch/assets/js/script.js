@@ -783,20 +783,26 @@ function highlight_icons() {
         let elem = document.querySelector('g[id="' + key + '"]');
 
         elem.addEventListener('mouseover', function (e) {
-            console.log("hovering over " + key);
 
             let elemCollection = elem.querySelectorAll("*");
             let hoverColor;
+            let hoverTextColor;
 
             elemCollection.forEach(subElem => {
                 if (scene_same_hover_color_sections !== "yes" && sectionObj[key] !== "None") {
                     let section_name = sectionObj[key];
+                    console.log(section_name);
                     let section_num = section_name.slice(-1);
                     let this_color = `scene_section_hover_color${section_num}`;
+                    let text_color = `scene_section_hover_text_color${section_num}`;
+                    console.log(text_color);
                     hoverColor = scene_data[sectionObj[key]][this_color];
+                    hoverTextColor = scene_data[sectionObj[key]][text_color];
+                    console.log(hoverTextColor);
                     subElem.style.stroke = hoverColor;
                 } else {
                     hoverColor = scene_default_hover_color;
+                    hoverTextColor = scene_default_hover_text_color;
                     subElem.style.stroke = hoverColor;
                 }
 
@@ -806,29 +812,26 @@ function highlight_icons() {
             // Create and show the tooltip box
             const tooltip = document.createElement("div");
             tooltip.className = "hover-key-box";
-            tooltip.textContent = key;
+            tooltip.textContent = child_obj[key].title;
             tooltip.style.position = "absolute";
             tooltip.style.padding = "5px 10px";
             tooltip.style.backgroundColor = hoverColor;
-            tooltip.style.color = "#000";
+            tooltip.style.color = hoverTextColor;
             tooltip.style.borderRadius = "4px";
             tooltip.style.fontSize = "14px";
             tooltip.style.pointerEvents = "none";
             tooltip.style.zIndex = "9999";
-
-            // Position near mouse
-            tooltip.style.left = e.pageX + 10 + "px";
-            tooltip.style.top = e.pageY + 10 + "px";
-
             tooltip.id = "hoverKeyTooltip";
             document.body.appendChild(tooltip);
+
+            // Initial position
+            moveTooltip(e, elem, tooltip);
         });
 
         elem.addEventListener('mousemove', function (e) {
             const tooltip = document.getElementById("hoverKeyTooltip");
             if (tooltip) {
-                tooltip.style.left = e.pageX + 10 + "px";
-                tooltip.style.top = e.pageY + 10 + "px";
+                moveTooltip(e, elem, tooltip);
             }
         });
 
@@ -846,7 +849,25 @@ function highlight_icons() {
             }
         });
     }
+
+    function moveTooltip(e, elem, tooltip) {
+        const svg = elem.closest('svg');
+        if (!svg) return;
+
+        const svgRect = svg.getBoundingClientRect();
+        const svgMidX = svgRect.left + (svgRect.width / 2);
+
+        if (e.pageX > svgMidX) {
+            // On the right half: show tooltip to the left
+            tooltip.style.left = (e.pageX - tooltip.offsetWidth - 15) + "px";
+        } else {
+            // On the left half: show tooltip to the right
+            tooltip.style.left = (e.pageX + 15) + "px";
+        }
+        tooltip.style.top = (e.pageY + 10) + "px";
+    }
 }
+
 
 
 
@@ -872,6 +893,7 @@ function flicker_highlight_icons() {
                 let section_num = section_name.substring(section_name.length - 1, section_name.length);
 
                 let this_color = `scene_section_hover_color${section_num}`;
+                let text_color = `scene_section_hover_text_color${section_num}`;
                 elem.style.stroke = scene_data[sectionObj[key]][this_color];
                 } else {
                     elem.style.stroke = scene_default_hover_color;
@@ -1982,6 +2004,7 @@ function sectioned_list(){
             // heading.innerHTML = sections[i];
             heading.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
             let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
+            let textcolor =  scene_data[sections[i]][`scene_section_hover_text_color${i+1}`];
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
@@ -1993,6 +2016,7 @@ function sectioned_list(){
         } else {
             heading.innerHTML = 'No Section';
             let color = scene_default_hover_color;
+            let textcolor = scene_default_hover_text_color;
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
