@@ -96,7 +96,7 @@ class webcr_validation {
             $error_list_cookie_value = json_encode($figure_errors);
             setcookie("figure_errors", $error_list_cookie_value, time() + 10, "/");           
             setcookie("figure_post_status", "post_error", time() + 10, "/");
-            $this->modal_fields_to_cookie();
+            $this->figure_fields_to_cookie();
         } else {
             setcookie("figure_post_status", "post_good", time() + 10, "/");
         }
@@ -111,6 +111,24 @@ class webcr_validation {
 
         $modal_errors = [];
         $modal_warnings = [];
+
+        //Check modal title for potential errors
+        $modal_title = $_POST["post_title"];
+        $words = explode(' ', $modal_title);
+        
+        foreach ($words as $word) {
+            // Remove any punctuation for accurate word length
+            $clean_word = preg_replace('/[^\p{L}\p{N}]/u', '', $word);
+            if (strlen($clean_word) > 14) {
+                array_push($modal_warnings, "The word '" . $clean_word . "' in the modal title is longer than 14 characters, which may cause issues in mobile view.");
+            } 
+        }
+
+        // Report warning if total title length exceeds 70 characters
+        $string_length = strlen($modal_title);
+        if ($string_length > 70) {
+            array_push($modal_warnings, "The title length is {$string_length} characters long, which exceeds the 70 character limit recommendation for proper layout.");
+        }
 
         if ($_POST["modal_location"] == ""){
             array_push($modal_errors,  "The Instance field cannot be left blank.");
@@ -127,20 +145,79 @@ class webcr_validation {
             $save_modal_fields = FALSE;
         }
 
-        // For each tab that the user has said they wanted, check to see that there is an actual tab title
-        $modal_tab_number = $_POST["modal_tab_number"];
-        for ($i = 1; $i <= $modal_tab_number; $i++) {
-            $tab_title = "modal_tab_title" . $i;
-            $tab_title = $_POST["modal_tab_title1"];
-            if (empty($tab_title) || is_null($tab_title) ){
-                $save_modal_fields = FALSE;
-                array_push($modal_errors,  "Modal Tab Title " . $i . " is blank.");
+        // If the associated scene contains sections, force the use of sections with this modal
+        if ($_POST["modal_scene"] != ""){
+            $scene_ID = intval($_POST["modal_scene"]);
+            $scene_toc_style = get_post_meta($scene_ID, "scene_toc_style", true);
+            $scene_section_number = get_post_meta($scene_ID, "scene_section_number", true);
+            if ($scene_toc_style != "list" && $scene_section_number != 0){
+                if ($_POST["icon_toc_section"] == ""){
+                    array_push($modal_errors,  "The Icon Section field cannot be left blank.");
+                    $save_modal_fields = FALSE;
+                }
             }
         }
 
-        if ($modal_tab_number == 0 && $_POST["icon_function"] == "Modal"){
-            $save_modal_fields = FALSE;
-            array_push($modal_errors,  "There must be at least one modal tab if the Icon Action is set to Modal");
+        // Based upon the value of the icon action field (that's the title, but the actual name is icon function), do some error checking
+        switch ($_POST["icon_function"]) {
+            case "External URL":
+                $icon_external_url = $_POST["icon_external_url"];
+
+                if ($icon_external_url == ""){
+                    $save_modal_fields = FALSE;
+                    array_push($modal_errors,  "The Icon External URL field is blank.");
+                } else {
+                    if ( $this -> url_check($icon_external_url) == FALSE ) {
+                        $save_modal_fields = FALSE;
+                        array_push($modal_errors, "The Icon External URL is not valid");
+                    } else {
+                        // Set cURL options
+                        $ch = curl_init($icon_external_url);
+                        $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the transfer as a string
+                        curl_setopt($ch, CURLOPT_NOBODY, true);  // Exclude the body from the output
+                        curl_setopt($ch, CURLOPT_HEADER, true);  // Include the header in the output
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects
+                        curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  // Set User-Agent header
+
+                        // Execute cURL session
+                        curl_exec($ch);
+
+                        // Get the headers
+                        $headers = curl_getinfo($ch);
+
+                        // Close cURL session
+                        curl_close($ch);
+
+                        if ($headers["http_code"] != 200){
+                            array_push($modal_warnings, "The Icon External URL cannot be accessed.");                               
+                        }
+                    }
+                }
+                break;
+            case "Modal":
+                $modal_tab_number = $_POST["modal_tab_number"];
+                if ($modal_tab_number == 0){
+                    $save_modal_fields = FALSE;
+                    array_push($modal_errors,  "There must be at least one modal tab if the Icon Action is set to Modal");
+                } else {
+                    for ($i = 1; $i <= $modal_tab_number; $i++) {
+                        $tab_title = $_POST["modal_tab_title" . $i]; 
+                        if (empty($tab_title) || is_null($tab_title) ){
+                            $save_modal_fields = FALSE;
+                            array_push($modal_errors,  "The Modal Tab Title " . $i . " is blank.");
+                        }
+                    }            
+                }
+                break;
+            case "Scene":
+                $icon_scene_out = $_POST["icon_scene_out"];
+
+                if ($icon_scene_out == ""){
+                    $save_modal_fields = FALSE;
+                    array_push($modal_errors,  "The Icon Scene Out field is blank.");
+                } 
+                break;
         }
 
         $field_types = array("info", "photo");
@@ -198,6 +275,7 @@ class webcr_validation {
             $error_list_cookie_value = json_encode($modal_errors);
             setcookie("modal_errors", $error_list_cookie_value, time() + 10, "/");           
             setcookie("modal_post_status", "post_error", time() + 10, "/");
+            $this->modal_fields_to_cookie();
         } else {
             setcookie("modal_post_status", "post_good", time() + 10, "/");
         }
@@ -205,27 +283,25 @@ class webcr_validation {
         return $save_modal_fields;
     }
 
+    // Write all values from the fields of the edit modal post to a cookie. 
+    // This is used to repopulate the fields in the modal edit form if there are errors in the submission.
     public function modal_fields_to_cookie () {
 
-        $modal_fields = [];
-        $modal_fields['modal_location'] = $_POST['modal_location'];
-        $modal_fields['modal_scene'] = $_POST['modal_scene'];
-        $modal_fields['modal_icons'] = $_POST['modal_icons'];
-        $modal_fields['icon_function'] = $_POST['icon_function'];
-        $modal_fields['icon_external_url'] = $_POST['icon_external_url'];
-        $modal_fields['icon_scene_out'] = $_POST['icon_scene_out'];        
-        $modal_fields['modal_tagline'] = $_POST['modal_tagline'];        
-        $modal_fields['modal_info_entries'] = $_POST['modal_info_entries'];        
-        $modal_fields['modal_photo_entries'] = $_POST['modal_photo_entries'];        
-        $modal_fields['modal_tab_number'] = $_POST['modal_tab_number'];        
-        $modal_fields['icon_out_type'] = $_POST['icon_out_type'];
+        $modal_field_names = ["modal_published", "modal_location", "modal_scene", "modal_icons", "modal_icon_order", "icon_toc_section",
+            "icon_function", "icon_external_url", "icon_scene_out", "modal_tagline", "modal_info_entries", "modal_photo_entries", "modal_tab_number"];
 
+        $modal_fields = [];
+        foreach ($modal_field_names as $individual_modal_field_name){
+            $modal_fields[$individual_modal_field_name] = $_POST[$individual_modal_field_name];
+        }
 
         for ($i = 1; $i < 7; $i++){
             $modal_fields['modal_info_url' . $i] = $_POST["modal_info" . $i]["modal_info_url" . $i];
             $modal_fields['modal_info_text' . $i] = $_POST["modal_info" . $i]["modal_info_text" . $i];
             $modal_fields['modal_photo_url' . $i] = $_POST["modal_photo" . $i]["modal_photo_url" . $i];
             $modal_fields['modal_photo_text' . $i] = $_POST["modal_photo" . $i]["modal_photo_text" . $i];
+            $modal_fields['modal_photo_location' . $i] = $_POST["modal_photo" . $i]["modal_photo_location" . $i];
+            $modal_fields['modal_photo_internal' . $i] = $_POST["modal_photo" . $i]["modal_photo_internal" . $i];
             $modal_fields['modal_tab_title' . $i] = $_POST['modal_tab_title' . $i];
         }
         $modal_fields_cookie_value = json_encode($modal_fields);
@@ -233,6 +309,9 @@ class webcr_validation {
         setcookie("modal_error_all_fields", $modal_fields_cookie_value, time() + 10, "/"); 
     }
 
+    // The purpose of this function is to validate the fields of the Scene custom content type. If validation fails, it sets a cookie with the error messages and the values of the fields that were submitted. 
+    // It also sets a cookie to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
+    // However, the page is reloaded and an error message is displayed to the user.
     public function validate_scene (){
         $save_scene_fields = true;
 

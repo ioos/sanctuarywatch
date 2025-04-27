@@ -63,7 +63,6 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 figureArguments['XAxisTitle'] + ': %{x}<br>' +  // Custom label for x-axis
                 figureArguments['YAxisTitle'] + ': %{y}' // Custom label for y-axis
               };
-              console.log(singleLinePlotly);
               allLinesPlotly.push(singleLinePlotly);
         }
           
@@ -98,8 +97,6 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
 
 function plotlyLineParameterFields(jsonColumns, interactive_arguments){
 
-
-  console.log('plotlyLineParameterFields', interactive_arguments)
   let newDiv = document.createElement("div");
   newDiv.id = 'secondaryGraphFields';
   const targetElement = document.getElementById('graphGUI');

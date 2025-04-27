@@ -2,6 +2,8 @@
 
 let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
 
+writeCookieValuesToModalFields();
+
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
 document.addEventListener('DOMContentLoaded', redText);
 
@@ -35,7 +37,6 @@ hideIconSection();
 // If a given Scene does not have any sections, then let's hide the Icon Section field in the modal page
 function hideIconSection (){
     const sectionField = document.getElementsByName("icon_toc_section")[0];
-    console.log(sectionField.options.length)
     if (sectionField.options.length < 2){
         sectionField.parentElement.parentElement.style.display = "none";
     } else {
@@ -134,10 +135,6 @@ function iconSceneOutDropdown(){
     const modal_location = document.getElementsByName("modal_location")[0].value;
     const iconSceneOut = document.getElementsByName("icon_scene_out")[0];
     iconSceneOut.innerHTML ='';
-    let optionIcon = document.createElement('option');
-    optionIcon.text = "Icon Scene Out";
-    optionIcon.value = " ";
-    iconSceneOut.add(optionIcon);
 
     const modalScene = document.getElementsByName("modal_scene")[0].value;
     if (modalScene != "") {
@@ -148,6 +145,11 @@ function iconSceneOutDropdown(){
         fetch(restURL)
             .then(response => response.json())
             .then(data => {
+                let option = document.createElement('option');
+                option.value = "";
+                option.text = "";
+                option.selected = true;
+                iconSceneOut.appendChild(option);
                 data.forEach( element => {
                     if (element.id != modalScene){
                         let option = document.createElement('option');
@@ -752,4 +754,35 @@ document.querySelector('[data-depend-id="modal_preview"]').addEventListener('cli
 
 });
 
-    
+// This function is the last stop on a field validation path. When a user edits a modal post and hits save, the following happens:
+// 1. The modal post is validated. If there are errors, the field values are not saved to the database but they are saved to a temporary cookie.
+// 2. The user is redirected back to the edit page for the modal post and an error message is displayed.
+// 3. The cookie is read and the field values are written to the fields on the edit page. It is this last step that is done by this function. 
+function writeCookieValuesToModalFields() {
+
+	if (onCorrectEditPage("modal") == true) {
+		if (cookieExists("modal_error_all_fields")) {
+			const modalCookie = getCookie("modal_error_all_fields");
+			const modalCookieValues = JSON.parse(modalCookie);
+
+			const modalFieldNames = ["modal_published", "modal_location", "modal_scene", "modal_icons", "modal_icon_order", "icon_toc_section",
+                "icon_function", "icon_external_url", "icon_scene_out", "modal_tagline", "modal_info_entries", "modal_photo_entries", "modal_tab_number"];
+
+			// Fill in values for simple fields
+			modalFieldNames.forEach((element) => {
+				document.getElementsByName(element)[0].value = modalCookieValues[element];
+			});
+
+			// Fill in values for complex fieldsets
+			for (let i = 1; i < 7; i++){
+				document.getElementsByName("modal_info" + i + "[modal_info_url" + i + "]")[0].value = modalCookieValues["modal_info_url" + i];
+				document.getElementsByName("modal_info" + i + "[modal_info_text" + i + "]")[0].value = modalCookieValues["modal_info_text" + i];
+				document.getElementsByName("modal_photo" + i + "[modal_photo_url" + i + "]")[0].value = modalCookieValues["modal_photo_url" + i];
+				document.getElementsByName("modal_photo" + i + "[modal_photo_text" + i + "]")[0].value = modalCookieValues["modal_photo_text" + i];
+				document.getElementsByName("modal_photo" + i + "[modal_photo_location" + i + "]")[0].value = modalCookieValues["modal_photo_location" + i];
+				document.getElementsByName("modal_photo" + i + "[modal_photo_internal" + i + "]")[0].value = modalCookieValues["modal_photo_internal" + i];
+				document.getElementsByName("modal_tab_title" + i)[0].value = modalCookieValues["modal_tab_title" + i];
+			}
+		}
+	}
+}

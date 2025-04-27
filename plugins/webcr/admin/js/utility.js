@@ -2,6 +2,51 @@
  * Utility functions used across javascript files within admin/js folder
  */
 
+// Check if a cookie exists
+function cookieExists(cookieName) {
+    return document.cookie.split(';').some(cookie => cookie.trim().startsWith(cookieName + '='));
+}
+
+// Get a cookie with a specified name
+function getCookie(cookieName) {
+    const name = cookieName + "=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookieArray = decodedCookie.split(';');
+    
+    for (let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i].trim();
+        if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return null;
+}
+
+// determine if we are on the correct edit page for a custom post type; a precursor step for further functions to run
+function onCorrectEditPage(customPostType) {
+
+    // Get the current URL
+    const currentUrl = window.location.href;
+    
+    // Check if the URL indicates we're editing a post
+    const isEditPage = currentUrl.includes('post.php') || currentUrl.includes('post-new.php');
+    
+    // Look for the post type parameter in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const postType = urlParams.get('post_type') || 'post'; // Default to 'post' if not specified
+    
+    // For editing existing posts, the post type might not be in the URL
+    // In that case, we can rely on the global typenow variable
+    const actualPostType = window.typenow || postType;
+    
+    // Check if we're editing the right kind of custom content post
+    if (isEditPage && actualPostType === customPostType) {
+        return true;      
+    } else {
+        return false;
+	}
+}
+
 /**
  * WordPress Admin Field Formatter
  * 

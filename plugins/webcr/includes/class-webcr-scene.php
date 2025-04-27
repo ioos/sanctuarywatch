@@ -88,33 +88,6 @@ class Webcr_Scene {
         }
     }
 
-    // The purpose of this function is to take the values in the cookie "scene_error_all_fields" and write them to the scene fields in the $_POST array, when the cookie is present.
-    function write_cookie_values_to_scene_fields() {
-        if (isset($_COOKIE["scene_error_all_fields"])) {
-            $scene_fields_coded = stripslashes($_COOKIE["scene_error_all_fields"]);
-            $scene_fields_array = json_decode($scene_fields_coded, true);	
-
-            $scene_field_names = ["scene_published", "scene_location", "scene_infographic", "scene_tagline", "scene_info_entries", "scene_photo_entries", 
-            "scene_order", "scene_orphan_icon_action", "scene_orphan_icon_color", "scene_toc_style", "scene_same_hover_color_sections", "scene_hover_color", 
-            "scene_full_screen_button", "scene_text_toggle", "scene_section_number"];
-
-            foreach ($scene_field_names as $individual_scene_field_name){
-                $_POST[$individual_scene_field_name] = $scene_fields_array[$individual_scene_field_name]; 
-            }
-
-            for ($i = 1; $i < 7; $i++){
-                $_POST["scene_info" . $i]["scene_info_url" . $i] = $scene_fields_array['scene_info_url' . $i];
-                $_POST["scene_info" . $i]["scene_info_text" . $i] = $scene_fields_array['scene_info_text' . $i]; 
-                $_POST["scene_photo" . $i]["scene_photo_url" . $i] = $scene_fields_array['scene_photo_url' . $i];
-                $_POST["scene_photo" . $i]["scene_photo_text" . $i] = $scene_fields_array['scene_photo_text' . $i];
-                $_POST["scene_photo" . $i]["scene_photo_location" . $i] = $scene_fields_array['scene_photo_location' . $i];
-                $_POST["scene_photo" . $i]["scene_photo_internal" . $i] = $scene_fields_array['scene_photo_internal' . $i];
-                $_POST["scene_section" . $i]["scene_section_title" . $i] = $scene_fields_array['scene_section_title' . $i];
-                $_POST["scene_section" . $i]["scene_section_hover_color" . $i] = $scene_fields_array['scene_section_hover_color' . $i];
-            }
-        }
-    }
-
     /**
      * Display an admin notice if the current scene is the overview scene for its instance.
      *

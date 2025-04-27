@@ -192,16 +192,17 @@ class Webcr_Modal {
             array(
                 'id'          => 'icon_external_url',
                 'type'        => 'text',
-                'title'       => 'Icon External URL',
+                'title'       => 'Icon External URL*',
                 'class'       => 'text-class',   
                 'description' => 'What is the external URL that the user should be taken to when the icon is clicked?',  
             ),
             array(
                 'id'             => 'icon_scene_out',
                 'type'           => 'select',
-                'title'          => 'Icon Scene Out',
+                'title'          => 'Icon Scene Out*',
                 'options'        => $icon_scene_out,  
                 'description' => 'What is the scene that the user should be taken to when the icon is clicked?',
+                'default'     => "",
             ),
             array(
                 'id'          => 'modal_tagline',
@@ -700,21 +701,6 @@ class Webcr_Modal {
                                 $error_message = $error_message . '</ul></p>';
                             }
                             echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
-
-                            if (isset($_COOKIE["modal_error_all_fields"])) {
-                                $modal_fields_coded = stripslashes($_COOKIE["modal_error_all_fields"]);
-                                $modal_fields_array = json_decode($modal_fields_coded, true);	
-                                $_POST['modal_location'] = $modal_fields_array['modal_location'];
-                                $_POST['modal_scene'] = $modal_fields_array['modal_scene'];
-                                $_POST['modal_icons'] = $modal_fields_array['modal_icons'];
-                                $_POST['icon_function'] = $modal_fields_array['icon_function'];
-                                $_POST['icon_external_url'] = $modal_fields_array['icon_external_url'];
-                                $_POST['icon_scene_out'] = $modal_fields_array['icon_scene_out'];
-                                $_POST['modal_tagline'] = $modal_fields_array['modal_tagline'];
-                                $_POST['modal_info_entries'] = $modal_fields_array['modal_info_entries'];
-                                $_POST['modal_photo_entries'] = $modal_fields_array['modal_photo_entries'];
-                                $_POST['modal_tab_number'] = $modal_fields_array['modal_tab_number'];
-                            }
                         }
                     //   setcookie("scene_post_status", "", time() - 300, "/");
                     }

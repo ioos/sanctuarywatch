@@ -2,6 +2,8 @@
 
 'use strict';
 
+writeCookieValuesToSceneFields();
+
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
 document.addEventListener('DOMContentLoaded', redText);
 
@@ -480,4 +482,40 @@ function orphanColorFieldVisibility() {
 	} else {
 		document.getElementsByName("scene_orphan_icon_color")[0].parentElement.parentElement.style.display = "none";
 	}
+}
+
+// This function is the last stop on a field validation path. When a user edits a scene post and hits save, the following happens:
+// 1. The scene post is validated. If there are errors, the field values are not saved to the database but they are saved to a temporary cookie.
+// 2. The user is redirected back to the edit page for the scene post and an error message is displayed.
+// 3. The cookie is read and the field values are written to the fields on the edit page. It is this last step that is done by this function. 
+function writeCookieValuesToSceneFields() {
+
+	if (onCorrectEditPage("scene") = true) {
+		if (cookieExists("scene_error_all_fields")) {
+			const sceneCookie = getCookie("scene_error_all_fields");
+			const sceneCookieValues = JSON.parse(sceneCookie);
+
+			const sceneFieldNames = ["scene_published", "scene_location", "scene_infographic", "scene_tagline", "scene_info_entries", "scene_photo_entries", 
+				"scene_order", "scene_orphan_icon_action", "scene_orphan_icon_color", "scene_toc_style", "scene_same_hover_color_sections", "scene_hover_color", 
+				"scene_full_screen_button", "scene_text_toggle", "scene_section_number"];
+
+			// Fill in values for simple fields
+			sceneFieldNames.forEach((element) => {
+				document.getElementsByName(element)[0].value = sceneCookieValues[element];
+			});
+
+			// Fill in values for complex fieldsets
+			for (let i = 1; i < 7; i++){
+				document.getElementsByName("scene_info" + i + "[scene_info_url" + i + "]")[0].value = sceneCookieValues["scene_info_url" + i];
+				document.getElementsByName("scene_info" + i + "[scene_info_text" + i + "]")[0].value = sceneCookieValues["scene_info_text" + i];
+				document.getElementsByName("scene_photo" + i + "[scene_photo_url" + i + "]")[0].value = sceneCookieValues["scene_photo_url" + i];
+				document.getElementsByName("scene_photo" + i + "[scene_photo_text" + i + "]")[0].value = sceneCookieValues["scene_photo_text" + i];
+				document.getElementsByName("scene_photo" + i + "[scene_photo_location" + i + "]")[0].value = sceneCookieValues["scene_photo_location" + i];
+				document.getElementsByName("scene_photo" + i + "[scene_photo_internal" + i + "]")[0].value = sceneCookieValues["scene_photo_internal" + i];
+				document.getElementsByName("scene_section" + i + "[scene_section_title" + i + "]")[0].value = sceneCookieValues["scene_section_title" + i];
+				document.getElementsByName("scene_section" + i + "[scene_section_hover_color" + i + "]")[0].value = sceneCookieValues["scene_section_hover_color" + i];
+			}
+		}
+	}
+
 }
