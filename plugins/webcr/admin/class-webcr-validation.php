@@ -6,8 +6,6 @@
 
 class webcr_validation {
 
-    //public $save_fields;
-
     public function master_validate($validate_content_type){
         switch ($validate_content_type) {
             case "about":
@@ -30,11 +28,145 @@ class webcr_validation {
         }
     }
 
+    // The purpose of this function is to validate the fields of the Instance custom content type. If validation fails, it sets a cookie with the error messages and the values of the fields that were submitted. 
+    // It also sets a cookie to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
+    // However, the page is reloaded and an error message is displayed to the user.
     public function validate_instance (){
         $save_instance_fields = true;
+
+        // Set the error list cookie expiration time to a past date in order to delete it, if it is there
+        setcookie("instance_errors", 0, time() - 3000, "/");
+
+        $instance_errors = [];
+        $instance_warnings = [];
+
+        if ($_POST["instance_short_title"] == ""){
+            array_push($instance_errors,  "The Short title field cannot be left blank.");
+            $save_instance_fields = FALSE;
+        }
+
+        if ($_POST["instance_slug"] == ""){
+            array_push($instance_errors,  "The URL component field cannot be left blank.");
+            $save_instance_fields = FALSE;
+        }
+
+        if ($_POST["instance_overview_scene"] == ""){
+            array_push($instance_warnings, "No overview scene is set. This will cause several issues with the display of the instance until it is corrected.");        
+        }
+
+        if ($_POST["instance_tile"] == ""){
+            array_push($instance_warnings, "No tile image is set. This will cause an issue with the display of the front page of the site until it is corrected.");        
+        } else {
+            $image_path = $_SERVER['DOCUMENT_ROOT'] . wp_make_link_relative($_POST["instance_tile"]);
+            if (!file_exists($image_path)) {
+                array_push($instance_errors,  "The image specified by the 'Tile image' field does not exist.");
+                $save_instance_fields = FALSE;
+            } else {
+                // Check file type based on content
+                $file_info = finfo_open(FILEINFO_MIME_TYPE);
+                $mime_type = finfo_file($file_info, $image_path);
+                finfo_close($file_info);
+                
+                // Return false for SVG and other vector formats
+                if ($mime_type === 'image/svg+xml') {
+                    array_push($instance_errors,  "The image specified by the 'Tile image' field has a SVG format. Only pixel-based formats like jpeg or png are allowed.");
+                    $save_instance_fields = FALSE;
+                } else {
+                    $image_size = getimagesize($image_path);
+                    if ($image_size) {
+                        $width = $image_size[0];
+                        $height = $image_size[1];
+                        
+                        // Check if dimensions match exactly 250x200
+                        if ($width != 250 && $height != 200){  
+                            array_push($instance_errors,  "The image specified by the 'Tile image' field does not have the correct dimensions. The image must be 250 pixels wide and 200 pixels tall.");
+                            $save_instance_fields = FALSE;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        if ($_POST["instance_legacy_content"] == "yes"){
+            $instance_legacy_content_url = $_POST["instance_legacy_content_url"];
+            if ($instance_legacy_content_url == ""){
+                array_push($instance_errors,  "If Legacy content is set to 'yes', then the Legacy content URL field cannot be left blank.");
+                $save_instance_fields = FALSE;
+            } else {
+                if ( $this -> url_check($instance_legacy_content_url) == FALSE ) {
+                    $save_instance_fields = FALSE;
+                    array_push($instance_errors, "The Legacy content URL is not valid");
+                } else {
+                    // Set cURL options
+                    $ch = curl_init($instance_legacy_content_url);
+                    $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the transfer as a string
+                    curl_setopt($ch, CURLOPT_NOBODY, true);  // Exclude the body from the output
+                    curl_setopt($ch, CURLOPT_HEADER, true);  // Include the header in the output
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects
+                    curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  // Set User-Agent header
+
+                    // Execute cURL session
+                    curl_exec($ch);
+
+                    // Get the headers
+                    $headers = curl_getinfo($ch);
+
+                    // Close cURL session
+                    curl_close($ch);
+
+                    if ($headers["http_code"] != 200){
+                        array_push($instance_warnings, "The Legacy content URL cannot be accessed.");                               
+                    }
+                }
+            }
+        }
+
+        if (!empty($instance_warnings)){
+            $warning_list_cookie_value = json_encode($instance_warnings);
+            setcookie("instance_warnings", $warning_list_cookie_value, time() + 10, "/");          
+        }
+        if ($save_instance_fields == FALSE) {
+            $error_list_cookie_value = json_encode($instance_errors);
+            setcookie("instance_errors", $error_list_cookie_value, time() + 10, "/");           
+            setcookie("instance_post_status", "post_error", time() + 10, "/");
+            $this->instance_fields_to_cookie();
+        } else {
+            setcookie("instance_post_status", "post_good", time() + 10, "/");
+        }
+
         return $save_instance_fields;
     }
 
+
+    // Write all values from the fields of the instance figure post to a cookie. 
+    // This is used to repopulate the fields in the instance edit form if there are errors in the submission.
+    public function instance_fields_to_cookie () {
+
+        // save simple field values to the array
+        $instance_field_names = ["instance_short_title", "instance_slug", "instance_type", "instance_overview_scene",
+            "instance_status", "instance_tile", "instance_legacy_content", "instance_legacy_content_url"];
+
+        $instance_fields = [];
+        foreach ($instance_field_names as $individual_instance_field_name){
+            $instance_fields[$individual_instance_field_name] = $_POST[$individual_instance_field_name];
+        }
+
+        // write complex fieldset values to the array
+        $instance_fields['instance_footer_about'] = $_POST["instance_footer"]["instance_footer_about"];
+        $instance_fields['instance_footer_contact'] = $_POST["instance_footer"]["instance_footer_contact"];
+        $instance_fields['instance_footer_reports'] = $_POST["instance_footer"]["instance_footer_reports"];
+
+        $instance_fields_cookie_value = json_encode($instance_fields);
+
+        // write array to cookie
+        setcookie("instance_error_all_fields", $instance_fields_cookie_value, time() + 10, "/"); 
+    }
+
+    // The purpose of this function is to validate the fields of the Figure custom content type. If validation fails, it sets a cookie with the error messages and the values of the fields that were submitted. 
+    // It also sets a cookie to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
+    // However, the page is reloaded and an error message is displayed to the user.
     public function validate_figure (){
         $save_figure_fields = true;
 
@@ -44,7 +176,76 @@ class webcr_validation {
         $figure_errors = [];
         $figure_warnings = [];
 
+
+        if ($_POST["location"] == ""){
+            array_push($figure_errors,  "The Instance field cannot be left blank.");
+            $save_figure_fields = FALSE;
+        }
+
+        if ($_POST["figure_scene"] == ""){
+            array_push($figure_errors,  "The Scene field cannot be left blank.");
+            $save_figure_fields = FALSE;
+        }
+
+        if ($_POST["figure_modal"] == ""){
+            array_push($figure_errors,  "The Icon field cannot be left blank.");
+            $save_figure_fields = FALSE;
+        }
+
+        if ($_POST["figure_tab"] == ""){
+            array_push($figure_errors,  "The Tab field cannot be left blank.");
+            $save_figure_fields = FALSE;
+        }
+
+        if ($_POST["figure_path"] == "Internal" && $_POST["figure_image"] == ""){
+            array_push($figure_errors,  "If the Figure Type is set to 'Internal image', then the Figure image field cannot be left blank.");
+            $save_figure_fields = FALSE;
+        }
+
+        if ($_POST["figure_path"] == "External"){
+            $figure_external_url = $_POST["figure_external_url"];
+            if ($figure_external_url == ""){
+                $save_figure_fields = FALSE;
+                array_push($figure_errors,  "If the Figure Type is set to 'External image', then the External URL field cannot be left blank.");
+            } else {
+                if ( $this -> url_check($figure_external_url) == FALSE ) {
+                    $save_figure_fields = FALSE;
+                    array_push($figure_errors, "The External URL is not a valid URL.");
+                } else {
+                    // Set cURL options
+                    $ch = curl_init($figure_external_url);
+                    $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the transfer as a string
+                    curl_setopt($ch, CURLOPT_NOBODY, true);  // Exclude the body from the output
+                    curl_setopt($ch, CURLOPT_HEADER, true);  // Include the header in the output
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects
+                    curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  // Set User-Agent header
+
+                    // Execute cURL session
+                    curl_exec($ch);
+
+                    // Get the headers
+                    $headers = curl_getinfo($ch);
+
+                    // Close cURL session
+                    curl_close($ch);
+
+                    if ($headers["http_code"] != 200){
+                        array_push($figure_warnings, "The External URL cannot be accessed.");                               
+                    }
+                }
+            }
+        }
+
+        if ($_POST["figure_path"] == "External" && $_POST["figure_external_alt"] == ""){
+            array_push($figure_errors,  "If the Figure Type is set to 'External image', then the 'Alt text for external image' field cannot be left blank.");
+            $save_figure_fields = FALSE;
+        }
+
         $field_types = array("figure_science_", "figure_data_");
+        $error_notice_name =[];
+        $error_notice_name["figure_science_"] = "Monitoring program";
+        $error_notice_name["figure_data_"] = "Data";    
 
         foreach ($field_types as $field_type){
             $form_fieldset = $field_type .  "info";
@@ -55,12 +256,12 @@ class webcr_validation {
             if (!$field_couplet[$field_url] == "" || !$field_couplet[$field_text] == "" ){
                 if ($field_couplet[$field_url] == "" || $field_couplet[$field_text] == "" ){
                     $save_figure_fields = FALSE;
-                    array_push($figure_errors,  "The URL or Text is blank for Link " . $field_type);
+                    array_push($figure_errors,  "The URL or Text is blank for the " . $error_notice_name[$field_type] . " link.");
                 }
                 if (!$field_couplet[$field_url] == "" ) {
                     if ( $this -> url_check($field_couplet[$field_url]) == FALSE ) {
                         $save_figure_fields = FALSE;
-                        array_push($figure_errors, "The URL for " . $field_type . " is not valid");
+                        array_push($figure_errors, "The URL for the " . $error_notice_name[$field_type] . " link is not valid");
                     } else {
                         // Set cURL options
                         $ch = curl_init($field_couplet[$field_url]);
@@ -81,7 +282,7 @@ class webcr_validation {
                         curl_close($ch);
 
                         if ($headers["http_code"] != 200){
-                            array_push($figure_warnings, "The URL for " . $field_type . " cannot be accessed");                               
+                            array_push($figure_warnings, "The URL for the " . $error_notice_name[$field_type] . " link cannot be accessed");                               
                         }
                     }
                 }
@@ -103,6 +304,9 @@ class webcr_validation {
         return $save_figure_fields;
     }
     
+    // The purpose of this function is to validate the fields of the Modal custom content type. If validation fails, it sets a cookie with the error messages and the values of the fields that were submitted. 
+    // It also sets a cookie to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
+    // However, the page is reloaded and an error message is displayed to the user.
     public function validate_modal(){
         $save_modal_fields = true;
 
@@ -281,6 +485,31 @@ class webcr_validation {
         }
 
         return $save_modal_fields;
+    }
+
+    // Write all values from the fields of the edit figure post to a cookie. 
+    // This is used to repopulate the fields in the figure edit form if there are errors in the submission.
+    public function figure_fields_to_cookie () {
+
+        // save simple field values to the array
+        $figure_field_names = ["location", "figure_scene", "figure_modal", "figure_tab", "figure_order", "figure_path", "figure_image",
+            "figure_external_url", "figure_external_alt", "figure_code", "figure_interactive_arguments", "figure_caption_short", "figure_caption_long"];
+
+        $figure_fields = [];
+        foreach ($figure_field_names as $individual_figure_field_name){
+            $figure_fields[$individual_figure_field_name] = $_POST[$individual_figure_field_name];
+        }
+
+        // write complex fieldset values to the array
+        $figure_fields['figure_science_link_text'] = $_POST["figure_science_info"]["figure_science_link_text"];
+        $figure_fields['figure_science_link_url'] = $_POST["figure_science_info"]["figure_science_link_url"];
+        $figure_fields['figure_data_link_text'] = $_POST["figure_data_info"]["figure_data_link_text"];
+        $figure_fields['figure_data_link_url'] = $_POST["figure_data_info"]["figure_data_link_url"];
+
+        $figure_fields_cookie_value = json_encode($figure_fields);
+
+        // write array to cookie
+        setcookie("figure_error_all_fields", $figure_fields_cookie_value, time() + 10, "/"); 
     }
 
     // Write all values from the fields of the edit modal post to a cookie. 

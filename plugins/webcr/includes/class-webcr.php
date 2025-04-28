@@ -204,6 +204,7 @@ class Webcr {
 		$this->loader->add_filter( 'bulk_actions-edit-instance', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin_instance, 'custom_content_remove_quick_edit_link', 10, 2 ); 
 		$this->loader->add_filter( 'rest_api_init', $plugin_admin_instance, 'register_instance_rest_fields' ); 
+		$this->loader->add_action( 'admin_notices', $plugin_admin_instance, 'instance_admin_notice' ); 
 
 		// Load class and functions associated with Instance Types
 		$plugin_admin_instance_type = new Webcr_Instance_Type ( $this->get_plugin_name(), $this->get_version() );		

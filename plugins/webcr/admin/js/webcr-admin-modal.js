@@ -2,6 +2,7 @@
 
 let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
 
+// In case of data entry error with modal post, let's set the modal fields values to the values in the cookie
 writeCookieValuesToModalFields();
 
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.

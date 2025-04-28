@@ -2,6 +2,7 @@
 
 'use strict';
 
+// In case of data entry error with scene post, let's set the scene fields values to the values in the cookie
 writeCookieValuesToSceneFields();
 
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.

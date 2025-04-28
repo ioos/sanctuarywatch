@@ -2,6 +2,12 @@
 
 'use strict';
 
+// In case of data entry error with instance post, let's set the instance field values to the values in the cookie
+writeCookieValuesToInstanceFields();
+
+// Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
+document.addEventListener('DOMContentLoaded', redText);
+
 displayLegacyContentField();
 
 // should the "legacy content url" field be shown?
@@ -16,4 +22,31 @@ function displayLegacyContentField () {
 }
 
 document.querySelector('select[name="instance_legacy_content"]').addEventListener("change", displayLegacyContentField );
-    
+
+
+// This function is the last stop on a field validation path. When a user edits a instance post and hits save, the following happens:
+// 1. The instance post is validated. If there are errors, the field values are not saved to the database but they are saved to a temporary cookie.
+// 2. The user is redirected back to the edit page for the instance post and an error message is displayed.
+// 3. The cookie is read and the field values are written to the fields on the edit page. It is this last step that is done by this function. 
+function writeCookieValuesToInstanceFields() {
+    if (onCorrectEditPage("instance") == true) {
+        if (cookieExists("instance_error_all_fields")) {
+            const instanceCookie = getCookie("instance_error_all_fields");
+            // Parse the main JSON object
+            const instanceCookieValues = JSON.parse(instanceCookie);
+            
+            // Fill in values for simple fields
+            const instanceFieldNames = ["instance_short_title", "instance_slug", "instance_type", "instance_overview_scene",
+                "instance_status", "instance_tile", "instance_legacy_content", "instance_legacy_content_url"];
+
+			instanceFieldNames.forEach((element) => {
+				document.getElementsByName(element)[0].value = instanceCookieValues[element];
+			});
+
+            // Fill in values for complex fieldsets
+            document.getElementsByName("instance_footer[instance_footer_about]")[0].value = instanceCookieValues["instance_footer_about"];
+            document.getElementsByName("instance_footer[instance_footer_contact]")[0].value = instanceCookieValues["instance_footer_contact"];
+            document.getElementsByName("instance_footer[instance_footer_reports]")[0].value = instanceCookieValues["instance_footer_reports"];
+        }
+    }
+}
