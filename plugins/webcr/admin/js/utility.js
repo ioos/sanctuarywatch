@@ -131,3 +131,88 @@ function displayEntries (entry_number, string_prefix){
 		target_text_div.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="block";
 	}
 }
+
+/**
+ * Attaches a 'paste as plain text' handler to specified Trumbowyg editors.
+ * Finds the Trumbowyg editor div associated with the original textarea ID
+ * and modifies its paste behavior.
+ *
+ * Should be called after the DOM is ready, potentially with a delay
+ * if Trumbowyg editors initialize late.
+ *
+ * @param {string[]} editorIds An array of the original textarea IDs for the Trumbowyg editors.
+ * @returns {boolean} True if handlers were successfully attached to all specified editors, false otherwise.
+ */
+function attachPlainTextPasteHandlers(editorIds) {
+    // Check if editorIds is a valid array
+    if (!Array.isArray(editorIds) || editorIds.length === 0) {
+        console.warn('attachPlainTextPasteHandlers: No valid editor IDs provided.');
+        return false;
+    }
+
+    // The actual paste handling logic using Selection API
+    const handlePaste = (event) => {
+        event.preventDefault(); // Prevent default paste
+
+        const text = (event.clipboardData || window.clipboardData).getData('text/plain');
+        const editorDiv = event.currentTarget; // The element the listener is attached to
+
+        if (text) {
+            const selection = window.getSelection();
+            // Ensure the selection is actually *within* the editorDiv we are targeting
+            if (selection && selection.rangeCount > 0 && editorDiv.contains(selection.anchorNode)) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                const textNode = document.createTextNode(text);
+                range.insertNode(textNode);
+
+                // Move cursor after inserted text
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } else if (editorDiv === document.activeElement) {
+                // Fallback: If editor has focus but selection API failed or was outside
+                editorDiv.appendChild(document.createTextNode(text));
+                 console.warn("Could not reliably get selection within editor, appended text instead.");
+            } else {
+                 console.warn("Paste event occurred but editor might not be focused or selection is elsewhere.");
+            }
+        }
+    };
+
+    // Function to attach the paste listener to a specific editor div
+    const attachListener = (editorDiv) => {
+        if (editorDiv) {
+            // Remove any existing listener first to prevent duplicates if called multiple times
+            editorDiv.removeEventListener('paste', handlePaste);
+            // Add the new listener
+            editorDiv.addEventListener('paste', handlePaste);
+        }
+    };
+
+    let editorsFoundCount = 0;
+    editorIds.forEach(id => {
+        // 1. Find the original textarea element by its ID
+        const textarea = document.getElementById(id);
+        if (!textarea) {
+            return; // Skip to the next ID if textarea doesn't exist
+        }
+
+        // 2. Find the closest ancestor wrapper div (adjust selector if needed for different contexts)
+        const fieldWrapper = textarea.closest('.exopite-sof-field'); // Common wrapper class
+        if (fieldWrapper) {
+            // 3. Find the actual editable div created by Trumbowyg within that wrapper
+            const editorDiv = fieldWrapper.querySelector('.trumbowyg-editor');
+            if (editorDiv) {
+                attachListener(editorDiv);
+                editorsFoundCount++;
+            }
+        } else {
+            console.warn(`attachPlainTextPasteHandlers: Field wrapper (.exopite-sof-field) not found via closest() for ID: ${id}`);
+        }
+    });
+
+    // Return true if listeners were attached to *all* expected editors
+    return editorsFoundCount === editorIds.length;
+}

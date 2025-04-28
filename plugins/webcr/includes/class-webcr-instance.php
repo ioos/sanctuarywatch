@@ -294,7 +294,9 @@ class Webcr_Instance {
                 "SELECT slug FROM {$wpdb->terms} WHERE term_id = %d", 
                 $instance_type_id
             ));
-            echo ucwords($instance_type_slug);
+            if (!empty($instance_type_slug)) {
+                echo ucwords($instance_type_slug);
+            }
         }
 
         if ( $column === 'tile' ) {
@@ -302,7 +304,7 @@ class Webcr_Instance {
             if (!empty($instance_tile)) {
                     echo '<img src="' . esc_url($instance_tile) . '" style="max-width:100px; max-height:100px;" /><br>';
             }
-    }
+        }
 
         if ( $column === 'state' ) {
             echo get_post_meta($post_id, 'instance_status', true);

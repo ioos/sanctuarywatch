@@ -684,3 +684,23 @@ function writeCookieValuesToFigureFields() {
         }
     }
 }
+
+// Ensure that only plain text is pasted into the Trumbowyg editors ( figure_caption_short and figure_caption_long)
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Define the specific Trumbowyg editor IDs for the 'figure' post type
+    const figureEditorIds = ['figure_caption_short', 'figure_caption_long'];
+
+    // Ensure the utility function exists before calling it
+    if (typeof attachPlainTextPasteHandlers === 'function') {
+        // Attempt to attach handlers immediately after DOM is ready
+        if (!attachPlainTextPasteHandlers(figureEditorIds)) {
+            console.log('Figure Plain Text Paste: Trumbowyg editors not immediately found, setting timeout...');
+            // Retry after a delay if editors weren't found (Trumbowyg might initialize later)
+            setTimeout(() => attachPlainTextPasteHandlers(figureEditorIds), 1000); // Adjust timeout if needed (e.g., 500, 1500)
+        }
+    } else {
+        console.error('Figure Plain Text Paste: attachPlainTextPasteHandlers function not found. Ensure utility.js is loaded correctly.');
+    }
+
+});

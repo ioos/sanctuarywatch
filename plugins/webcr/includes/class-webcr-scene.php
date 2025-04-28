@@ -576,7 +576,7 @@ class Webcr_Scene {
                 'type'  => 'select',
                 'title' => 'Icon Visibility in Scene, If No Associated Modal',
                 'options'        => array("visible" => "Keep icons as they are", "hide" => "Hide icons", "translucent" => "Make icons semi-transparent", "color" => "Color in icons with specific color"),
-                'description' => 'What should happen to clickable icons in the scene that have no associated modal?',
+                'description' => 'What should happen to clickable icons in the scene that have no associated modal or a modal that is a draft?',
                 "default"   => "visible",
             ),
             array(

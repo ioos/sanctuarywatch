@@ -50,3 +50,22 @@ function writeCookieValuesToInstanceFields() {
         }
     }
 }
+
+// Ensure that only plain text is pasted into the Trumbowyg editors (instance_footer_about, instance_footer_contact, and instance_footer_reports)
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Define the specific Trumbowyg editor IDs for the 'figure' post type
+    const instanceEditorIds = ['instance_footer_about', 'instance_footer_contact', 'instance_footer_reports'];
+
+    // Ensure the utility function exists before calling it
+    if (typeof attachPlainTextPasteHandlers === 'function') {
+        // Attempt to attach handlers immediately after DOM is ready
+        if (!attachPlainTextPasteHandlers(instanceEditorIds)) {
+            // Retry after a delay if editors weren't found (Trumbowyg might initialize later)
+            setTimeout(() => attachPlainTextPasteHandlers(instanceEditorIds), 1000); // Adjust timeout if needed (e.g., 500, 1500)
+        }
+    } else {
+        console.error('Instance Plain Text Paste: attachPlainTextPasteHandlers function not found. Ensure utility.js is loaded correctly.');
+    }
+
+});

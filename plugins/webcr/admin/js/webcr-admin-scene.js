@@ -491,7 +491,7 @@ function orphanColorFieldVisibility() {
 // 3. The cookie is read and the field values are written to the fields on the edit page. It is this last step that is done by this function. 
 function writeCookieValuesToSceneFields() {
 
-	if (onCorrectEditPage("scene") = true) {
+	if (onCorrectEditPage("scene") == true) {
 		if (cookieExists("scene_error_all_fields")) {
 			const sceneCookie = getCookie("scene_error_all_fields");
 			const sceneCookieValues = JSON.parse(sceneCookie);
