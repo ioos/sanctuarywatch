@@ -48,7 +48,7 @@ class Webcr_Utility {
      */
     public function returnAllInstances(){
         // Initialize the result array with a default empty option
-        $instances_array = array("" => "");
+        $instances_array = array(" " => "");
 
         // Get the current user
         $current_user = wp_get_current_user();
@@ -134,7 +134,7 @@ class Webcr_Utility {
     }
 
     public function returnSceneTitles($scene_id, $modal_id){
-        $scene_titles =  array("" => "Scene");
+        $final_scene_titles =  array(" " =>  "");
         if (array_key_exists("post", $_GET)) {
             $scene_location = get_post_meta($modal_id, "modal_location", true);
             $scene_name = get_post_meta($scene_id, "post_title", true);
@@ -165,8 +165,15 @@ class Webcr_Utility {
                 $scene_titles[$target_id] = $target_title;
             }
             asort($scene_titles);
+
+            // Create the final array starting with the desired empty option
+            $final_scene_titles = [" " => ""];
+
+            // Use the union operator (+) to add the sorted scenes after the empty option.
+            // This preserves the keys from $scene_titles.
+            $final_scene_titles += $scene_titles;
         }
-        return $scene_titles;
+        return $final_scene_titles;
     }
 
     public function returnIcons($scene_id){

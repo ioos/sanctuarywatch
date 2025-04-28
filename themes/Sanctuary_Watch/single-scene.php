@@ -185,6 +185,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
           $scene_same_hover_color_sections	= get_post_meta($post_id, 'scene_same_hover_color_sections', true); 
 
           $child_ids = get_modal_array($svg_url);
+  
         
         ?>
       </div>
@@ -213,6 +214,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     let scene_text_toggle =  <?php echo json_encode($scene_text_toggle); ?>;
     let scene_toc_style =  <?php echo json_encode($scene_toc_style); ?>;
     let scene_full_screen_button  = <?php echo json_encode($scene_full_screen_button); ?>;    
+
   </script>
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->

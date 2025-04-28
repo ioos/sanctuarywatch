@@ -315,7 +315,7 @@ function modal_location_change(){
 			previewWindow.parentNode.removeChild(previewWindow);
 		}
         const modal_location = document.querySelector('select[name="modal_location"]').value;
-        if (modal_location != ""){
+        if (modal_location != " " && modal_location != ""){
 
             const modal_location_no_space = urlifyRecursiveFunc(modal_location);
             const protocol = window.location.protocol;
@@ -340,7 +340,7 @@ function modal_location_change(){
                     iconsDropdown.innerHTML ='';
                     iconsDropdown.value ='';
                     let optionIcon = document.createElement('option');
-                    optionIcon.text = "";
+                    optionIcon.text = " ";
                     optionIcon.value = "";
                     iconsDropdown.add(optionIcon);
 
@@ -765,7 +765,7 @@ function writeCookieValuesToModalFields() {
 		if (cookieExists("modal_error_all_fields")) {
 			const modalCookie = getCookie("modal_error_all_fields");
 			const modalCookieValues = JSON.parse(modalCookie);
-
+console.log(modalCookieValues);
 			const modalFieldNames = ["modal_published", "modal_location", "modal_scene", "modal_icons", "modal_icon_order", "icon_toc_section",
                 "icon_function", "icon_external_url", "icon_scene_out", "modal_tagline", "modal_info_entries", "modal_photo_entries", "modal_tab_number"];
 

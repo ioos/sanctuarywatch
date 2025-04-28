@@ -20,6 +20,7 @@ function run_webcr_admin_figures() {
     document.getElementsByName("figure_interactive_arguments")[0].parentElement.parentElement.style.display="none";
 
     function figureInstanceChange(){
+        
         const protocol = window.location.protocol;
         const host = window.location.host;
         const figureInstance = document.getElementsByName("location")[0].value;
@@ -29,10 +30,10 @@ function run_webcr_admin_figures() {
         .then(response => response.json())
         .then(data => {
             let figureScene = document.getElementsByName("figure_scene")[0];
-            figureScene.value ="";
+            figureScene.value =" ";
             figureScene.innerHTML ="";
             let optionScene1 = document.createElement('option');
-            optionScene1.text = "";
+            optionScene1.text = " ";
             optionScene1.value = "";
             figureScene.add(optionScene1);
         
@@ -44,18 +45,18 @@ function run_webcr_admin_figures() {
             });
 
             let figureModal = document.getElementsByName("figure_modal")[0];
-            figureModal.value ="";
+            figureModal.value =" ";
             figureModal.innerHTML ="";
             let optionModal = document.createElement('option');
-            optionModal.text = "";
+            optionModal.text = " ";
             optionModal.value = "";
             figureModal.add(optionModal);
 
             let figureTab = document.getElementsByName("figure_tab")[0];
-            figureTab.value ="";
+            figureTab.value =" ";
             figureTab.innerHTML ="";
             let optionTab = document.createElement('option');
-            optionTab.text = "";
+            optionTab.text = " ";
             optionTab.value = "";
             figureTab.add(optionTab);
         })
@@ -75,10 +76,10 @@ function run_webcr_admin_figures() {
         .then(response => response.json())
         .then(data => {
             let figureModal = document.getElementsByName("figure_modal")[0];
-            figureModal.value ="";
+            figureModal.value =" ";
             figureModal.innerHTML ="";
             let optionIcon1 = document.createElement('option');
-            optionIcon1.text = "";
+            optionIcon1.text = " ";
             optionIcon1.value = "";
             figureModal.add(optionIcon1);
         
@@ -92,10 +93,10 @@ function run_webcr_admin_figures() {
                 }
             });
             let figureTab = document.getElementsByName("figure_tab")[0];
-            figureTab.value ="";
+            figureTab.value =" ";
             figureTab.innerHTML ="";
             let optionTab = document.createElement('option');
-            optionTab.text = "";
+            optionTab.text = " ";
             optionTab.value = "";
             figureTab.add(optionTab);
         })
@@ -115,14 +116,14 @@ function run_webcr_admin_figures() {
             .then(data => {
 
                 let figureTab = document.getElementsByName("figure_tab")[0];
-                figureTab.value ="";
+                figureTab.value =" ";
                 figureTab.innerHTML ="";
                 let optionTab = document.createElement('option');
-                optionTab.text = "";
+                optionTab.text = " ";
                 optionTab.value = "";
                 figureTab.add(optionTab);
             
-                if (figureModal != ""){
+                if (figureModal != " " && figureModal != ""){
                     let targetField ="";
                     for (let i = 1; i < 7; i++){
                         targetField = "modal_tab_title" + i;
@@ -642,6 +643,7 @@ function writeCookieValuesToFigureFields() {
     if (onCorrectEditPage("figure") == true) {
         if (cookieExists("figure_error_all_fields")) {
             const figureCookie = getCookie("figure_error_all_fields");
+            console.log("Figure cookie values: ", figureCookie);
             // Parse the main JSON object
             const figureCookieValues = JSON.parse(figureCookie);
             

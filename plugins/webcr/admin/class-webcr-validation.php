@@ -177,7 +177,7 @@ class webcr_validation {
         $figure_warnings = [];
 
 
-        if ($_POST["location"] == ""){
+        if ($_POST["location"] == " "){
             array_push($figure_errors,  "The Instance field cannot be left blank.");
             $save_figure_fields = FALSE;
         }
@@ -190,7 +190,7 @@ class webcr_validation {
         if ($_POST["figure_modal"] == ""){
             array_push($figure_errors,  "The Icon field cannot be left blank.");
             $save_figure_fields = FALSE;
-        }
+        } 
 
         if ($_POST["figure_tab"] == ""){
             array_push($figure_errors,  "The Tab field cannot be left blank.");
@@ -334,7 +334,7 @@ class webcr_validation {
             array_push($modal_warnings, "The title length is {$string_length} characters long, which exceeds the 70 character limit recommendation for proper layout.");
         }
 
-        if ($_POST["modal_location"] == ""){
+        if ($_POST["modal_location"] == " "){
             array_push($modal_errors,  "The Instance field cannot be left blank.");
             $save_modal_fields = FALSE;
         }
@@ -347,8 +347,49 @@ class webcr_validation {
         if ($_POST["modal_icons"] == ""){
             array_push($modal_errors,  "The Icons field cannot be left blank.");
             $save_modal_fields = FALSE;
-        }
+        } 
 
+        if ($_POST["modal_scene"] != "" && $_POST["modal_icons"] != ""){
+
+            $icon_id = intval($_POST["modal_icons"]);
+            $scene_id = intval($_POST["modal_scene"]);
+
+            $args = array(
+                'post_type'      => 'modal',       // Specify the custom post type
+                'posts_per_page' => -1,          // Ensure we count all matching posts, not just the first page
+                'fields'         => 'ids',         // More efficient: Only retrieve post IDs, not full post objects
+                'meta_query'     => array(
+                    'relation' => 'AND', // Both conditions must be true
+                    array(
+                        'key'     => 'modal_icons', // First custom field key
+                        'value'   => $icon_id,      // Value to match for modal_icons
+                        'compare' => '=',           // Exact match comparison
+                        'type'    => 'NUMERIC',     // Treat the value as a number
+                    ),
+                    array(
+                        'key'     => 'modal_scene', // Second custom field key
+                        'value'   => $scene_id,     // Value to match for modal_scene
+                        'compare' => '=',           // Exact match comparison
+                        'type'    => 'NUMERIC',     // Treat the value as a number
+                    ),
+                ),
+                // Performance optimizations for counting:
+                'no_found_rows'          => false, // We *need* found_rows to get the count
+                'cache_results'          => false, // Disable caching if you need the absolute latest count
+                'update_post_meta_cache' => false, // Don't need post meta cache for counting IDs
+                'update_post_term_cache' => false, // Don't need term cache for counting IDs
+            );
+        
+            // Create a new WP_Query instance
+            $query = new WP_Query( $args );
+        
+            // Get the total number of posts found by the query
+            $record_count = $query->found_posts;
+            if ($record_count > 0){
+                array_push($modal_warnings, "This icon has already been claimed by one or more other modals.");                               
+            }
+        
+        }
         // If the associated scene contains sections, force the use of sections with this modal
         if ($_POST["modal_scene"] != ""){
             $scene_ID = intval($_POST["modal_scene"]);
@@ -550,7 +591,7 @@ class webcr_validation {
         $scene_errors = [];
         $scene_warnings = [];
 
-        if ($_POST["scene_location"] == ""){
+        if ($_POST["scene_location"] == " "){
             array_push($scene_errors,  "The Instance field cannot be left blank.");
             $save_scene_fields = FALSE;
         }
@@ -584,13 +625,18 @@ class webcr_validation {
                     $save_scene_fields = FALSE;
                 } else {
                     // Search for the <icons> tag
-                    $iconPosition = strpos($content, 'icons');
+                    $iconPosition = stripos($content, 'icons');
                     if ($iconPosition == false) {
                         array_push($scene_errors,  "The infographic does not contain an Icons layer.");
                         $save_scene_fields = FALSE;
                     }
                 }
             }
+        }
+
+        if ($_POST["scene_toc_style"] != "list" && $_POST["scene_section_number"] == "0"){
+            array_push($scene_errors,  "If the field 'Table of contents style' is not set to List, then the 'Number of scene sections' field must be greater than 0."); 
+            $save_scene_fields = FALSE;
         }
 
         if ($_POST["scene_toc_style"] != "list" && $_POST["scene_section_number"] != "0"){

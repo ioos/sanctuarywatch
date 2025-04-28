@@ -517,7 +517,7 @@ class Webcr_Scene {
             array(
                 'id'             => 'scene_published',
                 'type'           => 'select',
-                'title'          => 'Scene Status*',
+                'title'          => 'Scene status*',
                 'options'        => array("draft" => "Draft", "published" => "Published"),
                 'default' => 'draft',
                 'description' => 'Should the Scene be live?',
@@ -544,7 +544,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_info_entries',
                 'type'    => 'range',
-                'title'   => 'Number of Info Entries*',
+                'title'   => 'Number of info entries*',
                 'description' => 'How many info links are there for the scene?',
                 'min'     => 0,    
                  'default' => 1,    
@@ -554,7 +554,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_photo_entries',
                 'type'    => 'range',
-                'title'   => 'Number of Photo Entries*',
+                'title'   => 'Number of photo entries*',
                 'description' => 'How many photo links are there for the scene?',
                 'min'     => 0,    
                  'default' => 1,    
@@ -574,7 +574,7 @@ class Webcr_Scene {
             array(
                 'id'    => 'scene_orphan_icon_action',
                 'type'  => 'select',
-                'title' => 'Icon Visibility in Scene, If No Associated Modal',
+                'title' => 'Icon visibility in scene, if no associated modal',
                 'options'        => array("visible" => "Keep icons as they are", "hide" => "Hide icons", "translucent" => "Make icons semi-transparent", "color" => "Color in icons with specific color"),
                 'description' => 'What should happen to clickable icons in the scene that have no associated modal or a modal that is a draft?',
                 "default"   => "visible",
@@ -590,7 +590,7 @@ class Webcr_Scene {
             array(
                 'id'             => 'scene_toc_style',
                 'type'           => 'select',
-                'title'          => 'Table of Contents Style*',
+                'title'          => 'Table of contents style*',
                 'options'        => array("accordion" => "Accordion", "list" => "List (default option)", "sectioned_list" => "Sectioned List"),
                 'default' => 'list',
                 'description' => 'What should the table of contents look like?',
@@ -606,7 +606,7 @@ class Webcr_Scene {
             array(
                 'id'     => 'scene_hover_color',
                 'type'   => 'color',
-                'title'  => 'Hover Color',
+                'title'  => 'Hover color',
                 'description' => 'What should the hover color be?',
                 'picker' => 'html5',
                 "default"   => '#FFFF00',
@@ -614,7 +614,7 @@ class Webcr_Scene {
             array(
                 'id'    => 'scene_full_screen_button',
                 'type'  => 'select',
-                'title' => 'Full Screen Button',
+                'title' => 'Full screen button',
                 'description' => 'Should there be a full screen button?',
                 'options'        => array("no" => "No", "yes" => "Yes"),
                 "default"   => "no",
@@ -622,7 +622,7 @@ class Webcr_Scene {
             array(
                 'id'             => 'scene_text_toggle',
                 'type'           => 'select',
-                'title'          => 'Text Toggle',
+                'title'          => 'Text toggle',
                 'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
                 'default'        => 'none',
                 'description' => 'Should there be a text toggle button?',
@@ -631,7 +631,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_section_number',
                 'type'    => 'select',
-                'title'   => 'Number of Scene Sections',
+                'title'   => 'Number of scene sections',
                 'description' => 'How many scene sections are there?',
                 'options' => array(
                     0 => "0",
@@ -647,7 +647,7 @@ class Webcr_Scene {
             array(
                 'id'          => 'scene_preview',
                 'type'        => 'button',
-                'title'       => 'Preview Scene',
+                'title'       => 'Preview scene',
                 'class'        => 'scene_preview',
                 'options'     => array(
                     'href'  =>  '#nowhere',
