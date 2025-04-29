@@ -175,7 +175,10 @@ To be used by JAI Vectors, the file must be exported in svg format. To do so:
 
  - <img src="updated_images/image14-illustrator.png" alt="Alt Text" width="40%" height="40%">
 
-4. The default for Illustrator is to add an “01” to your svg file name (so, “example.svg” becomes “example01.svg”. Change the file name back to your desired choice.
+
+4. You can hit the little "globe" button in the bottom row to display a temp version of your .svg in a web browser.
+5. If your artwork is not displaying correctly or is running off the side of the page, try adjusting the "Decimal" setting to a higher number such as 3,4,5, or 6. The try hitting the globe button again to view the updated temp .svg in your browser. 
+6. The default for Illustrator is to add an “01” to your svg file name (so, “example.svg” becomes “example01.svg”). Change the file name back to your desired choice if needed.
 
 ## 3.2 Inkscape
 

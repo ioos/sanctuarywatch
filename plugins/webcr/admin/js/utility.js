@@ -66,21 +66,46 @@ function redText () {
     // Find only the first element with class "exopite-sof-content"
     const contentElement = document.querySelector('.exopite-sof-content');
 
+
+
     // Check if the element exists before proceeding
     if (contentElement) {
-    // Create the new h4 element
-    const infoHeader = document.createElement('h4');
-    
-    // Set the text content
-    infoHeader.textContent = "Required fields have red titles with asterisks at the end.";
-    
-    // Style the text color red
-    infoHeader.style.color = 'red';
-    infoHeader.style.padding = '15px 0px 0px 30px';
 
-    // Insert at the beginning of the content element
-    contentElement.insertBefore(infoHeader, contentElement.firstChild);
+        
+        // Create the new h4 element
+        const infoHeader = document.createElement('h4');
+        
+        // Set the text content
+        infoHeader.textContent = "Required fields have red titles with asterisks at the end.";
+        
+        // Style the text color red
+        infoHeader.style.color = 'red';
+        infoHeader.style.padding = '15px 0px 0px 30px';
+
+        // Insert at the beginning of the content element
+        contentElement.insertBefore(infoHeader, contentElement.firstChild);
+
+        let sceneStatusExists = false;
+
+        // Check if "Scene Status*" is in the content
+        document.querySelectorAll('.exopite-sof-title').forEach(function(el) {
+            const titleText = el.textContent.trim();
+            if (titleText == "Scene Status*Should the Scene be live?") {
+                sceneStatusExists = true;
+            }
+        });
+
+        // If Overview Scene is missing, append a paragraph with the message
+        if (sceneStatusExists == true) {
+            const overviewSceneMessage = document.createElement('p');
+            overviewSceneMessage.textContent = "⦁ To set this scene to as an overview scene, please select an instance below, save this post, then go to the instance and set this scene as the 'Overview Scene'.";
+            overviewSceneMessage.style.color = 'red';
+            overviewSceneMessage.style.padding = '15px 0px 0px 30px';
+
+            contentElement.insertBefore(overviewSceneMessage, infoHeader.nextSibling);
+        }
     }
+
     // Find all h4 elements with class "exopite-sof-title"
     const titleElements = document.querySelectorAll('h4.exopite-sof-title');
     

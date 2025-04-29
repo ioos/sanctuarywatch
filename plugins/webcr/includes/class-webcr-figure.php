@@ -8,10 +8,18 @@ include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility
 
 class Webcr_Figure {
 
+    /**
+     * Class constructor for the WebCR Figure class.
+     * Initializes the class with the plugin name and registers AJAX actions for file upload and deletion.
+     *
+     * @param string $plugin_name The name of the plugin.
+     */
     public function __construct( $plugin_name ) {
-		$this->plugin_name = $plugin_name;
-        // Actions for the upload and delete file functions and arrays related to the Interactive figures
+		// Assign the plugin name to the class property
+        $this->plugin_name = $plugin_name;
+        // Register AJAX action for handling custom file uploads
         add_action('wp_ajax_custom_file_upload', [__CLASS__, 'custom_file_upload_handler']);
+        // Register AJAX action for handling custom file deletions
         add_action('wp_ajax_custom_file_delete', [__CLASS__, 'custom_file_delete_handler']);
     }
 
@@ -383,7 +391,12 @@ class Webcr_Figure {
                     'title'          => 'Figure type*',
                     'options'        => array("Internal" => "Internal image", "External" => "External image", "Interactive" => "Interactive", "Code" => "Code"),
                     'default'        => "Internal",
-                    'description' => 'Is the figure image stored within this website or at some external location or within the code?',
+                    'description' => 'Is the figure type an image stored within this website, or at some external location, is it piece a code, or does it need to be an interactive figure generated from data?',
+                ),
+                array(
+                    'id'          => 'figure_title',
+                    'type'        => 'text',
+                    'title'       => 'Figure Title',
                 ),
                 array(
                     'id'    => 'figure_image',
@@ -408,7 +421,6 @@ class Webcr_Figure {
                 // New HTML/JS Code Editor Field
                 array(
                     'id'          => 'figure_code',
-                    //'type'        => 'editor',
                     'type'        => 'ace_editor',
                     'title'       => 'HTML/JavaScript Code',
                     'class'       => 'text-class',
@@ -434,7 +446,7 @@ class Webcr_Figure {
                 array(
                     'id'      => 'figure_upload_file',               
                     'type'    => 'upload',
-                    'title'   => 'Upload Interactive Figure File:',
+                    'title'   => 'Upload Interactive Figure File',
                     'options' => array(
                         //'upload_path'               =>  See the custom_file_upload_handler & custom_file_delete_handler functions below.
                         'maxsize'                   =>  10485760, //Keeping for future development.
@@ -504,7 +516,7 @@ class Webcr_Figure {
             array('figure_caption_short', 'string', 'The short figure caption'),
             array('figure_caption_long', 'string', 'The long figure caption'),
             array('figure_interactive_arguments', 'string', 'Arguments used in interactive figures'),
-            
+            array('figure_title', 'string', 'The title of the figure, for any figure type.')
         );
         // Register fields in REST API
         foreach ($fieldsToBeRegistered as $targetFieldsToBeRegistered){
@@ -553,7 +565,7 @@ class Webcr_Figure {
 	 * @since    1.0.0
 	 */
     function register_figure_rest_fields() {
-        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long', 'figure_interactive_arguments','uploaded_path_json'); //figure_temp_filepath
+        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long', 'figure_interactive_arguments','uploaded_path_json','figure_title'); //figure_temp_filepath
         $function_utilities = new Webcr_Utility();
         $function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
     }
@@ -603,10 +615,12 @@ class Webcr_Figure {
     }
 
     /**
-	 * Interactive figures - Upload a file to a custom created directory and update the filename, csv, and/or json database fields for it's path in the postmeta DB.
-	 *
-	 * @since    1.0.0
-	 */
+     * Handles the custom file upload process for the WebCR plugin.
+     * Validates the uploaded file, ensures it is of an allowed type, and stores it in the appropriate directory.
+     * Updates the post metadata with the file path upon successful upload.
+     *
+     * @return void Outputs a JSON response indicating success or failure.
+     */
     public static function custom_file_upload_handler() {
         ob_clean(); // Ensure no unwanted output
 
@@ -642,6 +656,7 @@ class Webcr_Figure {
         //     wp_send_json_error(['message' => 'Invalid modal ID.'], 400);
         // }
 
+        // Retrieve existing file paths from post metadata
         $csv_path = get_post_meta($post_id, 'uploaded_path_csv', true);
         $json_path = get_post_meta($post_id, 'uploaded_path_json', true);
 
@@ -658,6 +673,7 @@ class Webcr_Figure {
         $destination = $upload_dir . basename($file['name']);
         $destination_json = $upload_dir . basename(preg_replace('/\.csv$/', '.json', $file['name']));
 
+        // Move the uploaded file to the destination directory
         if (move_uploaded_file($file['tmp_name'], $destination)) {
             //Store file path in post metadata  
             if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'csv') {
@@ -673,19 +689,22 @@ class Webcr_Figure {
             if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'json' && $csv_path != '') {
                 update_post_meta($post_id, 'uploaded_path_json', $destination);
             }
+            // Send a success response with the file path
             wp_send_json_success(['message' => 'File uploaded successfully.', 'path' => $destination]);
 
         } else {
+            // Send an error response if the file upload fails
             wp_send_json_error(['message' => 'File upload failed.'], 500);
         }
     }
     
 
     /**
-	 * Interactive figures - Delete the file from the upload folder and update the filename, csv, and/or json database fields for it's path in the postmeta DB.
-	 *
-	 * @since    1.0.0
-	 */
+     * Handles the custom file deletion process for the WebCR plugin.
+     * Validates the provided post ID and file name, deletes the specified file, and updates the post metadata.
+     *
+     * @return void Outputs a JSON response indicating success or failure.
+     */
     public static function custom_file_delete_handler() {
         ob_clean(); // Ensure no unwanted output
 
@@ -701,7 +720,8 @@ class Webcr_Figure {
 
         // Variable-ize the post's ID & the file's name.
         $post_id = intval($_POST['post_id']);
-        $file_name = sanitize_file_name($_POST['file_name']);
+        //$file_name = sanitize_file_name($_POST['file_name']); // old version breaks special characters
+        $file_name = basename(urldecode($_POST['file_name']));
 
         // Get instance ID, scene ID, and modal ID
         // $instance_id = get_post_meta($post_id, 'location', true);
@@ -755,6 +775,13 @@ class Webcr_Figure {
     }
     
 
+    /**
+     * Displays admin notices for the WebCR plugin.
+     * Shows informational, error, or warning messages based on the status of the figure post.
+     * Notices are displayed only on the "figure" post type edit screen after a post has been updated.
+     *
+     * @return void Outputs the appropriate admin notice.
+     */
     public function figure_admin_notice() {
         // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
         // posts after it has been updated. The if statement is looking for three things: 1. Figure post type? 2. An individual post (as opposed to the scene

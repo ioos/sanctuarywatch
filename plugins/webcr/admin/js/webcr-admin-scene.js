@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', redText);
 function tableOfContentsFieldOptions () {
 	const tocStyle = document.getElementsByName("scene_toc_style")[0].value;
 	let target_color_element = "";
+	let target_color_text_element = "";
 	// document.getElementsByName("scene_section1[scene_section_hover_color1]")[0].parentElement.parentElement.parentElement;
 
 	if (tocStyle == "list"){
@@ -33,33 +34,42 @@ function tableOfContentsFieldOptions () {
 		displaySceneEntries(0);
 		document.getElementsByName("scene_section_number")[0].parentElement.parentElement.style.display = "none";
 		document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "block";
+		document.getElementsByName("scene_hover_text_color")[0].parentElement.parentElement.style.display = "block";
 	} else {
 		document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.style.display = "block";
 		document.getElementsByName("scene_section_number")[0].parentElement.parentElement.style.display = "block";
 		const singleColor = document.getElementsByName("scene_same_hover_color_sections")[0].value;
 		if (singleColor == "no"){
-			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "none";
+			document.getElementsByName("scene_hover_text_color")[0].parentElement.parentElement.style.display = "block";
+			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "block";
 			for (let i = 1; i <= 6; i++){
 				document.getElementsByName("scene_section" + i + "[scene_section_hover_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "block";
+				document.getElementsByName("scene_section" + i + "[scene_section_hover_text_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "block";
 			}
 		} else {
+			document.getElementsByName("scene_hover_text_color")[0].parentElement.parentElement.style.display = "block";
 			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "block";
 			for (let i = 1; i <= 6; i++){
 				document.getElementsByName("scene_section" + i + "[scene_section_hover_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "none";
+				document.getElementsByName("scene_section" + i + "[scene_section_hover_text_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "none";
 			}
 		}
 	}
 
 }
 
-	// function to display Scene Section fields
+
+
+// function to display Scene Section fields
 function displaySceneEntries (entry_number){
 	let target_title_element = "";
 	let target_color_element = "";
+	let target_color_text_element = "";
 
 	for (let i = 6; i > entry_number; i--){
 		target_title_element = "scene_section" + i + "[scene_section_title" + i + "]";
 		target_color_element = "scene_section" + i + "[scene_section_hover_color" + i + "]";
+		target_color_text_element = "scene_section" + i + "[scene_section_hover_text_color" + i + "]";
 	//	console.log(target_color_element);
 		document.getElementsByName(target_title_element)[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display = "none";
 		document.getElementsByName(target_title_element)[0].value = "";
@@ -259,6 +269,7 @@ document.querySelector('[data-depend-id="scene_preview"]').addEventListener('cli
 	
 	let svgPath = document.getElementsByName("scene_infographic")[0].value;
 	let hoverSceneColor = document.getElementsByName("scene_hover_color")[0].value;
+	let hoverSceneTextColor = document.getElementsByName("scene_hover_text_color")[0].value;
 	if (svgPath == ""){
 		imageColumn.innerText = "No image.";
 		thirdRow.append(imageColumn);

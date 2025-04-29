@@ -1,4 +1,5 @@
 
+
 function hexToRgba(hex, opacity) {
     // Remove the hash if it's present
     hex = hex.replace(/^#/, '');
@@ -227,7 +228,7 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 listItem.appendChild(anchor);
 
                 // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${scene_info_url}">${scene_info_text}</a> </div>`;
+                collapseListHTML += `<div> <a href="${scene_info_url}" target="_blank">${scene_info_text}</a> </div>`;
                 collapseListHTML += '</div>';
     }
     // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
@@ -340,6 +341,18 @@ async function make_title() {
 
         titleDom.append(row);
         // return scene_location;
+        //console.log(scene_data);
+
+ 
+        let instance_overview_scene = scene_data['instance_overview_scene'];
+        if (instance_overview_scene == null){
+            instance_overview_scene = 'None';
+        }
+        // Google Tags
+        sceneLoaded(title, scene_data['post_ID'], instance_overview_scene, gaMeasurementID);
+        setupSceneMoreInfoLinkTracking(title, scene_data['post_ID']);
+        setupSceneImagesLinkTracking(title, scene_data['post_ID']);
+
         return scene_data;
 
     } catch (error) {
@@ -728,40 +741,133 @@ async function loadSVG(url, containerId) {
  *
  * @returns {void} - `void` Modifies DOM element styles in place.
  */
-function highlight_icons(){
-    for (let key in child_obj){
+// function highlight_icons(){
+//     for (let key in child_obj){
+//         let elem = document.querySelector('g[id="' + key + '"]');
+
+//         elem.addEventListener('mouseover', function(){
+//             console.log("hovering over " + key);
+//             alert(scene_data);
+
+//             let elemCollection = elem.querySelectorAll("*");
+//             elemCollection.forEach(subElem => {
+
+//                 if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+
+//                     let section_name = sectionObj[key];
+//                     let section_num = section_name.substring(section_name.length - 1, section_name.length);
+
+//                     let this_color = `scene_section_hover_color${section_num}`;
+//                     subElem.style.stroke = scene_data[sectionObj[key]][this_color];
+//                 } else{
+//                     subElem.style.stroke = scene_default_hover_color;
+//                 }
+
+//                 subElem.style.strokeWidth = "3px";
+//             });
+//         });
+//         elem.addEventListener('mouseout', function(){
+
+//             let elemCollection = elem.querySelectorAll("*");
+//             elemCollection.forEach(subElem => {
+
+//             subElem.style.stroke = "";
+//             subElem.style.strokeWidth = "";
+//             });
+//         });
+//     }  
+// }
+
+function highlight_icons() {
+    for (let key in child_obj) {
         let elem = document.querySelector('g[id="' + key + '"]');
 
-        elem.addEventListener('mouseover', function(){
+        elem.addEventListener('mouseover', function (e) {
 
             let elemCollection = elem.querySelectorAll("*");
+            let hoverColor;
+            let hoverTextColor;
+
             elemCollection.forEach(subElem => {
-
-                if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
-
+                if (scene_same_hover_color_sections !== "yes" && sectionObj[key] !== "None") {
                     let section_name = sectionObj[key];
-                    let section_num = section_name.substring(section_name.length - 1, section_name.length);
-
+                    console.log(section_name);
+                    let section_num = section_name.slice(-1);
                     let this_color = `scene_section_hover_color${section_num}`;
-                    subElem.style.stroke = scene_data[sectionObj[key]][this_color];
-                } else{
-                    subElem.style.stroke = scene_default_hover_color;
+                    let text_color = `scene_section_hover_text_color${section_num}`;
+                    console.log(text_color);
+                    hoverColor = scene_data[sectionObj[key]][this_color];
+                    hoverTextColor = scene_data[sectionObj[key]][text_color];
+                    console.log(hoverTextColor);
+                    subElem.style.stroke = hoverColor;
+                } else {
+                    hoverColor = scene_default_hover_color;
+                    hoverTextColor = scene_default_hover_text_color;
+                    subElem.style.stroke = hoverColor;
                 }
 
                 subElem.style.strokeWidth = "3px";
             });
-        });
-        elem.addEventListener('mouseout', function(){
 
+            // Create and show the tooltip box
+            const tooltip = document.createElement("div");
+            tooltip.className = "hover-key-box";
+            tooltip.textContent = child_obj[key].title;
+            tooltip.style.position = "absolute";
+            tooltip.style.padding = "5px 10px";
+            tooltip.style.backgroundColor = hoverColor;
+            tooltip.style.color = hoverTextColor;
+            tooltip.style.borderRadius = "4px";
+            tooltip.style.fontSize = "14px";
+            tooltip.style.pointerEvents = "none";
+            tooltip.style.zIndex = "9999";
+            tooltip.id = "hoverKeyTooltip";
+            document.body.appendChild(tooltip);
+
+            // Initial position
+            moveTooltip(e, elem, tooltip);
+        });
+
+        elem.addEventListener('mousemove', function (e) {
+            const tooltip = document.getElementById("hoverKeyTooltip");
+            if (tooltip) {
+                moveTooltip(e, elem, tooltip);
+            }
+        });
+
+        elem.addEventListener('mouseout', function () {
             let elemCollection = elem.querySelectorAll("*");
             elemCollection.forEach(subElem => {
-
-            subElem.style.stroke = "";
-            subElem.style.strokeWidth = "";
+                subElem.style.stroke = "";
+                subElem.style.strokeWidth = "";
             });
+
+            // Remove the tooltip
+            const tooltip = document.getElementById("hoverKeyTooltip");
+            if (tooltip) {
+                tooltip.remove();
+            }
         });
-    }  
+    }
+
+    function moveTooltip(e, elem, tooltip) {
+        const svg = elem.closest('svg');
+        if (!svg) return;
+
+        const svgRect = svg.getBoundingClientRect();
+        const svgMidX = svgRect.left + (svgRect.width / 2);
+
+        if (e.pageX > svgMidX) {
+            // On the right half: show tooltip to the left
+            tooltip.style.left = (e.pageX - tooltip.offsetWidth - 15) + "px";
+        } else {
+            // On the left half: show tooltip to the right
+            tooltip.style.left = (e.pageX + 15) + "px";
+        }
+        tooltip.style.top = (e.pageY + 10) + "px";
+    }
 }
+
 
 /**
  * Adds flicker effects to SVG elements based on `child_obj` keys, meant for tablet layout. 
@@ -784,6 +890,7 @@ function flicker_highlight_icons() {
                 let section_num = section_name.substring(section_name.length - 1, section_name.length);
 
                 let this_color = `scene_section_hover_color${section_num}`;
+                let text_color = `scene_section_hover_text_color${section_num}`;
                 elem.style.stroke = scene_data[sectionObj[key]][this_color];
                 } else {
                     elem.style.stroke = scene_default_hover_color;
@@ -960,6 +1067,9 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  * This function is called for each tab, populating one or more figures (and other corresponding info)
  */
 function render_tab_info(tabContentElement, tabContentContainer, info_obj){
+
+    let postID = info_obj["postID"];
+    let title = info_obj['figureTitle'];
     
     const containerDiv = document.createElement('div');
     containerDiv.style.background = '#e3e3e354';
@@ -992,7 +1102,6 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         firstLink.innerHTML = icon1 + firstLink.innerHTML;
         firstLink.style.textDecoration = 'none';
         firstLink.style.color = '#03386c';
-
         leftCellDiv.appendChild(firstLink);
     }
 
@@ -1027,6 +1136,22 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const figureDiv = document.createElement('div');
     figureDiv.classList.add('figure');
 
+    //Create a separator to make this figure distinct from others
+    const separator = document.createElement('div');
+    separator.classList.add("separator");
+    separator.innerHTML = '<hr style="border-bottom: 1px rgb(252, 252, 252);">';
+    figureDiv.appendChild(separator);
+
+
+    //CREATE THE FIGURE TITLE
+    const figureTitle = document.createElement("div");
+    figureTitle.classList.add('figureTitle');
+    figureTitle.innerHTML = info_obj['figureTitle'];
+    figureTitle.style.marginBottom = '2px';
+    figureDiv.appendChild(figureTitle);
+
+
+    //CREATE THE FIGURE
     let img;
     let figureType = info_obj["figureType"];
 
@@ -1039,7 +1164,9 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             } else {
                 img.alt = '';
             }
-            figureDiv.appendChild(img);       
+            figureDiv.appendChild(img);
+            window.dataLayer = window.dataLayer || [];
+            figureInternalImageLoaded(title, postID, gaMeasurementID); 
         break;
 
         case "External":
@@ -1050,15 +1177,17 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             } else {
                 img.alt = '';
             }
-            figureDiv.appendChild(img);       
+            figureDiv.appendChild(img);
+            figureExternalImageLoaded(title, postID, gaMeasurementID);    
         break;
 
         case "Interactive":
             img = document.createElement('div'); // Create a div to hold the plot
             img.id =  "javascript_figure_target";
             let interactive_arguments = info_obj["figure_interactive_arguments"];
-            producePlotlyLineFigure("javascript_figure_target", interactive_arguments);
+            producePlotlyLineFigure("javascript_figure_target", interactive_arguments, postID);
             figureDiv.appendChild(img);
+            figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
         break;
 
 
@@ -1099,7 +1228,8 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
                 script.remove(); // Remove the script tag from tempDiv
             });
             // Inject remaining HTML into the codeDiv
-            codeDiv.innerHTML = tempDiv.innerHTML;      
+            codeDiv.innerHTML = tempDiv.innerHTML;
+            figureCodeDisplayLoaded(title, postID, gaMeasurementID);  
         break;
 
     }
@@ -1135,7 +1265,18 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // Add the details element to the tab content element
     // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
-    
+
+
+    //Google tag registration for figure science and data links
+    if (info_obj['scienceText']!=''){
+        setupFigureScienceLinkTracking(postID);
+    }
+    if (info_obj['dataLink']!=''){
+        setupFigureDataLinkTracking(postID);
+    }
+
+
+    //Finish the containers and give them the correct properties.
     switch (figureType) {
         case "Internal":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
@@ -1146,36 +1287,78 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         case "Interactive":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
                 
-                let plotDiv = document.getElementById("plotlyFigure");
-                plotDiv.style.width = "100%";
+                let plotDiv = document.querySelector("#plotlyFigure");
+                try {
+                    plotDiv.style.width = "100%";
+                } catch {};
             break;
         case "Code":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
              break;
     }
 
-    //Resize the plotly graph if the tab that it is inside of it activated. This code is essential. 
+    // //Resize the plotly graph if the tab that it is inside of is activated. This code is essential. 
+    // const observer = new MutationObserver(mutations => {
+    //     mutations.forEach(mutation => {
+    //         if (mutation.target.classList.contains("show") && mutation.target.classList.contains("active")) {
+    //             console.log(`Detected tab activation: ${mutation.target.id}`);
+    
+    //             // Find Plotly container inside the newly activated tab
+    //             let plotDiv = mutation.target.querySelector("#plotlyFigure");
+    //             if (plotDiv) {
+    //                 console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
+    //                 Plotly.relayout(plotDiv, { autosize: true });
+    //                 Plotly.Plots.resize(plotDiv);
+    //             }
+    //         }
+    //     });
+    // });    
+    // // Observe all tab-pane elements for class changes
+    // document.querySelectorAll(".tab-pane").forEach(tab => {
+    //     observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+    // });
+    // Resize the Plotly graph if the tab it's inside of is activated
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-            if (mutation.target.classList.contains("show") && mutation.target.classList.contains("active")) {
+            const isActivated = mutation.target.classList.contains("show") &&
+                                mutation.target.classList.contains("active");
+
+            if (isActivated) {
                 console.log(`Detected tab activation: ${mutation.target.id}`);
-    
-                // Find Plotly container inside the newly activated tab
-                let plotDiv = mutation.target.querySelector("#plotlyFigure");
-                if (plotDiv) {
-                    console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
-                    Plotly.relayout(plotDiv, { autosize: true });
-                    Plotly.Plots.resize(plotDiv);
-                }
+
+                let attempts = 10; // Max retry attempts
+                const interval = 100; // ms between retries
+
+                const waitForPlotDiv = () => {
+                    const plotDiv = mutation.target.querySelector("#plotlyFigure");
+
+                    if (plotDiv) {
+                        console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
+                        try {
+                            Plotly.relayout(plotDiv, { autosize: true });
+                            Plotly.Plots.resize(plotDiv);
+                        } catch (err) {
+                            console.error("Plotly resize error:", err);
+                        }
+                    } else if (attempts > 0) {
+                        attempts--;
+                        setTimeout(waitForPlotDiv, interval);
+                    } else {
+                        console.warn(`Plotly figure not found in ${mutation.target.id} after retries.`);
+                    }
+                };
+
+                waitForPlotDiv();
             }
         });
-    });    
+    });
+
     // Observe all tab-pane elements for class changes
     document.querySelectorAll(".tab-pane").forEach(tab => {
         observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
     });
-    
-     
+
+         
 }
 
 /**
@@ -1214,6 +1397,9 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
             //all_figure_data = data;
             all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
             all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
+            
+
+
             if (!all_figure_data){
                 //we don't create anything here...
                 //don't have to render any of the info
@@ -1221,10 +1407,13 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                 return;
                 
             } else{
-                // tabContentContainer.setAttribute("display", "");
+                // tabContentContainer.setAttribute("display", "");       
+
                 for (let idx in all_figure_data){
                     figure_data = all_figure_data[idx];
-                    console.log(figure_data)
+
+    
+
                     let external_alt = '';
                     if (figure_data['figure_path']==='External'){
                         img = figure_data['figure_external_url'];
@@ -1234,6 +1423,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                         img = figure_data['figure_image'];
                     } // add smth here for external
                     info_obj = {
+                    "postID" : figure_data.id,
                     "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
                     "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
                     "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
@@ -1245,10 +1435,17 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "longCaption": figure_data["figure_caption_long"],
                     //"interactive": figure_data["figure_path"],
                     "figureType": figure_data["figure_path"],
+                    "figureTitle": figure_data["figure_title"],
                     "figure_interactive_arguments": figure_data["figure_interactive_arguments"]                
                     };
-                    render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure
-                }
+                    
+                    // window.addEventListener("load", function () {
+                    //     // Safe to access styles, layout, Plotly, etc.
+                    //     render_tab_info(tabContentElement, tabContentContainer, info_obj);
+                    // });
+                    render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure 
+                   
+                }  
             }
         })
     .catch(error => console.error('Error fetching data:', error));
@@ -1285,6 +1482,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
  *
  */
 function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
+
     // tab_id = tab_label.replace(/\s+/g, '_').replace(/[()]/g, '_');
     // title = title.replace(/\s+/g, '_').replace(/[()]/g, '_');
     tab_id = tab_label.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_'); //instead of tab id, it should just be the index (figure_data)
@@ -1371,9 +1569,12 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
             alert('Failed to copy link. Please try again.');
         }
     }
-    
-
     fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
+    
+    //Google tags triggers
+    modalTabLoaded(tab_label, modal_id, tab_id, gaMeasurementID);
+    setupModalMoreInfoLinkTracking(modal_id);
+    setupModalImagesLinkTracking(modal_id);
 }
 
 
@@ -1473,7 +1674,7 @@ function render_modal(key){
                 listItem.appendChild(anchor);
 
                 // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
+                collapseListHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
                 collapseListHTML += '</div>';
             }
             //for photos:
@@ -1510,7 +1711,7 @@ function render_modal(key){
                     listItem.appendChild(anchor);
     
                     // collapseList.appendChild(listItem);
-                    collapsePhotoHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
+                    collapsePhotoHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
                     collapsePhotoHTML += '</div>';
                 }
             let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
@@ -1554,11 +1755,10 @@ function render_modal(key){
                 trapFocus(mdialog);
               
             }
+            // Google Tags
+            modalWindowLoaded(title, modal_id, gaMeasurementID);
         // });
             
-
-
-
         })
     .catch(error => console.error('Error fetching data:', error));
     
@@ -1797,6 +1997,7 @@ function sectioned_list(){
             // heading.innerHTML = sections[i];
             heading.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
             let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
+            let textcolor =  scene_data[sections[i]][`scene_section_hover_text_color${i+1}`];
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
@@ -1808,6 +2009,7 @@ function sectioned_list(){
         } else {
             heading.innerHTML = 'No Section';
             let color = scene_default_hover_color;
+            let textcolor = scene_default_hover_text_color;
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';

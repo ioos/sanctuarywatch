@@ -127,14 +127,14 @@ class Webcr_Instance {
                     'id'          => 'instance_slug',
                     'type'        => 'text',
                     'title'       => 'URL component*',
-                    'description' => 'What should the URL component (or slug) of the instance be? The slug is used to determine the url of the instance.',
+                    'description' => 'What should the URL component (or slug) of the instance be? The slug is used to determine the url of the instance. (e.g. https://yourwebsite/url-component)',
                     'class'       => 'text-class',
                 ),
                 array(
                     'id'             => 'instance_type',
                     'type'           => 'select',
-                    'title'          => 'Type*',
-                    'options'        => $instance_type_array,
+                    'title'          => 'Instance Type*',
+                    'options'        => $instance_type_array, //array("Designation" => "Designation", "Issue" => "Issue", "Sanctuary" => "Sanctuary"),
                     'description' => 'What is the instance type?',
                 ),
                 array(
@@ -147,7 +147,7 @@ class Webcr_Instance {
                 array(
                     'id'             => 'instance_status',
                     'type'           => 'select',
-                    'title'          => 'Status',
+                    'title'          => 'Status*',
                     'options'        => array("Draft" => "Draft", "Published" => "Published"),
                     'default' => 'Draft',
                     'description' => 'Is the instance live?',

@@ -635,6 +635,8 @@ function enqueue_plotly_utility_script() {
 }
 add_action('wp_enqueue_scripts', 'enqueue_plotly_utility_script');
 
+
+
 function enqueue_plotly_script() {
   wp_enqueue_script(
     'plotly-timeseries-line', 
@@ -673,6 +675,16 @@ function my_theme_enqueue_scripts() {
 //add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_scripts',100 );
 
 
+function enqueue_google_tags_scripts() {
+  wp_enqueue_script(
+      'googletags',
+      get_template_directory_uri() . '/assets/js/googletags.js',
+      array(),
+      null,
+      array('strategy' => 'defer') 
+  );
+}
+add_action('wp_enqueue_scripts', 'enqueue_google_tags_scripts');
 ?>
 
 

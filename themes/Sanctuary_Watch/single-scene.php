@@ -1,4 +1,5 @@
 
+
 <?php
 /**
  * Detailed Scene Page Template
@@ -27,21 +28,9 @@
 
 defined( 'ABSPATH' ) || exit; ?>
 
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NCLV6NC5');</script>
-<!-- End Google Tag Manager -->
 <?php
 get_header();
 ?>
-
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NCLV6NC5"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <?php
 //ALL CURRENTLY ASSUME THERE IS THE CORRECT POSTMETA DATA AND THERE ALL SUFFICIENT INFORMATION EXISTS
@@ -63,7 +52,18 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 //     const overviewSceneId = <?php echo json_encode($overview); ?>;
 </script>
 
-<body      >
+<body>
+
+  <!-- // Google Tags Container ID call from wp_options single-scene.php-->
+  <?php
+  $settings = get_option('webcr_settings');
+  $google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_js($settings['google_tags_container_id']) : '';
+  ?>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo $google_tags_container_id; ?>"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
   <!-- for the mobile image stuff -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -178,7 +178,8 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
           }
           
           //a bunch of scene meta fields:
-          $scene_default_hover_color = get_post_meta($post_id, 'scene_hover_color', true); 
+          $scene_default_hover_color = get_post_meta($post_id, 'scene_hover_color', true);
+          $scene_default_hover_text_color = get_post_meta($post_id, 'scene_hover_text_color', true); 
           $scene_text_toggle = get_post_meta($post_id, 'scene_text_toggle', true); 
           $scene_toc_style = get_post_meta($post_id, 'scene_toc_style', true); 
           $scene_full_screen_button = get_post_meta($post_id, 'scene_full_screen_button', true); 
@@ -211,6 +212,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     let scene_same_hover_color_sections = <?php echo json_encode($scene_same_hover_color_sections); ?>;
 
     let scene_default_hover_color =  <?php echo json_encode($scene_default_hover_color); ?>;
+    let scene_default_hover_text_color =  <?php echo json_encode($scene_default_hover_text_color); ?>;
     let scene_text_toggle =  <?php echo json_encode($scene_text_toggle); ?>;
     let scene_toc_style =  <?php echo json_encode($scene_toc_style); ?>;
     let scene_full_screen_button  = <?php echo json_encode($scene_full_screen_button); ?>;    
