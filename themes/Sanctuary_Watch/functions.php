@@ -571,8 +571,6 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
                 // $child_elements->appendChild($newElement);
                 $child_ids = modal_helper($cid, $child_ids, $child_id, $idx);
                 $idx++;
-
-                
             }
             continue;
         }

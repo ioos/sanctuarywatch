@@ -119,15 +119,15 @@ class Webcr_Instance {
                 array(
                     'id'          => 'instance_short_title',
                     'type'        => 'text',
-                    'title'       => 'Short Title*',
+                    'title'       => 'Short title*',
                     'description' => 'What should the instance short title be?',
                     'class'       => 'text-class',
                 ),
                 array(
                     'id'          => 'instance_slug',
                     'type'        => 'text',
-                    'title'       => 'URL Slug*',
-                    'description' => 'Create the instance slug. The slug is used to determine the url of the instance. (e.g. https://yourwebsite/url-slug)',
+                    'title'       => 'URL component*',
+                    'description' => 'What should the URL component (or slug) of the instance be? The slug is used to determine the url of the instance. (e.g. https://yourwebsite/url-component)',
                     'class'       => 'text-class',
                 ),
                 array(
@@ -136,12 +136,11 @@ class Webcr_Instance {
                     'title'          => 'Instance Type*',
                     'options'        => $instance_type_array, //array("Designation" => "Designation", "Issue" => "Issue", "Sanctuary" => "Sanctuary"),
                     'description' => 'What is the instance type?',
-                   // 'class'      => 'chosen', 
                 ),
                 array(
                     'id'             => 'instance_overview_scene',
                     'type'           => 'select',
-                    'title'          => 'Overview Scene',
+                    'title'          => 'Overview scene',
                     'options'        => $scene_titles,
                     'description' => 'What is the overview scene for the Instance?',
                 ),
@@ -157,13 +156,13 @@ class Webcr_Instance {
                 array(
                     'id'    => 'instance_tile',
                     'type'  => 'image',
-                    'title' => 'Tile Image',
+                    'title' => 'Tile image',
                     'description' => 'What is the instance image for the front page tile? The image should be 250 pixels wide and 200 pixels tall.'
                 ),
                 array(
                     'id'             => 'instance_legacy_content',
                     'type'           => 'select',
-                    'title'          => 'Legacy Content',
+                    'title'          => 'Legacy content',
                     'options'        => array("no" => "No", "yes" => "Yes"),
                     'default' => 'no',
                     'description' => 'Should the Instance tile point to legacy content?',
@@ -171,7 +170,7 @@ class Webcr_Instance {
                 array(
                     'id'          => 'instance_legacy_content_url',
                     'type'        => 'text',
-                    'title'       => 'Legacy Content URL',
+                    'title'       => 'Legacy content URL',
                     'description' => 'What is the URL of the legacy content?',
                     'class'       => 'text-class',
                 ),
@@ -278,6 +277,7 @@ class Webcr_Instance {
             'title' => 'Title',
             'tile' => 'Tile',
             'type' => 'Type',
+            'overview_scene' => 'Overview',
             'state' => 'State',		
             'status' => 'Status',
         );
@@ -294,7 +294,9 @@ class Webcr_Instance {
                 "SELECT slug FROM {$wpdb->terms} WHERE term_id = %d", 
                 $instance_type_id
             ));
-            echo ucwords($instance_type_slug);
+            if (!empty($instance_type_slug)) {
+                echo ucwords($instance_type_slug);
+            }
         }
 
         if ( $column === 'tile' ) {
@@ -302,10 +304,17 @@ class Webcr_Instance {
             if (!empty($instance_tile)) {
                     echo '<img src="' . esc_url($instance_tile) . '" style="max-width:100px; max-height:100px;" /><br>';
             }
-    }
+        }
 
         if ( $column === 'state' ) {
             echo get_post_meta($post_id, 'instance_status', true);
+        }
+
+        if ( $column === 'overview_scene' ) {
+            $instance_overview_scene = get_post_meta($post_id, 'instance_overview_scene', true);
+            if (!empty($instance_overview_scene)) {
+                echo get_the_title($instance_overview_scene);
+            }
         }
 
         if ($column === "status"){
@@ -357,5 +366,51 @@ class Webcr_Instance {
         return $actions;
     }
 
+    public function instance_admin_notice() {
+        // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
+        // posts after it has been updated. The if statement is looking for three things: 1. instance post type? 2. An individual post (as opposed to the scene
+        // admin screen)? 3. A new post
+
+        if (function_exists('get_current_screen')) {
+            $current_screen = get_current_screen();
+            if ($current_screen){
+                if ($current_screen->base == "post" && $current_screen->id =="instance" && !($current_screen->action =="add") ) { 
+                    if( isset( $_COOKIE["instance_post_status"] ) ) {
+                        $instance_post_status =  $_COOKIE["instance_post_status"];
+                        if ($instance_post_status == "post_good") {
+                            echo '<div class="notice notice-info is-dismissible"><p>Instance created or updated.</p></div>';
+                        } 
+                        else {
+                            if (isset($_COOKIE["instance_errors"])) {
+                                $error_message = "<p>Error or errors in instance</p>";
+                                $error_list_coded = stripslashes($_COOKIE["instance_errors"]);
+                                $error_list_array = json_decode($error_list_coded);
+                                $error_array_length = count($error_list_array);
+                                $error_message = $error_message . '<p><ul>';
+                                for ($i = 0; $i < $error_array_length; $i++){
+                                    $error_message = $error_message . '<li>' . $error_list_array[$i] . '</li>';
+                                }
+                                $error_message = $error_message . '</ul></p>';
+                            }
+                            echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
+                        }
+                    //   setcookie("scene_post_status", "", time() - 300, "/");
+                    }
+                    if (isset($_COOKIE["instance_warnings"])){
+                        $warning_message = "<p>Warning or warnings in instance</p>";
+                        $warning_list_coded = stripslashes($_COOKIE["instance_warnings"]);
+                        $warning_list_array = json_decode($warning_list_coded);
+                        $warning_array_length = count($warning_list_array);
+                        $warning_message = $warning_message . '<p><ul>';
+                        for ($i = 0; $i < $warning_array_length; $i++){
+                            $warning_message = $warning_message . '<li>' . $warning_list_array[$i] . '</li>';
+                        }
+                        $warning_message = $warning_message . '</ul></p>';
+                        echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
+                    }
+                }
+            }
+        }
+    }
 
 }

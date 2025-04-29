@@ -869,9 +869,6 @@ function highlight_icons() {
 }
 
 
-
-
-
 /**
  * Adds flicker effects to SVG elements based on `child_obj` keys, meant for tablet layout. 
  * Icons flicker their corresponding color on a short time interval
@@ -912,12 +909,10 @@ function flicker_highlight_icons() {
                     elem.style.strokeOpacity = "0";
                     increasing = true;
                 }
-            }, 1500); // Change every 1 second
+            }, 1800); // Change every 1 second
         }
     }
 }
-
-
 
 /**
  * Checks if the device being used is touchscreen or not. 
@@ -930,7 +925,6 @@ function is_touchscreen(){
            ( navigator.msMaxTouchPoints > 0 );
     
 }
-
 
 /**
  * Checks if the device being used is a mobile device or not.
@@ -1035,7 +1029,6 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
 
     return accordionItem;
 }
-
 
 
 /**
@@ -2505,11 +2498,6 @@ function add_modal(){
         }
     }
 }
-
-
-
-
-
 
 // loadSVG(url, "svg1");
 /**

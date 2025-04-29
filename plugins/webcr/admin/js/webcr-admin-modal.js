@@ -2,6 +2,9 @@
 
 let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
 
+// In case of data entry error with modal post, let's set the modal fields values to the values in the cookie
+writeCookieValuesToModalFields();
+
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
 document.addEventListener('DOMContentLoaded', redText);
 
@@ -28,13 +31,17 @@ iconFunction();
 modalWindow();
 modal_scene_change();
 modal_location_change();
+
 hideIconSection();
+
 
 // If a given Scene does not have any sections, then let's hide the Icon Section field in the modal page
 function hideIconSection (){
     const sectionField = document.getElementsByName("icon_toc_section")[0];
-    if (sectionField.options.length == 1 && sectionField.value === "None"){
+    if (sectionField.options.length < 2){
         sectionField.parentElement.parentElement.style.display = "none";
+    } else {
+        sectionField.parentElement.parentElement.style.display = "block";
     }
 }
 
@@ -129,10 +136,6 @@ function iconSceneOutDropdown(){
     const modal_location = document.getElementsByName("modal_location")[0].value;
     const iconSceneOut = document.getElementsByName("icon_scene_out")[0];
     iconSceneOut.innerHTML ='';
-    let optionIcon = document.createElement('option');
-    optionIcon.text = "Icon Scene Out";
-    optionIcon.value = " ";
-    iconSceneOut.add(optionIcon);
 
     const modalScene = document.getElementsByName("modal_scene")[0].value;
     if (modalScene != "") {
@@ -143,6 +146,11 @@ function iconSceneOutDropdown(){
         fetch(restURL)
             .then(response => response.json())
             .then(data => {
+                let option = document.createElement('option');
+                option.value = "";
+                option.text = "";
+                option.selected = true;
+                iconSceneOut.appendChild(option);
                 data.forEach( element => {
                     if (element.id != modalScene){
                         let option = document.createElement('option');
@@ -292,6 +300,13 @@ function urlifyRecursiveFunc(str) {
 
 function modal_location_change(){
     if (isPageLoad == false){
+
+        // let's remove all options from the Icon Section field and make it invisible
+        const sectionField = document.getElementsByName("icon_toc_section")[0];
+        sectionField.innerHTML ='';
+        sectionField.value =''; 
+        sectionField.parentElement.parentElement.style.display = "none";
+
         // Let's remove the preview window if it already exists
 		const previewWindow = document.getElementById('preview_window');
 		// If the element exists
@@ -300,7 +315,7 @@ function modal_location_change(){
 			previewWindow.parentNode.removeChild(previewWindow);
 		}
         const modal_location = document.querySelector('select[name="modal_location"]').value;
-        if (modal_location != ""){
+        if (modal_location != " " && modal_location != ""){
 
             const modal_location_no_space = urlifyRecursiveFunc(modal_location);
             const protocol = window.location.protocol;
@@ -325,7 +340,7 @@ function modal_location_change(){
                     iconsDropdown.innerHTML ='';
                     iconsDropdown.value ='';
                     let optionIcon = document.createElement('option');
-                    optionIcon.text = "";
+                    optionIcon.text = " ";
                     optionIcon.value = "";
                     iconsDropdown.add(optionIcon);
 
@@ -335,13 +350,73 @@ function modal_location_change(){
     }
 }
 
+// Change the options for the select field with the name icon_toc_section when the scene changes. 
+// This is done to reflect the sections associated with the new scene
+function modal_section_options (){
+    const sceneID = document.getElementsByName("modal_scene")[0].value;
+    let modalSection = document.getElementsByName("icon_toc_section")[0];
+    modalSection.innerHTML ='';
+    modalSection.value ='';
+  
+    let sceneSection = "";
+    for (let i = 1; i < 7; i++){
+        sceneSection = sceneSection + "scene_section" + i + ",";    
+    }
+    sceneSection = sceneSection.slice(0, -1);
+
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const restURL = protocol + "//" + host  + "/wp-json/wp/v2/scene/" + sceneID + "?_fields=title,id,scene_toc_style,scene_section_number," + sceneSection;
+    fetch(restURL)
+    .then(response => response.json())
+    .then(data => {   
+        const sceneTocStyle = data["scene_toc_style"];
+        const sceneSectionNumber = parseInt(data["scene_section_number"]);
+        if (sceneTocStyle != "list" && sceneSectionNumber > 0){
+            let option = document.createElement('option');
+            option.text = "";
+            option.value = "";
+            modalSection.add(option);
+
+            for (let j = 1; j <= sceneSectionNumber; j++){
+                let option = document.createElement('option');
+                option.value = j;
+                option.text = data["scene_section" + j]["scene_section_title" + j];   
+                modalSection.add(option);
+            }
+
+            // let's set the value of the icon_toc_section field to the value of the icon_toc_section field in the database
+            const modalId = document.querySelector('input[name="post_ID"]');
+
+            if (modalId && modalId.value) {
+              const restURL2 = protocol + "//" + host  + "/wp-json/wp/v2/modal/" + modalId.value + "?_fields=id,icon_toc_section";
+              fetch(restURL2)
+                .then(response => response.json())
+                .then(data => {
+                    const iconTocSection = data["icon_toc_section"];
+                    if (iconTocSection != null && iconTocSection != "") {
+                        modalSection.value = iconTocSection;
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error));
+            }
+        } 
+        hideIconSection();
+    })
+    .catch(error => console.error('Error fetching data:', error));
+}
+
 function modal_scene_change(){
     const sceneID = document.querySelector("select[name='modal_scene']").value;
 
-    if (sceneID != "" && sceneID != null) {
+    if (sceneID != " " && sceneID != null) {
         if (!isPageLoad){
             iconSceneOutDropdown();
         }
+
+        modal_section_options();
+
+
         // Let's remove the preview window if it already exists
 		const previewWindow = document.getElementById('preview_window');
 		// If the element exists
@@ -417,7 +492,7 @@ function modal_scene_change(){
                                 }
                             }
 
-                            let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
+                            let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons" i]');
                             // Initialize an array to hold the sublayer names
                             let sublayers = [];
                             if (iconsLayer) {
@@ -438,8 +513,6 @@ function modal_scene_change(){
             })
             .catch((err) => {console.error(err)});
             
-
-
             imageRow.appendChild(imageColumn);
             newDiv.appendChild(imageRow);
             document.getElementsByClassName("exopite-sof-field-select")[1].appendChild(newDiv);
@@ -682,4 +755,35 @@ document.querySelector('[data-depend-id="modal_preview"]').addEventListener('cli
 
 });
 
-    
+// This function is the last stop on a field validation path. When a user edits a modal post and hits save, the following happens:
+// 1. The modal post is validated. If there are errors, the field values are not saved to the database but they are saved to a temporary cookie.
+// 2. The user is redirected back to the edit page for the modal post and an error message is displayed.
+// 3. The cookie is read and the field values are written to the fields on the edit page. It is this last step that is done by this function. 
+function writeCookieValuesToModalFields() {
+
+	if (onCorrectEditPage("modal") == true) {
+		if (cookieExists("modal_error_all_fields")) {
+			const modalCookie = getCookie("modal_error_all_fields");
+			const modalCookieValues = JSON.parse(modalCookie);
+console.log(modalCookieValues);
+			const modalFieldNames = ["modal_published", "modal_location", "modal_scene", "modal_icons", "modal_icon_order", "icon_toc_section",
+                "icon_function", "icon_external_url", "icon_scene_out", "modal_tagline", "modal_info_entries", "modal_photo_entries", "modal_tab_number"];
+
+			// Fill in values for simple fields
+			modalFieldNames.forEach((element) => {
+				document.getElementsByName(element)[0].value = modalCookieValues[element];
+			});
+
+			// Fill in values for complex fieldsets
+			for (let i = 1; i < 7; i++){
+				document.getElementsByName("modal_info" + i + "[modal_info_url" + i + "]")[0].value = modalCookieValues["modal_info_url" + i];
+				document.getElementsByName("modal_info" + i + "[modal_info_text" + i + "]")[0].value = modalCookieValues["modal_info_text" + i];
+				document.getElementsByName("modal_photo" + i + "[modal_photo_url" + i + "]")[0].value = modalCookieValues["modal_photo_url" + i];
+				document.getElementsByName("modal_photo" + i + "[modal_photo_text" + i + "]")[0].value = modalCookieValues["modal_photo_text" + i];
+				document.getElementsByName("modal_photo" + i + "[modal_photo_location" + i + "]")[0].value = modalCookieValues["modal_photo_location" + i];
+				document.getElementsByName("modal_photo" + i + "[modal_photo_internal" + i + "]")[0].value = modalCookieValues["modal_photo_internal" + i];
+				document.getElementsByName("modal_tab_title" + i)[0].value = modalCookieValues["modal_tab_title" + i];
+			}
+		}
+	}
+}

@@ -204,6 +204,7 @@ class Webcr {
 		$this->loader->add_filter( 'bulk_actions-edit-instance', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin_instance, 'custom_content_remove_quick_edit_link', 10, 2 ); 
 		$this->loader->add_filter( 'rest_api_init', $plugin_admin_instance, 'register_instance_rest_fields' ); 
+		$this->loader->add_action( 'admin_notices', $plugin_admin_instance, 'instance_admin_notice' ); 
 
 		// Load class and functions associated with Instance Types
 		$plugin_admin_instance_type = new Webcr_Instance_Type ( $this->get_plugin_name(), $this->get_version() );		
@@ -236,6 +237,7 @@ class Webcr {
 		$this->loader->add_filter( 'post_type_link', $plugin_admin_scene, 'remove_scene_slug', 10, 3); 
 		$this->loader->add_filter( 'manage_edit-scene_sortable_columns', $plugin_admin_scene, 'register_status_as_sortable_column'); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'orderby_status_column'); //This action orders by the status column for scene, modal, and figure content types 
+        $this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'display_overview_scene_notice' ); 
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ( $this->get_plugin_name(), $this->get_version() );		

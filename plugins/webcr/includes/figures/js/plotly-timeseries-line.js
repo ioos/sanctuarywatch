@@ -73,6 +73,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 };
                 //console.log(singleLinePlotly);
                 allLinesPlotly.push(singleLinePlotly);
+
         }
 
         var container = document.getElementById('javascript_figure_target');
@@ -142,8 +143,6 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
 
 function plotlyLineParameterFields(jsonColumns, interactive_arguments){
 
-
-  console.log('plotlyLineParameterFields', interactive_arguments)
   let newDiv = document.createElement("div");
   newDiv.id = 'secondaryGraphFields';
   const targetElement = document.getElementById('graphGUI');

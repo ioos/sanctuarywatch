@@ -66,10 +66,15 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 			<!-- Custom form elements for the file select, upload, and -->
 			<form id="custom-file-upload" enctype="multipart/form-data">
 				<input type="hidden" id="existing-file-name" value="<?php echo esc_attr(basename($existing_file)); ?>">
-				<input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>"> 
-				<label for="uploaded-file" id="file-label"><?php echo esc_html($file_label); ?></label>
+				<input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>">
+
+				<?php // Conditionally add the 'for' attribute ?>
+				<label <?php echo (!$existing_file) ? 'for="uploaded-file"' : ''; ?> id="file-label">
+					<?php echo esc_html($file_label); ?>
+				</label>
+
 				<?php if (!$existing_file): ?>
-					<input type="file" name="uploaded_file" id="uploaded-file" accept=".json, .csv"><input type="hidden" name="post_id" value="<?php echo get_the_ID(); ?>">
+					<input type="file" name="uploaded_file" id="uploaded-file" accept=".json, .csv">
 					<button type="button" id="upload-btn">Upload</button>
 				<?php endif; ?>
 				<?php if ($existing_file): ?>
@@ -395,7 +400,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 			 * @param {} obj - None
 			 * @returns {} - Trigger the file upload and posts the files and the file name and path to the database.
 			 */
-			document.getElementById('upload-btn').addEventListener('click', function() {
+
+			if (document.getElementById('upload-btn')) {
+				document.getElementById('upload-btn').addEventListener('click', function() {
 				
 				// Validation of variables form html and php
 				var fileInput = document.getElementById('uploaded-file');
@@ -561,6 +568,8 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 					alert("Upload failed: " + error.message);
 				});
 			});
+			} 
+
 			</script>
 
 			<?php

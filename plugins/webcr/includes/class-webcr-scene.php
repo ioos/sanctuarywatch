@@ -71,19 +71,8 @@ class Webcr_Scene {
                         $error_message = $error_message . '</ul></p>';
                     }
                     echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
-
-                    if (isset($_COOKIE["scene_error_all_fields"])) {
-                        $scene_fields_coded = stripslashes($_COOKIE["scene_error_all_fields"]);
-                        $scene_fields_array = json_decode($scene_fields_coded, true);	
-                        $_POST['scene_location'] = $scene_fields_array['scene_location'];
-                        $_POST['scene_infographic'] = $scene_fields_array['scene_infographic'];
-                        $_POST['scene_tagline'] = $scene_fields_array['scene_tagline'];
-                        $_POST['scene_info_entries'] = $scene_fields_array['scene_info_entries'];
-                        $_POST['scene_photo_entries'] = $scene_fields_array['scene_photo_entries'];
-
-                    }
                 }
-             //   setcookie("scene_post_status", "", time() - 300, "/");
+
             }
             if (isset($_COOKIE["scene_warnings"])){
                 $warning_message = "<p>Warning or warnings in scene</p>";
@@ -97,6 +86,56 @@ class Webcr_Scene {
                 $warning_message = $warning_message . '</ul></p>';
                 echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
             }
+        }
+    }
+
+    /**
+     * Display an admin notice if the current scene is the overview scene for its instance.
+     *
+     * @since    1.0.0
+     */
+    public function display_overview_scene_notice() {
+        // 1. Check if we are on the correct screen (Scene edit page for an existing post)
+        $screen = get_current_screen();
+        if ( ! $screen || $screen->base !== 'post' || $screen->id !== 'scene' || $screen->action === 'add' ) {
+            return; // Exit if not on the scene edit screen for an existing post
+        }
+
+        // 2. Get the current Scene's ID
+        $current_scene_id = get_the_ID();
+        if ( ! $current_scene_id ) {
+            return; // Exit if we can't get the current post ID
+        }
+
+        // 3. Get the associated Instance ID from the Scene's meta field 'scene_location'
+        $instance_id = get_post_meta( $current_scene_id, 'scene_location', true );
+
+        // 4. Check if we have a valid Instance ID
+        if ( empty( $instance_id ) || ! is_numeric( $instance_id ) ) {
+            // If the scene_location isn't set, we can't determine if it's the overview scene.
+            return;
+        }
+        $instance_id = (int) $instance_id; // Ensure it's an integer
+
+        // 5. Get the Overview Scene ID from the Instance's meta field 'instance_overview_scene'
+        $overview_scene_id = get_post_meta( $instance_id, 'instance_overview_scene', true );
+
+        // 6. Check if the Instance has designated an overview scene
+        if ( empty( $overview_scene_id ) || ! is_numeric( $overview_scene_id ) ) {
+            // If the instance hasn't set an overview scene, the current scene cannot be it.
+            return;
+        }
+        $overview_scene_id = (int) $overview_scene_id; // Ensure it's an integer
+
+        // 7. Compare the current Scene ID with the Instance's Overview Scene ID
+        if ( $current_scene_id === $overview_scene_id ) {
+            // 8. Display the notice if they match
+            wp_admin_notice('This is the overview scene for ' . get_the_title($instance_id) . ".",
+                array(
+                    'additional_classes' => array( 'updated' ),
+                    'dismissible'        => true,
+                )
+            );
         }
     }
 
@@ -266,7 +305,8 @@ class Webcr_Scene {
             'scene_infographic' => 'Infographic',		
             'scene_tagline' => 'Tagline',			
             'scene_order' => 'Order',	
-            'status' => 'Status',
+            'scene_overview' => 'Overview'
+,            'status' => 'Status',
         );
         return $columns;
     }
@@ -279,7 +319,6 @@ class Webcr_Scene {
 	 * @since    1.0.0
 	 */
     public function custom_scene_column( $column, $post_id ) {  
-        // scene location column
 
         if (isset($_GET["field_length"])) {
             $field_length = $_GET["field_length"];
@@ -290,7 +329,6 @@ class Webcr_Scene {
         if ( $column === 'scene_location' ) {
             $instance_id = get_post_meta( $post_id, 'scene_location', true ); 
             echo get_the_title($instance_id ); 
-     //       echo get_post_meta( $post_id, 'scene_location', true ); 
         }
 
         if ( $column === 'scene_infographic' ) {
@@ -316,10 +354,17 @@ class Webcr_Scene {
                     break;
             }
         }
-        //hello more
 
         if ( $column === 'scene_order' ) {
             echo get_post_meta( $post_id, 'scene_order', true ); 
+        }
+
+        if ( $column === 'scene_overview' ) {
+            $instance_id = get_post_meta( $post_id, 'scene_location', true ); 
+            $instance_overview_scene = get_post_meta($instance_id, 'instance_overview_scene', true );
+            if ($instance_overview_scene == $post_id) {
+                echo '<span class="dashicons dashicons-yes"></span>';
+            }
         }
 
         if ($column === "status"){
@@ -481,7 +526,7 @@ class Webcr_Scene {
             array(
                 'id'             => 'scene_published',
                 'type'           => 'select',
-                'title'          => 'Scene Status*',
+                'title'          => 'Scene status*',
                 'options'        => array("draft" => "Draft", "published" => "Published"),
                 'default' => 'draft',
                 'description' => 'Should the Scene be live?',
@@ -503,19 +548,19 @@ class Webcr_Scene {
             array(
                 'id'   => 'scene_infographic',
                 'type' => 'image',
-                'title' => 'Scene Infographic*',
+                'title' => 'Infographic*',
                 'description' => 'What is the image for the scene? Only properly-formatted SVG-type images are allowed.'
             ),
             array(
                 'id'   => 'scene_tagline',
                 'type' => 'textarea',
-                'title'       => 'Scene Tagline',
+                'title'       => 'Tagline',
                 'description' => 'What is the tagline for the scene?'
             ),
             array(
                 'id'      => 'scene_info_entries',
                 'type'    => 'range',
-                'title'   => 'Number of Scene Info Entries*',
+                'title'   => 'Number of info entries*',
                 'description' => 'How many info links are there for the scene?',
                 'min'     => 0,    
                  'default' => 1,    
@@ -525,7 +570,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_photo_entries',
                 'type'    => 'range',
-                'title'   => 'Number of Scene Photo Entries*',
+                'title'   => 'Number of photo entries*',
                 'description' => 'How many photo links are there for the scene?',
                 'min'     => 0,    
                  'default' => 1,    
@@ -535,7 +580,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_order',
                 'type'    => 'number',
-                'title'   => 'Scene Order',
+                'title'   => 'Order',
                 'description' => 'What is the order of the scene in the menu bar?',
                 'default' => '1',                               
                 'min'     => '1',                                    
@@ -545,9 +590,9 @@ class Webcr_Scene {
             array(
                 'id'    => 'scene_orphan_icon_action',
                 'type'  => 'select',
-                'title' => 'Icon Visibility in Scene, If No Associated Modal',
+                'title' => 'Icon visibility in scene, if no associated modal',
                 'options'        => array("visible" => "Keep icons as they are", "hide" => "Hide icons", "translucent" => "Make icons semi-transparent", "color" => "Color in icons with specific color"),
-                'description' => 'What should happen to clickable icons in the scene that have no associated modal?',
+                'description' => 'What should happen to clickable icons in the scene that have no associated modal or a modal that is a draft?',
                 "default"   => "visible",
             ),
             array(
@@ -561,7 +606,7 @@ class Webcr_Scene {
             array(
                 'id'             => 'scene_toc_style',
                 'type'           => 'select',
-                'title'          => 'Table of Contents Style*',
+                'title'          => 'Table of contents style*',
                 'options'        => array("accordion" => "Accordion", "list" => "List (default option)", "sectioned_list" => "Sectioned List"),
                 'default' => 'list',
                 'description' => 'What should the table of contents look like?',
@@ -577,10 +622,27 @@ class Webcr_Scene {
             array(
                 'id'     => 'scene_hover_color',
                 'type'   => 'color',
-                'title'  => 'Hover Color',
+                'title'  => 'Hover color',
                 'description' => 'What should the hover color be?',
                 'picker' => 'html5',
                 "default"   => '#FFFF00',
+            ),
+            array(
+                'id'    => 'scene_full_screen_button',
+                'type'  => 'select',
+                'title' => 'Full screen button',
+                'description' => 'Should there be a full screen button?',
+                'options'        => array("no" => "No", "yes" => "Yes"),
+                "default"   => "no",
+            ),
+            array(
+                'id'             => 'scene_text_toggle',
+                'type'           => 'select',
+                'title'          => 'Text toggle',
+                'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
+                'default'        => 'none',
+                'description' => 'Should there be a text toggle button?',
+             //   'class'      => 'chosen',
             ),
             array(
                 'id'     => 'scene_hover_text_color',
@@ -589,11 +651,12 @@ class Webcr_Scene {
                 'description' => 'What should the hover text color be?',
                 'picker' => 'html5',
                 "default"   => '#000',
+
             ),
             array(
                 'id'      => 'scene_section_number',
                 'type'    => 'select',
-                'title'   => 'Number of Scene Sections',
+                'title'   => 'Number of scene sections',
                 'description' => 'How many scene sections are there?',
                 'options' => array(
                     0 => "0",
@@ -626,7 +689,7 @@ class Webcr_Scene {
             array(
                 'id'          => 'scene_preview',
                 'type'        => 'button',
-                'title'       => 'Preview Scene',
+                'title'       => 'Preview scene',
                 'class'        => 'scene_preview',
                 'options'     => array(
                     'href'  =>  '#nowhere',
@@ -645,7 +708,7 @@ class Webcr_Scene {
             $infoFields[] = array(
                 'type' => 'fieldset',
                 'id' => 'scene_info' . $i,
-                'title'   => 'Scene Info Link ' . $i,
+                'title'   => 'Info Link ' . $i,
             // 'description' => 'Scene Info Link 1 description',
                 'fields' => array(
                     array(
@@ -671,7 +734,7 @@ class Webcr_Scene {
             $photoFields[] = array(
                 'type' => 'fieldset',
                 'id' => 'scene_photo' . $i,
-                'title'   => 'Scene Photo Link ' . $i,
+                'title'   => 'Photo Link ' . $i,
                 'fields' => array(
                     array(
                         'id'             => 'scene_photo_location' . $i,
@@ -738,7 +801,7 @@ class Webcr_Scene {
         // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
         array_splice($fields, 5, 0, $infoFields);
         array_splice($fields, 12, 0, $photoFields);
-        array_splice($fields, 25, 0, $sectionFields);
+        array_splice($fields, 27, 0, $sectionFields);
 
         $fieldsHolder[] = array(
             'name'   => 'basic',
@@ -761,6 +824,7 @@ class Webcr_Scene {
             array('scene_hover_text_color', 'string', 'The hover text color for the icons'),
             array('scene_photo_entries', 'integer', 'The number of scene links'),
             array('scene_published', 'string', 'Is the scene live'),
+            array('scene_toc_style', 'string', 'Table of contents style'),
         );
 
         foreach ($fieldsToBeRegistered as $targetSubArray) {
@@ -781,7 +845,7 @@ class Webcr_Scene {
             array('scene_info', 'Info link '),
             array('scene_photo', 'Photo link '),
             array('scene_photo_internal', 'Internal photo link '),
-            array('scene_section', 'Scene section ')
+            array('scene_section', 'Scene section '),
         );
 
         for ($i = 1; $i < 7; $i++ ) {
@@ -816,7 +880,8 @@ class Webcr_Scene {
 	 */
     function register_scene_rest_fields() {
         $scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
-            'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_hover_text_color','scene_published');
+
+            'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_hover_text_color','scene_published', 'scene_toc_style');
 
         for ($i = 1; $i < 7; $i++){
             array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i, 'scene_section' . $i);

@@ -3,6 +3,9 @@
 
 'use strict';
 
+// In case of data entry error with figure post, let's set the figure fields values to the values in the cookie
+writeCookieValuesToFigureFields();
+
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
 document.addEventListener('DOMContentLoaded', redText);
 
@@ -22,6 +25,7 @@ function run_webcr_admin_figures() {
      * Fetches data from the REST API and populates the dropdowns accordingly.
      */
     function figureInstanceChange(){
+
         const protocol = window.location.protocol; // Get the current protocol (e.g., http or https)
         const host = window.location.host;// Get the current host (e.g., domain name)
         const figureInstance = document.getElementsByName("location")[0].value;
@@ -33,10 +37,10 @@ function run_webcr_admin_figures() {
         .then(data => {
             // Update the "figure_scene" dropdown with fetched scene data
             let figureScene = document.getElementsByName("figure_scene")[0];
-            figureScene.value ="";
+            figureScene.value =" ";
             figureScene.innerHTML ="";
             let optionScene1 = document.createElement('option');
-            optionScene1.text = "";
+            optionScene1.text = " ";
             optionScene1.value = "";
             figureScene.add(optionScene1);
             
@@ -50,19 +54,19 @@ function run_webcr_admin_figures() {
 
             // Reset and update the "figure_modal" dropdown
             let figureModal = document.getElementsByName("figure_modal")[0];
-            figureModal.value ="";
+            figureModal.value =" ";
             figureModal.innerHTML ="";
             let optionModal = document.createElement('option');
-            optionModal.text = "";
+            optionModal.text = " ";
             optionModal.value = "";
             figureModal.add(optionModal);
 
             // Reset and update the "figure_tab" dropdown
             let figureTab = document.getElementsByName("figure_tab")[0];
-            figureTab.value ="";
+            figureTab.value =" ";
             figureTab.innerHTML ="";
             let optionTab = document.createElement('option');
-            optionTab.text = "";
+            optionTab.text = " ";
             optionTab.value = "";
             figureTab.add(optionTab);
         })
@@ -83,10 +87,10 @@ function run_webcr_admin_figures() {
         .then(response => response.json())
         .then(data => {
             let figureModal = document.getElementsByName("figure_modal")[0];
-            figureModal.value ="";
+            figureModal.value =" ";
             figureModal.innerHTML ="";
             let optionIcon1 = document.createElement('option');
-            optionIcon1.text = "";
+            optionIcon1.text = " ";
             optionIcon1.value = "";
             figureModal.add(optionIcon1);
         
@@ -100,10 +104,10 @@ function run_webcr_admin_figures() {
                 }
             });
             let figureTab = document.getElementsByName("figure_tab")[0];
-            figureTab.value ="";
+            figureTab.value =" ";
             figureTab.innerHTML ="";
             let optionTab = document.createElement('option');
-            optionTab.text = "";
+            optionTab.text = " ";
             optionTab.value = "";
             figureTab.add(optionTab);
         })
@@ -125,17 +129,17 @@ function run_webcr_admin_figures() {
             .then(data => {
                 // Clear existing tab options
                 let figureTab = document.getElementsByName("figure_tab")[0];
-                figureTab.value ="";
+                figureTab.value =" ";
                 figureTab.innerHTML ="";
 
                 // Add default "Tabs" option
                 let optionTab = document.createElement('option');
-                optionTab.text = "";
+                optionTab.text = " ";
                 optionTab.value = "";
                 figureTab.add(optionTab);
-                
-                // Populate tab options if a modal is selected
-                if (figureModal != ""){
+            
+                if (figureModal != " " && figureModal != ""){
+
                     let targetField ="";
                     for (let i = 1; i < 7; i++){
                         targetField = "modal_tab_title" + i;
@@ -726,10 +730,79 @@ function run_webcr_admin_figures() {
         if (figurePath == 'Code') {
             displayCode();        
         }
-
     });
-    
 };
 
+// This function is the last stop on a field validation path. When a user edits a figure post and hits save, the following happens:
+// 1. The figure post is validated. If there are errors, the field values are not saved to the database but they are saved to a temporary cookie.
+// 2. The user is redirected back to the edit page for the figure post and an error message is displayed.
+// 3. The cookie is read and the field values are written to the fields on the edit page. It is this last step that is done by this function. 
+function writeCookieValuesToFigureFields() {
+    if (onCorrectEditPage("figure") == true) {
+        if (cookieExists("figure_error_all_fields")) {
+            const figureCookie = getCookie("figure_error_all_fields");
 
-_
+            // Parse the main JSON object
+            const figureCookieValues = JSON.parse(figureCookie);
+            
+            // Special handling for figure_interactive_arguments
+            if (figureCookieValues["figure_interactive_arguments"]) {
+                try {
+                    // If it's a string that needs parsing
+                    if (typeof figureCookieValues["figure_interactive_arguments"] === 'string') {
+                        // Remove any extra escaping before parsing
+                        const cleanedValue = figureCookieValues["figure_interactive_arguments"].replace(/\\/g, '');
+                        figureCookieValues["figure_interactive_arguments"] = JSON.parse(cleanedValue);
+                    }
+                } catch (e) {
+                    console.error("Error parsing figure_interactive_arguments:", e);
+                    // Fallback to empty array if parsing fails
+                    figureCookieValues["figure_interactive_arguments"] = [];
+                }
+            }
+            const figureFieldNames = ["location", "figure_scene", "figure_modal", "figure_tab", "figure_order", "figure_path", "figure_image",
+                "figure_external_url", "figure_external_alt", "figure_code", "figure_interactive_arguments", "figure_caption_short", "figure_caption_long"];
+    
+            // Fill in values for simple fields
+            figureFieldNames.forEach((element) => {
+                if (document.getElementsByName(element)[0]) {
+                    // For the array field, stringify it back if necessary
+                    if (element === "figure_interactive_arguments" && Array.isArray(figureCookieValues[element])) {
+                        // If the field expects a string representation of the array
+                        document.getElementsByName(element)[0].value = JSON.stringify(figureCookieValues[element]);
+                    } else {
+                        document.getElementsByName(element)[0].value = figureCookieValues[element];
+                    }
+                }
+            });
+
+            // Fill in values for complex fieldsets
+            document.getElementsByName("figure_science_info[figure_science_link_text]")[0].value = figureCookieValues["figure_science_link_text"];
+            document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value = figureCookieValues["figure_science_link_url"];
+            document.getElementsByName("figure_data_info[figure_data_link_text]")[0].value = figureCookieValues["figure_data_link_text"];
+            document.getElementsByName("figure_data_info[figure_data_link_url]")[0].value = figureCookieValues["figure_data_link_url"];
+        }
+    }
+}
+
+// Ensure that only plain text is pasted into the Trumbowyg editors ( figure_caption_short and figure_caption_long)
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Define the specific Trumbowyg editor IDs for the 'figure' post type
+    const figureEditorIds = ['figure_caption_short', 'figure_caption_long'];
+
+    // Ensure the utility function exists before calling it
+    if (typeof attachPlainTextPasteHandlers === 'function') {
+        // Attempt to attach handlers immediately after DOM is ready
+        if (!attachPlainTextPasteHandlers(figureEditorIds)) {
+            console.log('Figure Plain Text Paste: Trumbowyg editors not immediately found, setting timeout...');
+            // Retry after a delay if editors weren't found (Trumbowyg might initialize later)
+            setTimeout(() => attachPlainTextPasteHandlers(figureEditorIds), 1000); // Adjust timeout if needed (e.g., 500, 1500)
+        }
+    } else {
+        console.error('Figure Plain Text Paste: attachPlainTextPasteHandlers function not found. Ensure utility.js is loaded correctly.');
+    }
+
+});
+
+
