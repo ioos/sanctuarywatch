@@ -643,7 +643,7 @@ function writeCookieValuesToFigureFields() {
     if (onCorrectEditPage("figure") == true) {
         if (cookieExists("figure_error_all_fields")) {
             const figureCookie = getCookie("figure_error_all_fields");
-            console.log("Figure cookie values: ", figureCookie);
+
             // Parse the main JSON object
             const figureCookieValues = JSON.parse(figureCookie);
             

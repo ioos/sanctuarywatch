@@ -409,7 +409,7 @@ function modal_section_options (){
 function modal_scene_change(){
     const sceneID = document.querySelector("select[name='modal_scene']").value;
 
-    if (sceneID != "" && sceneID != null) {
+    if (sceneID != " " && sceneID != null) {
         if (!isPageLoad){
             iconSceneOutDropdown();
         }
@@ -492,7 +492,7 @@ function modal_scene_change(){
                                 }
                             }
 
-                            let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons"]');
+                            let iconsLayer = document.getElementById("previewSvg").querySelector('g[id="icons" i]');
                             // Initialize an array to hold the sublayer names
                             let sublayers = [];
                             if (iconsLayer) {

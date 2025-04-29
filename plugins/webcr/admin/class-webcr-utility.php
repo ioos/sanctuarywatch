@@ -199,11 +199,14 @@ class Webcr_Utility {
             // Create a new DOMXPath instance
             $xpath = new DOMXPath($dom);
             
-            // Find the element with the ID "icons"
-            $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
+        // Find the element with the ID "icons" (case-insensitive)
+        // XPath 1.0 doesn't have lower-case(), so we use translate()
+        $query = "//*[translate(@id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = 'icons']";
+        $icons_element = $xpath->query($query)->item(0);
             
             if ($icons_element === null) {
-                die('Element with ID "icons" not found.');
+                error_log("Webcr_Utility::returnIcons - Element with ID 'icons' (case-insensitive) not found in SVG: " . $full_path);
+                return $modal_icons; // Element not found
             }
             
             // Get all child elements of the "icons" element

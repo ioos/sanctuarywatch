@@ -36,6 +36,7 @@ class webcr_validation {
 
         // Set the error list cookie expiration time to a past date in order to delete it, if it is there
         setcookie("instance_errors", 0, time() - 3000, "/");
+        setcookie("instance_warnings", 0, time() - 3000, "/");
 
         $instance_errors = [];
         $instance_warnings = [];
@@ -172,6 +173,7 @@ class webcr_validation {
 
         // Set the error list cookie expiration time to a past date in order to delete it, if it is there
         setcookie("figure_errors", 0, time() - 3000, "/");
+        setcookie("figure_warnings", 0, time() - 3000, "/");
 
         $figure_errors = [];
         $figure_warnings = [];
@@ -312,6 +314,7 @@ class webcr_validation {
 
         // Set the error list cookie expiration time to a past date in order to delete it, if it is there
         setcookie("modal_errors", 0, time() - 3000, "/");
+        setcookie("modal_warnings", 0, time() - 3000, "/");
 
         $modal_errors = [];
         $modal_warnings = [];
@@ -339,20 +342,20 @@ class webcr_validation {
             $save_modal_fields = FALSE;
         }
 
-        if ($_POST["modal_scene"] == ""){
+        if ($_POST["modal_scene"] == " "){
             array_push($modal_errors,  "The Scene field cannot be left blank.");
             $save_modal_fields = FALSE;
         }
 
-        if ($_POST["modal_icons"] == ""){
+        if ($_POST["modal_icons"] == " "){
             array_push($modal_errors,  "The Icons field cannot be left blank.");
             $save_modal_fields = FALSE;
         } 
 
-        if ($_POST["modal_scene"] != "" && $_POST["modal_icons"] != ""){
+        if ($_POST["modal_scene"] != " " && $_POST["modal_icons"] != " "){
 
-            $icon_id = intval($_POST["modal_icons"]);
-            $scene_id = intval($_POST["modal_scene"]);
+            $icon_id = $_POST["modal_icons"];
+            $scene_id = $_POST["modal_scene"];
 
             $args = array(
                 'post_type'      => 'modal',       // Specify the custom post type
@@ -364,7 +367,7 @@ class webcr_validation {
                         'key'     => 'modal_icons', // First custom field key
                         'value'   => $icon_id,      // Value to match for modal_icons
                         'compare' => '=',           // Exact match comparison
-                        'type'    => 'NUMERIC',     // Treat the value as a number
+                   //     'type'    => 'NUMERIC',     // Treat the value as a number
                     ),
                     array(
                         'key'     => 'modal_scene', // Second custom field key
@@ -385,9 +388,14 @@ class webcr_validation {
         
             // Get the total number of posts found by the query
             $record_count = $query->found_posts;
-            if ($record_count > 0){
+            if ($record_count > 1){
                 array_push($modal_warnings, "This icon has already been claimed by one or more other modals.");                               
-            }
+            } else if ($record_count == 1){
+                $saved_ID = $query->posts[0];
+                if ($saved_ID != get_the_id()) {
+                    array_push($modal_warnings, "This icon has already been claimed by one or more other modals.");                               
+                }
+            }           
         
         }
         // If the associated scene contains sections, force the use of sections with this modal
@@ -587,6 +595,7 @@ class webcr_validation {
 
         // Set the error list cookie expiration time to a past date in order to delete it, if it is there
         setcookie("scene_errors", 0, time() - 3000, "/");
+        setcookie("scene_warnings", 0, time() - 3000, "/");
 
         $scene_errors = [];
         $scene_warnings = [];
