@@ -249,44 +249,28 @@ foreach ($results as $row) {
   }
 
   $related_modals_query = "
-    SELECT pm2.meta_value AS modal_icons
+    SELECT pm2.meta_value AS modal_icons, pm3.meta_value AS modal_published
     FROM {$wpdb->postmeta} AS pm1
     INNER JOIN {$wpdb->postmeta} AS pm2 ON pm1.post_id = pm2.post_id
+    INNER JOIN {$wpdb->postmeta} AS pm3 ON pm1.post_id = pm3.post_id
     WHERE pm1.meta_key = 'modal_scene'
     AND pm1.meta_value = %d
     AND pm2.meta_key = 'modal_icons'
+    AND pm3.meta_key = 'modal_published'
     LIMIT 100
   ";
 
   $prepared_query = $wpdb->prepare($related_modals_query, $post_id);
   $related_modals_results = $wpdb->get_results($prepared_query);
-  $associated_modals = array_unique(wp_list_pluck($related_modals_results, 'modal_icons'));
 
+  // Only include modal_icons if the modal_published value is 'published'
+  $associated_modals = array_unique(array_reduce($related_modals_results, function ($carry, $row) {
+      if ($row->modal_published === 'published') {
+          $carry[] = $row->modal_icons;
+      }
+      return $carry;
+  }, []));
 
-  // $is_user_logged_in = is_user_logged_in();
-
-  // $related_modals_query = "
-  //     SELECT pm2.meta_value AS modal_icons, pm3.meta_value AS modal_published
-  //     FROM {$wpdb->postmeta} AS pm1
-  //     INNER JOIN {$wpdb->postmeta} AS pm2 ON pm1.post_id = pm2.post_id
-  //     INNER JOIN {$wpdb->postmeta} AS pm3 ON pm1.post_id = pm3.post_id
-  //     WHERE pm1.meta_key = 'modal_scene'
-  //     AND pm1.meta_value = %d
-  //     AND pm2.meta_key = 'modal_icons'
-  //     AND pm3.meta_key = 'modal_published'
-  //     LIMIT 100
-  // ";
-
-  // $prepared_query = $wpdb->prepare($related_modals_query, $post_id);
-  // $related_modals_results = $wpdb->get_results($prepared_query);
-
-  // // Only keep modals that are published or user is logged in
-  // $associated_modals = array_unique(array_reduce($related_modals_results, function($carry, $row) use ($is_user_logged_in) {
-  //     if ($is_user_logged_in || $row->modal_published === 'published') {
-  //         $carry[] = $row->modal_icons;
-  //     }
-  //     return $carry;
-  // }, []));
 
 
 }

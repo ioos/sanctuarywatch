@@ -570,6 +570,36 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
 }
 
 
+/**
+ * Handles the visibility and styling of icons within an SVG element based on their association with modals.
+ * 
+ * This function applies specific behaviors to "orphaned" icons (icons not associated with any modal)
+ * based on the `scene_orphan_icon_action` and `scene_orphan_icon_color` properties from the `scene_data` object.
+ * It also adds a tooltip to orphaned icons when hovered.
+ * 
+ * @param {SVGElement} svgElement - The SVG element containing the icons to be processed.
+ * @param {string[]} associated_modals - An array of modal IDs associated with the icons.
+ * 
+ * Behavior:
+ * - Resets styles for all top-level icons.
+ * - Applies specific styles or behaviors to orphaned icons based on the `scene_orphan_icon_action`:
+ *   - `"hide"`: Hides the icon by setting its opacity to 0 and disabling pointer events.
+ *   - `"translucent"`: Makes the icon partially transparent by setting its opacity to 0.25.
+ *   - `"color"`: Changes the fill color of the icon to the value specified in `scene_orphan_icon_color`.
+ *   - Default: Logs a warning for unknown modes.
+ * - Adds a tooltip to orphaned icons with the message "Not currently available" when hovered.
+ * 
+ * Notes:
+ * - Only top-level icons (direct children of the `g#icons` group) are processed.
+ * - The function assumes the presence of a global `scene_data` object with the required properties.
+ * 
+ * Example Usage:
+ * ```javascript
+ * const svgElement = document.querySelector('svg#mySvg');
+ * const associatedModals = ['modal1', 'modal2'];
+ * handleIconVisibility(svgElement, associatedModals);
+ * ```
+ */
 function handleIconVisibility(svgElement, associated_modals) {
     if (!svgElement || !Array.isArray(associated_modals)) return;
 
