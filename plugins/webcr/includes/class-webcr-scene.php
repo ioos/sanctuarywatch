@@ -588,6 +588,23 @@ class Webcr_Scene {
                 'step'    => '1',   
             ),
             array(
+                'id'    => 'scene_full_screen_button',
+                'type'  => 'select',
+                'title' => 'Full Screen Button',
+                'description' => 'Should there be a button to allow full screen access to the scene?',
+                'options'        => array("no" => "No", "yes" => "Yes"),
+                "default"   => "no",
+            ),
+            array(
+                'id'             => 'scene_text_toggle',
+                'type'           => 'select',
+                'title'          => 'Text Toggle',
+                'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
+                'default'        => 'none',
+                'description' => 'Should there be a button to toggle text on and off?',
+             //   'class'      => 'chosen', 
+            ), 
+            array(
                 'id'    => 'scene_orphan_icon_action',
                 'type'  => 'select',
                 'title' => 'Icon visibility in scene, if no associated modal',
@@ -607,47 +624,31 @@ class Webcr_Scene {
                 'id'             => 'scene_toc_style',
                 'type'           => 'select',
                 'title'          => 'Table of contents style*',
-                'options'        => array("accordion" => "Accordion", "list" => "List (default option)", "sectioned_list" => "Sectioned List"),
+                'options'        => array("accordion" => "Accordion (Sections Allowed)", "list" => "List (default option) (No Sections)", "sectioned_list" => "Sectioned List (Sections Allowed)"),
+                'class'          => 'chosen',
                 'default' => 'list',
-                'description' => 'What should the table of contents look like?',
+                'description' => 'What should the table of contents to the right of the scene look like? Should the icons be in sections? If an icon is to bb in a section, This can be done when you create a modal.',
             ),
             array(
                 'id'    => 'scene_same_hover_color_sections',
                 'type'  => 'select',
                 'title' => 'Single color for sections',
                 'options'        => array("no" => "No", "yes" => "Yes"),
-                'description' => 'Should all sections have the same hover color?',
-                "default"   => "no",
+                'description' => 'Should all sections have the same hover color and hover text color?',
+                "default"   => "yes",
             ),
             array(
                 'id'     => 'scene_hover_color',
                 'type'   => 'color',
-                'title'  => 'Hover color',
+                'title'  => 'Scene Hover color',
                 'description' => 'What should the hover color be?',
                 'picker' => 'html5',
                 "default"   => '#FFFF00',
             ),
             array(
-                'id'    => 'scene_full_screen_button',
-                'type'  => 'select',
-                'title' => 'Full screen button',
-                'description' => 'Should there be a full screen button?',
-                'options'        => array("no" => "No", "yes" => "Yes"),
-                "default"   => "no",
-            ),
-            array(
-                'id'             => 'scene_text_toggle',
-                'type'           => 'select',
-                'title'          => 'Text toggle',
-                'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
-                'default'        => 'none',
-                'description' => 'Should there be a text toggle button?',
-             //   'class'      => 'chosen',
-            ),
-            array(
                 'id'     => 'scene_hover_text_color',
                 'type'   => 'color',
-                'title'  => 'Hover Text Color',
+                'title'  => 'Scene Hover Text Color',
                 'description' => 'What should the hover text color be?',
                 'picker' => 'html5',
                 "default"   => '#000',
@@ -668,23 +669,6 @@ class Webcr_Scene {
                     6 => "6"
                 ),
                 'default' => 0           
-            ), 
-            array(
-                'id'    => 'scene_full_screen_button',
-                'type'  => 'select',
-                'title' => 'Full Screen Button',
-                'description' => 'Should there be a full screen button?',
-                'options'        => array("no" => "No", "yes" => "Yes"),
-                "default"   => "no",
-            ),
-            array(
-                'id'             => 'scene_text_toggle',
-                'type'           => 'select',
-                'title'          => 'Text Toggle',
-                'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
-                'default'        => 'none',
-                'description' => 'Should there be a text toggle button?',
-             //   'class'      => 'chosen', 
             ), 
             array(
                 'id'          => 'scene_preview',
@@ -801,7 +785,7 @@ class Webcr_Scene {
         // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
         array_splice($fields, 5, 0, $infoFields);
         array_splice($fields, 12, 0, $photoFields);
-        array_splice($fields, 27, 0, $sectionFields);
+        array_splice($fields, 28, 0, $sectionFields);
 
         $fieldsHolder[] = array(
             'name'   => 'basic',

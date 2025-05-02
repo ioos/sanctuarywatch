@@ -186,7 +186,6 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
           $scene_same_hover_color_sections	= get_post_meta($post_id, 'scene_same_hover_color_sections', true); 
 
           $child_ids = get_modal_array($svg_url);
-  
         
         ?>
       </div>
@@ -216,7 +215,6 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     let scene_text_toggle =  <?php echo json_encode($scene_text_toggle); ?>;
     let scene_toc_style =  <?php echo json_encode($scene_toc_style); ?>;
     let scene_full_screen_button  = <?php echo json_encode($scene_full_screen_button); ?>;    
-
   </script>
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
@@ -250,6 +248,21 @@ foreach ($results as $row) {
       $title_arr[$row->meta_key] = $row->meta_value;
   }
 
+  $related_modals_query = "
+    SELECT pm2.meta_value AS modal_icons
+    FROM {$wpdb->postmeta} AS pm1
+    INNER JOIN {$wpdb->postmeta} AS pm2 ON pm1.post_id = pm2.post_id
+    WHERE pm1.meta_key = 'modal_scene'
+    AND pm1.meta_value = %d
+    AND pm2.meta_key = 'modal_icons'
+    LIMIT 100
+  ";
+
+  $prepared_query = $wpdb->prepare($related_modals_query, $post_id);
+  $related_modals_results = $wpdb->get_results($prepared_query);
+  $associated_modals = array_unique(wp_list_pluck($related_modals_results, 'modal_icons'));
+  
+
 
 }
 
@@ -261,6 +274,7 @@ foreach ($results as $row) {
 
 
 let title_arr  = <?php echo json_encode($title_arr); ?>;
+let associated_modals  = <?php echo json_encode($associated_modals); ?>;
 
 </script>
 

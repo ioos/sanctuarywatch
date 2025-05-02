@@ -88,6 +88,7 @@ let thisScene;
 let sceneLoc;
 // let colors;
 let sectionObj = {};
+console.log('sectionObj' , sectionObj);
 let sectColors = {};
 
 if (!is_mobile()) {
@@ -252,6 +253,8 @@ async function make_title() {
 
     try {
         scene_data = title_arr;
+
+        console.log('associated_modals', associated_modals);
 
         let scene_location = scene_data["scene_location"];
         let title = scene_data['post_title'];
@@ -566,6 +569,97 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
    
 }
 
+
+function handleIconVisibility(svgElement, associated_modals) {
+    if (!svgElement || !Array.isArray(associated_modals)) return;
+
+    const modalSet = new Set(associated_modals);
+    const iconGroup = svgElement.querySelector('g#icons');
+    const topLevelIcons = Array.from(iconGroup.children)
+        .filter(el => el.tagName === 'g' && el.id)
+        .map(el => el.id);
+
+    svgElement.querySelectorAll("g[id]").forEach(icon => {
+        const iconId = icon.id;
+
+        // Only apply logic to top-level icons
+        if (!topLevelIcons.includes(iconId)) return;
+
+        const isAssociated = modalSet.has(iconId);
+        const mode = scene_data['scene_orphan_icon_action'];
+        const fill_color = scene_data['scene_orphan_icon_color'];
+
+        // Reset styles
+        icon.style.opacity = "";
+        icon.style.display = "";
+        icon.style.pointerEvents = "";
+        icon.querySelectorAll("*").forEach(el => {
+            el.style.fill = "";
+        });
+
+        if (mode === "visible") {
+            return; // Do nothing, show all
+        }
+
+        if (isAssociated) {
+            return; // Leave associated icons unchanged
+        }
+
+        // Apply behavior to orphaned top-level icons
+        switch (mode) {
+            case "hide":
+                icon.style.opacity = "0";
+                icon.style.pointerEvents = "none";
+                break;
+
+            case "translucent":
+                icon.style.opacity = "0.25";
+                break;
+
+            case "color":
+                icon.querySelectorAll("*").forEach(el => {
+                    el.style.fill = fill_color;
+                });
+                break;
+
+            default:
+                console.warn("Unknown orphan icon mode:", mode);
+        }
+
+        // Add tooltip for orphan icons
+        icon.addEventListener("mouseenter", function (e) {
+            const tooltip = document.createElement("div");
+            tooltip.className = "icon-tooltip";
+            tooltip.textContent = "Not currently available";
+            tooltip.style.position = "absolute";
+            tooltip.style.padding = "6px 10px";
+            tooltip.style.backgroundColor = "#333";
+            tooltip.style.color = "#fff";
+            tooltip.style.borderRadius = "4px";
+            tooltip.style.fontSize = "13px";
+            tooltip.style.pointerEvents = "none";
+            tooltip.style.zIndex = "9999";
+            tooltip.style.top = e.pageY + 10 + "px";
+            tooltip.style.left = e.pageX + 10 + "px";
+            tooltip.id = "orphanIconTooltip";
+            document.body.appendChild(tooltip);
+        });
+
+        icon.addEventListener("mousemove", function (e) {
+            const tooltip = document.getElementById("orphanIconTooltip");
+            if (tooltip) {
+                tooltip.style.top = e.pageY + 10 + "px";
+                tooltip.style.left = e.pageX + 10 + "px";
+            }
+        });
+
+        icon.addEventListener("mouseleave", function () {
+            const tooltip = document.getElementById("orphanIconTooltip");
+            if (tooltip) tooltip.remove();
+        });
+    });
+}
+
 // Below is the function that will be used to include SVGs within each scene
 
 /**
@@ -578,7 +672,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
  * @returns {void} `void` - Modifies the DOM but does not return any value.
  * @throws {Error} - Throws an error if the network response is not OK or if the SVG cannot be fetched or parsed.
  */
-
 async function loadSVG(url, containerId) {
     try {
         // Step 1: Fetch the SVG content
@@ -681,7 +774,7 @@ async function loadSVG(url, containerId) {
                     }
                 });
                 
-                
+                handleIconVisibility(svgElement, associated_modals);
                 container.appendChild(svgElement);
                 // flicker_highlight_icons();
                 toggle_text();
@@ -708,6 +801,7 @@ async function loadSVG(url, containerId) {
                 }
             });
             
+            handleIconVisibility(svgElement, associated_modals);
             container.appendChild(svgElement);
             highlight_icons();
  
@@ -782,23 +876,34 @@ function highlight_icons() {
     for (let key in child_obj) {
         let elem = document.querySelector('g[id="' + key + '"]');
 
+        // console.log('key:', key);
+        // console.log('child_obj:', child_obj);
+        // console.log('child_obj[key].original_name:', child_obj[key].original_name);
+        // console.log('child_obj[key].section_name:',child_obj[key].section_name);
+        // console.log('sectionObj:',sectionObj); 
+        // console.log('sectionObj[abalone]:',sectionObj['abalone']);  
+        // console.log('sectionObj[key]:',sectionObj[key]);
+        // console.log('scene_data:',scene_data);
+        // console.log('scene_same_hover_color_sections:', scene_same_hover_color_sections);
+
         elem.addEventListener('mouseover', function (e) {
 
             let elemCollection = elem.querySelectorAll("*");
             let hoverColor;
-            let hoverTextColor;
+            let hoverTextColor;   
+
 
             elemCollection.forEach(subElem => {
                 if (scene_same_hover_color_sections !== "yes" && sectionObj[key] !== "None") {
-                    let section_name = sectionObj[key];
-                    console.log(section_name);
-                    let section_num = section_name.slice(-1);
+                    //let section_name = sectionObj[key];
+                    let section_name = child_obj[key].original_name;
+                    //let section_num = section_name.slice(-1);
+                    let section_num = child_obj[key].section_name;
+                    let this_scene_section = `scene_section${section_num}`;
                     let this_color = `scene_section_hover_color${section_num}`;
                     let text_color = `scene_section_hover_text_color${section_num}`;
-                    console.log(text_color);
-                    hoverColor = scene_data[sectionObj[key]][this_color];
-                    hoverTextColor = scene_data[sectionObj[key]][text_color];
-                    console.log(hoverTextColor);
+                    hoverColor = scene_data[this_scene_section][this_color];
+                    hoverTextColor = scene_data[this_scene_section][text_color];
                     subElem.style.stroke = hoverColor;
                 } else {
                     hoverColor = scene_default_hover_color;
@@ -1968,14 +2073,17 @@ function toggle_text() {
  * called in table_of_contents, if user has selected sectioned list option in WP
  */
 function sectioned_list(){
+
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
+        //console.log('section:', section);
 
         if (!sections.includes(section) && section!='None') {
             sections.push(section);
         }
         sectionObj[key] = section;
+        //console.log('sectionObj[key]]:', sectionObj[key]); 
     }
     sections.sort();
     sections.push('None');
@@ -1986,33 +2094,53 @@ function sectioned_list(){
     toc_group.setAttribute("id", "toc-group");
     // let colorIdx = 0;
 
+    console.log('sections:',sections);
+
     for (let i = 0; i < sections.length; i++) {
-    
+
         let sect = document.createElement("div");
         // sect.classList.add("accordion-item");
 
         let heading = document.createElement("h5");
         heading.setAttribute("id", `heading${i}`);
-        if (sections[i] != "None"){
+        if (sections[i] != "None" && scene_data['scene_same_hover_color_sections'] == "no"){
             // heading.innerHTML = sections[i];
-            heading.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
-            let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
-            let textcolor =  scene_data[sections[i]][`scene_section_hover_text_color${i+1}`];
+            heading.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
+            let color =  scene_data[`scene_section${sections[i]}`][`scene_section_hover_color${i+1}`];
+
+            console.log('color', scene_data[`scene_section${sections[i]}`][`scene_section_hover_color${i+1}`]);
+            console.log('scene_data[`scene_section${sections[i]}`]', scene_data[`scene_section${sections[i]}`]);
+
+
+            console.log('color:', color);
+            let textcolor =  scene_data[`scene_section${sections[i]}`][`scene_section_hover_text_color${i+1}`];
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
-            // if (scene_same_hover_color_sections != "yes"){
-            //     heading.style.backgroundColor = hexToRgba(color, 0.3);
-            // }
-            // heading.style.backgroundColor = hexToRgba(color, 0.3);
             heading.style.padding = '0 5px';
-        } else {
+        }
+        if (sections[i] != "None" && scene_data['scene_same_hover_color_sections'] == "yes"){
+            console.log('testing1')
+            // heading.innerHTML = sections[i];
+            heading.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
+            let color =  scene_default_hover_color;
+            let textcolor =  scene_default_hover_text_color;
+            heading.style.backgroundColor = hexToRgba(color, 0.2);
+            heading.style.color = 'black';
+            heading.style.display = 'inline-block';
+            heading.style.padding = '0 5px';
+        }
+        if (sections[i] == "None"){
+            console.log('testing2')
             heading.innerHTML = 'No Section';
             let color = scene_default_hover_color;
             let textcolor = scene_default_hover_text_color;
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
+        }   
+        else {
+            //use the section above in here to put it back the way it was before. 
         }
 
         sect.appendChild(heading);
@@ -2090,12 +2218,33 @@ function toc_sections() {
         button.setAttribute("data-bs-target", `#toccollapse${i}`);
         button.setAttribute("aria-expanded", "false");
         button.setAttribute("aria-controls", `toccollapse${i}`);
-        if (sections[i]!="None"){
-            button.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
+        if (sections[i]!="None" && scene_data['scene_same_hover_color_sections'] == "no"){
+            //button.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
+            button.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
 
-            let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
+            //let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
+            let color =  scene_data[`scene_section${sections[i]}`][`scene_section_hover_color${i+1}`];
             button.style.backgroundColor = hexToRgba(color, 0.2);
 
+
+        } 
+        if (sections[i]!="None" && scene_data['scene_same_hover_color_sections'] == "yes"){
+            //button.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
+            button.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
+
+            //let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
+            let color =  scene_default_hover_color;
+            button.style.backgroundColor = hexToRgba(color, 0.2);
+
+
+        }
+        if (sections[i]!="None"){
+            //button.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
+            button.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
+
+            //let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
+            let color =  scene_default_hover_color;
+            button.style.backgroundColor = hexToRgba(color, 0.2);
 
         } else {
             // button.innerHTML = "Table of Contents";

@@ -9,8 +9,8 @@ writeCookieValuesToSceneFields();
 document.addEventListener('DOMContentLoaded', redText);
 
 let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
-displaySceneEntries(openingSceneSections);
 tableOfContentsFieldOptions();
+displaySceneEntries(openingSceneSections);
 
 // Initialize visibility of orphan icon color field when page loads 
 orphanColorFieldVisibility();
@@ -29,6 +29,7 @@ function tableOfContentsFieldOptions () {
 	// document.getElementsByName("scene_section1[scene_section_hover_color1]")[0].parentElement.parentElement.parentElement;
 
 	if (tocStyle == "list"){
+		document.getElementsByName("scene_same_hover_color_sections")[0].value = "yes";
 		document.getElementsByName("scene_same_hover_color_sections")[0].parentElement.parentElement.style.display = "none";
 		document.getElementsByName("scene_section_number")[0].value = 0;
 		displaySceneEntries(0);
@@ -40,8 +41,8 @@ function tableOfContentsFieldOptions () {
 		document.getElementsByName("scene_section_number")[0].parentElement.parentElement.style.display = "block";
 		const singleColor = document.getElementsByName("scene_same_hover_color_sections")[0].value;
 		if (singleColor == "no"){
-			document.getElementsByName("scene_hover_text_color")[0].parentElement.parentElement.style.display = "block";
-			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "block";
+			document.getElementsByName("scene_hover_text_color")[0].parentElement.parentElement.style.display = "none";
+			document.getElementsByName("scene_hover_color")[0].parentElement.parentElement.style.display = "none";
 			for (let i = 1; i <= 6; i++){
 				document.getElementsByName("scene_section" + i + "[scene_section_hover_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "block";
 				document.getElementsByName("scene_section" + i + "[scene_section_hover_text_color" + i + "]")[0].parentElement.parentElement.parentElement.style.display = "block";
@@ -509,7 +510,7 @@ function writeCookieValuesToSceneFields() {
 
 			const sceneFieldNames = ["scene_published", "scene_location", "scene_infographic", "scene_tagline", "scene_info_entries", "scene_photo_entries", 
 				"scene_order", "scene_orphan_icon_action", "scene_orphan_icon_color", "scene_toc_style", "scene_same_hover_color_sections", "scene_hover_color", 
-				"scene_full_screen_button", "scene_text_toggle", "scene_section_number"];
+				"scene_full_screen_button", "scene_text_toggle", "scene_section_number", ];
 
 			// Fill in values for simple fields
 			sceneFieldNames.forEach((element) => {
@@ -526,6 +527,7 @@ function writeCookieValuesToSceneFields() {
 				document.getElementsByName("scene_photo" + i + "[scene_photo_internal" + i + "]")[0].value = sceneCookieValues["scene_photo_internal" + i];
 				document.getElementsByName("scene_section" + i + "[scene_section_title" + i + "]")[0].value = sceneCookieValues["scene_section_title" + i];
 				document.getElementsByName("scene_section" + i + "[scene_section_hover_color" + i + "]")[0].value = sceneCookieValues["scene_section_hover_color" + i];
+				document.getElementsByName("scene_section" + i + "[scene_section_hover_text_color" + i + "]")[0].value = sceneCookieValues["scene_section_hover_text_color" + i];
 			}
 		}
 	}
