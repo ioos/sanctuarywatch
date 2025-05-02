@@ -624,17 +624,16 @@ class Webcr_Scene {
                 'id'             => 'scene_toc_style',
                 'type'           => 'select',
                 'title'          => 'Table of contents style*',
-                'options'        => array("accordion" => "Accordion (Sections Allowed)", "list" => "List (default option) (No Sections)", "sectioned_list" => "Sectioned List (Sections Allowed)"),
-                'class'          => 'chosen',
+                'options'        => array("accordion" => "Accordion (Sections Allowed)", "list" => "List (default option, No Sections)", "sectioned_list" => "Sectioned List (Sections Allowed)"),
                 'default' => 'list',
-                'description' => 'What should the table of contents to the right of the scene look like? Should the icons be in sections? If an icon is to bb in a section, This can be done when you create a modal.',
+                'description' => 'What should the table of contents to the right of the scene look like? Should the icons be in sections? If so, the sections can be created here. However, you will need to assign your modals to them.',
             ),
             array(
                 'id'    => 'scene_same_hover_color_sections',
                 'type'  => 'select',
                 'title' => 'Single color for sections',
                 'options'        => array("no" => "No", "yes" => "Yes"),
-                'description' => 'Should all sections have the same hover color and hover text color?',
+                'description' => 'Should all sections have the same hover color?',
                 "default"   => "yes",
             ),
             array(
@@ -761,7 +760,7 @@ class Webcr_Scene {
                     array(
                         'id'          => 'scene_section_title' . $i,
                         'type'        => 'text',
-                        'title'       => 'Title',
+                        'title'       => 'Section Title',
                         'class'       => 'text-class',
                     ),
                     array(

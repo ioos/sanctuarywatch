@@ -9,8 +9,8 @@ writeCookieValuesToSceneFields();
 document.addEventListener('DOMContentLoaded', redText);
 
 let openingSceneSections = document.getElementsByName("scene_section_number")[0].value;
-tableOfContentsFieldOptions();
 displaySceneEntries(openingSceneSections);
+tableOfContentsFieldOptions();
 
 // Initialize visibility of orphan icon color field when page loads 
 orphanColorFieldVisibility();
@@ -56,7 +56,6 @@ function tableOfContentsFieldOptions () {
 			}
 		}
 	}
-
 }
 
 
