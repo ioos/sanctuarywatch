@@ -205,7 +205,7 @@ foreach ($terms_array as $term){
                 $tile_image = get_post_meta($instance["id"], "instance_tile")[0];
                 if ($instance["instance_legacy_content"] == "no") {
                     $instance_slug = get_post_meta($instance["id"], "instance_slug")[0]; 
-                    $instance_post_name = get_post($instance_overview_scene)->post_name;
+                    $instance_post_name = get_post($instance["instance_overview_scene"])->post_name;
                     $instance_link = $instance_slug . "/" . $instance_post_name;
                 } else {
                     $instance_link = $instance["instance_legacy_content_url"]; 
