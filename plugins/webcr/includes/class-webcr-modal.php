@@ -474,6 +474,8 @@ class Webcr_Modal {
                         $fieldOptions[2][0] = "selected ";
                         break;
                 }
+            } else {
+                $fieldOptions[2][0] = "selected ";
             }
 
             $field_length_dropdown = '<select name="field_length" id="field_length">';
@@ -605,7 +607,7 @@ class Webcr_Modal {
         if (isset($_GET["field_length"])) {
             $field_length = $_GET["field_length"];
         } else {
-            $field_length = "large";
+            $field_length = "small";
         }
 
         if ( $column === 'modal_location' ) {

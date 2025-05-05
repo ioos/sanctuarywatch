@@ -21,10 +21,6 @@
 
 add_action('wp_enqueue_scripts', 'enqueue_font_awesome');
 
-
-
-
-
   /**
    * Enqueues the theme's main stylesheet.
    *
@@ -38,27 +34,6 @@ add_action('wp_enqueue_scripts', 'enqueue_font_awesome');
     wp_enqueue_style( 'style', get_stylesheet_uri() );
   } 
   add_action( 'wp_enqueue_scripts', 'files' );
-
-/**
- * Enqueues Bootstrap's CSS library with dependency management.
- *
- * This function registers and enqueues the Bootstrap CSS library from a CDN.
- *
- * @return void
- */
-function enqueue_bootstrap_css(){
-  // Register the style with a valid $media parameter (e.g., 'all')
-  wp_register_style(
-      'bootstrap',
-      get_template_directory_uri() . '/assets/css/bootstrap.min.css',
-      array(), // Dependencies
-      null,    // Version
-      'all'    // Media type (Corrected: Changed from array to string)
-  );
-  wp_enqueue_style('bootstrap');
-}
-//add_action('wp_enqueue_scripts', 'enqueue_bootstrap_css');
-
 
   /**
    * Enqueues Bootstrap's JavaScript library with dependency management.
@@ -88,151 +63,6 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
     wp_enqueue_script( 'wp-api' );
   }
   add_action('wp_enqueue_scripts', 'enqueue_api_script');
-
-
-
-  /**
-   * Registers the 'scene' custom post type.
-   *
-   * This function sets up a new custom post type called 'Scenes'. It is publicly queryable, includes an archive page, 
-   * and rewrites the URL slug to the root of the site. The function is hooked into the 'init' action. The CPT 'scene' 
-   * supports titles and editor fields by default and is intended to represent individual scenes as distinct post 
-   * entries within WordPress.
-   *
-   * @return void
-   */
-  //attempting to rewrite scene base url
-  //for some reason, despite the post being already registed in the backend by Jai, without registering the new urls doesnt link ;-;
-  function register_scene_post_type (){
-    $args = array (
-      'labels' => array(
-        'name' => 'Scenes',
-        'singular_name' => 'Scene',
-      ),
-      'public' => true,
-      'has_archive' => true,
-      'rewrite' => array(
-        'slug' => '',
-        'with_front' => false,
-        )
-    );
-    
-    register_post_type( 'scene', $args);
-  }
-  // add_action('init', 'register_scene_post_type' );
-//   function add_custom_rewrite_rules() {
-//     add_rewrite_rule(
-//         '^channel-islands/([^/]+)/?$',
-//         'index.php?scene=$matches[1]',
-//         'top'
-//     );
-// }
-//   add_action('init', 'add_custom_rewrite_rules');
-
-  /**
-   * Registers the 'about' custom post type.
-   *
-   * This function sets up a new custom post type called 'about'. It
-   *
-   * @return void
-   */
-  //attempting to rewrite scene base url
-  // function register_about_post_type (){
-  //   $args = array (
-  //     'labels' => array(
-  //       'name' => 'About',
-  //       'singular_name' => 'About',
-  //     ),
-  //     'public' => true,
-  //     'has_archive' => true,
-  //     'rewrite' => array(
-  //       'slug' => 'about',
-  //       'with_front' => false,
-  //       )
-  //   );
-    
-  //   register_post_type( 'about', $args);
-  // }
-  // add_action('init', 'register_about_post_type' );
-
-  /**
-   * Adds rewrite rules for custom 'scene' post type URLs.
-   *
-   * This function creates a new rewrite rule that allows URLs to be structured by a scene location and scene name 
-   * for the custom post type 'scene'. The URLs will take the form of /{scene_location}/{scene_name}/. 
-   * This function uses `add_rewrite_rule` to dictate how URLs are intercepted and parsed by WordPress.
-   * The rule is added at the top of the rewrite rules, therefore processed before WordPress's default rules.
-   *
-   * @return void
-   */
-  // Add custom rewrite rules
-  // function scene_rewrite_rules() {
-  //   add_rewrite_rule(
-  //       '^([^/]+)/([^/]+)/?$',
-  //       'index.php?post_type=scene&scene_location=$matches[1]&name=$matches[2]',
-  //       'top'
-  //   );
-  // }
-  // add_action('init', 'scene_rewrite_rules');
-
-  /**
-   * Filters the permalink for a 'scene' custom post type.
-   *
-   * This function adjusts the permalink structure for posts of the 'scene' custom post type based on post metadata.
-   * It constructs a URL that includes a base identifier (`webcr-`), a concatenation of the first letters of each
-   * word in the `scene_location` metadata (excluding the last word), and the post name. This function is hooked into 
-   * the `post_type_link` filter, which allows it to modify the permalink URLs for the 'scene' post type on the fly 
-   * as WordPress generates them.
-   *
-   * @param string $post_link The original permalink URL.
-   * @param WP_Post $post The post object for which the permalink is being generated.
-   * @return string Modified permalink URL if the post type is 'scene', original URL otherwise.
-   */
-  //changing the scene url
-  // function scene_post_type_permalink($post_link, $post) {
-  //   if (is_object($post) && $post->post_type == 'scene') {
-  //       $postMeta = get_post_meta($post->ID);
-  //       //Undefined array key "scene_location"
-  //       $sceneLocation = $postMeta['scene_location'][0];
-  //       if ($sceneLocation) {
-  //           $scene_base_url = 'channel-islands';
-  //           $sceneArr = explode(' ', strtolower($sceneLocation));
-  //           $scene_letters = '';
-  //           for ($i = 0; $i < count($sceneArr) - 1; $i++) {
-  //               $scene_base_url = $scene_base_url . $sceneArr[$i];
-  //               $scene_letters = $scene_letters . substr( $sceneArr[$i], 0, 1);
-  //           }
-  //           //$post_title_url = $scene_letters . str_replace(" ", "-", strtolower($post->post_title));
-  //           $post_link = home_url("/$scene_base_url/{$post->post_name}/");
-  //       }
-  //   }
-  //   return $post_link;
-  // }
-  // add_filter('post_type_link', 'scene_post_type_permalink', 10, 2);
-
-  /**
-   * Sets up and flushes rewrite rules on plugin activation.
-   *
-   * This function is designed to be run on plugin activation. It ensures that the 'scene' custom post type and its associated
-   * rewrite rules are registered before flushing WordPress's rewrite rules to prevent 404 errors on newly created post types.
-   * The process involves three steps:
-   * 1. Registering the 'scene' post type by calling `register_scene_post_type()`.
-   * 2. Adding custom rewrite rules specific to the 'scene' post type through `scene_rewrite_rules()`.
-   * 3. Flushing the rewrite rules to apply changes using `flush_rewrite_rules()`.
-   * This function should be hooked to the `register_activation_hook` to properly initialize the post type and rewrite rules.
-   *
-   * @return void
-   */
-  // Flush rewrite rules on activation
-
-  //TODO ensures the custom post type and rewrite rules are registered and applied, which affects URL handling in WordPress.
-  // function scene_rewrite_flush() {
-  //   register_scene_post_type();
-  //   scene_rewrite_rules();
-  //   flush_rewrite_rules();
-  // }
-  // register_activation_hook(__FILE__, 'scene_rewrite_flush');
-
 
   /**
    * Retrieves arrays of scene information and photos for a specified post.
@@ -341,7 +171,8 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
       $xpath = new DOMXPath($dom);
 
       // Find the element with ID "icons"
-      $icons_element = $xpath->query('//*[@id="icons"]')->item(0);
+      $xpath_query = "//*[translate(@id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = 'icons']";
+      $icons_element = $xpath->query($xpath_query)->item(0);
 
       // If the element with ID "icons" is not found, terminate with an error message
       if($icons_element === null){
@@ -363,16 +194,7 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
       }
       // Sort the IDs alphabetically
       asort($child_ids);
-      /*
-      json file structure:
-      name:
-      title:
-      post-id:
-      function: 
-      modal:
-      scene:
-      external:
-      */ 
+
       // Iterate over the sorted IDs and create an associative array for each one
       for ($i = 0; $i < count($child_ids); $i++){
         // Create a new WP_Query object for the current ID
@@ -446,9 +268,6 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
     );
     return $args;
   }
-
-
-
 
   function modal_helper($child_post_id, $child_ids, $child_id, $idx = 0){
           //get icon_type to check if modal
@@ -646,33 +465,6 @@ function enqueue_plotly_script() {
   );
 }
 add_action('wp_enqueue_scripts', 'enqueue_plotly_script');
-function my_theme_enqueue_scripts() {
-    // Get the SVG URL (replace this with how you're getting it)
-  //  $svg_url = get_post_meta( get_the_ID(), 'scene_svg_url', true ); // Example: from post meta
-    $child_ids = get_post_meta( get_the_ID(), 'scene_child_ids', true ); // Get child_ids from post meta
-  //  $title_arr = get_post_meta( get_the_ID(), 'scene_data', true );
-  //  $scene_toc_style = get_post_meta( get_the_ID(), 'scene_toc_style', true );
-  //  $scene_full_screen_button = get_post_meta( get_the_ID(), 'scene_full_screen_button', true );
-  //  $scene_text_toggle = get_post_meta( get_the_ID(), 'scene_text_toggle', true );
-  //  $scene_same_hover_color_sections = get_post_meta( get_the_ID(), 'scene_same_hover_color_sections', true );
-  //  $scene_default_hover_color = get_post_meta( get_the_ID(), 'scene_default_hover_color', true );
-
-    // Localize the script, passing the SVG URL and child_ids
-    wp_localize_script( 'my-theme-script', 'my_script_vars', array(
- //       'svg_url' => $svg_url,
-        'child_ids' => $child_ids,
-   //     'is_logged_in' => is_user_logged_in(),
-     //   'post_id' => get_the_ID(),
-       // 'title_arr' => $title_arr,
-    //    'scene_toc_style' => $scene_toc_style,
-      //  'scene_full_screen_button' => $scene_full_screen_button,
-        //'scene_text_toggle' => $scene_text_toggle,
-   //     'scene_same_hover_color_sections' => $scene_same_hover_color_sections,
-     //   'scene_default_hover_color' => $scene_default_hover_color,
-    ) );
-}
-
-//add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_scripts',100 );
 
 
 function enqueue_google_tags_scripts() {
@@ -686,5 +478,3 @@ function enqueue_google_tags_scripts() {
 }
 add_action('wp_enqueue_scripts', 'enqueue_google_tags_scripts');
 ?>
-
-

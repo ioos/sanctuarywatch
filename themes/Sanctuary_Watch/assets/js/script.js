@@ -376,8 +376,9 @@ function has_mobile_layer(mob_icons, elemname){
     }
     for (let i = 0; i < mob_icons.children.length; i++) {
         let child = mob_icons.children[i];
-        let label = child.getAttribute('inkscape:label');
-        if (label === elemname){
+        let label = child.getAttribute('id');
+        let mobileElemName = elemname + "-mobile";
+        if (label === mobileElemName){
             //console.log(`found ${label}`);
             return true;
         }             
@@ -398,7 +399,7 @@ function has_mobile_layer(mob_icons, elemname){
 function get_mobile_layer(mob_icons, elemname){
     for (let i = 0; i < mob_icons.children.length; i++) {
         let child = mob_icons.children[i];
-        let label = child.getAttribute('inkscape:label');
+        let label = child.getAttribute('id');
         if (label === elemname){
             return child;
         }             
@@ -473,8 +474,11 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     if (!has_mobile_layer(mobile_icons, currIcon)){
                         key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
                     } else {
-                        key = get_mobile_layer(mobile_icons, currIcon);
-                        let temp = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                        currIconMobile = currIcon + "-mobile";
+                        key = get_mobile_layer(mobile_icons, currIconMobile);
+                
+                        let temp = svgElement.querySelector(`#${currIconMobile}`).cloneNode(true);
+
                         let tempId = temp.getAttribute("id");
                         key.setAttribute("id",  tempId);
                     }
