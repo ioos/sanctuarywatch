@@ -283,7 +283,7 @@ foreach ($results as $row) {
 
 
 let title_arr  = <?php echo json_encode($title_arr); ?>;
-let associated_modals  = <?php echo json_encode($associated_modals); ?>;
+let visible_modals  = <?php echo json_encode($associated_modals); ?>;
 
 </script>
 

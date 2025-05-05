@@ -140,7 +140,7 @@ class Webcr_Modal {
                 'title'          => 'Modal Status*',
                 'options'        => array("draft" => "Draft", "published" => "Published"),
                 'default' => 'draft',
-                'description' => 'Should the modal be live?',
+                'description' => 'Should the modal be live? If set to Draft, the assigned icon for this modal will behave as set in the scene option "Icon visibility in scene, if no associated modal". If set to Published, the icon will be visible in the scene.',
             ),
             array(
                 'id'             => 'modal_location',

@@ -563,17 +563,17 @@ class Webcr_Scene {
                 'title'   => 'Number of info entries*',
                 'description' => 'How many info links are there for the scene?',
                 'min'     => 0,    
-                 'default' => 1,    
+                 'default' => 0,    
                  'max'     => 6,         
                  'step'    => 1,             
-            ),   
+            ),  
             array(
                 'id'      => 'scene_photo_entries',
                 'type'    => 'range',
                 'title'   => 'Number of photo entries*',
                 'description' => 'How many photo links are there for the scene?',
                 'min'     => 0,    
-                 'default' => 1,    
+                 'default' => 0,    
                  'max'     => 6,         
                  'step'    => 1,             
             ),   
@@ -624,7 +624,7 @@ class Webcr_Scene {
                 'id'             => 'scene_toc_style',
                 'type'           => 'select',
                 'title'          => 'Table of contents style*',
-                'options'        => array("accordion" => "Accordion (Sections Allowed)", "list" => "List (default option, No Sections)", "sectioned_list" => "Sectioned List (Sections Allowed)"),
+                'options'        => array("accordion" => "Accordion (Sections Required)", "list" => "List (default option, No Sections)", "sectioned_list" => "Sectioned List (Sections Required)"),
                 'default' => 'list',
                 'description' => 'What should the table of contents to the right of the scene look like? Should the icons be in sections? If so, the sections can be created here. However, you will need to assign your modals to them.',
             ),
@@ -782,6 +782,7 @@ class Webcr_Scene {
         }
 
         // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
+        
         array_splice($fields, 5, 0, $infoFields);
         array_splice($fields, 12, 0, $photoFields);
         array_splice($fields, 28, 0, $sectionFields);
