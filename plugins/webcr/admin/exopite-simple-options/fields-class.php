@@ -172,30 +172,50 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Fields' ) ) {
 
 		}
 
+		// public function element_value( $value = null ) {
+
+		// 	$value = $this->value;
+
+		// 	if ( ! isset( $value ) && isset( $this->field['default'] ) && ! empty( $this->field['default'] ) ) {
+
+		// 		$default = $this->field['default'];
+
+		// 		if ( is_array( $default ) ) {
+
+		// 			if ( isset( $default['function'] ) && is_callable( $default['function'] ) ) {
+		// 				$args = ( isset( $default['args'] ) ) ? $default['args'] : '';
+
+		// 				return call_user_func( $default['function'], $args );
+		// 			}
+
+		// 		}
+
+		// 		return $default;
+
+		// 	}
+
+		// 	return $value;
+
+		// }
+
 		public function element_value( $value = null ) {
-
 			$value = $this->value;
-
-			if ( ! isset( $value ) && isset( $this->field['default'] ) && ! empty( $this->field['default'] ) ) {
-
+		
+			if ( ! isset( $value ) && array_key_exists( 'default', $this->field ) ) {
+		
 				$default = $this->field['default'];
-
-				if ( is_array( $default ) ) {
-
-					if ( isset( $default['function'] ) && is_callable( $default['function'] ) ) {
-						$args = ( isset( $default['args'] ) ) ? $default['args'] : '';
-
-						return call_user_func( $default['function'], $args );
-					}
-
+		
+				// If default is a callback array
+				if ( is_array( $default ) && isset( $default['function'] ) && is_callable( $default['function'] ) ) {
+					$args = isset( $default['args'] ) ? $default['args'] : '';
+					return call_user_func( $default['function'], $args );
 				}
-
+		
+				// Otherwise return raw default
 				return $default;
-
 			}
-
+		
 			return $value;
-
 		}
 
 		public function element_attributes( $el_attributes = array() ) {

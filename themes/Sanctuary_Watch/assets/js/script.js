@@ -1,4 +1,5 @@
 
+
 function hexToRgba(hex, opacity) {
     // Remove the hash if it's present
     hex = hex.replace(/^#/, '');
@@ -87,6 +88,7 @@ let thisScene;
 let sceneLoc;
 // let colors;
 let sectionObj = {};
+console.log('sectionObj' , sectionObj);
 let sectColors = {};
 
 if (!is_mobile()) {
@@ -227,7 +229,7 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 listItem.appendChild(anchor);
 
                 // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${scene_info_url}">${scene_info_text}</a> </div>`;
+                collapseListHTML += `<div> <a href="${scene_info_url}" target="_blank">${scene_info_text}</a> </div>`;
                 collapseListHTML += '</div>';
     }
     // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
@@ -340,6 +342,18 @@ async function make_title() {
 
         titleDom.append(row);
         // return scene_location;
+        //console.log(scene_data);
+
+ 
+        let instance_overview_scene = scene_data['instance_overview_scene'];
+        if (instance_overview_scene == null){
+            instance_overview_scene = 'None';
+        }
+        // Google Tags
+        sceneLoaded(title, scene_data['post_ID'], instance_overview_scene, gaMeasurementID);
+        setupSceneMoreInfoLinkTracking(title, scene_data['post_ID']);
+        setupSceneImagesLinkTracking(title, scene_data['post_ID']);
+
         return scene_data;
 
     } catch (error) {
@@ -557,6 +571,127 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
    
 }
 
+
+/**
+ * Handles the visibility and styling of icons within an SVG element based on their association with modals.
+ * 
+ * This function applies specific behaviors to "orphaned" icons (icons not associated with any modal)
+ * based on the `scene_orphan_icon_action` and `scene_orphan_icon_color` properties from the `scene_data` object.
+ * It also adds a tooltip to orphaned icons when hovered.
+ * 
+ * @param {SVGElement} svgElement - The SVG element containing the icons to be processed.
+ * @param {string[]} visible_modals - An array of modal IDs associated with the icons.
+ * 
+ * Behavior:
+ * - Resets styles for all top-level icons.
+ * - Applies specific styles or behaviors to orphaned icons based on the `scene_orphan_icon_action`:
+ *   - `"hide"`: Hides the icon by setting its opacity to 0 and disabling pointer events.
+ *   - `"translucent"`: Makes the icon partially transparent by setting its opacity to 0.25.
+ *   - `"color"`: Changes the fill color of the icon to the value specified in `scene_orphan_icon_color`.
+ *   - Default: Logs a warning for unknown modes.
+ * - Adds a tooltip to orphaned icons with the message "Not currently available" when hovered.
+ * 
+ * Notes:
+ * - Only top-level icons (direct children of the `g#icons` group) are processed.
+ * - The function assumes the presence of a global `scene_data` object with the required properties.
+ * 
+ * Example Usage:
+ * ```javascript
+ * const svgElement = document.querySelector('svg#mySvg');
+ * const associatedModals = ['modal1', 'modal2'];
+ * handleIconVisibility(svgElement, associatedModals);
+ * ```
+ */
+function handleIconVisibility(svgElement, visible_modals) {
+    if (!svgElement || !Array.isArray(visible_modals)) return;
+
+    const modalSet = new Set(visible_modals);
+    const iconGroup = svgElement.querySelector('g#icons');
+    const topLevelIcons = Array.from(iconGroup.children)
+        .filter(el => el.tagName === 'g' && el.id)
+        .map(el => el.id);
+
+    svgElement.querySelectorAll("g[id]").forEach(icon => {
+        const iconId = icon.id;
+
+        // Only apply logic to top-level icons
+        if (!topLevelIcons.includes(iconId)) return;
+
+        const isAssociated = modalSet.has(iconId);
+        const mode = scene_data['scene_orphan_icon_action'];
+        const fill_color = scene_data['scene_orphan_icon_color'];
+
+        // Reset styles
+        icon.style.opacity = "";
+        icon.style.display = "";
+        icon.style.pointerEvents = "";
+        icon.querySelectorAll("*").forEach(el => {
+            el.style.fill = "";
+        });
+
+        if (mode === "visible") {
+            return; // Do nothing, show all
+        }
+
+        if (isAssociated) {
+            return; // Leave associated icons unchanged
+        }
+
+        // Apply behavior to orphaned top-level icons
+        switch (mode) {
+            case "hide":
+                icon.style.opacity = "0";
+                icon.style.pointerEvents = "none";
+                break;
+
+            case "translucent":
+                icon.style.opacity = "0.25";
+                break;
+
+            case "color":
+                icon.querySelectorAll("*").forEach(el => {
+                    el.style.fill = fill_color;
+                });
+                break;
+
+            default:
+                console.warn("Unknown orphan icon mode:", mode);
+        }
+
+        // Add tooltip for orphan icons
+        icon.addEventListener("mouseenter", function (e) {
+            const tooltip = document.createElement("div");
+            tooltip.className = "icon-tooltip";
+            tooltip.textContent = "Not currently available";
+            tooltip.style.position = "absolute";
+            tooltip.style.padding = "6px 10px";
+            tooltip.style.backgroundColor = "#333";
+            tooltip.style.color = "#fff";
+            tooltip.style.borderRadius = "4px";
+            tooltip.style.fontSize = "13px";
+            tooltip.style.pointerEvents = "none";
+            tooltip.style.zIndex = "9999";
+            tooltip.style.top = e.pageY + 10 + "px";
+            tooltip.style.left = e.pageX + 10 + "px";
+            tooltip.id = "orphanIconTooltip";
+            document.body.appendChild(tooltip);
+        });
+
+        icon.addEventListener("mousemove", function (e) {
+            const tooltip = document.getElementById("orphanIconTooltip");
+            if (tooltip) {
+                tooltip.style.top = e.pageY + 10 + "px";
+                tooltip.style.left = e.pageX + 10 + "px";
+            }
+        });
+
+        icon.addEventListener("mouseleave", function () {
+            const tooltip = document.getElementById("orphanIconTooltip");
+            if (tooltip) tooltip.remove();
+        });
+    });
+}
+
 // Below is the function that will be used to include SVGs within each scene
 
 /**
@@ -569,7 +704,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
  * @returns {void} `void` - Modifies the DOM but does not return any value.
  * @throws {Error} - Throws an error if the network response is not OK or if the SVG cannot be fetched or parsed.
  */
-
 async function loadSVG(url, containerId) {
     try {
         // Step 1: Fetch the SVG content
@@ -672,7 +806,7 @@ async function loadSVG(url, containerId) {
                     }
                 });
                 
-                
+                handleIconVisibility(svgElement, visible_modals);
                 container.appendChild(svgElement);
                 // flicker_highlight_icons();
                 toggle_text();
@@ -699,6 +833,7 @@ async function loadSVG(url, containerId) {
                 }
             });
             
+            handleIconVisibility(svgElement, visible_modals);
             container.appendChild(svgElement);
             highlight_icons();
  
@@ -732,40 +867,144 @@ async function loadSVG(url, containerId) {
  *
  * @returns {void} - `void` Modifies DOM element styles in place.
  */
-function highlight_icons(){
-    for (let key in child_obj){
+// function highlight_icons(){
+//     for (let key in child_obj){
+//         let elem = document.querySelector('g[id="' + key + '"]');
+
+//         elem.addEventListener('mouseover', function(){
+//             console.log("hovering over " + key);
+//             alert(scene_data);
+
+//             let elemCollection = elem.querySelectorAll("*");
+//             elemCollection.forEach(subElem => {
+
+//                 if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
+
+//                     let section_name = sectionObj[key];
+//                     let section_num = section_name.substring(section_name.length - 1, section_name.length);
+
+//                     let this_color = `scene_section_hover_color${section_num}`;
+//                     subElem.style.stroke = scene_data[sectionObj[key]][this_color];
+//                 } else{
+//                     subElem.style.stroke = scene_default_hover_color;
+//                 }
+
+//                 subElem.style.strokeWidth = "3px";
+//             });
+//         });
+//         elem.addEventListener('mouseout', function(){
+
+//             let elemCollection = elem.querySelectorAll("*");
+//             elemCollection.forEach(subElem => {
+
+//             subElem.style.stroke = "";
+//             subElem.style.strokeWidth = "";
+//             });
+//         });
+//     }  
+// }
+
+function highlight_icons() {
+    for (let key in child_obj) {
         let elem = document.querySelector('g[id="' + key + '"]');
 
-        elem.addEventListener('mouseover', function(){
+        // console.log('key:', key);
+        // console.log('child_obj:', child_obj);
+        // console.log('child_obj[key].original_name:', child_obj[key].original_name);
+        // console.log('child_obj[key].section_name:',child_obj[key].section_name);
+        // console.log('sectionObj:',sectionObj); 
+        // console.log('sectionObj[abalone]:',sectionObj['abalone']);  
+        // console.log('sectionObj[key]:',sectionObj[key]);
+        // console.log('scene_data:',scene_data);
+        // console.log('scene_same_hover_color_sections:', scene_same_hover_color_sections);
+
+        elem.addEventListener('mouseover', function (e) {
 
             let elemCollection = elem.querySelectorAll("*");
+            let hoverColor;
+            let hoverTextColor;   
+
+
             elemCollection.forEach(subElem => {
-
-                if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
-
-                    let section_name = sectionObj[key];
-                    let section_num = section_name.substring(section_name.length - 1, section_name.length);
-
+                if (scene_same_hover_color_sections !== "yes" && sectionObj[key] !== "None") {
+                    //let section_name = sectionObj[key];
+                    let section_name = child_obj[key].original_name;
+                    //let section_num = section_name.slice(-1);
+                    let section_num = child_obj[key].section_name;
+                    let this_scene_section = `scene_section${section_num}`;
                     let this_color = `scene_section_hover_color${section_num}`;
-                    subElem.style.stroke = scene_data[sectionObj[key]][this_color];
-                } else{
-                    subElem.style.stroke = scene_default_hover_color;
+                    let text_color = `scene_section_hover_text_color${section_num}`;
+                    hoverColor = scene_data[this_scene_section][this_color];
+                    hoverTextColor = scene_data[this_scene_section][text_color];
+                    subElem.style.stroke = hoverColor;
+                } else {
+                    hoverColor = scene_default_hover_color;
+                    hoverTextColor = scene_default_hover_text_color;
+                    subElem.style.stroke = hoverColor;
                 }
 
                 subElem.style.strokeWidth = "3px";
             });
-        });
-        elem.addEventListener('mouseout', function(){
 
+            // Create and show the tooltip box
+            const tooltip = document.createElement("div");
+            tooltip.className = "hover-key-box";
+            tooltip.textContent = child_obj[key].title;
+            tooltip.style.position = "absolute";
+            tooltip.style.padding = "5px 10px";
+            tooltip.style.backgroundColor = hoverColor;
+            tooltip.style.color = hoverTextColor;
+            tooltip.style.borderRadius = "4px";
+            tooltip.style.fontSize = "14px";
+            tooltip.style.pointerEvents = "none";
+            tooltip.style.zIndex = "9999";
+            tooltip.id = "hoverKeyTooltip";
+            document.body.appendChild(tooltip);
+
+            // Initial position
+            moveTooltip(e, elem, tooltip);
+        });
+
+        elem.addEventListener('mousemove', function (e) {
+            const tooltip = document.getElementById("hoverKeyTooltip");
+            if (tooltip) {
+                moveTooltip(e, elem, tooltip);
+            }
+        });
+
+        elem.addEventListener('mouseout', function () {
             let elemCollection = elem.querySelectorAll("*");
             elemCollection.forEach(subElem => {
-
-            subElem.style.stroke = "";
-            subElem.style.strokeWidth = "";
+                subElem.style.stroke = "";
+                subElem.style.strokeWidth = "";
             });
+
+            // Remove the tooltip
+            const tooltip = document.getElementById("hoverKeyTooltip");
+            if (tooltip) {
+                tooltip.remove();
+            }
         });
-    }  
+    }
+
+    function moveTooltip(e, elem, tooltip) {
+        const svg = elem.closest('svg');
+        if (!svg) return;
+
+        const svgRect = svg.getBoundingClientRect();
+        const svgMidX = svgRect.left + (svgRect.width / 2);
+
+        if (e.pageX > svgMidX) {
+            // On the right half: show tooltip to the left
+            tooltip.style.left = (e.pageX - tooltip.offsetWidth - 15) + "px";
+        } else {
+            // On the left half: show tooltip to the right
+            tooltip.style.left = (e.pageX + 15) + "px";
+        }
+        tooltip.style.top = (e.pageY + 10) + "px";
+    }
 }
+
 
 /**
  * Adds flicker effects to SVG elements based on `child_obj` keys, meant for tablet layout. 
@@ -788,6 +1027,7 @@ function flicker_highlight_icons() {
                 let section_num = section_name.substring(section_name.length - 1, section_name.length);
 
                 let this_color = `scene_section_hover_color${section_num}`;
+                let text_color = `scene_section_hover_text_color${section_num}`;
                 elem.style.stroke = scene_data[sectionObj[key]][this_color];
                 } else {
                     elem.style.stroke = scene_default_hover_color;
@@ -964,6 +1204,9 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  * This function is called for each tab, populating one or more figures (and other corresponding info)
  */
 function render_tab_info(tabContentElement, tabContentContainer, info_obj){
+
+    let postID = info_obj["postID"];
+    let title = info_obj['figureTitle'];
     
     const containerDiv = document.createElement('div');
     containerDiv.style.background = '#e3e3e354';
@@ -996,7 +1239,6 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         firstLink.innerHTML = icon1 + firstLink.innerHTML;
         firstLink.style.textDecoration = 'none';
         firstLink.style.color = '#03386c';
-
         leftCellDiv.appendChild(firstLink);
     }
 
@@ -1031,6 +1273,22 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     const figureDiv = document.createElement('div');
     figureDiv.classList.add('figure');
 
+    //Create a separator to make this figure distinct from others
+    const separator = document.createElement('div');
+    separator.classList.add("separator");
+    separator.innerHTML = '<hr style="border-bottom: 1px rgb(252, 252, 252);">';
+    figureDiv.appendChild(separator);
+
+
+    //CREATE THE FIGURE TITLE
+    const figureTitle = document.createElement("div");
+    figureTitle.classList.add('figureTitle');
+    figureTitle.innerHTML = info_obj['figureTitle'];
+    figureTitle.style.marginBottom = '2px';
+    figureDiv.appendChild(figureTitle);
+
+
+    //CREATE THE FIGURE
     let img;
     let figureType = info_obj["figureType"];
 
@@ -1043,7 +1301,9 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             } else {
                 img.alt = '';
             }
-            figureDiv.appendChild(img);       
+            figureDiv.appendChild(img);
+            window.dataLayer = window.dataLayer || [];
+            figureInternalImageLoaded(title, postID, gaMeasurementID); 
         break;
 
         case "External":
@@ -1054,15 +1314,17 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             } else {
                 img.alt = '';
             }
-            figureDiv.appendChild(img);       
+            figureDiv.appendChild(img);
+            figureExternalImageLoaded(title, postID, gaMeasurementID);    
         break;
 
         case "Interactive":
             img = document.createElement('div'); // Create a div to hold the plot
             img.id =  "javascript_figure_target";
             let interactive_arguments = info_obj["figure_interactive_arguments"];
-            producePlotlyLineFigure("javascript_figure_target", interactive_arguments);
+            producePlotlyLineFigure("javascript_figure_target", interactive_arguments, postID);
             figureDiv.appendChild(img);
+            figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
         break;
 
 
@@ -1103,7 +1365,8 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
                 script.remove(); // Remove the script tag from tempDiv
             });
             // Inject remaining HTML into the codeDiv
-            codeDiv.innerHTML = tempDiv.innerHTML;      
+            codeDiv.innerHTML = tempDiv.innerHTML;
+            figureCodeDisplayLoaded(title, postID, gaMeasurementID);  
         break;
 
     }
@@ -1139,7 +1402,18 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
     // Add the details element to the tab content element
     // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
-    
+
+
+    //Google tag registration for figure science and data links
+    if (info_obj['scienceText']!=''){
+        setupFigureScienceLinkTracking(postID);
+    }
+    if (info_obj['dataLink']!=''){
+        setupFigureDataLinkTracking(postID);
+    }
+
+
+    //Finish the containers and give them the correct properties.
     switch (figureType) {
         case "Internal":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
@@ -1150,36 +1424,78 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         case "Interactive":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
                 
-                let plotDiv = document.getElementById("plotlyFigure");
-                plotDiv.style.width = "100%";
+                let plotDiv = document.querySelector("#plotlyFigure");
+                try {
+                    plotDiv.style.width = "100%";
+                } catch {};
             break;
         case "Code":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
              break;
     }
 
-    //Resize the plotly graph if the tab that it is inside of it activated. This code is essential. 
+    // //Resize the plotly graph if the tab that it is inside of is activated. This code is essential. 
+    // const observer = new MutationObserver(mutations => {
+    //     mutations.forEach(mutation => {
+    //         if (mutation.target.classList.contains("show") && mutation.target.classList.contains("active")) {
+    //             console.log(`Detected tab activation: ${mutation.target.id}`);
+    
+    //             // Find Plotly container inside the newly activated tab
+    //             let plotDiv = mutation.target.querySelector("#plotlyFigure");
+    //             if (plotDiv) {
+    //                 console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
+    //                 Plotly.relayout(plotDiv, { autosize: true });
+    //                 Plotly.Plots.resize(plotDiv);
+    //             }
+    //         }
+    //     });
+    // });    
+    // // Observe all tab-pane elements for class changes
+    // document.querySelectorAll(".tab-pane").forEach(tab => {
+    //     observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+    // });
+    // Resize the Plotly graph if the tab it's inside of is activated
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-            if (mutation.target.classList.contains("show") && mutation.target.classList.contains("active")) {
+            const isActivated = mutation.target.classList.contains("show") &&
+                                mutation.target.classList.contains("active");
+
+            if (isActivated) {
                 console.log(`Detected tab activation: ${mutation.target.id}`);
-    
-                // Find Plotly container inside the newly activated tab
-                let plotDiv = mutation.target.querySelector("#plotlyFigure");
-                if (plotDiv) {
-                    console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
-                    Plotly.relayout(plotDiv, { autosize: true });
-                    Plotly.Plots.resize(plotDiv);
-                }
+
+                let attempts = 10; // Max retry attempts
+                const interval = 100; // ms between retries
+
+                const waitForPlotDiv = () => {
+                    const plotDiv = mutation.target.querySelector("#plotlyFigure");
+
+                    if (plotDiv) {
+                        console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
+                        try {
+                            Plotly.relayout(plotDiv, { autosize: true });
+                            Plotly.Plots.resize(plotDiv);
+                        } catch (err) {
+                            console.error("Plotly resize error:", err);
+                        }
+                    } else if (attempts > 0) {
+                        attempts--;
+                        setTimeout(waitForPlotDiv, interval);
+                    } else {
+                        console.warn(`Plotly figure not found in ${mutation.target.id} after retries.`);
+                    }
+                };
+
+                waitForPlotDiv();
             }
         });
-    });    
+    });
+
     // Observe all tab-pane elements for class changes
     document.querySelectorAll(".tab-pane").forEach(tab => {
         observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
     });
-    
-     
+
+         
 }
 
 /**
@@ -1218,6 +1534,9 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
             //all_figure_data = data;
             all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
             all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
+            
+
+
             if (!all_figure_data){
                 //we don't create anything here...
                 //don't have to render any of the info
@@ -1225,10 +1544,13 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                 return;
                 
             } else{
-                // tabContentContainer.setAttribute("display", "");
+                // tabContentContainer.setAttribute("display", "");       
+
                 for (let idx in all_figure_data){
                     figure_data = all_figure_data[idx];
-                    console.log(figure_data)
+
+    
+
                     let external_alt = '';
                     if (figure_data['figure_path']==='External'){
                         img = figure_data['figure_external_url'];
@@ -1238,6 +1560,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                         img = figure_data['figure_image'];
                     } // add smth here for external
                     info_obj = {
+                    "postID" : figure_data.id,
                     "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
                     "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
                     "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
@@ -1249,10 +1572,17 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                     "longCaption": figure_data["figure_caption_long"],
                     //"interactive": figure_data["figure_path"],
                     "figureType": figure_data["figure_path"],
+                    "figureTitle": figure_data["figure_title"],
                     "figure_interactive_arguments": figure_data["figure_interactive_arguments"]                
                     };
-                    render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure
-                }
+                    
+                    // window.addEventListener("load", function () {
+                    //     // Safe to access styles, layout, Plotly, etc.
+                    //     render_tab_info(tabContentElement, tabContentContainer, info_obj);
+                    // });
+                    render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure 
+                   
+                }  
             }
         })
     .catch(error => console.error('Error fetching data:', error));
@@ -1289,6 +1619,7 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
  *
  */
 function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
+
     // tab_id = tab_label.replace(/\s+/g, '_').replace(/[()]/g, '_');
     // title = title.replace(/\s+/g, '_').replace(/[()]/g, '_');
     tab_id = tab_label.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_'); //instead of tab id, it should just be the index (figure_data)
@@ -1375,9 +1706,12 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
             alert('Failed to copy link. Please try again.');
         }
     }
-    
-
     fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
+    
+    //Google tags triggers
+    modalTabLoaded(tab_label, modal_id, tab_id, gaMeasurementID);
+    setupModalMoreInfoLinkTracking(modal_id);
+    setupModalImagesLinkTracking(modal_id);
 }
 
 
@@ -1477,7 +1811,7 @@ function render_modal(key){
                 listItem.appendChild(anchor);
 
                 // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
+                collapseListHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
                 collapseListHTML += '</div>';
             }
             //for photos:
@@ -1514,7 +1848,7 @@ function render_modal(key){
                     listItem.appendChild(anchor);
     
                     // collapseList.appendChild(listItem);
-                    collapsePhotoHTML += `<div> <a href="${modal_info_url}">${modal_info_text}</a> </div>`;
+                    collapsePhotoHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
                     collapsePhotoHTML += '</div>';
                 }
             let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
@@ -1558,11 +1892,10 @@ function render_modal(key){
                 trapFocus(mdialog);
               
             }
+            // Google Tags
+            modalWindowLoaded(title, modal_id, gaMeasurementID);
         // });
             
-
-
-
         })
     .catch(error => console.error('Error fetching data:', error));
     
@@ -1720,7 +2053,7 @@ function toggle_text() {
     g.appendChild(rect);
     g.appendChild(text);
     g.setAttribute("transform", `translate(${viewBox.width - 70}, 10)`);
-    svg.appendChild(g);
+    //svg.appendChild(g);
 
     const toggleGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
@@ -1772,14 +2105,17 @@ function toggle_text() {
  * called in table_of_contents, if user has selected sectioned list option in WP
  */
 function sectioned_list(){
+
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
+        //console.log('section:', section);
 
         if (!sections.includes(section) && section!='None') {
             sections.push(section);
         }
         sectionObj[key] = section;
+        //console.log('sectionObj[key]]:', sectionObj[key]); 
     }
     sections.sort();
     sections.push('None');
@@ -1791,30 +2127,44 @@ function sectioned_list(){
     // let colorIdx = 0;
 
     for (let i = 0; i < sections.length; i++) {
-    
+
         let sect = document.createElement("div");
         // sect.classList.add("accordion-item");
 
         let heading = document.createElement("h5");
         heading.setAttribute("id", `heading${i}`);
-        if (sections[i] != "None"){
+        if (sections[i] != "None" && scene_data['scene_same_hover_color_sections'] == "no"){
             // heading.innerHTML = sections[i];
-            heading.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
-            let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
+            heading.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
+            let color =  scene_data[`scene_section${sections[i]}`][`scene_section_hover_color${i+1}`];
+            //let textcolor =  scene_data[`scene_section${sections[i]}`][`scene_section_hover_text_color${i+1}`];
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
-            // if (scene_same_hover_color_sections != "yes"){
-            //     heading.style.backgroundColor = hexToRgba(color, 0.3);
-            // }
-            // heading.style.backgroundColor = hexToRgba(color, 0.3);
             heading.style.padding = '0 5px';
-        } else {
+        }
+        if (sections[i] != "None" && scene_data['scene_same_hover_color_sections'] == "yes"){
+            console.log('testing1')
+            // heading.innerHTML = sections[i];
+            heading.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
+            let color =  scene_default_hover_color;
+            //let textcolor =  scene_default_hover_text_color;
+            heading.style.backgroundColor = hexToRgba(color, 0.2);
+            heading.style.color = 'black';
+            heading.style.display = 'inline-block';
+            heading.style.padding = '0 5px';
+        }
+        if (sections[i] == "None"){
+            console.log('testing2')
             heading.innerHTML = 'No Section';
             let color = scene_default_hover_color;
+            //let textcolor = scene_default_hover_text_color;
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
+        }   
+        else {
+            //use the section above in here to put it back the way it was before. 
         }
 
         sect.appendChild(heading);
@@ -1873,42 +2223,59 @@ function toc_sections() {
 
     for (let i = 0; i < sections.length; i++) {
 
-
         let sect = document.createElement("div");
         sect.classList.add("accordion-item");
-
         let heading = document.createElement("h2");
         heading.classList.add("accordion-header");
         heading.setAttribute("id", `heading${i}`);
-
         let button = document.createElement("button");
-        // let color = scene_sections[sections[i]];
-      
-
-        // button.classList.add("accordion-button");
         button.classList.add("accordion-button", "collapsed");
         button.setAttribute("type", "button");
         button.setAttribute("data-bs-toggle", "collapse");
         button.setAttribute("data-bs-target", `#toccollapse${i}`);
         button.setAttribute("aria-expanded", "false");
         button.setAttribute("aria-controls", `toccollapse${i}`);
-        if (sections[i]!="None"){
-            button.innerHTML = scene_data[sections[i]][`scene_section_title${i+1}`];
-
-            let color =  scene_data[sections[i]][`scene_section_hover_color${i+1}`];
-            button.style.backgroundColor = hexToRgba(color, 0.2);
 
 
+        const title_test = scene_data?.[`scene_section${sections[i]}`]?.[`scene_section_title${i + 1}`];
+        if (title_test) {
+            console.log("Title found:", title_test);
         } else {
-            // button.innerHTML = "Table of Contents";
+            const title_test = "None";
+            console.log("Title not found:", title_test);
+        }
+
+
+        if (sections[i]!="None" && title_test != "None"){
+
+            let scene_section_title = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
+            console.log('scene_section_title', scene_section_title);
+            if (scene_data['scene_same_hover_color_sections'] == "no" && scene_section_title != ""){
+                button.innerHTML = scene_section_title;
+
+                let scene_section_color =  scene_data[`scene_section${sections[i]}`][`scene_section_hover_color${i+1}`];
+                button.style.backgroundColor = hexToRgba(scene_section_color, 0.2);
+            } 
+            if (scene_data['scene_same_hover_color_sections'] == "yes" && scene_section_title != ""){
+                button.innerHTML = scene_section_title;
+                let color =  scene_default_hover_color;
+                button.style.backgroundColor = hexToRgba(color, 0.2);
+            } else {}
+        }
+
+        if (sections[i]=="None" || title_test == "None"){
             button.innerHTML = 'No Section';
             let color = scene_default_hover_color;
             button.style.backgroundColor = hexToRgba(color, 0.2);
+
+        } else {
+            // button.innerHTML = 'No Section';
+            // let color = scene_default_hover_color;
+            // button.style.backgroundColor = hexToRgba(color, 0.2);
             // button.style.color = 'black';
             // button.style.display = 'inline-block';
         }
         
-
         let arrowSpan = document.createElement("span");
         arrowSpan.classList.add("arrow");
         button.appendChild(arrowSpan);
@@ -1938,7 +2305,13 @@ function toc_sections() {
         tocCollapse.appendChild(tocbody);
 
         sect.appendChild(tocCollapse);
-        toc_group.appendChild(sect);
+
+
+        if (title_test != "") {
+            toc_group.appendChild(sect);;
+        } else {
+        }
+        //toc_group.appendChild(sect); //original options creakes blank boxes
     }
     toc_container.appendChild(toc_group);
 }
@@ -2048,8 +2421,9 @@ function table_of_contents(){
 
                 let subElements = svg_elem.querySelectorAll("*");
                 subElements.forEach(subElement => {
+                    //if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
                     if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
-
+                        
                         let section_name = sectionObj[key];
                         let section_num = section_name.substring(section_name.length - 1, section_name.length);
 

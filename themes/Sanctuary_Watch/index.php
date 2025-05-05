@@ -1,12 +1,4 @@
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HQV3WX3V2W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-HQV3WX3V2W');
-</script>
 <?php
 /**
  * Primary Page Template for Sanctuary Watch
@@ -52,7 +44,6 @@ if ($instances_query->have_posts()) {
         $instance_overview_scene = get_post_meta($instance_id, 'instance_overview_scene', true); 
         $instance_legacy_content_url = get_post_meta($instance_id, 'instance_legacy_content_url', true);
 
-
         if ($instance_slug) {
             $instance_slugs[] = [$instance_slug, $instance_overview_scene]; 
         }
@@ -65,13 +56,21 @@ if ($instances_query->have_posts()) {
     // echo 'No instances found.';
 }
 
-
-
 ?>
 
 
-
 <body>
+
+<!-- // Google Tags Container ID call from wp_options  index.php-->
+<?php
+$settings = get_option('webcr_settings');
+$google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_js($settings['google_tags_container_id']) : '';
+?>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo $google_tags_container_id; ?>"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
 <div id="entire_thing" style="
  
   max-width: 1700px !important;
@@ -204,9 +203,16 @@ foreach ($terms_array as $term){
             if ($instance != null) {
                 $tile_image = get_post_meta($instance["id"], "instance_tile")[0];
                 if ($instance["instance_legacy_content"] == "no") {
-                    $instance_slug = get_post_meta($instance["id"], "instance_slug")[0]; 
-                    $instance_post_name = get_post($instance["instance_overview_scene"])->post_name;
+                    $instance_slug = get_post_meta($instance["id"], "instance_slug")[0];
+                    $instance_overview_scene = get_post_meta($instance["id"], 'instance_overview_scene', true); 
+                    $instance_post_name = get_post($instance_overview_scene)->post_name;
                     $instance_link = $instance_slug . "/" . $instance_post_name;
+
+                    // error_log('instance'.  $instance["id"]);
+                    // error_log('instance_slug'. $instance_slug);
+                    // error_log('$instance_overview_scene'.  $instance_overview_scene);
+                    // error_log('instance_post_name'.  $instance_post_name);
+                    // error_log('instance_link'.  $instance_link);
                 } else {
                     $instance_link = $instance["instance_legacy_content_url"]; 
                 }

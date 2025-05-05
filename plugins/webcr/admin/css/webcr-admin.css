@@ -189,6 +189,12 @@
   margin-top: 10px;
 }
 
+.figureTitle{
+  font-size: 15px;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
 .captionOptions{
   font-size: 15px;
 }

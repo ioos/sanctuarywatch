@@ -1,20 +1,28 @@
 // Code for plotting time series data with a plotly line
 
-async function producePlotlyLineFigure(targetFigureElement, interactive_arguments){
+async function producePlotlyLineFigure(targetFigureElement, interactive_arguments, postID){
     try {
         await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
 
         //const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
         const rawField = interactive_arguments;
-
         const figureArguments = Object.fromEntries(JSON.parse(rawField));
         const rootURL = window.location.origin;
 
         //Rest call to get uploaded_path_json
-        const figureRestCall = rootURL + "/wp-json/wp/v2/figure?_fields=uploaded_path_json";
+        if (postID == null) {
+            // ADMIN SIDE POST ID GRAB
+            figureID = document.getElementsByName("post_ID")[0].value;
+        }
+        if (postID != null) {
+            // THEME SIDE POST ID GRAB
+            figureID = postID;
+        }
+
+        const figureRestCall = `${rootURL}/wp-json/wp/v2/figure/${figureID}?_fields=uploaded_path_json`;
         const response = await fetch(figureRestCall);
         const data = await response.json();
-        const uploaded_path_json = data[0].uploaded_path_json;
+        const uploaded_path_json = data.uploaded_path_json;
 
         const restOfURL = "/wp-content" + uploaded_path_json.split("wp-content")[1];
         const finalURL = rootURL + restOfURL;
@@ -62,34 +70,72 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 hovertemplate: 
                 figureArguments['XAxisTitle'] + ': %{x}<br>' +  // Custom label for x-axis
                 figureArguments['YAxisTitle'] + ': %{y}' // Custom label for y-axis
-              };
-              allLinesPlotly.push(singleLinePlotly);
+                };
+                //console.log(singleLinePlotly);
+                allLinesPlotly.push(singleLinePlotly);
+
         }
-          
-          var layout = {
-            xaxis: {
-              title: {
-                text: figureArguments['XAxisTitle']
-              },
-              linecolor: 'black', 
-              linewidth: 1,
-              range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
-            },
-            yaxis: {
-              title: {
-                text: figureArguments['YAxisTitle']
-              },
-              linecolor: 'black', 
-              linewidth: 1,
-              range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
-            }
-          };
-          const config = {
+
+        var container = document.getElementById('javascript_figure_target');
+
+        //ADMIN SIDE GRAPH DISPLAY SETTINGS
+        if (window.location.href.includes("wp-admin/post.php")) {
+            var layout = {
+                xaxis: {
+                    title: {
+                    text: figureArguments['XAxisTitle']
+                    },
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
+                },
+                yaxis: {
+                    title: {
+                    text: figureArguments['YAxisTitle']
+                    },
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
+                },
+                autosize: true, 
+                };
+            const config = {
+                responsive: true  // This makes the plot resize with the browser window
+                };
+            Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
+
+        }
+        //ADMIN SIDE GRAPH DISPLAY SETTINGS
+        else {
+            var layout = {
+                xaxis: {
+                    title: {
+                    text: figureArguments['XAxisTitle']
+                    },
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
+                },
+                yaxis: {
+                    title: {
+                    text: figureArguments['YAxisTitle']
+                    },
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
+                },
+                //autosize: true, 
+                width: container.clientWidth, 
+                height: container.clientHeight
+                };
+            const config = {
             responsive: true  // This makes the plot resize with the browser window
-          };
+            };
+            document.getElementById("plotlyFigure").style.setProperty("width", "100%", "important");
+            document.getElementById("plotlyFigure").style.setProperty("max-width", "none", "important");
 
-          Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
-
+            Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
+        }        
     } catch (error) {
         console.error('Error loading scripts:', error);
     }

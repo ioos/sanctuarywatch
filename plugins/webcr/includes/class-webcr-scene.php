@@ -3,6 +3,7 @@
  * Register class that defines the Scene custom content type as well as associated Scene functions
  * 
  */
+
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_Scene {
 
@@ -515,6 +516,14 @@ class Webcr_Scene {
         $function_utilities = new Webcr_Utility();
         $instances = $function_utilities ->  returnAllInstances();
 
+        // Selection criteria for instance_overview_scene below. This would've been used if the instance_overview_scene field was used.
+        // This code gets the selected instance from the scene_location field and then gets all the scenes associated with that instance.
+        // $post_id = isset($_GET['post']) ? $_GET['post'] : get_the_ID();
+        // error_log("post_id: " . $post_id);
+        // $instance = get_post_meta($post_id, 'scene_location', true);
+        // error_log("instance: " . $instance);
+        // $scenes = $function_utilities -> returnInstanceScenes($instance);
+
         $fields = array(
             array(
                 'id'             => 'scene_published',
@@ -531,6 +540,13 @@ class Webcr_Scene {
                 'options'        => $instances, 
                 'description' => 'What instance is the scene part of? '
             ),
+            // array(
+            //     'id'             => 'instance_overview_scene',
+            //     'type'           => 'select',
+            //     'title'          => 'Overview Scene',
+            //     //'options'        => $scenes,
+            //     'description' => '',
+            // ),
             array(
                 'id'   => 'scene_infographic',
                 'type' => 'image',
@@ -549,17 +565,17 @@ class Webcr_Scene {
                 'title'   => 'Number of info entries*',
                 'description' => 'How many info links are there for the scene?',
                 'min'     => 0,    
-                 'default' => 1,    
+                 'default' => 0,    
                  'max'     => 6,         
                  'step'    => 1,             
-            ),   
+            ),  
             array(
                 'id'      => 'scene_photo_entries',
                 'type'    => 'range',
                 'title'   => 'Number of photo entries*',
                 'description' => 'How many photo links are there for the scene?',
                 'min'     => 0,    
-                 'default' => 1,    
+                 'default' => 0,    
                  'max'     => 6,         
                  'step'    => 1,             
             ),   
@@ -573,6 +589,23 @@ class Webcr_Scene {
                 'max'     => '10',      
                 'step'    => '1',   
             ),
+            array(
+                'id'    => 'scene_full_screen_button',
+                'type'  => 'select',
+                'title' => 'Full Screen Button',
+                'description' => 'Should there be a button to allow full screen access to the scene?',
+                'options'        => array("no" => "No", "yes" => "Yes"),
+                "default"   => "no",
+            ),
+            array(
+                'id'             => 'scene_text_toggle',
+                'type'           => 'select',
+                'title'          => 'Text Toggle',
+                'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
+                'default'        => 'none',
+                'description' => 'Should there be a button to toggle text on and off?',
+             //   'class'      => 'chosen', 
+            ), 
             array(
                 'id'    => 'scene_orphan_icon_action',
                 'type'  => 'select',
@@ -593,9 +626,9 @@ class Webcr_Scene {
                 'id'             => 'scene_toc_style',
                 'type'           => 'select',
                 'title'          => 'Table of contents style*',
-                'options'        => array("accordion" => "Accordion", "list" => "List (default option)", "sectioned_list" => "Sectioned List"),
+                'options'        => array("accordion" => "Accordion (Sections Required)", "list" => "List (default option, No Sections)", "sectioned_list" => "Sectioned List (Sections Required)"),
                 'default' => 'list',
-                'description' => 'What should the table of contents look like?',
+                'description' => 'What should the table of contents to the right of the scene look like? Should the icons be in sections? If so, the sections can be created here. However, you will need to assign your modals to them.',
             ),
             array(
                 'id'    => 'scene_same_hover_color_sections',
@@ -603,32 +636,24 @@ class Webcr_Scene {
                 'title' => 'Single color for sections',
                 'options'        => array("no" => "No", "yes" => "Yes"),
                 'description' => 'Should all sections have the same hover color?',
-                "default"   => "no",
+                "default"   => "yes",
             ),
             array(
                 'id'     => 'scene_hover_color',
                 'type'   => 'color',
-                'title'  => 'Hover color',
+                'title'  => 'Scene Hover color',
                 'description' => 'What should the hover color be?',
                 'picker' => 'html5',
                 "default"   => '#FFFF00',
             ),
             array(
-                'id'    => 'scene_full_screen_button',
-                'type'  => 'select',
-                'title' => 'Full screen button',
-                'description' => 'Should there be a full screen button?',
-                'options'        => array("no" => "No", "yes" => "Yes"),
-                "default"   => "no",
-            ),
-            array(
-                'id'             => 'scene_text_toggle',
-                'type'           => 'select',
-                'title'          => 'Text toggle',
-                'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
-                'default'        => 'none',
-                'description' => 'Should there be a text toggle button?',
-             //   'class'      => 'chosen', 
+                'id'     => 'scene_hover_text_color',
+                'type'   => 'color',
+                'title'  => 'Scene Hover Text Color',
+                'description' => 'What should the hover text color be?',
+                'picker' => 'html5',
+                "default"   => '#000',
+
             ),
             array(
                 'id'      => 'scene_section_number',
@@ -645,7 +670,7 @@ class Webcr_Scene {
                     6 => "6"
                 ),
                 'default' => 0           
-            ),  
+            ), 
             array(
                 'id'          => 'scene_preview',
                 'type'        => 'button',
@@ -737,24 +762,32 @@ class Webcr_Scene {
                     array(
                         'id'          => 'scene_section_title' . $i,
                         'type'        => 'text',
-                        'title'       => 'Title',
+                        'title'       => 'Section Title',
                         'class'       => 'text-class',
                     ),
                     array(
                         'id'     => 'scene_section_hover_color' . $i,
                         'type'   => 'color',
-                        'title'  => 'Hover Color',
+                        'title'  => 'Section Hover Color',
                         'picker' => 'html5',
                         "default"   => '#FFFF00',
+                    ),
+                    array(
+                        'id'     => 'scene_section_hover_text_color' . $i,
+                        'type'   => 'color',
+                        'title'  => 'Section Hover Text Color',
+                        'picker' => 'html5',
+                        "default"   => '#00000',
                     ),
                 ),
             );
         }
 
         // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
+        
         array_splice($fields, 5, 0, $infoFields);
         array_splice($fields, 12, 0, $photoFields);
-        array_splice($fields, 27, 0, $sectionFields);
+        array_splice($fields, 28, 0, $sectionFields);
 
         $fieldsHolder[] = array(
             'name'   => 'basic',
@@ -774,6 +807,7 @@ class Webcr_Scene {
             array('scene_info_entries', 'integer', 'The number of info links'),
             array('scene_section_number', 'integer', 'The number of scene sections'),
             array('scene_hover_color', 'string', 'The hover color for the icons'),
+            array('scene_hover_text_color', 'string', 'The hover text color for the icons'),
             array('scene_photo_entries', 'integer', 'The number of scene links'),
             array('scene_published', 'string', 'Is the scene live'),
             array('scene_toc_style', 'string', 'Table of contents style'),
@@ -832,7 +866,8 @@ class Webcr_Scene {
 	 */
     function register_scene_rest_fields() {
         $scene_rest_fields = array('scene_location', 'scene_infographic', 'scene_tagline',
-            'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_published', 'scene_toc_style');
+
+            'scene_info_entries', 'scene_photo_entries', 'scene_section_number', 'scene_hover_color', 'scene_hover_text_color','scene_published', 'scene_toc_style');
 
         for ($i = 1; $i < 7; $i++){
             array_push($scene_rest_fields,'scene_info' . $i, 'scene_photo' . $i, 'scene_photo_internal' . $i, 'scene_section' . $i);
@@ -949,4 +984,5 @@ class Webcr_Scene {
             $query->set('order', $order);
         }
     }
+
 }

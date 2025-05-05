@@ -1,4 +1,5 @@
 
+
 <?php
 /**
  * Detailed Scene Page Template
@@ -27,21 +28,9 @@
 
 defined( 'ABSPATH' ) || exit; ?>
 
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NCLV6NC5');</script>
-<!-- End Google Tag Manager -->
 <?php
 get_header();
 ?>
-
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NCLV6NC5"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <?php
 //ALL CURRENTLY ASSUME THERE IS THE CORRECT POSTMETA DATA AND THERE ALL SUFFICIENT INFORMATION EXISTS
@@ -63,7 +52,18 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 //     const overviewSceneId = <?php echo json_encode($overview); ?>;
 </script>
 
-<body      >
+<body>
+
+  <!-- // Google Tags Container ID call from wp_options single-scene.php-->
+  <?php
+  $settings = get_option('webcr_settings');
+  $google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_js($settings['google_tags_container_id']) : '';
+  ?>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo $google_tags_container_id; ?>"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
   <!-- for the mobile image stuff -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -178,14 +178,14 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
           }
           
           //a bunch of scene meta fields:
-          $scene_default_hover_color = get_post_meta($post_id, 'scene_hover_color', true); 
+          $scene_default_hover_color = get_post_meta($post_id, 'scene_hover_color', true);
+          $scene_default_hover_text_color = get_post_meta($post_id, 'scene_hover_text_color', true); 
           $scene_text_toggle = get_post_meta($post_id, 'scene_text_toggle', true); 
           $scene_toc_style = get_post_meta($post_id, 'scene_toc_style', true); 
           $scene_full_screen_button = get_post_meta($post_id, 'scene_full_screen_button', true); 
           $scene_same_hover_color_sections	= get_post_meta($post_id, 'scene_same_hover_color_sections', true); 
 
           $child_ids = get_modal_array($svg_url);
-  
         
         ?>
       </div>
@@ -211,10 +211,10 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
     let scene_same_hover_color_sections = <?php echo json_encode($scene_same_hover_color_sections); ?>;
 
     let scene_default_hover_color =  <?php echo json_encode($scene_default_hover_color); ?>;
+    let scene_default_hover_text_color =  <?php echo json_encode($scene_default_hover_text_color); ?>;
     let scene_text_toggle =  <?php echo json_encode($scene_text_toggle); ?>;
     let scene_toc_style =  <?php echo json_encode($scene_toc_style); ?>;
     let scene_full_screen_button  = <?php echo json_encode($scene_full_screen_button); ?>;    
-
   </script>
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
@@ -248,6 +248,30 @@ foreach ($results as $row) {
       $title_arr[$row->meta_key] = $row->meta_value;
   }
 
+  $related_modals_query = "
+    SELECT pm2.meta_value AS modal_icons, pm3.meta_value AS modal_published
+    FROM {$wpdb->postmeta} AS pm1
+    INNER JOIN {$wpdb->postmeta} AS pm2 ON pm1.post_id = pm2.post_id
+    INNER JOIN {$wpdb->postmeta} AS pm3 ON pm1.post_id = pm3.post_id
+    WHERE pm1.meta_key = 'modal_scene'
+    AND pm1.meta_value = %d
+    AND pm2.meta_key = 'modal_icons'
+    AND pm3.meta_key = 'modal_published'
+    LIMIT 100
+  ";
+
+  $prepared_query = $wpdb->prepare($related_modals_query, $post_id);
+  $related_modals_results = $wpdb->get_results($prepared_query);
+
+  // Only include modal_icons if the modal_published value is 'published'
+  $associated_modals = array_unique(array_reduce($related_modals_results, function ($carry, $row) {
+      if ($row->modal_published === 'published') {
+          $carry[] = $row->modal_icons;
+      }
+      return $carry;
+  }, []));
+
+
 
 }
 
@@ -259,6 +283,7 @@ foreach ($results as $row) {
 
 
 let title_arr  = <?php echo json_encode($title_arr); ?>;
+let visible_modals  = <?php echo json_encode($associated_modals); ?>;
 
 </script>
 

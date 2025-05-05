@@ -39,7 +39,7 @@ class Webcr_Instance_Type {
         // Add a new section
         add_settings_section(
             'webcr_settings_section',
-            'Theme Display Settings',
+            'Theme Display',
             [$this, 'webcr_settings_section_callback'],
             'theme_settings'
         );
@@ -59,6 +59,30 @@ class Webcr_Instance_Type {
             [$this, 'footer_background_field_callback'],
             'theme_settings',
             'webcr_settings_section'
+        );
+
+        // Add a new section
+        add_settings_section(
+            'webcr_google_settings_section',
+            'Google Analytics/Tags',
+            [$this, 'webcr_settings_google_section_callback'],
+            'theme_settings'
+        );
+
+        add_settings_field(
+            'google_analytics_measurement_id',
+            'Google Analytics Measurement ID',
+            [$this, 'google_analytics_measurement_id_field_callback'],
+            'theme_settings',
+            'webcr_google_settings_section'
+        );
+
+        add_settings_field(
+            'google_tags_container_id',
+            'Google Tags Container ID',
+            [$this, 'google_tags_container_id_field_callback'],
+            'theme_settings',
+            'webcr_google_settings_section'
         );
     }
 
@@ -92,6 +116,49 @@ class Webcr_Instance_Type {
         ?>
         <input type="color" name="webcr_settings[footer_background]" value="<?php echo esc_attr($value); ?>">
         <p class="description">Choose the background color for your footer.</p>
+        <?php
+    }
+
+    // Section callback
+    function webcr_settings_google_section_callback() {
+        //   echo '<p>Customize your theme\'s appearance and functionality.</p>';
+        }
+
+
+    function google_analytics_measurement_id_field_callback() {
+        $options = get_option('webcr_settings');
+        $value = isset($options['google_analytics_measurement_id']) ? $options['google_analytics_measurement_id'] : '';
+        ?>
+        <input type="text" name="webcr_settings[google_analytics_measurement_id]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="G-XXXXXXXXXXXX">
+        <p class="description">
+            Enter the Google Analytics Measurement ID for your site.
+            <br>
+            <a href="https://support.google.com/analytics/answer/9539598" target="_blank" rel="noopener noreferrer">Learn how to find your Measurement ID</a>.
+        </p>
+        <?php
+    }
+
+    function google_tags_container_id_field_callback() {
+        $options = get_option('webcr_settings');
+        $value = isset($options['google_tags_container_id']) ? $options['google_tags_container_id'] : '';
+        $example_container_json = 'example_google_container_tags.json';
+        $example_folder = get_site_url() . '/wp-content/plugins/webcr/example_files/';
+        $filedownload =  esc_url($example_folder . $example_container_json)
+
+        ?>
+        <input type="text" name="webcr_settings[google_tags_container_id]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="GTM-XXXXXXXX">
+        <p class="description">
+            Enter the Google Tags Container ID for your site.
+            <br>
+            <a href="https://support.google.com/analytics/answer/9539598" target="_blank" rel="noopener noreferrer">Learn how to find your Container ID</a>.
+            <br>
+            <br>
+            You will also need to download, then import this container into your Google Tag Manager instance.
+            <br>
+            <a href="<?php echo esc_url($filedownload); ?>" target="_blank" rel="noopener noreferrer">Download Container File</a>
+            <br>
+            <a href="https://support.google.com/tagmanager/answer/6106997" target="_blank" rel="noopener noreferrer">Learn how to import a container into Google Tag Manager</a>
+        </p>
         <?php
     }
    
