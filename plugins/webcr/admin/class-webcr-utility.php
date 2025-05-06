@@ -258,7 +258,7 @@ class Webcr_Utility {
                 }
             }
             asort($potential_scenes);
-            $potential_scenes = array_merge(array("" => ""),$potential_scenes );
+            $potential_scenes = array("" => "") + $potential_scenes;
         }
         return $potential_scenes;
     }
