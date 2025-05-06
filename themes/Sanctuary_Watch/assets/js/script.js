@@ -204,6 +204,7 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 let info_url = iUrl + i;
 
                 let scene_info_url;
+
                 if (iUrl == "scene_photo_url"){
                     let photoLoc = "scene_photo_location" + i;
                     if (scene_data[info_field][photoLoc] == "External"){
@@ -212,6 +213,8 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                         let internal = "scene_photo_internal" + i;
                         scene_info_url = scene_data[info_field][internal];
                     }
+                } else {
+                    scene_info_url = scene_data[info_field][info_url];
                 }
 
                 let scene_info_text = scene_data[info_field][info_text];
@@ -229,13 +232,12 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 listItem.appendChild(anchor);
 
                 // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${scene_info_url}" target="_blank">${scene_info_text}</a> </div>`;
+                collapseListHTML += `<li> <a href="${scene_info_url}" target="_blank">${scene_info_text}</a> </li>`;
                 collapseListHTML += '</div>';
     }
     // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
     let acc = createAccordionItem(`${type}-item-1`, `${type}-header-1`, `${type}-collapse-1`, name, collapseListHTML);
 
-    
     return acc;
 }
 
