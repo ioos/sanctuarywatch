@@ -271,6 +271,7 @@ function modalSceneDropdown (dropdownElements=[]){
 
 function modalIconsDropdown (dropdownElements=[]){
     const iconsDropdown = document.getElementsByName("modal_icons")[0];
+    const currentFieldValue = iconsDropdown.value;
     iconsDropdown.innerHTML ='';
     let optionIcon = document.createElement('option');
     optionIcon.text = "";
@@ -282,6 +283,9 @@ function modalIconsDropdown (dropdownElements=[]){
             let option = document.createElement('option');
             option.value = dropdownElements[i];
             option.text = dropdownElements[i];
+            if (option.value == currentFieldValue){
+                option.selected = true;
+            }
             iconsDropdown.appendChild(option);
         }
     }
@@ -409,7 +413,7 @@ function modal_section_options (){
 function modal_scene_change(){
     const sceneID = document.querySelector("select[name='modal_scene']").value;
 
-    if (sceneID != " " && sceneID != null) {
+    if (sceneID != " " && sceneID != "" && sceneID != null) {
         if (!isPageLoad){
             iconSceneOutDropdown();
         }

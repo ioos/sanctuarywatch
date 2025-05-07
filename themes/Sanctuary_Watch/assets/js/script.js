@@ -204,6 +204,7 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 let info_url = iUrl + i;
 
                 let scene_info_url;
+
                 if (iUrl == "scene_photo_url"){
                     let photoLoc = "scene_photo_location" + i;
                     if (scene_data[info_field][photoLoc] == "External"){
@@ -212,6 +213,8 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                         let internal = "scene_photo_internal" + i;
                         scene_info_url = scene_data[info_field][internal];
                     }
+                } else {
+                    scene_info_url = scene_data[info_field][info_url];
                 }
 
                 let scene_info_text = scene_data[info_field][info_text];
@@ -229,13 +232,12 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
                 listItem.appendChild(anchor);
 
                 // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${scene_info_url}" target="_blank">${scene_info_text}</a> </div>`;
+                collapseListHTML += `<li> <a href="${scene_info_url}" target="_blank">${scene_info_text}</a> </li>`;
                 collapseListHTML += '</div>';
     }
     // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
     let acc = createAccordionItem(`${type}-item-1`, `${type}-header-1`, `${type}-collapse-1`, name, collapseListHTML);
 
-    
     return acc;
 }
 
@@ -376,8 +378,9 @@ function has_mobile_layer(mob_icons, elemname){
     }
     for (let i = 0; i < mob_icons.children.length; i++) {
         let child = mob_icons.children[i];
-        let label = child.getAttribute('inkscape:label');
-        if (label === elemname){
+        let label = child.getAttribute('id');
+        let mobileElemName = elemname + "-mobile";
+        if (label === mobileElemName){
             //console.log(`found ${label}`);
             return true;
         }             
@@ -398,7 +401,7 @@ function has_mobile_layer(mob_icons, elemname){
 function get_mobile_layer(mob_icons, elemname){
     for (let i = 0; i < mob_icons.children.length; i++) {
         let child = mob_icons.children[i];
-        let label = child.getAttribute('inkscape:label');
+        let label = child.getAttribute('id');
         if (label === elemname){
             return child;
         }             
@@ -473,8 +476,11 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     if (!has_mobile_layer(mobile_icons, currIcon)){
                         key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
                     } else {
-                        key = get_mobile_layer(mobile_icons, currIcon);
-                        let temp = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                        currIconMobile = currIcon + "-mobile";
+                        key = get_mobile_layer(mobile_icons, currIconMobile);
+                
+                        let temp = svgElement.querySelector(`#${currIconMobile}`).cloneNode(true);
+
                         let tempId = temp.getAttribute("id");
                         key.setAttribute("id",  tempId);
                     }
@@ -1297,7 +1303,21 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
             if (info_obj['externalAlt']){
                 img.alt = info_obj['externalAlt'];
             } else {
-                img.alt = '';
+                const protocol = window.location.protocol; // Get the current protocol (e.g., http or https)
+                const host = window.location.host;// Get the current host (e.g., domain name)
+                const restURL = protocol + "//" + host  + "/wp-json/webcr/v1/media/alt-text-by-url?image_url=" + encodeURI(img.src); 
+                console.log(restURL);
+                fetch(restURL)                
+                .then(response => response.json())
+                .then(data => {
+                    const imgAltText = data["alt_text"];
+                    if (imgAltText){            
+                        img.alt = imgAltText;
+                    }
+
+                })
+                // Log any errors that occur during the fetch process
+                .catch((err) => {console.error(err)});
             }
             figureDiv.appendChild(img);
             window.dataLayer = window.dataLayer || [];
@@ -1547,8 +1567,6 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
                 for (let idx in all_figure_data){
                     figure_data = all_figure_data[idx];
 
-    
-
                     let external_alt = '';
                     if (figure_data['figure_path']==='External'){
                         img = figure_data['figure_external_url'];
@@ -1788,30 +1806,38 @@ function render_modal(key){
                 // accordion_container.setAttribute("style", "min-width: 300px; min-width: 10%; max-width: 20%;");
             }
             // let collapseList = document.createElement("ul");
+
             //for more info
-            let collapseListHTML = '<div>';
-            for (let i = 1; i < 7; i++){
-                let info_field = "modal_info" + i;
-                let info_text = "modal_info_text" + i;
-                let info_url = "modal_info_url" + i;
+            let modal_info_entries = modal_data["modal_info_entries"];
+            if (modal_info_entries != 0){
 
-                let modal_info_text = modal_data[info_field][info_text];
-                let modal_info_url = modal_data[info_field][info_url];
-                if ((modal_info_text == '') && (modal_info_url == '')){
-                    continue;
+                let collapseListHTML = '<div>';
+                for (let i = 1; i < 7; i++){
+                    let info_field = "modal_info" + i;
+                    let info_text = "modal_info_text" + i;
+                    let info_url = "modal_info_url" + i;
+
+                    let modal_info_text = modal_data[info_field][info_text];
+                    let modal_info_url = modal_data[info_field][info_url];
+                    if ((modal_info_text == '') && (modal_info_url == '')){
+                        continue;
+                    }
+
+                    let listItem = document.createElement('li');
+                    let anchor = document.createElement('a');
+                    anchor.setAttribute('href', modal_info_url); 
+                    anchor.textContent = modal_info_text;
+
+                    listItem.appendChild(anchor);
+
+                    // collapseList.appendChild(listItem);
+                    collapseListHTML += `<li> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </li>`;
+                    collapseListHTML += '</div>';
                 }
-
-                let listItem = document.createElement('li');
-                let anchor = document.createElement('a');
-                anchor.setAttribute('href', modal_info_url); 
-                anchor.textContent = modal_info_text;
-
-                listItem.appendChild(anchor);
-
-                // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
-                collapseListHTML += '</div>';
+                let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
+                acc.appendChild(accordionItem1);
             }
+
             //for photos:
             let modal_photo_entries = modal_data["modal_photo_entries"];
             let modal_id = modal_data.id;
@@ -1846,20 +1872,13 @@ function render_modal(key){
                     listItem.appendChild(anchor);
     
                     // collapseList.appendChild(listItem);
-                    collapsePhotoHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
+                    collapsePhotoHTML += `<li> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </li>`;
                     collapsePhotoHTML += '</div>';
                 }
-            let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
-            acc.appendChild(accordionItem1);
-            let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", collapsePhotoHTML);
-            acc.appendChild(accordionItem2);
+
+                let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", collapsePhotoHTML);
+                acc.appendChild(accordionItem2);
             } 
-            
-            //Otherwise show the "More Info" accordion only item if "Images == 0"
-            else {           
-            let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
-            acc.appendChild(accordionItem1);
-            }
             
             if (is_mobile()){
                 let accordionItem3 = createAccordionItem("accordion-item-3", "accordion-header-3", "accordion-collapse-3", "Tagline", modal_tagline);
