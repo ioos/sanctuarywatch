@@ -248,23 +248,27 @@ foreach ($results as $row) {
       $title_arr[$row->meta_key] = $row->meta_value;
   }
 
+
+  // This ties to scripts.js for the function handleIconVisibility(svgElement, visible_modals)
   $related_modals_query = "
     SELECT pm2.meta_value AS modal_icons, pm3.meta_value AS modal_published
     FROM {$wpdb->postmeta} AS pm1
     INNER JOIN {$wpdb->postmeta} AS pm2 ON pm1.post_id = pm2.post_id
     INNER JOIN {$wpdb->postmeta} AS pm3 ON pm1.post_id = pm3.post_id
+    INNER JOIN {$wpdb->posts} AS p ON pm1.post_id = p.ID
     WHERE pm1.meta_key = 'modal_scene'
     AND pm1.meta_value = %d
     AND pm2.meta_key = 'modal_icons'
     AND pm3.meta_key = 'modal_published'
+    AND p.post_status != 'trash'
     LIMIT 100
-  ";
+";
 
   $prepared_query = $wpdb->prepare($related_modals_query, $post_id);
   $related_modals_results = $wpdb->get_results($prepared_query);
 
   // Only include modal_icons if the modal_published value is 'published'
-  $associated_modals = array_unique(array_reduce($related_modals_results, function ($carry, $row) {
+  $visible_modals = array_unique(array_reduce($related_modals_results, function ($carry, $row) {
       if ($row->modal_published === 'published') {
           $carry[] = $row->modal_icons;
       }
@@ -283,7 +287,7 @@ foreach ($results as $row) {
 
 
 let title_arr  = <?php echo json_encode($title_arr); ?>;
-let visible_modals  = <?php echo json_encode($associated_modals); ?>;
+let visible_modals  = <?php echo json_encode($visible_modals); ?>;
 
 </script>
 
