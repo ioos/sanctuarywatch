@@ -216,7 +216,7 @@ class Webcr_Modal {
                 'title'   => 'Number of Modal Info Entries',
                 'description' => 'How many info links are there for the modal?',
                 'min'     => 0,    
-                'default' => 1,    
+                'default' => 0,    
                 'max'     => 6,         
                 'step'    => 1,             
             ),    
@@ -226,16 +226,16 @@ class Webcr_Modal {
                 'title'   => 'Number of Modal Photo Entries',
                 'description' => 'How many photo links are there for the modal?',
                 'min'     => 0,    
-                'default' => 1,    
+                'default' => 0,    
                 'max'     => 6,         
                 'step'    => 1,             
             ),     
             array(
                 'id'      => 'modal_tab_number',
                 'type'    => 'range',
-                'title'   => 'Number of Modal Tabs',
+                'title'   => 'Number of Modal Tabs*',
                 'description' => 'How many modal tabs are there?',
-                'min'     => 0,    
+                'min'     => 1,    
                 'default' => 1,    
                 'max'     => 6,         
                 'step'    => 1,             
@@ -325,7 +325,7 @@ class Webcr_Modal {
             $tabFields[] = array(
                     'id'          => 'modal_tab_title' . $i,
                     'type'        => 'text',
-                    'title'       => 'Modal Tab Title ' . $i,
+                    'title'       => 'Modal Tab Title ' . $i. '*',
                     'class'       => 'text-class'
             );
         }
