@@ -160,13 +160,57 @@ function process_child_obj(){
 }
 
 
+// process_child_obj();
+// const sorted_child_objs = Object.values(child_obj).sort((a, b) => a.modal_icon_order - b.modal_icon_order);
+// child_ids_helper = {};
+// for (let child in child_obj) {
+//     const childData = child_obj[child];
+//     child_ids_helper[childData.title] = child;
+// }
+
+
+// The lines below from ~ 173 to ~ 213 are used for organizing child_obj(of modals) when it is fed into the toc as sorted_child_entries. 
+// If all modals are set to 1 then it now organized alphabetically. other wise it respects the modal order.
 process_child_obj();
-const sorted_child_objs = Object.values(child_obj).sort((a, b) => a.modal_icon_order - b.modal_icon_order);
-child_ids_helper = {};
-for (let child in child_obj) {
-    const childData = child_obj[child];
-    child_ids_helper[childData.title] = child;
+
+// Step 1: get [key, value] pairs
+let sorted_child_entries = Object.entries(child_obj);
+
+// Step 2: check if all modal_icon_order are 1 (or missing)
+/**
+ * Checks if all objects in the `sorted_child_entries` array have their `modal_icon_order` property equal to 1.
+ *
+ * @constant {boolean} allOrdersAreOne - A boolean indicating whether all entries satisfy the condition.
+ * @param {Array} sorted_child_entries - An array of entries where each entry is a tuple containing a key and an object.
+ * @param {Array} sorted_child_entries[].0 - The key of the entry (not used in the condition).
+ * @param {Object} sorted_child_entries[].1 - The object containing the `modal_icon_order` property.
+ * @param {string} sorted_child_entries[].1.modal_icon_order - The property to be checked, expected to be a string representation of a number.
+ * @returns {boolean} `true` if all `modal_icon_order` values are equal to 1 after parsing as integers, otherwise `false`.
+ */
+const allOrdersAreOne = sorted_child_entries.every(([_, obj]) => parseInt(obj.modal_icon_order) === 1);
+
+// Step 3: sort conditionally
+if (allOrdersAreOne) {
+    sorted_child_entries.sort((a, b) => {
+        const titleA = a[1].title?.toLowerCase() || '';
+        const titleB = b[1].title?.toLowerCase() || '';
+        return titleA.localeCompare(titleB);
+    });
+} else {
+    sorted_child_entries.sort((a, b) => {
+        return (a[1].modal_icon_order || 0) - (b[1].modal_icon_order || 0);
+    });
 }
+
+// Step 4: extract the objects (no keys) to match your original format
+const sorted_child_objs = sorted_child_entries.map(([_, val]) => val);
+
+// Step 5: build child_ids_helper for title-to-key mapping
+child_ids_helper = {};
+for (const [key, value] of sorted_child_entries) {
+    child_ids_helper[value.title] = key;
+}
+
 
 // document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
 
@@ -606,7 +650,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
  */
 function handleIconVisibility(svgElement, visible_modals) {
 
-    console.log(visible_modals);
     if (!svgElement || !Array.isArray(visible_modals)) return;
 
     const modalSet = new Set(visible_modals);
@@ -2106,6 +2149,7 @@ function toggle_text() {
     });
 }
 
+
 /**
  * Creates a sectioned list table of contents that is organized based on the user-defined sections in WP for any given scene.
  * This function generates sections dynamically and organizes them in a color-coded way
@@ -2221,6 +2265,7 @@ function sectioned_list(){
  * called in table_of_contents, if user has selected sectioned list option in WP
  */
 function toc_sections() {
+
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
@@ -2492,7 +2537,8 @@ function table_of_contents(){
  */
 
 function list_toc(){
- 
+    
+    console.log(child_obj);
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
