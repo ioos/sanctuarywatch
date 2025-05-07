@@ -560,7 +560,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_info_entries',
                 'type'    => 'range',
-                'title'   => 'Number of info entries*',
+                'title'   => 'Number of info entries',
                 'description' => 'How many info links are there for the scene?',
                 'min'     => 0,    
                  'default' => 0,    
@@ -570,7 +570,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_photo_entries',
                 'type'    => 'range',
-                'title'   => 'Number of photo entries*',
+                'title'   => 'Number of photo entries',
                 'description' => 'How many photo links are there for the scene?',
                 'min'     => 0,    
                  'default' => 0,    
@@ -593,14 +593,14 @@ class Webcr_Scene {
                 'title' => 'Full Screen Button',
                 'description' => 'Should there be a button to allow full screen access to the scene?',
                 'options'        => array("no" => "No", "yes" => "Yes"),
-                "default"   => "no",
+                "default"   => "yes",
             ),
             array(
                 'id'             => 'scene_text_toggle',
                 'type'           => 'select',
                 'title'          => 'Text Toggle',
                 'options'        => array("none" => "No Toggle", "toggle_off" => "Toggle, Default Off", "toggle_on" => "Toggle, Default On"),
-                'default'        => 'none',
+                'default'        => 'toggle_on',
                 'description' => 'Should there be a button to toggle text on and off?',
              //   'class'      => 'chosen', 
             ), 
@@ -656,7 +656,7 @@ class Webcr_Scene {
             array(
                 'id'      => 'scene_section_number',
                 'type'    => 'select',
-                'title'   => 'Number of scene sections',
+                'title'   => 'Number of scene sections*',
                 'description' => 'How many scene sections are there?',
                 'options' => array(
                     0 => "0",
@@ -668,7 +668,7 @@ class Webcr_Scene {
                     6 => "6"
                 ),
                 'default' => 0           
-            ), 
+            ),
             array(
                 'id'          => 'scene_preview',
                 'type'        => 'button',
@@ -755,7 +755,7 @@ class Webcr_Scene {
             $sectionFields[] = array(
                 'type' => 'fieldset',
                 'id' => 'scene_section' . $i,
-                'title'   => 'Scene Section ' . $i,
+                'title'   => 'Scene Section ' . $i . '*',
                 'fields' => array(
                     array(
                         'id'          => 'scene_section_title' . $i,
