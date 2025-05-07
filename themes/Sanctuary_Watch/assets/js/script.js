@@ -1311,7 +1311,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     tableRowDiv.appendChild(leftCellDiv);
     tableRowDiv.appendChild(rightCellDiv);
     containerDiv.appendChild(tableRowDiv);
-    if (info_obj['dataLink']!='' && info_obj['scienceText']!=''){
+    if (info_obj['dataLink']!='' || info_obj['scienceText']!=''){
         tabContentElement.appendChild(containerDiv);
     }
 
