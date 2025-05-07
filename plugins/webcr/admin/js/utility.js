@@ -90,7 +90,7 @@ function redText () {
         // Check if "Scene Status*" is in the content
         document.querySelectorAll('.exopite-sof-title').forEach(function(el) {
             const titleText = el.textContent.trim();
-            if (titleText == "Scene Status*Should the Scene be live?") {
+            if (titleText == "Scene status*Should the Scene be live?") {
                 sceneStatusExists = true;
             }
         });
