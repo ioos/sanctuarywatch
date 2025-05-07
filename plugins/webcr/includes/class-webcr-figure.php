@@ -827,4 +827,85 @@ class Webcr_Figure {
             }
         }
     }
+
+		/**
+	 * Registers a custom REST API route to get alt text by image URL.
+	 *
+	 * @since 1.0.1
+	 */
+	public function register_get_alt_text_by_url_route() {
+		register_rest_route(
+			'webcr/v1', // Your plugin's namespace
+			'/media/alt-text-by-url', // The route
+			array(
+				'methods'             => WP_REST_Server::READABLE, // This will be a GET request
+				'callback'            => array( $this, 'get_alt_text_by_url_callback' ),
+				'args'                => array(
+					'image_url' => array(
+						'required'    => true,
+						'type'        => 'string',
+						'description' => 'The URL of the image in the WordPress media library.',
+						'validate_callback' => function($param, $request, $key) {
+							// Basic URL validation
+							return filter_var($param, FILTER_VALIDATE_URL) !== false;
+						}
+					),
+				),
+				'permission_callback' => '__return_true',
+			)
+		);
+	}
+
+	/**
+	 * Callback function for the /media/alt-text-by-url REST route.
+	 * Retrieves the alt text for an image given its URL.
+	 *
+	 * @since 1.0.1
+	 * @param WP_REST_Request $request The REST API request object.
+	 * @return WP_REST_Response The REST API response.
+	 */
+	public function get_alt_text_by_url_callback( WP_REST_Request $request ) {
+		$image_url = $request->get_param( 'image_url' );
+		
+		// Sanitize the URL
+		$sanitized_image_url = esc_url_raw( $image_url );
+
+		if ( empty( $sanitized_image_url ) ) {
+			return new WP_REST_Response( array( 'error' => 'Invalid image URL provided.' ), 400 );
+		}
+
+		// Get the attachment ID from the URL
+		$attachment_id = attachment_url_to_postid( $sanitized_image_url );
+
+		if ( ! $attachment_id ) {
+			// If no attachment ID is found, return a 404 with an empty alt_text
+			return new WP_REST_Response( 
+				array( 
+					'message' => 'Attachment ID not found for the given URL. The URL might be for a non-library image or a resized version not directly mapped.', 
+					'alt_text' => '',
+					'attachment_id' => 0
+				), 
+				404 
+			);
+		}
+
+		// Get the alt text (stored in post meta)
+		$alt_text = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
+
+		// Default to an empty string if alt text is not set or explicitly empty
+		if ( $alt_text === false || $alt_text === null ) {
+			$alt_text = '';
+		}
+		
+		return new WP_REST_Response( 
+			array( 
+				'alt_text' => $alt_text,
+				'attachment_id' => $attachment_id
+			), 
+			200 
+		);
+	}
+
+
+
 }

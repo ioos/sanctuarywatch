@@ -395,5 +395,6 @@ class Webcr_Admin {
 
 		return $permalink;
 	}
+
 }
 

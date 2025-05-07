@@ -1301,7 +1301,21 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
             if (info_obj['externalAlt']){
                 img.alt = info_obj['externalAlt'];
             } else {
-                img.alt = '';
+                const protocol = window.location.protocol; // Get the current protocol (e.g., http or https)
+                const host = window.location.host;// Get the current host (e.g., domain name)
+                const restURL = protocol + "//" + host  + "/wp-json/webcr/v1/media/alt-text-by-url?image_url=" + encodeURI(img.src); 
+                console.log(restURL);
+                fetch(restURL)                
+                .then(response => response.json())
+                .then(data => {
+                    const imgAltText = data["alt_text"];
+                    if (imgAltText){            
+                        img.alt = imgAltText;
+                    }
+
+                })
+                // Log any errors that occur during the fetch process
+                .catch((err) => {console.error(err)});
             }
             figureDiv.appendChild(img);
             window.dataLayer = window.dataLayer || [];
@@ -1550,8 +1564,6 @@ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_i
 
                 for (let idx in all_figure_data){
                     figure_data = all_figure_data[idx];
-
-    
 
                     let external_alt = '';
                     if (figure_data['figure_path']==='External'){
@@ -1813,7 +1825,7 @@ function render_modal(key){
                 listItem.appendChild(anchor);
 
                 // collapseList.appendChild(listItem);
-                collapseListHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
+                collapseListHTML += `<li> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </li>`;
                 collapseListHTML += '</div>';
             }
             //for photos:
@@ -1850,7 +1862,7 @@ function render_modal(key){
                     listItem.appendChild(anchor);
     
                     // collapseList.appendChild(listItem);
-                    collapsePhotoHTML += `<div> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </div>`;
+                    collapsePhotoHTML += `<li> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </li>`;
                     collapsePhotoHTML += '</div>';
                 }
             let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
