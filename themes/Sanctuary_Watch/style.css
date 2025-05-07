@@ -560,23 +560,47 @@ input:checked + .slider:before {
 }
 
 
-
-
-
 @media (min-width: 1000px) {
   .navbar-wrapper {
       display: flex;
-      position: relative;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column; /* Stack brand and nav items vertically */
+      align-items: center;   /* Center items horizontally */
+      position: relative; /* Kept from original, in case it's used for dropdowns or other elements */
+      justify-content: center; /* Kept from original, now centers content vertically if wrapper has more height than content */
       /* width: 100%; */
       max-width: 1000px; 
-      margin: 0 auto;
-      
+      margin: 0 auto; 
+  }
+
+  .navbar-expand-lg > .container-fluid {
+    padding-top: 10px;
+    padding-bottom: 0;
+  }
+
+  .nav-link {
+    padding-top: 0;
+    padding-bottom: 8px;
+  }
+  
+  .navbar-wrapper .navbar-brand {
+    /* The .navbar-brand is a direct child of .navbar-wrapper. */
+    /* It will be centered horizontally due to .navbar-wrapper's 'align-items: center'. */
+    margin-bottom: 10px; /* Adds some space between the brand and the navigation links below it */
+  }
+
+  /* Assuming .navbar-collapse is a direct child of .navbar-wrapper and contains .navbar-nav */
+  .navbar-wrapper .navbar-collapse {
+    /* This container for the main navigation links will be centered horizontally */
+    /* by .navbar-wrapper's 'align-items: center'. */
+    display: flex; /* Use flexbox to control the alignment of .navbar-nav within it. */
+    justify-content: center; /* Horizontally center .navbar-nav (the list of links). */
+    width: 100%; /* Ensure .navbar-collapse takes available width to allow centering of its content. */
   }
 
   .navbar-nav {
       flex-direction: row;
+      /* The .navbar-nav items will remain in a row. */
+      /* The .navbar-nav block itself is centered by its parent, .navbar-collapse. */
   }
 
   /* .nav-item {

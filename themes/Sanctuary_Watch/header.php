@@ -115,8 +115,6 @@ if ( get_header_textcolor() ) : ?>
 					echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
 					echo '<p> > </p>';
 					echo '<a href="' . home_url() . '">' . get_bloginfo('name') . '</a>';
-					echo '<p> > </p>';
-					echo '<a href="/overview">'. esc_html($scene_loc_webcr.'WebCR') .'</a>';
 				}
 			}
 		?>
