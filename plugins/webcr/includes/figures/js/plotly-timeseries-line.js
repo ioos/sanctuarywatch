@@ -1,9 +1,46 @@
-// Code for plotting time series data with a plotly line
+
+
+let plotlyScriptPromise = null;
+
+function loadPlotlyScript() {
+    if (window.Plotly) return Promise.resolve();
+
+    // Reuse the same Promise if already started
+    if (plotlyScriptPromise) return plotlyScriptPromise;
+
+    plotlyScriptPromise = new Promise((resolve, reject) => {
+        const existingScript = document.querySelector('script[src="https://cdn.plot.ly/plotly-3.0.0.min.js"]');
+        if (existingScript) {
+            existingScript.onload = () => {
+                if (window.Plotly) resolve();
+                else reject(new Error("Plotly failed to initialize."));
+            };
+            existingScript.onerror = reject;
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.plot.ly/plotly-3.0.0.min.js';
+        script.onload = () => {
+            if (window.Plotly) resolve();
+            else reject(new Error("Plotly failed to initialize."));
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+
+    return plotlyScriptPromise;
+}
 
 async function producePlotlyLineFigure(targetFigureElement, interactive_arguments, postID){
-    try {
-        await loadExternalScript('https://cdn.plot.ly/plotly-3.0.0.min.js');
 
+    try {
+
+        await loadPlotlyScript(); // ensures Plotly is ready
+
+        console.log(postID);
+        console.log("Plotly is loaded:", typeof Plotly !== "undefined"); // for confirmation
+        
         //const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
         const rawField = interactive_arguments;
         const figureArguments = Object.fromEntries(JSON.parse(rawField));
@@ -35,8 +72,9 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
         const dataToBePlotted = responseJson.data;
 
         let newDiv = document.createElement('div');
-        newDiv.id = "plotlyFigure";
-        newDiv.classList.add("container", "figure_interactive");
+        const plotlyDivID = `plotlyFigure${figureID}`;
+        newDiv.id = plotlyDivID
+        newDiv.classList.add("container", `figure_interactive${figureID}`);
 
         const targetElement = document.getElementById(targetFigureElement);
         targetElement.appendChild(newDiv);
@@ -76,7 +114,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
 
         }
 
-        var container = document.getElementById('javascript_figure_target');
+        var container = document.getElementById(`javascript_figure_target${postID}`);
 
         //ADMIN SIDE GRAPH DISPLAY SETTINGS
         if (window.location.href.includes("wp-admin/post.php")) {
@@ -102,10 +140,11 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             const config = {
                 responsive: true  // This makes the plot resize with the browser window
                 };
-            Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
+            
+            Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
 
         }
-        //ADMIN SIDE GRAPH DISPLAY SETTINGS
+        //THEME SIDE GRAPH DISPLAY SETTINGS
         else {
             var layout = {
                 xaxis: {
@@ -131,11 +170,13 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             const config = {
             responsive: true  // This makes the plot resize with the browser window
             };
-            document.getElementById("plotlyFigure").style.setProperty("width", "100%", "important");
-            document.getElementById("plotlyFigure").style.setProperty("max-width", "none", "important");
+            
+            document.getElementById(plotlyDivID).style.setProperty("width", "100%", "important");
+            document.getElementById(plotlyDivID).style.setProperty("max-width", "none", "important");
 
-            Plotly.newPlot('plotlyFigure', allLinesPlotly, layout, config);
-        }        
+            Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+
+        }
     } catch (error) {
         console.error('Error loading scripts:', error);
     }

@@ -88,7 +88,7 @@ let thisScene;
 let sceneLoc;
 // let colors;
 let sectionObj = {};
-console.log('sectionObj' , sectionObj);
+//console.log('sectionObj' , sectionObj);
 let sectColors = {};
 
 if (!is_mobile()) {
@@ -599,6 +599,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
  * ```
  */
 function handleIconVisibility(svgElement, visible_modals) {
+
+    console.log(visible_modals);
     if (!svgElement || !Array.isArray(visible_modals)) return;
 
     const modalSet = new Set(visible_modals);
@@ -1199,7 +1201,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  * Usage:
  * This function is called for each tab, populating one or more figures (and other corresponding info)
  */
-function render_tab_info(tabContentElement, tabContentContainer, info_obj){
+ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
 
     let postID = info_obj["postID"];
     let title = info_obj['figureTitle'];
@@ -1315,11 +1317,11 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         break;
 
         case "Interactive":
-            img = document.createElement('div'); // Create a div to hold the plot
-            img.id =  "javascript_figure_target";
+            img = document.createElement('div');
+            img.id = `javascript_figure_target${postID}`;
+            figureDiv.appendChild(img); 
             let interactive_arguments = info_obj["figure_interactive_arguments"];
-            producePlotlyLineFigure("javascript_figure_target", interactive_arguments, postID);
-            figureDiv.appendChild(img);
+            producePlotlyLineFigure(`javascript_figure_target${postID}`, interactive_arguments, postID);
             figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
         break;
 
@@ -1420,7 +1422,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
         case "Interactive":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
                 
-                let plotDiv = document.querySelector("#plotlyFigure");
+                let plotDiv = document.querySelector(`#plotlyFigure${postID}`);
                 try {
                     plotDiv.style.width = "100%";
                 } catch {};
@@ -1463,7 +1465,7 @@ function render_tab_info(tabContentElement, tabContentContainer, info_obj){
                 const interval = 100; // ms between retries
 
                 const waitForPlotDiv = () => {
-                    const plotDiv = mutation.target.querySelector("#plotlyFigure");
+                    const plotDiv = mutation.target.querySelector(`#plotlyFigure${postID}`);
 
                     if (plotDiv) {
                         console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
@@ -2303,11 +2305,11 @@ function toc_sections() {
         sect.appendChild(tocCollapse);
 
 
-        if (title_test != "") {
-            toc_group.appendChild(sect);;
-        } else {
-        }
-        //toc_group.appendChild(sect); //original options creakes blank boxes
+        // if (title_test != "") {
+        //     toc_group.appendChild(sect);;
+        // } else {
+        // }
+        toc_group.appendChild(sect); //original options creakes blank boxes
     }
     toc_container.appendChild(toc_group);
 }
