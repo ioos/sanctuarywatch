@@ -258,10 +258,16 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
     $args = array(
         'post_type' => 'any', 
         'meta_query' => array(
+          'relation' => 'AND', // Ensures both conditions must be met
             array(
                 'key'     => 'modal_icons',
                 'value'   => $icon_name,
                 'compare' => '='
+              ),
+              array(
+                  'key'     => 'modal_published',
+                  'value'   => 'published',
+                  'compare' => '='
             )
         ),
         'fields' => 'ids' 
