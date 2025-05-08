@@ -89,9 +89,71 @@ p[itemprop="name"], p[itemprop="address"] {
 .navbar-emblem {
   size: 10%;
 }
-.image-center{
-  text-align: center;
-}
+
+    /* Styles for the header/branding section */
+    .image-center {
+      display: flex; /* Use flexbox for alignment */
+      align-items: center; /* Vertically align items when side-by-side */
+      gap: 15px; /* Space between logo and text block */
+      justify-content: center; /* Center the whole block by default */
+      padding-bottom: 20px; /* Moved from inline style */
+  }
+
+  .image-center img {
+    width: 80px; /* Default logo size, can be adjusted */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  .site-branding-text-container {
+    display: flex;
+    flex-direction: column;
+    text-align: left; /* Text within this block will be left-aligned */
+  }
+
+  .site-title-main {
+      font-size: 2.7vw; /* Default font size using viewport width */
+      font-weight: bold;
+      color: #00467F; /* Using color from single-about.php for consistency */
+  }
+
+  .site-tagline-main {
+    font-size: 1.5vw; /* Default font size using viewport width */
+    font-style: italic;
+      color: #008da8; /* Using color from single-about.php for consistency */
+      font-weight: bold; /* Added to match later rule, ensure consistency */
+
+  }
+
+  /* Mobile specific adjustments */
+  @media (max-width: 768px) { /* Tablet and smaller */
+      .image-center {
+        flex-direction: row; /* Logo and text block side-by-side */
+        justify-content: flex-start; /* Align to the left, or use 'center' to center the group */
+      }
+
+      .image-center img {
+        width: 60px; /* Adjust logo size for side-by-side mobile view */
+        margin-bottom: 0; /* Remove bottom margin as it's not stacked */
+
+      }
+
+      .site-title-main { 
+        font-size: 2.0rem; /* Larger, fixed font size for mobile */ 
+      }
+
+      .site-tagline-main { 
+        font-size: 1.5rem; /* Larger, fixed font size for mobile */
+       }
+
+  }
+  @media (max-width: 480px) { /* Smaller mobile devices */
+    .image-center img { width: 50px; /* Further adjust logo size if needed */ }
+    .site-title-main { font-size: 1.8rem; } /* Slightly smaller for very small screens */
+    .site-tagline-main { font-size: 1.4rem; } /* Slightly smaller for very small screens, fixed typo */
+
+  }
+
+
 .nav-link:hover{
   background-color: #002a4c;
 }
@@ -530,21 +592,24 @@ input:checked + .slider:before {
 }
 
 /* Mobile Navbar Adjustments */
-@media (max-width: 999px) {
-  /* Ensure the parent container of navbar-brand and navbar-toggler
-     has position: relative for the absolute positioning of the toggler.
-     This rule matches an existing selector pattern from the file. */
-  body > nav > div > div {
-    position: relative; /* Establishes a positioning context for the absolute toggler */
-    /* The 'margin-left: 7%;' is already specified globally for this element. */
+@media (max-width: 991.98px) { /* Using Bootstrap's lg breakpoint for consistency */
+  body > nav > div > div { /* This targets .navbar-wrapper */
+    display: flex; /* Use flexbox to arrange brand and toggler */
+    justify-content: space-between; /* Pushes brand to left, toggler to right */
+    align-items: flex-start; /* Align items to the top of the flex line */
+    width: 100%; /* Ensure wrapper uses full available width in container-fluid */
+    margin-left: 0; /* Override the global 'margin-left: 7%' for mobile nav */
+    flex-wrap: wrap; /* Allow .navbar-collapse to wrap to the next line */
+
   }
 
   .navbar-brand {
     white-space: normal;    /* Allows text to wrap, overriding Bootstrap's default 'nowrap'. */
     word-break: break-word; /* Allows long words to break and wrap if they would otherwise overflow. */
-    max-width: 75%;         /* Limits the brand's width to 75% of its parent.
-                               Since the toggler is styled with 'left: 80%', this provides a 5% gap.
-                               Adjust this value if more or less space is needed. */
+    /* max-width: 75%; Remove or adjust this as flexbox will manage space. */
+    max-width: none; /* Allow flexbox to determine width */
+    margin-right: 1rem; /* Add a little space between brand and toggler if brand text is long */
+    display: inline-block;  /* Ensures 'max-width' is respected by an <a> tag and helps with vertical alignment.
     display: inline-block;  /* Ensures 'max-width' is respected by an <a> tag and helps with vertical alignment.
                                Bootstrap's .navbar-brand is often inline-block or block by default. */
     vertical-align: middle; /* Helps to vertically align the brand text with the toggler icon,
@@ -604,10 +669,6 @@ input:checked + .slider:before {
   }
 }
 
-body > nav > div > div > button{
-  position: absolute;
-  left: 80%;
-}
 body > nav > div > div{
   margin-left: 7%;
 }

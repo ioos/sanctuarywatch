@@ -84,19 +84,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 "> 
 <div class="container-fluid">
 <!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->
-<div class="image-center" style="padding-bottom: 20px;">
-        <span>
+<div class="image-center">
+        <span class="site-branding-logo">
             <?php 
-                echo '<img width="10%" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Navbar Emblem">';
-            ?>
+                echo '<img src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Navbar Emblem">';
+                ?>
         </span>
-        <span style="display: inline-block; text-align: left; vertical-align: middle;">
+        <span class="site-branding-text-container">
 
-            <div style='color: #00467F; font-size: 2.7vw; font-weight: bold;'><?= get_bloginfo('name'); ?></div>
-            <?php 
+        <div class="site-title-main"><?= get_bloginfo('name'); ?></div>
+        <?php 
             $site_tagline = get_bloginfo('description');
             if ($site_tagline != "") {
-                echo "<div style='color: #008da8; font-size: 1.5vw; font-style: italic; font-weight: bold;'>$site_tagline</div>";
+                echo "<div class='site-tagline-main'>$site_tagline</div>";
             }
             ?>
         </span>
