@@ -510,40 +510,6 @@ input:checked + .slider:before {
   border-radius: 0px;
 }
 
-/* #more-info-header-1 > button{
-  max-height: 40px;
-}
-
-#images-header-1 > button{
-  max-height: 40px;
-}
-
-#more-info-collapse-1{
-  margin-top: -4%;
-  margin-bottom: -4%;
-}
-#images-collapse-1{
-  margin-top: -4%;
-  margin-bottom: -4%;
-}
-
-#accordion-header-1 > button{
-  max-height: 40px;
-}
-#accordion-header-2 > button{
-  max-height: 40px;
-}
-
-#accordion-collapse-1{
-  margin-top: -4%;
-  margin-bottom: -4%;
-
-}
-#accordion-collapse-2{
-  margin-top: -4%;
-  margin-bottom: -4%;
-} */
-
 #title-container > h1{
   color: #008da8;
 
@@ -559,7 +525,37 @@ input:checked + .slider:before {
   margin-right: -11px;
 }
 
+#header-margin > a {
+  text-decoration-line: underline;
+}
 
+/* Mobile Navbar Adjustments */
+@media (max-width: 999px) {
+  /* Ensure the parent container of navbar-brand and navbar-toggler
+     has position: relative for the absolute positioning of the toggler.
+     This rule matches an existing selector pattern from the file. */
+  body > nav > div > div {
+    position: relative; /* Establishes a positioning context for the absolute toggler */
+    /* The 'margin-left: 7%;' is already specified globally for this element. */
+  }
+
+  .navbar-brand {
+    white-space: normal;    /* Allows text to wrap, overriding Bootstrap's default 'nowrap'. */
+    word-break: break-word; /* Allows long words to break and wrap if they would otherwise overflow. */
+    max-width: 75%;         /* Limits the brand's width to 75% of its parent.
+                               Since the toggler is styled with 'left: 80%', this provides a 5% gap.
+                               Adjust this value if more or less space is needed. */
+    display: inline-block;  /* Ensures 'max-width' is respected by an <a> tag and helps with vertical alignment.
+                               Bootstrap's .navbar-brand is often inline-block or block by default. */
+    vertical-align: middle; /* Helps to vertically align the brand text with the toggler icon,
+                               especially if the brand text wraps to multiple lines. */
+    /* Bootstrap's .navbar-brand usually has some 'margin-right'. If you need specific spacing
+       to the right before the 75% max-width limit, you could add 'margin-right' here.
+       e.g., margin-right: 10px; */
+  }
+}
+
+/* Navigation bar stuff */
 @media (min-width: 1000px) {
   .navbar-wrapper {
       display: flex;
@@ -572,6 +568,10 @@ input:checked + .slider:before {
       margin: 0 auto; 
   }
 
+  .nav-link {
+    text-decoration-line: underline;
+  }
+
   .navbar-expand-lg > .container-fluid {
     padding-top: 10px;
     padding-bottom: 0;
@@ -581,7 +581,7 @@ input:checked + .slider:before {
     padding-top: 0;
     padding-bottom: 8px;
   }
-  
+
   .navbar-wrapper .navbar-brand {
     /* The .navbar-brand is a direct child of .navbar-wrapper. */
     /* It will be centered horizontally due to .navbar-wrapper's 'align-items: center'. */
@@ -602,17 +602,7 @@ input:checked + .slider:before {
       /* The .navbar-nav items will remain in a row. */
       /* The .navbar-nav block itself is centered by its parent, .navbar-collapse. */
   }
-
-  /* .nav-item {
-      padding: 0 10px;
-  } */
 }
-
-/* @media (max-width: 768px){
-  body > nav > div > div > button{
-    margin-left: 220px;
-  }
-} */
 
 body > nav > div > div > button{
   position: absolute;
@@ -628,38 +618,6 @@ body > nav > div > div{
   margin-bottom: 2%;
   max-width: 87%;
 }
-
-/* 
-@media (min-width: 512px) and (max-width: 768px) {
-  #toc-container{
-    margin-left: 0px !important;
-
-  }
-  #scene-row > div.col-md-9{
-    margin-left: 0px !important;
-  }
-  #title-container{
-    margin-left: 0px !important;
-  }
-  #title-container > div > div.col-md-2 > div{
-    max-width: 96% !important;
-  }
-
-  #top-button{
-    margin-bottom: 5px;
-    font-size: large;
-    z-index: 1;
-    margin-top: 2%;
-  }
-  #toggleButton{
-    margin-bottom: 0px;
-    font-size: large;
-    z-index: 1;
-  }
-  #toc-group{
-    padding-top: 2%;
-  }
-} */
 
 
 /* Universal focus style */
@@ -799,28 +757,6 @@ button:focus,
   margin-bottom: 4px;
 }
 
-
-/* display: flex;
-justify-content: center;
-align-items: center;
-position: relative;
-font-size: large; */
-/* #accordion-header-1 > button {
-  display: flex;
-  justify-content: flex-start; 
-  align-items: center;
-  position: relative;
-  font-size: large;
-  text-align: left; 
-}
-#accordion-header-2 > button {
-  display: flex;
-  justify-content: flex-start; 
-  align-items: center; 
-  position: relative;
-  font-size: large;
-  text-align: left; 
-} */
 
 #accordion-header-1 > button::after{
   /* filter: brightness(0) invert(1) !important; */

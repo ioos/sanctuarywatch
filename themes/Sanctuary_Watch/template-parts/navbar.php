@@ -36,7 +36,7 @@
 
             if($sceneLocation){
 
-                echo "<a class='navbar-brand' href='/?post_type=scene&p=" . $inst_overview_scene . "'>$title</a>";
+                echo "<span class='navbar-brand'>$title</span>";
 
             }else {
                 echo '<a class="navbar-brand" href="' . home_url() . '"><img class="navbar-emblem" width="32p" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Navbar Emblem">'. get_bloginfo('name'). '</a>';
@@ -64,20 +64,12 @@
                         $post_titles = array();
                         while($query->have_posts()) {
                             $query->the_post();
-                            // echo get_post_meta(get_the_ID());
-                            // echo get_the_ID();
                             $scene_loc = get_post_meta(get_the_ID(), 'scene_location')[0];
                             $scene_published = get_post_meta(get_the_ID(), 'scene_published', true);
-
-                            // echo $scene_loc;
                             $inst_overview_scene = get_post_meta($scene_loc, 'instance_overview_scene')[0];
-                            //echo $inst_overview_scene;
-
                             $scene_order = get_post_meta(get_the_ID(), 'scene_order');
                             if(get_the_ID() != $inst_overview_scene && $scene_published != 'draft'){
                                 $post_titles[] = [get_the_title(), $scene_order[0], get_the_ID()];
-                                // echo get_the_title();
-                                // echo " ";
                             }
                         }
                         wp_reset_postdata();
@@ -89,6 +81,12 @@
                             return $result;
                         }
                         usort($post_titles, 'customCompare');
+
+                        if ($inst_overview_scene){
+                            echo "<li class='nav-item'><a class='nav-link' href='". get_permalink($inst_overview_scene) . "'>" . get_the_title($inst_overview_scene) ."</a></li>";
+
+                        }
+
                         foreach ($post_titles as $post_title){
                             echo "<li class='nav-item'><a class='nav-link' href='". esc_url(get_permalink($post_title[2])) ."'>$post_title[0]</a></li>";
                         }
