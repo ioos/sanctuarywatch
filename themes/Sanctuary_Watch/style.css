@@ -1013,34 +1013,6 @@ body > nav > div{
   border-width: 1px;
 }
 
-
-#CA_Sheephead-1, 
-#CA_Sheephead-2, 
-#CA_Sheephead-3, 
-#CA_Sheephead-4, 
-#CA_Sheephead-5, 
-#CA_Sheephead-6, 
-#CA_Sheephead-7 {
-  border-color: rgb(240, 239, 239) !important;
-  border-width: 0.5px !important;
-  border-radius: 6px 6px 0px 0px !important;
-}
-
-/* When a tab is active */
-#CA_Sheephead-1.active, 
-#CA_Sheephead-2.active, 
-#CA_Sheephead-3.active, 
-#CA_Sheephead-4.active, 
-#CA_Sheephead-5.active, 
-#CA_Sheephead-6.active, 
-#CA_Sheephead-7.active {
-  background-color: #e3e3e354 !important;
-  border-color: #03386c !important;
-  color: #03386c !important; /* Optional: Change text color too */
-  border-width: 1px !important;
-
-}
-
 /* padding under scene tagline when no photo or info accordions on a non-mobile view */
 .blankAccordion {
   padding-bottom: 70px;
