@@ -843,9 +843,6 @@ async function loadSVG(url, containerId) {
                 }               
                 add_modal();
                 flicker_highlight_icons();
-                // make_title();
-
-
             }
         }
         else{ //device is a PC
@@ -870,9 +867,6 @@ async function loadSVG(url, containerId) {
                 table_of_contents();
             }               
             add_modal();
-            // make_title();
-
-            
         }
 
     } catch (error) {
@@ -891,63 +885,15 @@ async function loadSVG(url, containerId) {
  *
  * @returns {void} - `void` Modifies DOM element styles in place.
  */
-// function highlight_icons(){
-//     for (let key in child_obj){
-//         let elem = document.querySelector('g[id="' + key + '"]');
-
-//         elem.addEventListener('mouseover', function(){
-//             console.log("hovering over " + key);
-//             alert(scene_data);
-
-//             let elemCollection = elem.querySelectorAll("*");
-//             elemCollection.forEach(subElem => {
-
-//                 if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
-
-//                     let section_name = sectionObj[key];
-//                     let section_num = section_name.substring(section_name.length - 1, section_name.length);
-
-//                     let this_color = `scene_section_hover_color${section_num}`;
-//                     subElem.style.stroke = scene_data[sectionObj[key]][this_color];
-//                 } else{
-//                     subElem.style.stroke = scene_default_hover_color;
-//                 }
-
-//                 subElem.style.strokeWidth = "3px";
-//             });
-//         });
-//         elem.addEventListener('mouseout', function(){
-
-//             let elemCollection = elem.querySelectorAll("*");
-//             elemCollection.forEach(subElem => {
-
-//             subElem.style.stroke = "";
-//             subElem.style.strokeWidth = "";
-//             });
-//         });
-//     }  
-// }
-
 function highlight_icons() {
     for (let key in child_obj) {
         let elem = document.querySelector('g[id="' + key + '"]');
-
-        // console.log('key:', key);
-        // console.log('child_obj:', child_obj);
-        // console.log('child_obj[key].original_name:', child_obj[key].original_name);
-        // console.log('child_obj[key].section_name:',child_obj[key].section_name);
-        // console.log('sectionObj:',sectionObj); 
-        // console.log('sectionObj[abalone]:',sectionObj['abalone']);  
-        // console.log('sectionObj[key]:',sectionObj[key]);
-        // console.log('scene_data:',scene_data);
-        // console.log('scene_same_hover_color_sections:', scene_same_hover_color_sections);
 
         elem.addEventListener('mouseover', function (e) {
 
             let elemCollection = elem.querySelectorAll("*");
             let hoverColor;
             let hoverTextColor;   
-
 
             elemCollection.forEach(subElem => {
                 if (scene_same_hover_color_sections !== "yes" && sectionObj[key] !== "None") {
