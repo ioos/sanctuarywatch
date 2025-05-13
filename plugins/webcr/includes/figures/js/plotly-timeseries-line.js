@@ -33,7 +33,7 @@ function loadPlotlyScript() {
 }
 
 
-function waitForElementById(id, timeout = 3000) {
+function waitForElementById(id, timeout = 1000) {
     return new Promise((resolve, reject) => {
         const intervalTime = 50;
         let elapsedTime = 0;
@@ -53,16 +53,11 @@ function waitForElementById(id, timeout = 3000) {
     });
 }
 
-async function producePlotlyLineFigure(targetFigureElement, interactive_arguments, postID, idx){
+async function producePlotlyLineFigure(targetFigureElement, interactive_arguments, postID){
 
     try {
-
         await loadPlotlyScript(); // ensures Plotly is ready
 
-        //console.log(postID);
-        //console.log("Plotly is loaded:", typeof Plotly !== "undefined"); // for confirmation
-        
-        //const rawField = document.getElementsByName("figure_interactive_arguments")[0].value;
         const rawField = interactive_arguments;
         const figureArguments = Object.fromEntries(JSON.parse(rawField));
         const rootURL = window.location.origin;
@@ -71,24 +66,18 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
         if (postID == null) {
             // ADMIN SIDE POST ID GRAB
             figureID = document.getElementsByName("post_ID")[0].value;
-            console.log("figureID ADMIN:", figureID);
+            //console.log("figureID ADMIN:", figureID);
         }
         if (postID != null) {
             // THEME SIDE POST ID GRAB
             figureID = postID;
-            console.log("figureID THEME:", figureID);
+            //console.log("figureID THEME:", figureID);
         }
 
         // in fetch_tab_info in script.js, await render_tab_info & await new Promise were added to give each run of producePlotlyLineFigure a chance to finish running before the next one kicked off
         // producePlotlyLineFigure used to fail here because the script was running before the previous iteration finished. 
-    
         const figureRestCall = `${rootURL}/wp-json/wp/v2/figure/${figureID}?_fields=uploaded_path_json`;
         const response = await fetch(figureRestCall);
-
-        // console.log("Fetching figureID:", figureID);
-        // console.log("Constructed URL:", figureRestCall);
-        // console.log("Response status:", response.status);
-
 
         const data = await response.json();
         const uploaded_path_json = data.uploaded_path_json;
@@ -96,11 +85,11 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
         const restOfURL = "/wp-content" + uploaded_path_json.split("wp-content")[1];
         const finalURL = rootURL + restOfURL;
         
-
         const rawResponse = await fetch(finalURL);
         if (!rawResponse.ok) {
             throw new Error('Network response was not ok');
         }
+        
         const responseJson = await rawResponse.json();
         const dataToBePlotted = responseJson.data;
 
@@ -114,10 +103,8 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
 
         if (figureID == targetElementpostID) {
 
-            //console.log("Figure ID matches target element post ID");            
+            //console.log(`Figure ID ${figureID} matches target element post ID ${targetElementpostID}`) ;            
             // const targetElement = document.getElementById(targetFigureElement);
-            // targetElement.appendChild(newDiv);
-
             const targetElement = await waitForElementById(targetFigureElement);
             targetElement.appendChild(newDiv);
             
