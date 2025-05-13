@@ -159,16 +159,6 @@ function process_child_obj(){
     // If you need it back as an object:
 }
 
-
-// process_child_obj();
-// const sorted_child_objs = Object.values(child_obj).sort((a, b) => a.modal_icon_order - b.modal_icon_order);
-// child_ids_helper = {};
-// for (let child in child_obj) {
-//     const childData = child_obj[child];
-//     child_ids_helper[childData.title] = child;
-// }
-
-
 // The lines below from ~ 173 to ~ 213 are used for organizing child_obj(of modals) when it is fed into the toc as sorted_child_entries. 
 // If all modals are set to 1 then it now organized alphabetically. other wise it respects the modal order.
 process_child_obj();
@@ -515,7 +505,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
                     svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
                     cont.appendChild(svgClone);
-                    let currIcon = iconsArr[idx].id;
+                    let currIcon = iconsArr[idx];
+
                     let key  ='';
                     if (!has_mobile_layer(mobile_icons, currIcon)){
                         key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
@@ -581,7 +572,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
             colmd2.setAttribute("style", "width: 100%")
             mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
             modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
-        //   updateLayout();
 
         } else  {
           numCols = 3;
@@ -600,10 +590,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
             mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
             modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
 
-        //   updateLayout();
-
         }
-        // updateLayout();
+
         numRows = Math.ceil((iconsArr.length/numCols));
 
         updateLayout(numCols, numRows);
@@ -820,7 +808,6 @@ async function loadSVG(url, containerId) {
                     // }
                   }
         
-        
                 mobileBool = true;
                 const iconsElement = svgElement.getElementById("icons");
                 //fix here
@@ -829,17 +816,7 @@ async function loadSVG(url, containerId) {
                     mobileIcons = svgElement.getElementById("mobile").cloneNode(true);
                 } 
 
-                let parentElement = svgElement.lastElementChild;
-
-                const children = Array.from(parentElement.children);
-
-                children.forEach(child => {
-                    if ((child !== iconsElement ) ) {
-                            parentElement.removeChild(child);
-                    }
-                });
-
-                let iconsArr = Array.from(iconsElement.children);
+                const iconsArr =  Object.keys(child_obj);
                 mobile_helper(svgElement, iconsArr, mobileIcons);
                 
             } else{ //if it gets here, device is a tablet
@@ -866,9 +843,6 @@ async function loadSVG(url, containerId) {
                 }               
                 add_modal();
                 flicker_highlight_icons();
-                // make_title();
-
-
             }
         }
         else{ //device is a PC
@@ -893,9 +867,6 @@ async function loadSVG(url, containerId) {
                 table_of_contents();
             }               
             add_modal();
-            // make_title();
-
-            
         }
 
     } catch (error) {
@@ -914,63 +885,15 @@ async function loadSVG(url, containerId) {
  *
  * @returns {void} - `void` Modifies DOM element styles in place.
  */
-// function highlight_icons(){
-//     for (let key in child_obj){
-//         let elem = document.querySelector('g[id="' + key + '"]');
-
-//         elem.addEventListener('mouseover', function(){
-//             console.log("hovering over " + key);
-//             alert(scene_data);
-
-//             let elemCollection = elem.querySelectorAll("*");
-//             elemCollection.forEach(subElem => {
-
-//                 if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None"){ //this should be done on the SCENE side of things, will havet o bring this back
-
-//                     let section_name = sectionObj[key];
-//                     let section_num = section_name.substring(section_name.length - 1, section_name.length);
-
-//                     let this_color = `scene_section_hover_color${section_num}`;
-//                     subElem.style.stroke = scene_data[sectionObj[key]][this_color];
-//                 } else{
-//                     subElem.style.stroke = scene_default_hover_color;
-//                 }
-
-//                 subElem.style.strokeWidth = "3px";
-//             });
-//         });
-//         elem.addEventListener('mouseout', function(){
-
-//             let elemCollection = elem.querySelectorAll("*");
-//             elemCollection.forEach(subElem => {
-
-//             subElem.style.stroke = "";
-//             subElem.style.strokeWidth = "";
-//             });
-//         });
-//     }  
-// }
-
 function highlight_icons() {
     for (let key in child_obj) {
         let elem = document.querySelector('g[id="' + key + '"]');
-
-        // console.log('key:', key);
-        // console.log('child_obj:', child_obj);
-        // console.log('child_obj[key].original_name:', child_obj[key].original_name);
-        // console.log('child_obj[key].section_name:',child_obj[key].section_name);
-        // console.log('sectionObj:',sectionObj); 
-        // console.log('sectionObj[abalone]:',sectionObj['abalone']);  
-        // console.log('sectionObj[key]:',sectionObj[key]);
-        // console.log('scene_data:',scene_data);
-        // console.log('scene_same_hover_color_sections:', scene_same_hover_color_sections);
 
         elem.addEventListener('mouseover', function (e) {
 
             let elemCollection = elem.querySelectorAll("*");
             let hoverColor;
             let hoverTextColor;   
-
 
             elemCollection.forEach(subElem => {
                 if (scene_same_hover_color_sections !== "yes" && sectionObj[key] !== "None") {
@@ -1332,7 +1255,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     tableRowDiv.appendChild(leftCellDiv);
     tableRowDiv.appendChild(rightCellDiv);
     containerDiv.appendChild(tableRowDiv);
-    if (info_obj['dataLink']!='' && info_obj['scienceText']!=''){
+    if (info_obj['dataLink']!='' || info_obj['scienceText']!=''){
         tabContentElement.appendChild(containerDiv);
     }
 

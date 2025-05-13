@@ -89,9 +89,71 @@ p[itemprop="name"], p[itemprop="address"] {
 .navbar-emblem {
   size: 10%;
 }
-.image-center{
-  text-align: center;
-}
+
+    /* Styles for the header/branding section */
+    .image-center {
+      display: flex; /* Use flexbox for alignment */
+      align-items: center; /* Vertically align items when side-by-side */
+      gap: 15px; /* Space between logo and text block */
+      justify-content: center; /* Center the whole block by default */
+      padding-bottom: 20px; /* Moved from inline style */
+  }
+
+  .image-center img {
+    width: 80px; /* Default logo size, can be adjusted */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  .site-branding-text-container {
+    display: flex;
+    flex-direction: column;
+    text-align: left; /* Text within this block will be left-aligned */
+  }
+
+  .site-title-main {
+      font-size: 2.7vw; /* Default font size using viewport width */
+      font-weight: bold;
+      color: #00467F; /* Using color from single-about.php for consistency */
+  }
+
+  .site-tagline-main {
+    font-size: 1.5vw; /* Default font size using viewport width */
+    font-style: italic;
+      color: #008da8; /* Using color from single-about.php for consistency */
+      font-weight: bold; /* Added to match later rule, ensure consistency */
+
+  }
+
+  /* Mobile specific adjustments */
+  @media (max-width: 768px) { /* Tablet and smaller */
+      .image-center {
+        flex-direction: row; /* Logo and text block side-by-side */
+        justify-content: flex-start; /* Align to the left, or use 'center' to center the group */
+      }
+
+      .image-center img {
+        width: 60px; /* Adjust logo size for side-by-side mobile view */
+        margin-bottom: 0; /* Remove bottom margin as it's not stacked */
+
+      }
+
+      .site-title-main { 
+        font-size: 2.0rem; /* Larger, fixed font size for mobile */ 
+      }
+
+      .site-tagline-main { 
+        font-size: 1.5rem; /* Larger, fixed font size for mobile */
+       }
+
+  }
+  @media (max-width: 480px) { /* Smaller mobile devices */
+    .image-center img { width: 50px; /* Further adjust logo size if needed */ }
+    .site-title-main { font-size: 1.8rem; } /* Slightly smaller for very small screens */
+    .site-tagline-main { font-size: 1.4rem; } /* Slightly smaller for very small screens, fixed typo */
+
+  }
+
+
 .nav-link:hover{
   background-color: #002a4c;
 }
@@ -510,40 +572,6 @@ input:checked + .slider:before {
   border-radius: 0px;
 }
 
-/* #more-info-header-1 > button{
-  max-height: 40px;
-}
-
-#images-header-1 > button{
-  max-height: 40px;
-}
-
-#more-info-collapse-1{
-  margin-top: -4%;
-  margin-bottom: -4%;
-}
-#images-collapse-1{
-  margin-top: -4%;
-  margin-bottom: -4%;
-}
-
-#accordion-header-1 > button{
-  max-height: 40px;
-}
-#accordion-header-2 > button{
-  max-height: 40px;
-}
-
-#accordion-collapse-1{
-  margin-top: -4%;
-  margin-bottom: -4%;
-
-}
-#accordion-collapse-2{
-  margin-top: -4%;
-  margin-bottom: -4%;
-} */
-
 #title-container > h1{
   color: #008da8;
 
@@ -559,41 +587,88 @@ input:checked + .slider:before {
   margin-right: -11px;
 }
 
+#header-margin > a {
+  text-decoration-line: underline;
+}
 
+/* Mobile Navbar Adjustments */
+@media (max-width: 991.98px) { /* Using Bootstrap's lg breakpoint for consistency */
+  body > nav > div > div { /* This targets .navbar-wrapper */
+    display: flex; /* Use flexbox to arrange brand and toggler */
+    justify-content: space-between; /* Pushes brand to left, toggler to right */
+    align-items: flex-start; /* Align items to the top of the flex line */
+    width: 100%; /* Ensure wrapper uses full available width in container-fluid */
+    margin-left: 0; /* Override the global 'margin-left: 7%' for mobile nav */
+    flex-wrap: wrap; /* Allow .navbar-collapse to wrap to the next line */
 
+  }
 
+  .navbar-brand {
+    white-space: normal;    /* Allows text to wrap, overriding Bootstrap's default 'nowrap'. */
+    word-break: break-word; /* Allows long words to break and wrap if they would otherwise overflow. */
+    /* max-width: 75%; Remove or adjust this as flexbox will manage space. */
+    max-width: none; /* Allow flexbox to determine width */
+    margin-right: 1rem; /* Add a little space between brand and toggler if brand text is long */
+    display: inline-block;  /* Ensures 'max-width' is respected by an <a> tag and helps with vertical alignment.
+    display: inline-block;  /* Ensures 'max-width' is respected by an <a> tag and helps with vertical alignment.
+                               Bootstrap's .navbar-brand is often inline-block or block by default. */
+    vertical-align: middle; /* Helps to vertically align the brand text with the toggler icon,
+                               especially if the brand text wraps to multiple lines. */
+    /* Bootstrap's .navbar-brand usually has some 'margin-right'. If you need specific spacing
+       to the right before the 75% max-width limit, you could add 'margin-right' here.
+       e.g., margin-right: 10px; */
+  }
+}
 
+/* Navigation bar stuff */
 @media (min-width: 1000px) {
   .navbar-wrapper {
       display: flex;
-      position: relative;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column; /* Stack brand and nav items vertically */
+      align-items: center;   /* Center items horizontally */
+      position: relative; /* Kept from original, in case it's used for dropdowns or other elements */
+      justify-content: center; /* Kept from original, now centers content vertically if wrapper has more height than content */
       /* width: 100%; */
       max-width: 1000px; 
-      margin: 0 auto;
-      
+      margin: 0 auto; 
+  }
+
+  .nav-link {
+    text-decoration-line: underline;
+  }
+
+  .navbar-expand-lg > .container-fluid {
+    padding-top: 10px;
+    padding-bottom: 0;
+  }
+
+  .nav-link {
+    padding-top: 0;
+    padding-bottom: 8px;
+  }
+
+  .navbar-wrapper .navbar-brand {
+    /* The .navbar-brand is a direct child of .navbar-wrapper. */
+    /* It will be centered horizontally due to .navbar-wrapper's 'align-items: center'. */
+    margin-bottom: 10px; /* Adds some space between the brand and the navigation links below it */
+  }
+
+  /* Assuming .navbar-collapse is a direct child of .navbar-wrapper and contains .navbar-nav */
+  .navbar-wrapper .navbar-collapse {
+    /* This container for the main navigation links will be centered horizontally */
+    /* by .navbar-wrapper's 'align-items: center'. */
+    display: flex; /* Use flexbox to control the alignment of .navbar-nav within it. */
+    justify-content: center; /* Horizontally center .navbar-nav (the list of links). */
+    width: 100%; /* Ensure .navbar-collapse takes available width to allow centering of its content. */
   }
 
   .navbar-nav {
       flex-direction: row;
+      /* The .navbar-nav items will remain in a row. */
+      /* The .navbar-nav block itself is centered by its parent, .navbar-collapse. */
   }
-
-  /* .nav-item {
-      padding: 0 10px;
-  } */
 }
 
-/* @media (max-width: 768px){
-  body > nav > div > div > button{
-    margin-left: 220px;
-  }
-} */
-
-body > nav > div > div > button{
-  position: absolute;
-  left: 80%;
-}
 body > nav > div > div{
   margin-left: 7%;
 }
@@ -604,38 +679,6 @@ body > nav > div > div{
   margin-bottom: 2%;
   max-width: 87%;
 }
-
-/* 
-@media (min-width: 512px) and (max-width: 768px) {
-  #toc-container{
-    margin-left: 0px !important;
-
-  }
-  #scene-row > div.col-md-9{
-    margin-left: 0px !important;
-  }
-  #title-container{
-    margin-left: 0px !important;
-  }
-  #title-container > div > div.col-md-2 > div{
-    max-width: 96% !important;
-  }
-
-  #top-button{
-    margin-bottom: 5px;
-    font-size: large;
-    z-index: 1;
-    margin-top: 2%;
-  }
-  #toggleButton{
-    margin-bottom: 0px;
-    font-size: large;
-    z-index: 1;
-  }
-  #toc-group{
-    padding-top: 2%;
-  }
-} */
 
 
 /* Universal focus style */
@@ -775,28 +818,6 @@ button:focus,
   margin-bottom: 4px;
 }
 
-
-/* display: flex;
-justify-content: center;
-align-items: center;
-position: relative;
-font-size: large; */
-/* #accordion-header-1 > button {
-  display: flex;
-  justify-content: flex-start; 
-  align-items: center;
-  position: relative;
-  font-size: large;
-  text-align: left; 
-}
-#accordion-header-2 > button {
-  display: flex;
-  justify-content: flex-start; 
-  align-items: center; 
-  position: relative;
-  font-size: large;
-  text-align: left; 
-} */
 
 #accordion-header-1 > button::after{
   /* filter: brightness(0) invert(1) !important; */
@@ -992,35 +1013,19 @@ body > nav > div{
   border-width: 1px;
 }
 
-
-#CA_Sheephead-1, 
-#CA_Sheephead-2, 
-#CA_Sheephead-3, 
-#CA_Sheephead-4, 
-#CA_Sheephead-5, 
-#CA_Sheephead-6, 
-#CA_Sheephead-7 {
-  border-color: rgb(240, 239, 239) !important;
-  border-width: 0.5px !important;
-  border-radius: 6px 6px 0px 0px !important;
-}
-
-/* When a tab is active */
-#CA_Sheephead-1.active, 
-#CA_Sheephead-2.active, 
-#CA_Sheephead-3.active, 
-#CA_Sheephead-4.active, 
-#CA_Sheephead-5.active, 
-#CA_Sheephead-6.active, 
-#CA_Sheephead-7.active {
-  background-color: #e3e3e354 !important;
-  border-color: #03386c !important;
-  color: #03386c !important; /* Optional: Change text color too */
-  border-width: 1px !important;
-
-}
-
 /* padding under scene tagline when no photo or info accordions on a non-mobile view */
 .blankAccordion {
   padding-bottom: 70px;
+}
+
+/* footer components */
+.footer_component { 
+  color: white; 
+  padding: 6px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  font-size: 17px;
+  display: inline-block;
 }
