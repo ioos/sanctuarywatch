@@ -1137,6 +1137,27 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     return accordionItem;
 }
 
+function waitForElementById(id, timeout = 3000) {
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now();
+
+        const checkExist = () => {
+            const el = document.getElementById(id);
+            if (el) {
+                resolve(el);
+            } else if (Date.now() - startTime >= timeout) {
+                reject(new Error(`Element with id ${id} not found after ${timeout}ms`));
+            } else {
+                requestAnimationFrame(checkExist); // avoids setTimeout-based jitter
+            }
+        };
+
+        checkExist();
+        console.log('waitForElementById', id);
+    });
+}
+
+  
 
 /**
  * Renders tab content into the provided container element based on the information passed in the `info_obj` object. 
@@ -1173,7 +1194,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  * Usage:
  * This function is called for each tab, populating one or more figures (and other corresponding info)
  */
- function render_tab_info(tabContentElement, tabContentContainer, info_obj){
+async function render_tab_info(tabContentElement, tabContentContainer, info_obj, idx){
 
     let postID = info_obj["postID"];
     let title = info_obj['figureTitle'];
@@ -1302,14 +1323,98 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
             figureExternalImageLoaded(title, postID, gaMeasurementID);    
         break;
 
+        //#Anchor1
+        // case "Interactive":
+        //     img = document.createElement('div');
+        //     img.id = `javascript_figure_target_${postID}`;
+        //     figureDiv.appendChild(img); 
+        //     let interactive_arguments = info_obj["figure_interactive_arguments"];
+        //     await waitForElementById(`javascript_figure_target_${postID}`, 3000);
+        //     await producePlotlyLineFigure(`javascript_figure_target_${postID}`, interactive_arguments, postID);
+        //     figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
+        // break;
+
         case "Interactive":
             img = document.createElement('div');
-            img.id = `javascript_figure_target${postID}`;
-            figureDiv.appendChild(img); 
-            let interactive_arguments = info_obj["figure_interactive_arguments"];
-            producePlotlyLineFigure(`javascript_figure_target${postID}`, interactive_arguments, postID);
+            img.id = `javascript_figure_target_${postID}`;
+            figureDiv.appendChild(img);
+
+            // Use an IIFE to both await element presence and Plotly rendering
+            (async () => {
+                const targetId = `javascript_figure_target_${postID}`;
+                try {
+                    // Ensure the container exists in the DOM before proceeding
+                    await waitForElementById(targetId, 2000);  // You can adjust the timeout if needed
+                    const interactive_arguments = info_obj["figure_interactive_arguments"];
+                    await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                } catch (err) {
+                    console.error("Error rendering Plotly figure:", err);
+                }
+
+                // Manually trigger figure render for the initially active tab
+                if (tabContentElement.classList.contains("show") && tabContentElement.classList.contains("active")) {
+                    //console.log(`Manually rendering Plotly for initially active tab: ${tabContentElement.id}`);
+
+                    const targetId = `javascript_figure_target_${postID}`;
+                    const plotId = `plotlyFigure${postID}`;
+
+                    if (!document.getElementById(plotId)) {
+                        waitForElementById(targetId, 2000)
+                            .then(() => {
+                                const interactive_arguments = info_obj["figure_interactive_arguments"];
+                                return producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                            })
+                            .catch(err => {
+                                console.error(`Initial active tab Plotly error (${postID}):`, err);
+                            });
+                    }
+                }
+
+                // Render the graphs when a modal tab becomes active when was previously in an inactive state,
+                const observer = new MutationObserver(mutations => {
+                    mutations.forEach(async mutation => {
+                    const isActivated = mutation.target.classList.contains("show") &&
+                                        mutation.target.classList.contains("active");
+                
+                    if (isActivated && figureType == 'Interactive') {
+                        //console.log(`Detected tab activation: ${mutation.target.id}`);
+                
+                        const targetId = `javascript_figure_target_${postID}`;
+                        const plotId = `plotlyFigure${postID}`;
+
+                        //console.log(targetId, postID);
+                
+                        // Avoid double rendering
+                        if (document.getElementById(plotId)) {
+                        //console.log(`Plotly figure ${plotId} already rendered.`);
+                        return;
+                        }
+                
+                        try {
+                            await waitForElementById(targetId, 3000);  // Make sure container exists
+                            const interactive_arguments = info_obj["figure_interactive_arguments"];
+                            await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                        } catch (err) {
+                            console.error(`Plotly figure not rendered for postID ${postID}:`, err);
+                        }
+                    }
+                    });
+                });
+
+                // Observe all tab-pane elements for class changes
+                document.querySelectorAll(".tab-pane").forEach(tab => {
+                    observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+                    //observer2.observe(tab, { attributes: true, attributeFilter: ["class"] });
+                });
+
+
+                // Add a MutationObserver to watch for tab activation       
+            })();
+
             figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
+            
         break;
+        
 
 
         case "Code":
@@ -1418,66 +1523,43 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
              break;
     }
 
-    // //Resize the plotly graph if the tab that it is inside of is activated. This code is essential. 
+
+    // // Render the graphs when a modal tab becomes active when was previously in an inactive state,
     // const observer = new MutationObserver(mutations => {
-    //     mutations.forEach(mutation => {
-    //         if (mutation.target.classList.contains("show") && mutation.target.classList.contains("active")) {
-    //             console.log(`Detected tab activation: ${mutation.target.id}`);
-    
-    //             // Find Plotly container inside the newly activated tab
-    //             let plotDiv = mutation.target.querySelector("#plotlyFigure");
-    //             if (plotDiv) {
-    //                 console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
-    //                 Plotly.relayout(plotDiv, { autosize: true });
-    //                 Plotly.Plots.resize(plotDiv);
-    //             }
+    //     mutations.forEach(async mutation => {
+    //       const isActivated = mutation.target.classList.contains("show") &&
+    //                           mutation.target.classList.contains("active");
+      
+    //       if (isActivated && figureType == 'Interactive') {
+    //         //console.log(`Detected tab activation: ${mutation.target.id}`);
+      
+    //         const targetId = `javascript_figure_target_${postID}`;
+    //         const plotId = `plotlyFigure${postID}`;
+
+    //         //console.log(targetId, postID);
+      
+    //         // Avoid double rendering
+    //         if (document.getElementById(plotId)) {
+    //           //console.log(`Plotly figure ${plotId} already rendered.`);
+    //           return;
     //         }
+      
+    //         try {
+    //             await waitForElementById(targetId, 1000);  // Make sure container exists
+    //             const interactive_arguments = info_obj["figure_interactive_arguments"];
+    //             await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+    //         } catch (err) {
+    //             console.error(`Plotly figure not rendered for postID ${postID}:`, err);
+    //         }
+    //       }
     //     });
-    // });    
+    //   });
+
     // // Observe all tab-pane elements for class changes
     // document.querySelectorAll(".tab-pane").forEach(tab => {
     //     observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+    //     //observer2.observe(tab, { attributes: true, attributeFilter: ["class"] });
     // });
-    // Resize the Plotly graph if the tab it's inside of is activated
-    const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-            const isActivated = mutation.target.classList.contains("show") &&
-                                mutation.target.classList.contains("active");
-
-            if (isActivated) {
-                console.log(`Detected tab activation: ${mutation.target.id}`);
-
-                let attempts = 10; // Max retry attempts
-                const interval = 100; // ms between retries
-
-                const waitForPlotDiv = () => {
-                    const plotDiv = mutation.target.querySelector(`#plotlyFigure${postID}`);
-
-                    if (plotDiv) {
-                        console.log(`Resizing Plotly graph inside ${mutation.target.id}`);
-                        try {
-                            Plotly.relayout(plotDiv, { autosize: true });
-                            Plotly.Plots.resize(plotDiv);
-                        } catch (err) {
-                            console.error("Plotly resize error:", err);
-                        }
-                    } else if (attempts > 0) {
-                        attempts--;
-                        setTimeout(waitForPlotDiv, interval);
-                    } else {
-                        console.warn(`Plotly figure not found in ${mutation.target.id} after retries.`);
-                    }
-                };
-
-                waitForPlotDiv();
-            }
-        });
-    });
-
-    // Observe all tab-pane elements for class changes
-    document.querySelectorAll(".tab-pane").forEach(tab => {
-        observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
-    });
 
          
 }
@@ -1507,64 +1589,92 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
  * Usage:
  * Called at the end of the create_tabs function
  */
-function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id){
+ function fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id){
     const protocol = window.location.protocol;
     const host = window.location.host;
     const fetchURL  =  protocol + "//" + host  + "/wp-json/wp/v2/figure?&order=asc&figure_modal=" + modal_id + "&figure_tab=" + tab_id;
-    // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
+    
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
-            //all_figure_data = data;
+            // all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
+            // all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
+
             all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
             all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
-            
 
+            // Sort with the following priority:
+            // 1. figure_order == 1 → sorted by id
+            // 2. figure_order > 1 → sorted by id
+            // 3. missing or non-numeric figure_order → sorted by id
+            all_figure_data.sort((a, b) => {
+                const orderA = Number(a.figure_order);
+                const orderB = Number(b.figure_order);
+                const validA = !isNaN(orderA);
+                const validB = !isNaN(orderB);
+
+                const isOneA = validA && orderA === 1;
+                const isOneB = validB && orderB === 1;
+
+                const isGreaterA = validA && orderA > 1;
+                const isGreaterB = validB && orderB > 1;
+
+                if (isOneA && !isOneB) return -1;
+                if (!isOneA && isOneB) return 1;
+
+                if (isOneA && isOneB) return a.id - b.id;
+
+                if (isGreaterA && !isGreaterB) return -1;
+                if (!isGreaterA && isGreaterB) return 1;
+
+                if (isGreaterA && isGreaterB) return a.id - b.id;
+
+                // both are missing or invalid → sort by ID
+                return a.id - b.id;
+            });
+
+            //console.log(all_figure_data);
 
             if (!all_figure_data){
                 //we don't create anything here...
                 //don't have to render any of the info
-                // tabContentContainer.setAttribute("display", "hidden");
                 return;
                 
             } else{
-                // tabContentContainer.setAttribute("display", "");       
-
-                for (let idx in all_figure_data){
-                    figure_data = all_figure_data[idx];
-
-                    let external_alt = '';
-                    if (figure_data['figure_path']==='External'){
-                        img = figure_data['figure_external_url'];
-                        external_alt = figure_data['figure_external_alt'];
+                (async () => {
+                    for (let idx = 0; idx < all_figure_data.length; idx++) {
+                        const figure_data = all_figure_data[idx];
+                
+                        let external_alt = '';
+                        if (figure_data['figure_path'] === 'External') {
+                            img = figure_data['figure_external_url'];
+                            external_alt = figure_data['figure_external_alt'];
+                        } else {
+                            img = figure_data['figure_image'];
+                        }
+                
+                        const info_obj = {
+                            postID: figure_data.id,
+                            scienceLink: figure_data["figure_science_info"]["figure_science_link_url"],
+                            scienceText: figure_data["figure_science_info"]["figure_science_link_text"],
+                            dataLink: figure_data["figure_data_info"]["figure_data_link_url"],
+                            dataText: figure_data["figure_data_info"]["figure_data_link_text"],
+                            imageLink: img,
+                            code: figure_data["figure_code"],
+                            externalAlt: external_alt,
+                            shortCaption: figure_data["figure_caption_short"],
+                            longCaption: figure_data["figure_caption_long"],
+                            figureType: figure_data["figure_path"],
+                            figureTitle: figure_data["figure_title"],
+                            figure_interactive_arguments: figure_data["figure_interactive_arguments"]
+                        };
+                
+                        (async () => {
+                            await new Promise(resolve => setTimeout(resolve, 4000 * idx)); // Stagger each render
+                            await render_tab_info(tabContentElement, tabContentContainer, info_obj, idx);
+                        })();
                     }
-                    else {
-                        img = figure_data['figure_image'];
-                    } // add smth here for external
-                    info_obj = {
-                    "postID" : figure_data.id,
-                    "scienceLink": figure_data["figure_science_info"]["figure_science_link_url"],
-                    "scienceText": figure_data["figure_science_info"]["figure_science_link_text"],
-                    "dataLink": figure_data["figure_data_info"]["figure_data_link_url"],
-                    "dataText": figure_data["figure_data_info"]["figure_data_link_text"],
-                    "imageLink" : img,
-                    "code" : figure_data["figure_code"],
-                    "externalAlt": external_alt,
-                    "shortCaption" : figure_data["figure_caption_short"],
-                    "longCaption": figure_data["figure_caption_long"],
-                    //"interactive": figure_data["figure_path"],
-                    "figureType": figure_data["figure_path"],
-                    "figureTitle": figure_data["figure_title"],
-                    "figure_interactive_arguments": figure_data["figure_interactive_arguments"]                
-                    };
-                    
-                    // window.addEventListener("load", function () {
-                    //     // Safe to access styles, layout, Plotly, etc.
-                    //     render_tab_info(tabContentElement, tabContentContainer, info_obj);
-                    // });
-                    render_tab_info(tabContentElement, tabContentContainer, info_obj); //to info_obj, add fields regarding interactive figure 
-                   
-                }  
+                })();
             }
         })
     .catch(error => console.error('Error fetching data:', error));
@@ -2461,7 +2571,7 @@ function table_of_contents(){
 
 function list_toc(){
     
-    console.log(child_obj);
+    //console.log(child_obj);
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];

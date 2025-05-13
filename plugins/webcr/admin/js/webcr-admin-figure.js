@@ -671,7 +671,8 @@ function run_webcr_admin_figures() {
                 } else {imageRow.textContent = "No figure image."}
                 break;         
             case "Interactive":
-                    imageRow.id = "javascript_figure_target"
+                    const figureID = document.getElementsByName("post_ID")[0].value;
+                    imageRow.id = `javascript_figure_target_${figureID}`
                     interactiveImage = true;
                 break;
             case "Code":
@@ -722,7 +723,8 @@ function run_webcr_admin_figures() {
                 //Admin is able to call to the interactive_arguments using document.getElementsByName("figure_interactive_arguments")[0].value;
                 //interactive_arguments is for the theme side, it is blank here because it is a place holder variable
                 let interactive_arguments = document.getElementsByName("figure_interactive_arguments")[0].value;
-                producePlotlyLineFigure("javascript_figure_target", interactive_arguments, null);
+                const figureID = document.getElementsByName("post_ID")[0].value;
+                producePlotlyLineFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
             } catch (error) {
                 alert('Please upload a a valid file before generating a graph.')
             }
