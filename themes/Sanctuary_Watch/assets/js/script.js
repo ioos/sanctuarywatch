@@ -1344,7 +1344,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                 const targetId = `javascript_figure_target_${postID}`;
                 try {
                     // Ensure the container exists in the DOM before proceeding
-                    await waitForElementById(targetId, 3000);  // You can adjust the timeout if needed
+                    await waitForElementById(targetId, 2000);  // You can adjust the timeout if needed
                     const interactive_arguments = info_obj["figure_interactive_arguments"];
                     await producePlotlyLineFigure(targetId, interactive_arguments, postID);
                 } catch (err) {
@@ -1359,7 +1359,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                     const plotId = `plotlyFigure${postID}`;
 
                     if (!document.getElementById(plotId)) {
-                        waitForElementById(targetId, 1000)
+                        waitForElementById(targetId, 2000)
                             .then(() => {
                                 const interactive_arguments = info_obj["figure_interactive_arguments"];
                                 return producePlotlyLineFigure(targetId, interactive_arguments, postID);
@@ -1391,7 +1391,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                         }
                 
                         try {
-                            await waitForElementById(targetId, 2000);  // Make sure container exists
+                            await waitForElementById(targetId, 3000);  // Make sure container exists
                             const interactive_arguments = info_obj["figure_interactive_arguments"];
                             await producePlotlyLineFigure(targetId, interactive_arguments, postID);
                         } catch (err) {
@@ -1670,7 +1670,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                         };
                 
                         (async () => {
-                            await new Promise(resolve => setTimeout(resolve, 1000 * idx)); // Stagger each render
+                            await new Promise(resolve => setTimeout(resolve, 4000 * idx)); // Stagger each render
                             await render_tab_info(tabContentElement, tabContentContainer, info_obj, idx);
                         })();
                     }
