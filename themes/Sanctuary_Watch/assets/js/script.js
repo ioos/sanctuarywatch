@@ -1137,7 +1137,7 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     return accordionItem;
 }
 
-function waitForElementById(id, timeout = 3000) {
+function waitForElementById(id, timeout = 2500) {
     return new Promise((resolve, reject) => {
         const startTime = Date.now();
 
@@ -1151,9 +1151,7 @@ function waitForElementById(id, timeout = 3000) {
                 requestAnimationFrame(checkExist); // avoids setTimeout-based jitter
             }
         };
-
         checkExist();
-        console.log('waitForElementById', id);
     });
 }
 
@@ -1344,7 +1342,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                 const targetId = `javascript_figure_target_${postID}`;
                 try {
                     // Ensure the container exists in the DOM before proceeding
-                    await waitForElementById(targetId, 2000);  // You can adjust the timeout if needed
+                    await waitForElementById(targetId, 1500);  // You can adjust the timeout if needed
                     const interactive_arguments = info_obj["figure_interactive_arguments"];
                     await producePlotlyLineFigure(targetId, interactive_arguments, postID);
                 } catch (err) {
@@ -1359,7 +1357,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                     const plotId = `plotlyFigure${postID}`;
 
                     if (!document.getElementById(plotId)) {
-                        waitForElementById(targetId, 2000)
+                        waitForElementById(targetId, 1500)
                             .then(() => {
                                 const interactive_arguments = info_obj["figure_interactive_arguments"];
                                 return producePlotlyLineFigure(targetId, interactive_arguments, postID);
@@ -1670,7 +1668,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                         };
                 
                         (async () => {
-                            await new Promise(resolve => setTimeout(resolve, 4000 * idx)); // Stagger each render
+                            await new Promise(resolve => setTimeout(resolve, 3000)); // Stagger each render
                             await render_tab_info(tabContentElement, tabContentContainer, info_obj, idx);
                         })();
                     }
@@ -2258,7 +2256,7 @@ function sectioned_list(){
             heading.style.display = 'inline-block';
         }   
         else {
-            //use the section above in here to put it back the way it was before. 
+            //use the section above in here to put it back the way it was before.
         }
 
         sect.appendChild(heading);
@@ -2441,9 +2439,11 @@ function table_of_contents(){
         toc_sections();
     } else {
         sectioned_list();
-    }               
+    }       
    
     for (let obj of sorted_child_objs){
+
+
         key = obj.original_name;
         if (sectionObj[key]=="None"){
             // continue;
@@ -2453,6 +2453,7 @@ function table_of_contents(){
         let title = child_obj[key]['title'];  
         let link = document.createElement("a");
         link.setAttribute("id", title.replace(/\s+/g, '_'));
+
 
         let modal = child_obj[key]['modal'];
         if (modal) {
@@ -2504,7 +2505,7 @@ function table_of_contents(){
             link.innerHTML = title;
             item.appendChild(link);
         }
-        let svg_elem = document.querySelector('g[id="' + key + '"]');
+
 
         //CHANGE HERE FOR TABLET STUFF
         link.style.textDecoration = 'none';
@@ -2516,20 +2517,38 @@ function table_of_contents(){
 
                 let subElements = svg_elem.querySelectorAll("*");
                 subElements.forEach(subElement => {
-                    //if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
-                    if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
-                        
-                        let section_name = sectionObj[key];
-                        let section_num = section_name.substring(section_name.length - 1, section_name.length);
 
+                    //if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
+                    if (scene_same_hover_color_sections != "yes" && child_obj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
+
+                        let section_num = child_obj[key]['section_name'];
                         let this_color = `scene_section_hover_color${section_num}`;
-                        subElement.style.stroke = scene_data[sectionObj[key]][this_color];
+                        let text_color = `scene_section_hover_text_color${section_num}`;
+                        let hovercolorfullpath = scene_data[`scene_section${section_num}`][this_color];
+                        let hovertextcolorfullpath = scene_data[`scene_section${section_num}`][text_color]
+                        subElement.style.stroke = hovercolorfullpath;
+
+                        // //Create and show the tooltip box
+                        // const tooltip = document.createElement("div");
+                        // tooltip.className = "hover-key-box";
+                        // tooltip.textContent = child_obj[key].title;
+                        // tooltip.style.position = "absolute";
+                        // tooltip.style.padding = "5px 10px";
+                        // tooltip.style.backgroundColor = hovercolorfullpath;
+                        // tooltip.style.color = hovertextcolorfullpath;
+                        // tooltip.style.borderRadius = "4px";
+                        // tooltip.style.fontSize = "14px";
+                        // tooltip.style.pointerEvents = "none";
+                        // tooltip.style.zIndex = "9999";
+                        // tooltip.id = "hoverKeyTooltip";
+                        // document.body.appendChild(tooltip);
 
                     } else{
                         subElement.style.stroke = scene_default_hover_color;
                     }
                     
                     subElement.style.strokeWidth = "3";
+
                 });
             };
         })(key));
