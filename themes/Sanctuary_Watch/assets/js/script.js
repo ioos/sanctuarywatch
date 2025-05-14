@@ -2443,8 +2443,8 @@ function table_of_contents(){
    
     for (let obj of sorted_child_objs){
 
+        let key = obj.original_name;
 
-        key = obj.original_name;
         if (sectionObj[key]=="None"){
             // continue;
         }
@@ -2452,18 +2452,17 @@ function table_of_contents(){
         let item = document.createElement("li");
         let title = child_obj[key]['title'];  
         let link = document.createElement("a");
-        link.setAttribute("id", title.replace(/\s+/g, '_'));
-
+        let title_formatted = title.replace(/\s+/g, '_')
+        link.setAttribute("id", title_formatted);
 
         let modal = child_obj[key]['modal'];
         if (modal) {
-            link.setAttribute("href", '#'); //just added
+            link.setAttribute("href", `#`); //just added
             link.classList.add("modal-link"); 
             link.innerHTML = title;
 
             item.appendChild(link);
             item.addEventListener('click', function() {
-                
                 let modal = document.getElementById("myModal");
                 modal.style.display = "block";
                 render_modal(key);
@@ -2478,8 +2477,6 @@ function table_of_contents(){
                 if (!is_mobile()){
                     let tagline_container = document.getElementById('tagline-container');
                     tagline_container.innerHTML = '';
-
-
                 }
                 // let tagline_container = document.getElementById('tagline-container');
                 document.getElementById("myTabContent").innerHTML = '';
@@ -2527,21 +2524,6 @@ function table_of_contents(){
                         let hovercolorfullpath = scene_data[`scene_section${section_num}`][this_color];
                         let hovertextcolorfullpath = scene_data[`scene_section${section_num}`][text_color]
                         subElement.style.stroke = hovercolorfullpath;
-
-                        // //Create and show the tooltip box
-                        // const tooltip = document.createElement("div");
-                        // tooltip.className = "hover-key-box";
-                        // tooltip.textContent = child_obj[key].title;
-                        // tooltip.style.position = "absolute";
-                        // tooltip.style.padding = "5px 10px";
-                        // tooltip.style.backgroundColor = hovercolorfullpath;
-                        // tooltip.style.color = hovertextcolorfullpath;
-                        // tooltip.style.borderRadius = "4px";
-                        // tooltip.style.fontSize = "14px";
-                        // tooltip.style.pointerEvents = "none";
-                        // tooltip.style.zIndex = "9999";
-                        // tooltip.id = "hoverKeyTooltip";
-                        // document.body.appendChild(tooltip);
 
                     } else{
                         subElement.style.stroke = scene_default_hover_color;
@@ -2609,19 +2591,20 @@ function list_toc(){
 
     for (let obj of sorted_child_objs){
 
-        key = obj.original_name;
+        let key = obj.original_name;
 
         i++;
 
         item = document.createElement("li");
     
-        let title = obj['title'];  
+        let title = obj['title']; 
         let link = document.createElement("a");
         let modal = obj['modal'];
+        let title_formatted = title.replace(/\s+/g, '_')
     
         if (modal) {
-            link.setAttribute("href", '#'); //just added
-            link.setAttribute("id", title.replace(/\s+/g, '_'));
+            link.setAttribute("href", `#`); //just added
+            link.setAttribute("id",title_formatted);
           
             // link.setAttribute("role", "button");
 
