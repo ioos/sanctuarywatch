@@ -1357,7 +1357,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                     const plotId = `plotlyFigure${postID}`;
 
                     if (!document.getElementById(plotId)) {
-                        waitForElementById(targetId, 1500)
+                        waitForElementById(targetId, 3000)
                             .then(() => {
                                 const interactive_arguments = info_obj["figure_interactive_arguments"];
                                 return producePlotlyLineFigure(targetId, interactive_arguments, postID);
@@ -1389,7 +1389,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                         }
                 
                         try {
-                            await waitForElementById(targetId, 3000);  // Make sure container exists
+                            await waitForElementById(targetId, 2000);  // Make sure container exists
                             const interactive_arguments = info_obj["figure_interactive_arguments"];
                             await producePlotlyLineFigure(targetId, interactive_arguments, postID);
                         } catch (err) {
@@ -1668,7 +1668,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                         };
                 
                         (async () => {
-                            await new Promise(resolve => setTimeout(resolve, 3000)); // Stagger each render
+                            await new Promise(resolve => setTimeout(resolve, 2000)); // Stagger each render
                             await render_tab_info(tabContentElement, tabContentContainer, info_obj, idx);
                         })();
                     }
