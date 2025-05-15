@@ -1,6 +1,9 @@
 /*
 Theme Name: Sanctuary Watch
-Description: Sanctuary Watch is an interactive theme that visualizes and webenizes National Marine Sanctuary condition reports, helping display valuable information with a user-friendly experience. 
+Theme URI: https://github.com/ioos/sanctuarywatch
+Author: the Sanctuary Watch Team
+Description: Sanctuary Watch is an interactive theme used for the easy visualization of scientific data, within the Sanctuary Watch framework. 
+Version: 0.9.1
 */
 
 @import url('assets/css/bootstrap.css');
