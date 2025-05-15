@@ -9,15 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://www.noaa.gov
- * @since             1.0.0
  * @package           Webcr
  *
  * @wordpress-plugin
- * Plugin Name:       Webenized Condition Reports
+ * Plugin Name:       Sanctuary Watch Framework
  * Plugin URI:        https://sanctuarywatch.ioos.us
- * Description:       This plugin customizes a Wordpress installation for the requirements of the Webenized Condition Reports.
- * Version:           1.0.0
- * Author:            Jai Ranganathan
+ * Description:       This plugin customizes a Wordpress installation for the requirements of the Sanctuary Watch framework.
+ * Version:           0.1.0-beta
+ * Author:            Sanctuary Watch Team
  * Author URI:        https://www.noaa.gov
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
