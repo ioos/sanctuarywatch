@@ -15,7 +15,7 @@
  * Plugin Name:       Sanctuary Watch Framework
  * Plugin URI:        https://sanctuarywatch.ioos.us
  * Description:       This plugin customizes a Wordpress installation for the requirements of the Sanctuary Watch framework.
- * Version:           0.9.1
+ * Version:           0.1.0-beta
  * Author:            Sanctuary Watch Team
  * Author URI:        https://www.noaa.gov
  * License:           GPL-2.0+

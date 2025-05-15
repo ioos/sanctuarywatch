@@ -303,7 +303,7 @@ class Webcr_Admin {
 	 * @example
 	 * add_filter( 'gettext', 'modify_publish_button_text', 10, 3 );
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0-beta
 	 */
 	function modify_publish_button_text( $translated_text, $text, $domain ) {
 		if ( is_admin() ) {
