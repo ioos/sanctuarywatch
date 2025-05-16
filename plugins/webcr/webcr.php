@@ -13,7 +13,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Sanctuary Watch Framework
- * Plugin URI:        https://sanctuarywatch.ioos.us
+ * Plugin URI:        hhttps://github.com/ioos/sanctuarywatch
  * Description:       This plugin customizes a Wordpress installation for the requirements of the Sanctuary Watch framework.
  * Version:           0.1.0-beta
  * Author:            Sanctuary Watch Team
@@ -30,6 +30,9 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// Prevent direct access
+if (!defined('ABSPATH')) exit;
+
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
@@ -45,6 +48,20 @@ function activate_webcr() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-webcr-activator.php';
 	Webcr_Activator::activate();
 }
+
+// Include the GitHub Updater class
+require_once plugin_dir_path(__FILE__) . 'admin/class-webcr-github-updater.php';
+
+// Initialize the updater 
+//if (!WP_DEBUG) {
+    new GitHub_Updater(
+        __FILE__,
+        'ioos', // Your GitHub username
+        'sanctuarywatch', // Your repository name
+        false, // This is a plugin, not a theme
+        'plugins/webcr' // Subdirectory path in the repository
+    );
+//}
 
 /**
  * The code that runs during plugin deactivation.

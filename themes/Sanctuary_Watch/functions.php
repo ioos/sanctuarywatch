@@ -64,6 +64,23 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
   }
   add_action('wp_enqueue_scripts', 'enqueue_api_script');
 
+
+    // Include the GitHub Updater class if not already included by the plugin
+  if (!class_exists('GitHub_Updater')) {
+    require_once get_template_directory() . '/admin/class-webcr-github-updater.php';
+  }
+
+  // Initialize the theme updater (only if not in development environment)
+  if (!WP_DEBUG) {
+    new GitHub_Updater(
+        get_template_directory() . '/style.css',
+        'ioos', // Your GitHub username
+        'sanctuarywatch', // Your repository name
+        true, // This is a theme, not a plugin
+        'themes/Sanctuary_Watch' // Subdirectory path in the repository
+    );
+  }
+
   /**
    * Retrieves arrays of scene information and photos for a specified post.
    *
