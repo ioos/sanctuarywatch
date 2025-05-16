@@ -207,6 +207,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 document.getElementById(plotlyDivID).style.setProperty("max-width", "none", "important");
                 
                 Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+                return[allLinesPlotly, layout, config];
 
             }
         } else {}

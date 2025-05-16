@@ -1155,7 +1155,83 @@ function waitForElementById(id, timeout) {
     });
 }
 
-  
+ async function render_interactive_plots(tabContentElement, info_obj) {
+    let postID = info_obj["postID"];
+    let figureType = info_obj["figureType"];
+    let title = info_obj['figureTitle'];
+    let targetId = `javascript_figure_target_${postID}`;
+    let plotlyDivID = `plotlyFigure${postID}`;
+    let interactive_arguments = info_obj["figure_interactive_arguments"];
+
+    switch (figureType) {
+        case "Interactive":
+            // Call producePlotlyLineFigure and check if it returns valid data
+            let vars = await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+
+            // Check if vars is valid
+            if (!vars || !vars[0] || !vars[1] || !vars[2]) {
+                console.error('Invalid data returned from producePlotlyLineFigure');
+                return;  // Exit the function if the data is invalid
+            }
+
+            console.log('vars0', vars[0]);
+            console.log('vars1', vars[1]);
+            console.log('vars2', vars[2]);
+
+            // Proceed with rendering the plot
+            await loadPlotlyScript();
+            await Plotly.newPlot(plotlyDivID, vars[0], vars[1], vars[2]);
+            console.log('WAIT1', postID);
+
+            // Manually trigger figure render for the initially active tab
+            if (tabContentElement.classList.contains("active")) {
+                if (!document.getElementById(plotlyDivID)) {
+                    waitForElementById(targetId, 2000)
+                        .then(() => {
+                            console.log('WAIT2', postID);
+                            return Plotly.newPlot(plotlyDivID, vars[0], vars[1], vars[2]);
+                        })
+                        .catch(err => {
+                            console.error(`Initial active tab Plotly error (${postID}):`, err);
+                        });
+                    console.log('PLOT2', postID);
+                }
+            }
+
+            // Render the graphs when a modal tab becomes active when previously inactive
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(async mutation => {
+                    const isActivated = mutation.target.classList.contains("show") &&
+                                        mutation.target.classList.contains("active");
+
+                    if (isActivated) {
+                        // Avoid double rendering
+                        if (document.getElementById(plotlyDivID)) {
+                            return;  // Plot already rendered
+                        }
+
+                        try {
+                            console.log('WAIT3', postID);
+                            await Plotly.newPlot(plotlyDivID, vars[0], vars[1], vars[2]);
+                            console.log('PLOT3', postID);
+                        } catch (err) {
+                            console.error(`Plotly figure not rendered for postID ${postID}:`, err);
+                        }
+                    }
+                });
+            });
+
+            // Observe tab elements for class changes (active tabs)
+            document.querySelectorAll(".tab-pane").forEach(tab => {
+                observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+            });
+
+            // Google Tags
+            figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
+
+            break;
+    }
+} 
 
 /**
  * Renders tab content into the provided container element based on the information passed in the `info_obj` object. 
@@ -1637,6 +1713,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                         (async () => {
                             await new Promise(resolve => setTimeout(resolve, 500)); // Stagger each render
                             await render_tab_info(tabContentElement, tabContentContainer, info_obj, idx);
+                            await render_interactive_plots(tabContentElement, info_obj);
                         })();
                     }
                 })();
