@@ -71,7 +71,7 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
   }
 
   // Initialize the theme updater (only if not in development environment)
-  if (!WP_DEBUG) {
+//  if (!WP_DEBUG) {
     new GitHub_Updater(
         get_template_directory() . '/style.css',
         'ioos', // Your GitHub username
@@ -79,7 +79,7 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
         true, // This is a theme, not a plugin
         'themes/Sanctuary_Watch' // Subdirectory path in the repository
     );
-  }
+//  }
 
   /**
    * Retrieves arrays of scene information and photos for a specified post.

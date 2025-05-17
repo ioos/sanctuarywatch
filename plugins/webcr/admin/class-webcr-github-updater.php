@@ -2,7 +2,7 @@
 /**
  * GitHub Updater
  * 
- * Enables WordPress plugins and themes to update from GitHub.
+ * Enables WordPress plugins and themes to update from GitHub, including pre-releases.
  */
 class GitHub_Updater {
     private $slug;
@@ -42,10 +42,7 @@ class GitHub_Updater {
     
     public function set_plugin_properties() {
         if (!$this->is_theme) {
-            if (!function_exists('get_plugin_data')) {
-                require_once ABSPATH . 'wp-admin/includes/plugin.php';
-            }
-            
+
             $this->plugin_data = get_plugin_data($this->plugin_file);
         } else {
             $theme = wp_get_theme($this->slug);
@@ -62,58 +59,81 @@ class GitHub_Updater {
     
     private function get_repository_info() {
         if (is_null($this->github_response)) {
-            // First try to get the latest release
-            $request_uri = sprintf('https://api.github.com/repos/%s/%s/releases/latest', $this->username, $this->repository);
-            $response = wp_remote_get($request_uri, array(
+            // Configure API request options
+            $request_options = array(
                 'headers' => array(
                     'Accept' => 'application/vnd.github.v3+json',
                     'User-Agent' => 'WordPress/' . get_bloginfo('version') . '; ' . get_bloginfo('url')
-                )
-            ));
+                ),
+                'timeout' => 10
+            );
             
-            // Check if the request was successful
-            if (is_wp_error($response) || 200 !== wp_remote_retrieve_response_code($response)) {
-                // If no release is found, try getting the main branch info instead
-                $request_uri = sprintf('https://api.github.com/repos/%s/%s/commits/main', $this->username, $this->repository);
-                $response = wp_remote_get($request_uri, array(
-                    'headers' => array(
-                        'Accept' => 'application/vnd.github.v3+json',
-                        'User-Agent' => 'WordPress/' . get_bloginfo('version') . '; ' . get_bloginfo('url')
-                    )
-                ));
+            // Get ALL releases (including pre-releases) instead of just the latest
+            $releases_uri = sprintf('https://api.github.com/repos/%s/%s/releases', $this->username, $this->repository);
+            $releases_response = wp_remote_get($releases_uri, $request_options);
+            
+            // Check if there are any releases
+            if (!is_wp_error($releases_response) && 200 === wp_remote_retrieve_response_code($releases_response)) {
+                $releases = json_decode(wp_remote_retrieve_body($releases_response), true);
                 
-                if (!is_wp_error($response) && 200 === wp_remote_retrieve_response_code($response)) {
-                    $commit_data = json_decode(wp_remote_retrieve_body($response), true);
+                // If there are releases (including pre-releases), use the most recent one
+                if (is_array($releases) && !empty($releases)) {
+                    $this->github_response = $releases[0]; // First item is the most recent release
+                    return;
+                }
+            }
+            
+            // If no releases found or error occurred, try the repository's default branch
+            $repo_uri = sprintf('https://api.github.com/repos/%s/%s', $this->username, $this->repository);
+            $repo_response = wp_remote_get($repo_uri, $request_options);
+            
+            if (!is_wp_error($repo_response) && 200 === wp_remote_retrieve_response_code($repo_response)) {
+                $repo_data = json_decode(wp_remote_retrieve_body($repo_response), true);
+                $default_branch = isset($repo_data['default_branch']) ? $repo_data['default_branch'] : 'main';
+                
+                $branch_uri = sprintf('https://api.github.com/repos/%s/%s/commits/%s', 
+                                    $this->username, $this->repository, $default_branch);
+                $branch_response = wp_remote_get($branch_uri, $request_options);
+                
+                if (!is_wp_error($branch_response) && 200 === wp_remote_retrieve_response_code($branch_response)) {
+                    $commit_data = json_decode(wp_remote_retrieve_body($branch_response), true);
                     
                     // If we have commit data, create a simulated release response
                     if (is_array($commit_data) && isset($commit_data['sha'])) {
                         // Get the current version from the plugin/theme
-                        $current_version = $this->is_theme ? 
-                            wp_get_theme($this->slug)->get('Version') : 
-                            $this->plugin_data['Version'];
+                        $current_version_for_sha_tag = null;
+                        if ($this->is_theme) {
+                            $theme = wp_get_theme($this->slug);
+                            if ($theme->exists()) {
+                                $current_version_for_sha_tag = $theme->get('Version');
+                            }
+                        } else {
+                            // Ensure plugin_data is initialized if it hasn't been.
+                            if (is_null($this->plugin_data) && method_exists($this, 'set_plugin_properties')) {
+                                $this->set_plugin_properties(); // Try to initialize it if null
+                            }
+                            if (is_array($this->plugin_data) && isset($this->plugin_data['Version'])) {
+                                $current_version_for_sha_tag = $this->plugin_data['Version'];
+                            }
+                        }
                         
-                        // Increment version number for the update (this is a fallback when no release exists)
-                        $version_parts = explode('.', $current_version);
-                        $version_parts[count($version_parts) - 1]++;
-                        $new_version = implode('.', $version_parts);
+                        // Use the first 7 characters of commit SHA as version part
+                        $sha_short = substr($commit_data['sha'], 0, 7);
                         
                         // Create a simulated release structure
                         $this->github_response = array(
-                            'tag_name' => $new_version,
-                            'published_at' => date('Y-m-d H:i:s', strtotime($commit_data['commit']['author']['date'])),
-                            'body' => $commit_data['commit']['message'],
+                            'tag_name' => (string) $current_version_for_sha_tag . '+' . $sha_short,
+                            'published_at' => isset($commit_data['commit']['author']['date']) ? 
+                                date('Y-m-d H:i:s', strtotime($commit_data['commit']['author']['date'])) :
+                                date('Y-m-d H:i:s'),
+                            'body' => isset($commit_data['commit']['message']) ? 
+                                $commit_data['commit']['message'] : 'Latest commit from repository',
                             'html_url' => sprintf('https://github.com/%s/%s/commit/%s', 
                                        $this->username, $this->repository, $commit_data['sha']),
-                            'zipball_url' => sprintf('https://github.com/%s/%s/archive/refs/heads/main.zip',
-                                       $this->username, $this->repository)
+                            'zipball_url' => sprintf('https://github.com/%s/%s/archive/refs/heads/%s.zip',
+                                       $this->username, $this->repository, $default_branch)
                         );
                     }
-                }
-            } else {
-                // We got a release, use that
-                $release_data = json_decode(wp_remote_retrieve_body($response), true);
-                if (is_array($release_data)) {
-                    $this->github_response = $release_data;
                 }
             }
             
@@ -135,25 +155,62 @@ class GitHub_Updater {
             return $transient;
         }
         
-        $current_version = $this->is_theme ? 
-            $transient->checked[$this->slug] : 
-            $this->plugin_data['Version'];
+        $current_version_val = null;
+        if ($this->is_theme) {
+            // For themes, $transient->checked should contain the version.
+            if (is_array($transient->checked) && isset($transient->checked[$this->slug])) {
+                $current_version_val = $transient->checked[$this->slug];
+            } elseif (is_object($transient->checked) && isset($transient->checked->{$this->slug})) { // WordPress sometimes uses objects for checked
+                $current_version_val = $transient->checked->{$this->slug};
+            }
+        } else {
+            // For plugins, $this->plugin_data should have the version.
+            // Ensure plugin_data is initialized if it hasn't been.
+            // This is defensive, as admin_init should have run.
+            if (is_null($this->plugin_data) && method_exists($this, 'set_plugin_properties')) {
+                 $this->set_plugin_properties();
+            }
+            if (is_array($this->plugin_data) && isset($this->plugin_data['Version'])) {
+                $current_version_val = $this->plugin_data['Version'];
+            }
+        }
+
+        // If current version could not be determined, we can't proceed with comparison.
+        if (is_null($current_version_val)) {
+            // Optionally, log an error here for diagnostics
+            // error_log('GitHub Updater: Could not determine current version for ' . $this->slug . '. Aborting update check for this item.');
+            return $transient; // Cannot compare versions
+        }
+        
+        // Clean version numbers for comparison (remove any +commit suffixes)
+        $clean_current = preg_replace('/\+.*$/', '', (string) $current_version_val);
+        $remote_tag_name = isset($this->github_response['tag_name']) ? (string) $this->github_response['tag_name'] : '';
+        $clean_remote = preg_replace('/\+.*$/', '', $remote_tag_name);
+        
+        // Remove 'v' prefix if present
+        $clean_current = ltrim($clean_current, 'v');
+        $clean_remote = ltrim($clean_remote, 'v');
+        
+        // Check if version numbers are equal but remote has a commit suffix
+        $force_update = ($clean_current === $clean_remote &&
+                         strpos($remote_tag_name, '+') !== false &&
+                         $remote_tag_name !== (string) $current_version_val);
         
         // Check if a new version is available
-        if (version_compare($this->github_response['tag_name'], $current_version, '>')) {
+        if (version_compare($clean_remote, $clean_current, '>') || $force_update) {
             $package = $this->get_download_url();
             
             if (!empty($package)) {
                 if ($this->is_theme) {
                     $transient->response[$this->slug] = array(
-                        'new_version' => $this->github_response['tag_name'],
+                        'new_version' => $remote_tag_name,
                         'package' => $package,
                         'url' => $this->github_response['html_url']
                     );
                 } else {
                     $obj = new stdClass();
                     $obj->slug = $this->slug;
-                    $obj->new_version = $this->github_response['tag_name'];
+                    $obj->new_version = $remote_tag_name;
                     $obj->url = isset($this->plugin_data['PluginURI']) ? $this->plugin_data['PluginURI'] : 
                           sprintf('https://github.com/%s/%s', $this->username, $this->repository);
                     $obj->package = $package;
@@ -213,11 +270,24 @@ class GitHub_Updater {
             }
         }
         
-        // If no specific asset found, create a custom URL to download only the subdirectory
-        // Note: For this to work, we need a server-side handler or GitHub action
+        // If no specific asset found, use the zipball URL from the API
+        if (isset($this->github_response['zipball_url'])) {
+            return $this->github_response['zipball_url'];
+        }
         
-        // Fallback to the full repository zipball
-        return $this->github_response['zipball_url'];
+        // Final fallback - direct download link
+        $branch = 'main'; // Default to main
+        $repo_uri = sprintf('https://api.github.com/repos/%s/%s', $this->username, $this->repository);
+        $repo_response = wp_remote_get($repo_uri);
+        if (!is_wp_error($repo_response) && 200 === wp_remote_retrieve_response_code($repo_response)) {
+            $repo_data = json_decode(wp_remote_retrieve_body($repo_response), true);
+            if (isset($repo_data['default_branch'])) {
+                $branch = $repo_data['default_branch'];
+            }
+        }
+        
+        return sprintf('https://github.com/%s/%s/archive/refs/heads/%s.zip', 
+                        $this->username, $this->repository, $branch);
     }
     
     // For plugins
