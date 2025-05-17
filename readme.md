@@ -1,5 +1,5 @@
 # Sanctuary Watch <img align="right" width="150" height="150" src="https://github.com/user-attachments/assets/5b053a75-79e7-41d7-bc87-b906b0230771">
-In this repo, you'll find the Wordpress plugin and theme that create the customized "Webenized Condition Report" experience within a Wordpress environment. 
+In this repo, you'll find the Wordpress plugin and theme that create the customized Sanctuary Watch experience within a Wordpress environment. 
 
 
 ## Getting Started
