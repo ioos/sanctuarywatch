@@ -4,7 +4,7 @@
  * The admin-specific functionality of the plugin.
  *
  * @link       https://www.noaa.gov
- * @since      1.0.0
+ * @since      0.2.0-beta
  *
  * @package    Webcr
  * @subpackage Webcr/admin
@@ -25,7 +25,7 @@ class Webcr_Admin {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0-beta
 	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
@@ -34,7 +34,7 @@ class Webcr_Admin {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0-beta
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
@@ -43,7 +43,7 @@ class Webcr_Admin {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0-beta
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
@@ -57,7 +57,7 @@ class Webcr_Admin {
 	/**
 	 * Register the stylesheets for the admin area.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0-beta
 	 */
 	public function enqueue_styles() {
 
@@ -87,7 +87,7 @@ class Webcr_Admin {
 	/**
 	 * Register the JavaScript for the admin area.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0-beta
 	 */
 	public function enqueue_scripts($hook_suffix) {
 
@@ -131,7 +131,7 @@ class Webcr_Admin {
 		if ($current_post_type == "figure" && ($hook_suffix == "post.php" || $hook_suffix == "post-new.php")){
 
 			// Enqueue utility.js
-			wp_enqueue_script('figure-utility', dirname(plugin_dir_url(__FILE__)) . '/includes/figures/js/utility.js',array(), '1.0.0', array('strategy'  => 'defer'));
+			wp_enqueue_script('figure-utility', dirname(plugin_dir_url(__FILE__)) . '/includes/figures/js/utility.js',array(), '0.2.0-beta', array('strategy'  => 'defer'));
 		
 			// Enqueue plotly-timeseries-line.js
 			wp_enqueue_script('plotly-timeseries-line', dirname(plugin_dir_url(__FILE__)) .  '/includes/figures/js/plotly-timeseries-line.js', array(), '1.0.0', array('strategy'  => 'defer'));
@@ -408,5 +408,26 @@ class Webcr_Admin {
 		}
 		return $actions;
 	}
+
+	/**
+	 * Checks if the required theme ("Sanctuary Watch") is active.
+	 *
+	 * If the required theme is not active, it displays an admin notice
+	 * warning the user. This function is hooked to 'admin_notices'.
+	 *
+	 * @since 1.0.0
+	 */
+	function plugin_check_required_theme() {
+		$current_theme = wp_get_theme();
+		$required_theme = 'Sanctuary Watch'; // Replace with your theme's folder name
+		
+		if ($current_theme->get('Name') !== $required_theme && $current_theme->get('Template') !== $required_theme) {
+			$message = sprintf(
+				__('Warning: The <strong>Sanctuary Watch Framework</strong> plugin is designed to work only with the <strong>Sanctuary Watch</strong> theme.', 'your-plugin-textdomain'));
+			
+			echo '<div class="notice notice-warning is-dismissible"><p>' . $message . '</p></div>';
+		}
+	}
+
 
 }

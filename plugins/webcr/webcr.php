@@ -35,10 +35,8 @@ if (!defined('ABSPATH')) exit;
 
 /**
  * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WEBCR_VERSION', '1.0.0' );
+define( 'WEBCR_VERSION', '0.2.0-beta' );
 
 // Include the GitHub Updater class
 require_once plugin_dir_path(__FILE__) . 'admin/class-webcr-github-updater.php';
@@ -65,7 +63,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-webcr.php';
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    1.0.0
+ * @since    0.2.0-beta
  */
 function run_webcr() {
 

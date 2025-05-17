@@ -185,7 +185,7 @@ class Webcr {
 		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
 		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin, 'remove_view_link_from_post_type', 10, 2); 
-
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'plugin_check_required_theme' ); 
 
 		// Load  class and functions associated with About custom content type
 		$plugin_admin_about = new Webcr_About ( $this->get_plugin_name(), $this->get_version() );		

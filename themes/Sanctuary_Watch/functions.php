@@ -66,20 +66,21 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
 
 
     // Include the GitHub Updater class if not already included by the plugin
-  if (!class_exists('GitHub_Updater')) {
-    require_once get_template_directory() . '/admin/class-webcr-github-updater.php';
-  }
-
-  // Initialize the theme updater (only if not in development environment)
-//  if (!WP_DEBUG) {
-    new GitHub_Updater(
-        get_template_directory() . '/style.css',
-        'ioos', // Your GitHub username
-        'sanctuarywatch', // Your repository name
-        true, // This is a theme, not a plugin
-        'themes/Sanctuary_Watch' // Subdirectory path in the repository
-    );
-//  }
+    if ( is_plugin_active( 'webcr/webcr.php' ) ) {
+      // Include the GitHub Updater class if not already included by the plugin
+      if (!class_exists('GitHub_Updater')) {
+        require_once get_template_directory() . '/admin/class-webcr-github-updater.php';
+      }
+    
+      // Initialize the theme updater (only if not in development environment)
+      new GitHub_Updater(
+          get_template_directory() . '/style.css',
+          'ioos', // Your GitHub username
+          'sanctuarywatch', // Your repository name
+          true, // This is a theme, not a plugin
+          'themes/Sanctuary_Watch' // Subdirectory path in the repository
+      );
+    }
 
   /**
    * Retrieves arrays of scene information and photos for a specified post.
@@ -430,6 +431,41 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
     }
     return null;
   }
+
+  /**
+   * Check if the Sanctuary Watch Framework plugin is active and display an admin notice if not.
+   *
+   * This function verifies whether the Sanctuary Watch Framework plugin required by the theme
+   * is currently active. If the plugin is not active, it displays a dismissible
+   * warning notice in the WordPress admin panel with a link to activate the plugin.
+   *
+   * @since 1.0.0
+   * @access public
+   * 
+   * @uses is_plugin_active()   To check if the plugin is active
+   * @uses admin_url()          To generate the URL to the plugins page
+   * @uses add_action()         Hooked into 'admin_notices' action
+   * 
+   * @return void
+   */
+  function theme_check_required_plugin() {
+    // Check if the is_plugin_active function is available
+    if (!function_exists('is_plugin_active')) {
+        include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+    }
+
+    // Check if the required plugin is active
+    if (!is_plugin_active('webcr/webcr.php')) {
+        $message = sprintf(
+            __('Warning: This theme requires the <strong>Sanctuary Watch Framework</strong> plugin to function properly. Please %1$s the plugin.', 'your-theme-textdomain'),
+            '<a href="' . admin_url('plugins.php') . '">activate</a>'
+        );
+        
+        echo '<div class="notice notice-warning is-dismissible"><p>' . $message . '</p></div>';
+    }
+  }
+  add_action('admin_notices', 'theme_check_required_plugin');
+
 
   //enqueue javascript for infographiq
   function enqueue_info_scripts() {
