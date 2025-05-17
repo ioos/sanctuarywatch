@@ -3,7 +3,7 @@ In this repo, you'll find the Wordpress plugin and theme that create the customi
 
 
 ## Getting Started
-The plugin, called webCR, is based upon the structure provided by Joe Sz's [Wordpress Plugin Boilerplate Tutorial](https://github.com/JoeSz/WordPress-Plugin-Boilerplate-Tutorial) - which is itself based upon the structure provided by Devin Vinson's [Wordpress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate). The purpose of using this template structure is to provide, in the words of Devin, "a standardized, organized, object-oriented foundation for building high-quality WordPress plugins".
+The plugin, called the Sanctuary Watch Framework, is based upon the structure provided by Joe Sz's [Wordpress Plugin Boilerplate Tutorial](https://github.com/JoeSz/WordPress-Plugin-Boilerplate-Tutorial) - which is itself based upon the structure provided by Devin Vinson's [Wordpress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate). The purpose of using this template structure is to provide, in the words of Devin, "a standardized, organized, object-oriented foundation for building high-quality WordPress plugins".
 
 How to get started with the code in this repo? The best way is to get a new instance of WordPress running locally on your computer and then import this repo in.
 
