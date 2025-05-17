@@ -161,22 +161,16 @@ class Webcr_Admin {
 	}
 
     /**
-     * Add new image size for admin thumbnail. Function NOT USED as yet.
-     *
-     * @link https://wordpress.stackexchange.com/questions/54423/add-image-size-in-a-plugin-i-created/304941#304941
-     */
-    public function add_thumbnail_size() {
-        add_image_size( 'new_thumbnail_size', 60, 75, true );
-    }
-
-    /**
-	 * Remove the ability to access the Comment content type from the admin bar of the dashboard.
+	 * Remove the ability to access Comments, Posts, Users, and Pages content types from the admin bar of the dashboard.
 	 *
 	 * @since    1.0.0
 	 */
-    public function remove_comments(){
+    public function remove_admin_bar_options(){
         global $wp_admin_bar;
         $wp_admin_bar->remove_menu('comments');
+		$wp_admin_bar->remove_menu('new-page');
+		$wp_admin_bar->remove_menu('new-post');
+		$wp_admin_bar->remove_menu('new-user');
     }
 
 	/**
@@ -193,12 +187,17 @@ class Webcr_Admin {
 	}
 
     /**
-	 * Remove the ability to access the Comment content type from the sidebar of the dashboard.
+	 * Remove the ability to access the Comments, Posts, and Pages content types from the sidebar of the dashboard.
 	 *
 	 * @since    1.0.0
 	 */
-    public function remove_comments_menu() {
+    public function remove_elements_from_menu() {
+		//remove comments from the admin menu
         remove_menu_page('edit-comments.php');
+		//remove posts from the admin menu
+		remove_menu_page('edit.php');
+		//remove pages from the admin menu
+		remove_menu_page('edit.php?post_type=page');
     }
 
     /**
@@ -396,5 +395,18 @@ class Webcr_Admin {
 		return $permalink;
 	}
 
-}
+	/**
+	 * Remove "view" link from admin screen for instance, modal, and figure posts.
+	 *
+	 * @param array    $actions An array of row action links.
+	 * @param WP_Post  $post    The post object.
+	 * @since    1.0.0
+	 */
+	function remove_view_link_from_post_type($actions, $post) {
+		if (($post->post_type === 'instance' || $post->post_type === 'modal' || $post->post_type === 'figure')&& isset($actions['view'])) {
+			unset($actions['view']); // Remove the "View" link
+		}
+		return $actions;
+	}
 
+}

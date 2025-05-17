@@ -580,21 +580,6 @@ class Webcr_Modal {
     }
 
     /**
-	 * Remove "view" link from admin screen for modal posts.
-	 *
-     * @param string $column The name of the column.
-     * @param int $post_id The database id of the post.
-	 * @since    1.0.0
-	 */
-
-    function remove_view_link_from_modal_post_type($actions, $post) {
-        if ($post->post_type === 'modal' && isset($actions['view'])) {
-            unset($actions['view']); // Remove the "View" link
-        }
-        return $actions;
-    }
-
-    /**
 	 * Populate custom fields for Modal content type in the admin screen.
 	 *
      * @param string $column The name of the column.

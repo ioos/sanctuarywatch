@@ -5,15 +5,59 @@
  * Enables WordPress plugins and themes to update from GitHub, including pre-releases.
  */
 class GitHub_Updater {
+    /**
+    * The slug of the plugin or theme.
+    * For plugins, it's plugin_basename($file). For themes, it's the theme directory name.
+    * @var string
+    */
     private $slug;
+    /**
+     * Stores plugin or theme data retrieved from WordPress.
+     * @var array|null
+     */
     private $plugin_data;
+    /**
+     * The GitHub username or organization name.
+     * @var string
+     */
     private $username;
+    /**
+     * The GitHub repository name.
+     * @var string
+     */
     private $repository;
+    /**
+     * Stores the response from the GitHub API (latest release or commit data).
+     * @var array|null
+     */
     private $github_response;
+    /**
+     * The main plugin file path. Only used if $is_theme is false.
+     * @var string|null
+     */
     private $plugin_file;
+    /**
+     * Flag indicating if the current instance is for a theme.
+     * @var bool
+     */
     private $is_theme = false;
+    /**
+     * The path to the plugin/theme within the GitHub repository, if it's in a subdirectory.
+     * @var string
+     */
     private $subdir_path;
     
+    /**
+     * Constructor.
+     *
+     * Sets up hooks for plugin or theme updates.
+     *
+     * @param string $file            The main plugin file path or theme directory path.
+     * @param string $github_username The GitHub username or organization.
+     * @param string $github_repo     The GitHub repository name.
+     * @param bool   $is_theme        Optional. True if this is a theme, false for a plugin. Default false.
+     * @param string $subdir_path     Optional. Path to the plugin/theme within the repository if it's in a subdirectory.
+     */
     public function __construct($file, $github_username, $github_repo, $is_theme = false, $subdir_path = '') {
         $this->is_theme = $is_theme;
         $this->subdir_path = $subdir_path; // Path within repository (e.g., 'plugins/webcr' or 'themes/Sanctuary_Watch')
@@ -40,6 +84,10 @@ class GitHub_Updater {
         add_action('admin_init', array($this, 'set_plugin_properties'));
     }
     
+    /**
+     * Sets plugin or theme properties using WordPress functions.
+     * Hooked to 'admin_init'.
+     */
     public function set_plugin_properties() {
         if (!$this->is_theme) {
 
@@ -57,6 +105,11 @@ class GitHub_Updater {
         }
     }
     
+    /**
+     * Retrieves repository information from GitHub API.
+     *
+     * Fetches the latest release or, if no releases, the latest commit from the default branch.
+     */
     private function get_repository_info() {
         if (is_null($this->github_response)) {
             // Configure API request options
@@ -144,6 +197,13 @@ class GitHub_Updater {
         }
     }
     
+    /**
+     * Checks for updates and modifies the update transient.
+     * Hooked to 'site_transient_update_plugins' or 'site_transient_update_themes'.
+     *
+     * @param object $transient The WordPress update transient.
+     * @return object The modified transient.
+     */
     public function update_state($transient) {
         if (empty($transient->checked)) {
             return $transient;
@@ -222,11 +282,26 @@ class GitHub_Updater {
         return $transient;
     }
     
-    // Alias for theme updates
+    /**
+     * Alias for theme updates to use the same update_state logic.
+     * Hooked to 'site_transient_update_themes'.
+     *
+     * @param object $transient The WordPress update transient for themes.
+     * @return object The modified transient.
+     */
     public function theme_update_state($transient) {
         return $this->update_state($transient);
     }
     
+    /**
+     * Provides plugin information for the "View details" popup.
+     * Hooked to 'plugins_api'.
+     *
+     * @param false|object|array $false    The result object or array. Default false.
+     * @param string             $action   The type of information being requested from the Plugin Installation API.
+     * @param object             $response An object of arguments used to solicit information about a plugin.
+     * @return false|object The plugin info object or false if not applicable.
+     */    
     public function plugin_info($false, $action, $response) {
         if (!isset($response->slug) || $response->slug != $this->slug) {
             return $false;
@@ -258,6 +333,14 @@ class GitHub_Updater {
         return $response;
     }
     
+    /**
+     * Gets the download URL for the plugin or theme.
+     *
+     * Prioritizes specific release assets (webcr.zip or Sanctuary_Watch.zip),
+     * then the release's zipball_url, then a direct archive link to the default branch.
+     *
+     * @return string The download URL.
+     */
     private function get_download_url() {
         // First check if there's a dedicated release asset for our component
         $asset_name = $this->is_theme ? 'Sanctuary_Watch.zip' : 'webcr.zip';
@@ -290,7 +373,18 @@ class GitHub_Updater {
                         $this->username, $this->repository, $branch);
     }
     
-    // For plugins
+    /**
+     * Post-installation hook for plugins.
+     *
+     * Moves the plugin from the temporary download location to the correct plugin directory.
+     * Handles cases where the plugin is in a subdirectory within the repository zip.
+     * Hooked to 'upgrader_post_install'.
+     *
+     * @param bool   $response    Installation response.
+     * @param array  $hook_extra  Extra arguments passed to hooked filters.
+     * @param array  $result      Installation result data.
+     * @return array The (potentially modified) result data.
+     */
     public function after_install($response, $hook_extra, $result) {
         if (!$this->is_theme && isset($hook_extra['plugin'])) {
             global $wp_filesystem;
@@ -316,7 +410,18 @@ class GitHub_Updater {
         return $result;
     }
     
-    // For themes
+    /**
+     * Post-installation hook for themes.
+     *
+     * Moves the theme from the temporary download location to the correct theme directory.
+     * Handles cases where the theme is in a subdirectory within the repository zip.
+     * Hooked to 'upgrader_post_install'.
+     *
+     * @param bool   $response    Installation response.
+     * @param array  $hook_extra  Extra arguments passed to hooked filters.
+     * @param array  $result      Installation result data.
+     * @return array The (potentially modified) result data.
+     */
     public function after_theme_install($response, $hook_extra, $result) {
         if ($this->is_theme && isset($hook_extra['theme'])) {
             global $wp_filesystem;
@@ -343,7 +448,13 @@ class GitHub_Updater {
         return $result;
     }
     
-    // Helper function to recursively copy directories
+    /**
+     * Helper function to recursively copy directories using WP_Filesystem.
+     *
+     * @param string $src Source directory path.
+     * @param string $dst Destination directory path.
+     * @return bool True on success, false on failure.
+     */
     private function recursive_copy($src, $dst) {
         global $wp_filesystem;
         
@@ -370,7 +481,13 @@ class GitHub_Updater {
         return true;
     }
     
-    // Helper function to recursively remove a directory
+    /**
+     * Helper function to recursively remove a directory using WP_Filesystem.
+     * Includes safety checks to prevent accidental deletion of critical directories.
+     *
+     * @param string $directory Path to the directory to remove.
+     * @return bool True on success, false on failure or if safety checks fail.
+     */
     private function recursive_remove_directory($directory) {
         global $wp_filesystem;
         
