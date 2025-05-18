@@ -318,7 +318,7 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
           $scenePost = get_post($scene_id[0]);
           $sceneName = get_post_meta($scenePost, "post_title");
 
-          $section_name = get_post_meta($child_post_id, "icon_toc_section")[0];
+          $section_name = isset(get_post_meta($child_post_id, "icon_toc_section")[0]) ? get_post_meta($child_post_id, "icon_toc_section")[0] : '';
           $child = $child_id;
 
           if (array_key_exists($child_id, $child_ids)){

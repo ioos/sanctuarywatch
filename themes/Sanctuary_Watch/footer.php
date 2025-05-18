@@ -3,11 +3,6 @@ defined('ABSPATH') || exit;
 $instance_num =  get_post_meta(get_the_ID(), 'scene_location', true);
 $instance_footer_about = get_post_meta($instance_num, 'instance_footer', true);
 
-if (count(array_filter($instance_footer_about)) === 0) {
-    echo "All values are false";
-}
-
-
 ?>
 <script> 
 let instance_footer_about = <?php echo json_encode($instance_footer_about); ?>;
