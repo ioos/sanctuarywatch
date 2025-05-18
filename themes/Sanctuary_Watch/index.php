@@ -73,7 +73,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div id="entire_thing" style="
  
-  max-width: 1700px !important;
+  max-width: 1200px !important;
     margin: 0 auto;
     background: #f2f2f2;
     padding-bottom: 9%;
