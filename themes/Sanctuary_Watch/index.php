@@ -199,7 +199,8 @@ foreach ($terms_array as $term){
         echo "<div class ='row justify-content-start' style='padding-bottom: 10px;'>";
         for($j= 0; $j < 3; $j++){
             $current_row = $i*3 + $j;
-            $instance = $instances[$current_row];
+            $instance = isset($instances[$current_row]) ? $instances[$current_row] : null;
+
             if ($instance != null) {
                 $tile_image = get_post_meta($instance["id"], "instance_tile")[0];
                 if ($instance["instance_legacy_content"] == "no") {
