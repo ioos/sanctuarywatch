@@ -448,85 +448,6 @@ class Webcr_Modal {
     }
 
     /**
-	 * Add two filter dropdowns, field length and scene location, for the admin screen for the Modal content type.
-	 *
-	 * @since    1.0.0
-	 */
-    function modal_filter_dropdowns () {
-        $screen = get_current_screen();
-        if ( $screen->id == 'edit-modal' ){
-            $fieldOptions = array(
-                array("", "large", "Full tagline"),
-                array("", "medium", "Medium tagline"),
-                array("", "small", "Short tagline")
-            );
-
-            if (isset($_GET["field_length"])) {
-                $field_length = $_GET["field_length"];
-                switch ($field_length){
-                    case "large":
-                        $fieldOptions[0][0] = "selected ";
-                        break;
-                    case "medium":
-                        $fieldOptions[1][0] = "selected ";
-                        break;
-                    case "small":
-                        $fieldOptions[2][0] = "selected ";
-                        break;
-                }
-            } else {
-                $fieldOptions[2][0] = "selected ";
-            }
-
-            $field_length_dropdown = '<select name="field_length" id="field_length">';
-            for ($i=0; $i <3; $i++){
-                $field_length_dropdown .= '<option ' . $fieldOptions[$i][0] .  'value="' . $fieldOptions[$i][1] .'">' . $fieldOptions[$i][2] . '</option>';
-            }
-            $field_length_dropdown .= '</select>';
-
-            echo $field_length_dropdown;
-            
-            // Instances dropdown 
-            global $wpdb;
-            $instances = $wpdb->get_results("
-                SELECT ID, post_title 
-                FROM {$wpdb->posts} 
-                WHERE post_type = 'instance' 
-                AND post_status = 'publish' 
-                ORDER BY post_title ASC");
-    
-            echo '<select name="modal_instance" id="modal_instance">';
-            echo '<option value="">All Instances</option>';
-            foreach ($instances as $instance) {
-                $selected = isset($_GET['modal_instance']) && $_GET['modal_instance'] == $instance->ID ? 'selected="selected"' : '';
-                echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
-            }
-            echo '</select>';
-
-            //Scene dropdown
-            echo '<select name="modal_scene" id="modal_scene">';
-            echo '<option value="">All Scenes</option>';
-            if (isset($_GET['modal_instance']) && $_GET['modal_instance'] != ""){
-                $scenes = $wpdb->get_results("
-                SELECT p.ID, p.post_title 
-                FROM $wpdb->posts p
-                INNER JOIN $wpdb->postmeta pm ON p.ID = pm.post_id
-                WHERE p.post_type = 'scene' 
-                AND p.post_status = 'publish'
-                AND pm.meta_key = 'scene_location' 
-                AND pm.meta_value = " . $_GET['modal_instance']);
-
-                foreach ($scenes as $scene) {
-                    $selected = $_GET['modal_scene'] == $scene->ID ? 'selected="selected"' : '';
-                    echo '<option value="' . $scene->ID . '" ' . $selected . '>' . $scene->post_title . '</option>';
-                }
-            }
-            echo '</select>';
-
-        }
-    }
-
-    /**
 	 * Set columns in admin screen for Modal custom content type.
 	 *
      * @link https://www.smashingmagazine.com/2017/12/customizing-admin-columns-wordpress/
@@ -547,35 +468,279 @@ class Webcr_Modal {
         return $columns;
     }
 
-    //hello there
     /**
-     * Filter the results for the Modal admin screen by the Modal Location and Modal Scene dropdown fields.
+     * Store filter values in user metadata with 20-minute expiration.
      *
-     * @param WP_Query $query The WordPress Query instance that is passed to the function.
+     * This function captures the current filter selections from the URL parameters
+     * and stores them in user metadata with a 20-minute expiration timestamp.
+     * It only runs on the Modal post type admin screen and requires a logged-in user.
+     *
      * @since    1.0.0
+     * @access   public
+     * @return   void
      */
-    function modal_location_filter_results($query){
+    function store_modal_filter_values() {
+        $screen = get_current_screen();
+        if ($screen->id != 'edit-modal') {
+            return;
+        }
+        
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return;
+        }
+        
+        // Get current timestamp
+        $current_time = time();
+        
+        // Store the expiration time (20 minutes = 1200 seconds)
+        $expiration_time = $current_time + 1200;
+        
+        // Store field_length filter value if it exists
+        if (isset($_GET['field_length']) && !empty($_GET['field_length'])) {
+            update_user_meta($user_id, 'webcr_modal_field_length', $_GET['field_length']);
+            update_user_meta($user_id, 'webcr_modal_field_length_expiration', $expiration_time);
+        }
+        
+        // Store modal_instance filter value if it exists
+        if (isset($_GET['modal_instance']) && !empty($_GET['modal_instance'])) {
+            update_user_meta($user_id, 'webcr_modal_instance', $_GET['modal_instance']);
+            update_user_meta($user_id, 'webcr_modal_instance_expiration', $expiration_time);
+        }
+        
+        // Store modal_scene filter value if it exists
+        if (isset($_GET['modal_scene']) && !empty($_GET['modal_scene'])) {
+            update_user_meta($user_id, 'webcr_modal_scene', $_GET['modal_scene']);
+            update_user_meta($user_id, 'webcr_modal_scene_expiration', $expiration_time);
+        }
+    }
+
+    /**
+     * Check if stored filter values are still valid and retrieve them if they are.
+     *
+     * This function retrieves a stored filter value from user metadata and verifies
+     * if it has exceeded its expiration time. If the value has expired, it cleans up
+     * the metadata entries and returns false. Otherwise, it returns the stored value.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @param    string  $meta_key  The meta key to check expiration for.
+     * @return   bool|string        False if expired or not found, the value if still valid.
+     */
+    function get_modal_filter_value($meta_key) {
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return false;
+        }
+        
+        $value = get_user_meta($user_id, $meta_key, true);
+        if (empty($value)) {
+            return false;
+        }
+        
+        // Check if the value has expired
+        $expiration_time = get_user_meta($user_id, $meta_key . '_expiration', true);
+        $current_time = time();
+        
+        if ($current_time > $expiration_time) {
+            // Delete expired values
+            delete_user_meta($user_id, $meta_key);
+            delete_user_meta($user_id, $meta_key . '_expiration');
+            return false;
+        }
+        
+        return $value;
+    }
+
+    /**
+     * Add filter dropdowns for the Modal admin screen with persistent selection support.
+     *
+     * This function creates and outputs filter dropdowns for field length, instance,
+     * and scene on the Modal post type admin screen. It first checks for filter values
+     * in the URL parameters, then falls back to stored user metadata values if they 
+     * haven't expired. After displaying the dropdowns, it stores the current selections
+     * for future use.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @return   void
+     */
+    function modal_filter_dropdowns() {
+        $screen = get_current_screen();
+        if ($screen->id == 'edit-modal') {
+            // Field Length dropdown
+            $fieldOptions = array(
+                array("", "large", "Full tagline"),
+                array("", "medium", "Medium tagline"),
+                array("", "small", "Short tagline")
+            );
+
+            // Check for filter in URL first, then check for stored value
+            $field_length = isset($_GET["field_length"]) ? $_GET["field_length"] : $this->get_modal_filter_value('webcr_modal_field_length');
+            
+            if ($field_length) {
+                switch ($field_length) {
+                    case "large":
+                        $fieldOptions[0][0] = "selected ";
+                        break;
+                    case "medium":
+                        $fieldOptions[1][0] = "selected ";
+                        break;
+                    case "small":
+                        $fieldOptions[2][0] = "selected ";
+                        break;
+                }
+            } else {
+                $fieldOptions[2][0] = "selected ";
+            }
+
+            $field_length_dropdown = '<select name="field_length" id="field_length">';
+            for ($i = 0; $i < 3; $i++) {
+                $field_length_dropdown .= '<option ' . $fieldOptions[$i][0] . 'value="' . $fieldOptions[$i][1] . '">' . $fieldOptions[$i][2] . '</option>';
+            }
+            $field_length_dropdown .= '</select>';
+
+            echo $field_length_dropdown;
+            
+            // Instances dropdown 
+            global $wpdb;
+            $instances = $wpdb->get_results("
+                SELECT ID, post_title 
+                FROM {$wpdb->posts} 
+                WHERE post_type = 'instance' 
+                AND post_status = 'publish' 
+                ORDER BY post_title ASC");
+            
+            // Get selected instance from URL or from stored value
+            $selected_instance = isset($_GET['modal_instance']) ? $_GET['modal_instance'] : $this->get_modal_filter_value('webcr_modal_instance');
+
+            echo '<select name="modal_instance" id="modal_instance">';
+            echo '<option value="">All Instances</option>';
+            foreach ($instances as $instance) {
+                $selected = ($selected_instance == $instance->ID) ? 'selected="selected"' : '';
+                echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
+            }
+            echo '</select>';
+
+            // Scene dropdown
+            echo '<select name="modal_scene" id="modal_scene">';
+            echo '<option value="">All Scenes</option>';
+            
+            // Get selected scene from URL or from stored value
+            $selected_instance = isset($_GET['modal_instance']) ? $_GET['modal_instance'] : $this->get_modal_filter_value('webcr_modal_instance');
+            $selected_scene = isset($_GET['modal_scene']) ? $_GET['modal_scene'] : $this->get_modal_filter_value('webcr_modal_scene');
+            
+            if ($selected_instance) {
+                $scenes = $wpdb->get_results("
+                    SELECT p.ID, p.post_title 
+                    FROM $wpdb->posts p
+                    INNER JOIN $wpdb->postmeta pm ON p.ID = pm.post_id
+                    WHERE p.post_type = 'scene' 
+                    AND p.post_status = 'publish'
+                    AND pm.meta_key = 'scene_location' 
+                    AND pm.meta_value = " . $selected_instance);
+
+                foreach ($scenes as $scene) {
+                    $selected = ($selected_scene == $scene->ID) ? 'selected="selected"' : '';
+                    echo '<option value="' . $scene->ID . '" ' . $selected . '>' . $scene->post_title . '</option>';
+                }
+            }
+            echo '</select>';
+        }
+        
+        // Store the filter values after displaying the dropdowns
+        $this->store_modal_filter_values();
+    }
+
+    /**
+     * Filter the Modal admin screen results based on selected or stored filter values.
+     *
+     * This function modifies the WordPress query to filter Modal posts based on the
+     * selected location (instance) and scene values. It first checks for values in
+     * the URL parameters, then falls back to stored user metadata values that haven't
+     * expired. This ensures filter persistence for 20 minutes across page loads.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @param    WP_Query  $query  The WordPress Query instance being filtered.
+     * @return   void
+     */
+    function modal_location_filter_results($query) {
         global $pagenow;
         $type = 'modal';
-        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type && isset($_GET['modal_instance']) && $_GET['modal_instance'] != '') {
-            if ( isset($_GET['modal_scene']) && $_GET['modal_scene'] != '') {
-                $meta_query = array(
-                    array(
-                        'key' => 'modal_scene', // The custom field storing the instance ID
-                        'value' => $_GET['modal_scene'],
-                        'compare' => '='
-                    )
-                );
-            } else {
-            $meta_query = array(
-                array(
-                    'key' => 'modal_location', // The custom field storing the instance ID
-                    'value' => $_GET['modal_instance'],
-                    'compare' => '='
-                )
-            );
+        
+        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type) {
+            // Check URL params first, then check stored values
+            $instance = isset($_GET['modal_instance']) ? $_GET['modal_instance'] : $this->get_modal_filter_value('webcr_modal_instance');
+            $scene = isset($_GET['modal_scene']) ? $_GET['modal_scene'] : $this->get_modal_filter_value('webcr_modal_scene');
+            
+            if ($instance) {
+                if ($scene) {
+                    $meta_query = array(
+                        array(
+                            'key' => 'modal_scene',
+                            'value' => $scene,
+                            'compare' => '='
+                        )
+                    );
+                } else {
+                    $meta_query = array(
+                        array(
+                            'key' => 'modal_location',
+                            'value' => $instance,
+                            'compare' => '='
+                        )
+                    );
+                }
+                $query->set('meta_query', $meta_query);
             }
-            $query->set('meta_query', $meta_query);
+        }
+    }
+
+    /**
+     * Clean up expired modal filter values in user metadata.
+     *
+     * This function runs on admin page load and checks if any stored filter values
+     * have exceeded their 20-minute expiration time. Any expired values are removed
+     * from the database to maintain clean user metadata and prevent stale filters
+     * from being applied.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @return   void
+     */
+    function cleanup_expired_modal_filters() {
+        $screen = get_current_screen();
+        if (!$screen || $screen->id != 'edit-modal') {
+            return;
+        }
+        
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return;
+        }
+        
+        $current_time = time();
+        
+        // Check and clean up field_length
+        $expiration_time = get_user_meta($user_id, 'webcr_modal_field_length_expiration', true);
+        if ($expiration_time && $current_time > $expiration_time) {
+            delete_user_meta($user_id, 'webcr_modal_field_length');
+            delete_user_meta($user_id, 'webcr_modal_field_length_expiration');
+        }
+        
+        // Check and clean up modal_instance
+        $expiration_time = get_user_meta($user_id, 'webcr_modal_instance_expiration', true);
+        if ($expiration_time && $current_time > $expiration_time) {
+            delete_user_meta($user_id, 'webcr_modal_instance');
+            delete_user_meta($user_id, 'webcr_modal_instance_expiration');
+        }
+        
+        // Check and clean up modal_scene
+        $expiration_time = get_user_meta($user_id, 'webcr_modal_scene_expiration', true);
+        if ($expiration_time && $current_time > $expiration_time) {
+            delete_user_meta($user_id, 'webcr_modal_scene');
+            delete_user_meta($user_id, 'webcr_modal_scene_expiration');
         }
     }
 
@@ -590,11 +755,13 @@ class Webcr_Modal {
 
         // maybe knock this next section out
         if (isset($_GET["field_length"])) {
-            $field_length = $_GET["field_length"];
+            $field_length = sanitize_key($_GET["field_length"]);
         } else {
-            $field_length = "small";
+            $stored_field_length = $this->get_modal_filter_value('webcr_modal_field_length');
+            $field_length = $stored_field_length ? $stored_field_length : "small"; // Default to "small" if no stored value or expired
         }
 
+        // Populate columns based on the determined field_length
         if ( $column === 'modal_location' ) {
             $instance_id = get_post_meta( $post_id, 'modal_location', true ); 
             echo get_the_title($instance_id ); 

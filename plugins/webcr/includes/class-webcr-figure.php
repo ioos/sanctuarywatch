@@ -99,109 +99,284 @@ class Webcr_Figure {
     }
 
     /**
-	 * Add filter dropdowns, figure location, for the admin screen for the Figure content type.
-	 *
-	 * @since    1.0.0
-	 */
-    function figure_filter_dropdowns () {
+     * Store figure filter values in user metadata with 20-minute expiration.
+     *
+     * This function captures the current Figure filter selections from the URL parameters
+     * and stores them in user metadata with a 20-minute expiration timestamp.
+     * It handles all three filter types: instance, scene, and icon.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @return   void
+     */
+    public function store_figure_filter_values() {
         $screen = get_current_screen();
-        if ( $screen->id == 'edit-figure' ){
-            // Instances dropdown 
+        if ($screen->id != 'edit-figure') {
+            return;
+        }
+        
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return;
+        }
+        
+        // Get current timestamp
+        $current_time = time();
+        
+        // Store the expiration time (20 minutes = 1200 seconds)
+        $expiration_time = $current_time + 1200;
+        
+        // Store figure_instance filter value if it exists
+        if (isset($_GET['figure_instance']) && !empty($_GET['figure_instance'])) {
+            update_user_meta($user_id, 'webcr_figure_instance', absint($_GET['figure_instance']));
+            update_user_meta($user_id, 'webcr_figure_instance_expiration', $expiration_time);
+        }
+        
+        // Store figure_scene filter value if it exists
+        if (isset($_GET['figure_scene']) && !empty($_GET['figure_scene'])) {
+            update_user_meta($user_id, 'webcr_figure_scene', absint($_GET['figure_scene']));
+            update_user_meta($user_id, 'webcr_figure_scene_expiration', $expiration_time);
+        }
+        
+        // Store figure_icon filter value if it exists
+        if (isset($_GET['figure_icon']) && !empty($_GET['figure_icon'])) {
+            update_user_meta($user_id, 'webcr_figure_icon', absint($_GET['figure_icon']));
+            update_user_meta($user_id, 'webcr_figure_icon_expiration', $expiration_time);
+        }
+    }
+
+    /**
+     * Check if stored filter values are still valid and retrieve them if they are.
+     *
+     * This function retrieves a stored filter value from user metadata and verifies
+     * if it has exceeded its expiration time. If the value has expired, it cleans up
+     * the metadata entries and returns false. Otherwise, it returns the stored value.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @param    string  $meta_key  The meta key to check expiration for.
+     * @return   bool|string|int    False if expired or not found, the value if still valid.
+     */
+    public function get_figure_filter_value($meta_key) {
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return false;
+        }
+        
+        $value = get_user_meta($user_id, $meta_key, true);
+        if (empty($value)) {
+            return false;
+        }
+        
+        // Check if the value has expired
+        $expiration_time = get_user_meta($user_id, $meta_key . '_expiration', true);
+        $current_time = time();
+        
+        if ($current_time > $expiration_time) {
+            // Delete expired values
+            delete_user_meta($user_id, $meta_key);
+            delete_user_meta($user_id, $meta_key . '_expiration');
+            return false;
+        }
+        
+        return $value;
+    }
+
+    /**
+     * Clean up expired figure filter values in user metadata.
+     *
+     * This function runs on admin page load and checks if any stored filter values
+     * have exceeded their 20-minute expiration time. Any expired values are removed
+     * from the database to maintain clean user metadata and prevent stale filters
+     * from being applied.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @return   void
+     */
+    public function cleanup_expired_figure_filters() {
+        $screen = get_current_screen();
+        if (!$screen || $screen->id != 'edit-figure') {
+            return;
+        }
+        
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return;
+        }
+        
+        $current_time = time();
+        
+        // Check and clean up figure_instance
+        $expiration_time = get_user_meta($user_id, 'webcr_figure_instance_expiration', true);
+        if ($expiration_time && $current_time > $expiration_time) {
+            delete_user_meta($user_id, 'webcr_figure_instance');
+            delete_user_meta($user_id, 'webcr_figure_instance_expiration');
+        }
+        
+        // Check and clean up figure_scene
+        $expiration_time = get_user_meta($user_id, 'webcr_figure_scene_expiration', true);
+        if ($expiration_time && $current_time > $expiration_time) {
+            delete_user_meta($user_id, 'webcr_figure_scene');
+            delete_user_meta($user_id, 'webcr_figure_scene_expiration');
+        }
+        
+        // Check and clean up figure_icon
+        $expiration_time = get_user_meta($user_id, 'webcr_figure_icon_expiration', true);
+        if ($expiration_time && $current_time > $expiration_time) {
+            delete_user_meta($user_id, 'webcr_figure_icon');
+            delete_user_meta($user_id, 'webcr_figure_icon_expiration');
+        }
+    }
+
+    /**
+     * Add filter dropdowns for the Figure admin screen with persistent selection support.
+     *
+     * This function creates and outputs filter dropdowns for instance, scene, and icon
+     * on the Figure post type admin screen. It first checks for filter values in the URL 
+     * parameters, then falls back to stored user metadata values if they haven't expired.
+     * After displaying the dropdowns, it stores the current selections for future use.
+     * The dropdowns are hierarchical - scene options depend on instance selection, and
+     * icon options depend on scene selection.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @return   void
+     */
+    public function figure_filter_dropdowns() {
+        $screen = get_current_screen();
+        if ($screen->id == 'edit-figure') {
+            // Run cleanup of expired filters
+            $this->cleanup_expired_figure_filters();
+            
+            // Get current filter values from URL or stored metadata
+            $current_instance = isset($_GET['figure_instance']) ? absint($_GET['figure_instance']) : $this->get_figure_filter_value('webcr_figure_instance');
+            $current_scene = isset($_GET['figure_scene']) ? absint($_GET['figure_scene']) : $this->get_figure_filter_value('webcr_figure_scene');
+            $current_icon = isset($_GET['figure_icon']) ? absint($_GET['figure_icon']) : $this->get_figure_filter_value('webcr_figure_icon');
+            
             global $wpdb;
+            
+            // Instances dropdown 
             $instances = $wpdb->get_results("
                 SELECT ID, post_title 
                 FROM {$wpdb->posts} 
                 WHERE post_type = 'instance' 
                 AND post_status = 'publish' 
                 ORDER BY post_title ASC");
-    
+
             echo '<select name="figure_instance" id="figure_instance">';
-            echo '<option value="">All Instances</option>';
+            echo '<option value="">' . esc_html__('All Instances', 'webcr') . '</option>';
             foreach ($instances as $instance) {
-                $selected = isset($_GET['figure_instance']) && $_GET['figure_instance'] == $instance->ID ? 'selected="selected"' : '';
-                echo '<option value="' . $instance->ID . '" ' . $selected . '>' . $instance->post_title . '</option>';
+                $selected = $current_instance == $instance->ID ? 'selected="selected"' : '';
+                echo '<option value="' . esc_attr($instance->ID) . '" ' . $selected . '>' . esc_html($instance->post_title) . '</option>';
             }
             echo '</select>';
 
-            //Scene dropdown
+            // Scene dropdown
             echo '<select name="figure_scene" id="figure_scene">';
-            echo '<option value="">All Scenes</option>';
-            if (isset($_GET['figure_instance']) && $_GET['figure_instance'] != ""){
-                $scenes = $wpdb->get_results("
-                SELECT p.ID, p.post_title 
-                FROM $wpdb->posts p
-                INNER JOIN $wpdb->postmeta pm ON p.ID = pm.post_id
-                WHERE p.post_type = 'scene' 
-                AND p.post_status = 'publish'
-                AND pm.meta_key = 'scene_location' 
-                AND pm.meta_value = " . $_GET['figure_instance']);
+            echo '<option value="">' . esc_html__('All Scenes', 'webcr') . '</option>';
+            
+            // If we have an instance selected (either from URL or stored value)
+            if ($current_instance) {
+                $scenes = $wpdb->get_results($wpdb->prepare("
+                    SELECT p.ID, p.post_title 
+                    FROM $wpdb->posts p
+                    INNER JOIN $wpdb->postmeta pm ON p.ID = pm.post_id
+                    WHERE p.post_type = 'scene' 
+                    AND p.post_status = 'publish'
+                    AND pm.meta_key = 'scene_location' 
+                    AND pm.meta_value = %d", 
+                    $current_instance));
 
                 foreach ($scenes as $scene) {
-                    $selected = $_GET['figure_scene'] == $scene->ID ? 'selected="selected"' : '';
-                    echo '<option value="' . $scene->ID . '" ' . $selected . '>' . $scene->post_title . '</option>';
+                    $selected = $current_scene == $scene->ID ? 'selected="selected"' : '';
+                    echo '<option value="' . esc_attr($scene->ID) . '" ' . $selected . '>' . esc_html($scene->post_title) . '</option>';
                 }
             }
             echo '</select>';
 
-            //Icon dropdown
+            // Icon dropdown
             echo '<select name="figure_icon" id="figure_icon">';
-            echo '<option value="">All Icons</option>';
-            if (isset($_GET['figure_scene']) && $_GET['figure_scene'] != ""){
-                $icons = $wpdb->get_results("
-                SELECT p.ID, p.post_title 
-                FROM $wpdb->posts p
-                INNER JOIN $wpdb->postmeta pm1 ON p.ID = pm1.post_id
-                INNER JOIN $wpdb->postmeta pm2 ON p.ID = pm2.post_id
-                WHERE p.post_type = 'modal'  
-                AND p.post_status = 'publish' 
-                AND pm1.meta_key = 'modal_scene' AND pm1.meta_value = " . $_GET['figure_scene'] . 
-                " AND pm2.meta_key = 'icon_function' AND pm2.meta_value = 'Modal'");
+            echo '<option value="">' . esc_html__('All Icons', 'webcr') . '</option>';
+            
+            // If we have a scene selected (either from URL or stored value)
+            if ($current_scene) {
+                $icons = $wpdb->get_results($wpdb->prepare("
+                    SELECT p.ID, p.post_title 
+                    FROM $wpdb->posts p
+                    INNER JOIN $wpdb->postmeta pm1 ON p.ID = pm1.post_id
+                    INNER JOIN $wpdb->postmeta pm2 ON p.ID = pm2.post_id
+                    WHERE p.post_type = 'modal'  
+                    AND p.post_status = 'publish' 
+                    AND pm1.meta_key = 'modal_scene' AND pm1.meta_value = %d
+                    AND pm2.meta_key = 'icon_function' AND pm2.meta_value = 'Modal'", 
+                    $current_scene));
 
                 foreach ($icons as $icon) {
-                    $selected = $_GET['figure_icon'] == $icon->ID ? 'selected="selected"' : '';
-                    echo '<option value="' . $icon->ID . '" ' . $selected . '>' . $icon->post_title . '</option>';
+                    $selected = $current_icon == $icon->ID ? 'selected="selected"' : '';
+                    echo '<option value="' . esc_attr($icon->ID) . '" ' . $selected . '>' . esc_html($icon->post_title) . '</option>';
                 }
             }
             echo '</select>';
+            
+            // Store the filter values after displaying the dropdowns
+            $this->store_figure_filter_values();
         }
     }
 
     /**
-     * Filter the results for the Figure admin screen by the Figure Location, Figure Scene, and Figure Icons dropdown fields
+     * Filter the Figure admin screen results based on selected or stored filter values.
      *
-     * @param WP_Query $query The WordPress Query instance that is passed to the function.
+     * This function modifies the WordPress query to filter Figure posts based on the
+     * selected instance, scene, or icon values. It first checks for values in the URL parameters,
+     * then falls back to stored user metadata values that haven't expired. This ensures
+     * filter persistence for 20 minutes across page loads. The filtering logic follows a
+     * hierarchical approach where icon takes precedence over scene, which takes precedence
+     * over instance.
+     *
      * @since    1.0.0
+     * @access   public
+     * @param    WP_Query  $query  The WordPress Query instance being filtered.
+     * @return   void
      */
-    function figure_location_filter_results($query){
+    public function figure_location_filter_results($query) {
         global $pagenow;
         $type = 'figure';
-        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type && isset($_GET['figure_instance']) && $_GET['figure_instance'] != '') {
-            if ( isset($_GET['figure_icon']) && $_GET['figure_icon'] != '') {
-                $meta_query = array(
-                    array(
-                        'key' => 'figure_modal', // The custom field storing the instance ID
-                        'value' => $_GET['figure_icon'],
-                        'compare' => '='
-                    )
-                );
-            } elseif ( isset($_GET['figure_scene']) && $_GET['figure_scene'] != '') {
-                $meta_query = array(
-                    array(
-                        'key' => 'figure_scene', // The custom field storing the instance ID
-                        'value' => $_GET['figure_scene'],
-                        'compare' => '='
-                    )
-                );
-            } else {
-            $meta_query = array(
-                array(
-                    'key' => 'location', // The custom field storing the instance ID
-                    'value' => $_GET['figure_instance'],
-                    'compare' => '='
-                )
-            );
+        
+        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type) {
+            // Get current filter values from URL or stored metadata
+            $instance = isset($_GET['figure_instance']) ? absint($_GET['figure_instance']) : $this->get_figure_filter_value('webcr_figure_instance');
+            $scene = isset($_GET['figure_scene']) ? absint($_GET['figure_scene']) : $this->get_figure_filter_value('webcr_figure_scene');
+            $icon = isset($_GET['figure_icon']) ? absint($_GET['figure_icon']) : $this->get_figure_filter_value('webcr_figure_icon');
+            
+            if ($instance) {
+                if ($icon) {
+                    $meta_query = array(
+                        array(
+                            'key' => 'figure_modal', // The custom field storing the icon ID
+                            'value' => $icon,
+                            'compare' => '='
+                        )
+                    );
+                } elseif ($scene) {
+                    $meta_query = array(
+                        array(
+                            'key' => 'figure_scene', // The custom field storing the scene ID
+                            'value' => $scene,
+                            'compare' => '='
+                        )
+                    );
+                } else {
+                    $meta_query = array(
+                        array(
+                            'key' => 'location', // The custom field storing the instance ID
+                            'value' => $instance,
+                            'compare' => '='
+                        )
+                    );
+                }
+                $query->set('meta_query', $meta_query);
             }
-            $query->set('meta_query', $meta_query);
         }
     }
 
