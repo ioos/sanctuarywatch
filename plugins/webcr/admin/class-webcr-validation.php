@@ -12,16 +12,16 @@ class webcr_validation {
                 return true;
                 break;
             case "scene":
-                return true; //$this->validate_scene();
+                return $this->validate_scene();
                 break;
             case "modal":
-                return true; //$this->validate_modal();
+                return $this->validate_modal();
                 break;
             case "figure":
-                return true; //$this->validate_figure();
+                return $this->validate_figure();
                 break;
             case "instance":
-                return true; //$this->validate_instance();
+                return $this->validate_instance();
                 break;
             case "default":
                 return false;

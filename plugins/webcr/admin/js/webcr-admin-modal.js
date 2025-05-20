@@ -2,8 +2,6 @@
 
 let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
 
-
-
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
 document.addEventListener('DOMContentLoaded', redText);
 
