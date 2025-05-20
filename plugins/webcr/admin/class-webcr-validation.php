@@ -12,16 +12,16 @@ class webcr_validation {
                 return true;
                 break;
             case "scene":
-                return $this->validate_scene();
+                return true; //$this->validate_scene();
                 break;
             case "modal":
-                return $this->validate_modal();
+                return true; //$this->validate_modal();
                 break;
             case "figure":
-                return $this->validate_figure();
+                return true; //$this->validate_figure();
                 break;
             case "instance":
-                return $this->validate_instance();
+                return true; //$this->validate_instance();
                 break;
             case "default":
                 return false;
@@ -337,17 +337,17 @@ class webcr_validation {
             array_push($modal_warnings, "The title length is {$string_length} characters long, which exceeds the 70 character limit recommendation for proper layout.");
         }
 
-        if ($_POST["modal_location"] == " "){
+        if ($_POST["modal_location"] == " " || $_POST["modal_location"] == "") {
             array_push($modal_errors,  "The Instance field cannot be left blank.");
             $save_modal_fields = FALSE;
         }
 
-        if ($_POST["modal_scene"] == " "){
+        if ($_POST["modal_scene"] == " " || $_POST["modal_scene"] == "") {
             array_push($modal_errors,  "The Scene field cannot be left blank.");
             $save_modal_fields = FALSE;
         }
 
-        if ($_POST["modal_icons"] == " "){
+        if ($_POST["modal_icons"] == " " || $_POST["modal_icons"] == "") {
             array_push($modal_errors,  "The Icons field cannot be left blank.");
             $save_modal_fields = FALSE;
         } 
@@ -392,7 +392,7 @@ class webcr_validation {
                 array_push($modal_warnings, "This icon has already been claimed by one or more other modals.");                               
             } else if ($record_count == 1){
                 $saved_ID = $query->posts[0];
-                if ($saved_ID != get_the_id()) {
+                if ($saved_ID != $_POST['post_ID']) {
                     array_push($modal_warnings, "This icon has already been claimed by one or more other modals.");                               
                 }
             }           
