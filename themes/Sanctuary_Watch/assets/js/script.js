@@ -1137,25 +1137,8 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     return accordionItem;
 }
 
-function waitForElementById(id, timeout) {
-    return new Promise((resolve, reject) => {
-        const startTime = Date.now();
 
-        const checkExist = () => {
-            const el = document.getElementById(id);
-            if (el) {
-                resolve(el);
-            } else if (Date.now() - startTime >= timeout) {
-                reject(new Error(`Element with id ${id} not found after ${timeout}ms`));
-            } else {
-                requestAnimationFrame(checkExist); // avoids setTimeout-based jitter
-            }
-        };
-        checkExist();
-    });
-}
-
- async function render_interactive_plots(tabContentElement, info_obj) {
+async function render_interactive_plots(tabContentElement, info_obj) {
     let postID = info_obj["postID"];
     let figureType = info_obj["figureType"];
     let title = info_obj['figureTitle'];
@@ -1163,75 +1146,82 @@ function waitForElementById(id, timeout) {
     let plotlyDivID = `plotlyFigure${postID}`;
     let interactive_arguments = info_obj["figure_interactive_arguments"];
 
+    async function waitForElementByIdPolling(id, timeout = 10000, interval = 100) {
+        const start = Date.now();
+        return new Promise((resolve, reject) => {
+            (function poll() {
+                const element = document.getElementById(id);
+                if (element) return resolve(element);
+                if (Date.now() - start >= timeout) return reject(new Error(`Element with id ${id} not found after ${timeout}ms`));
+                setTimeout(poll, interval);
+            })();
+        });
+    }
+
+    async function waitForPlotlyDiv(plotlyDivID, retries = 20, interval = 250) {
+        for (let i = 0; i < retries; i++) {
+            const el = document.getElementById(plotlyDivID);
+            if (el) return el;
+            await new Promise(resolve => setTimeout(resolve, interval));
+            await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+        }
+        throw new Error(`Plotly div ${plotlyDivID} not found after ${retries * interval}ms`);
+    }
+    
     switch (figureType) {
         case "Interactive":
-            // Call producePlotlyLineFigure and check if it returns valid data
-            let vars = await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+            try {
+                console.log('NEW TRY');
+                await waitForElementByIdPolling(targetId, 1000);
+                //let isLoadedPlotly = document.getElementById(plotlyDivID);         
+                
+                //await waitForElementByIdPolling(targetId, 10000);
+                await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                await waitForPlotlyDiv(plotlyDivID);
+                console.log('RIP - PLOT1', postID);
+                
 
-            // Check if vars is valid
-            if (!vars || !vars[0] || !vars[1] || !vars[2]) {
-                console.error('Invalid data returned from producePlotlyLineFigure');
-                return;  // Exit the function if the data is invalid
-            }
-
-            console.log('vars0', vars[0]);
-            console.log('vars1', vars[1]);
-            console.log('vars2', vars[2]);
-
-            // Proceed with rendering the plot
-            await loadPlotlyScript();
-            await Plotly.newPlot(plotlyDivID, vars[0], vars[1], vars[2]);
-            console.log('WAIT1', postID);
-
-            // Manually trigger figure render for the initially active tab
-            if (tabContentElement.classList.contains("active")) {
-                if (!document.getElementById(plotlyDivID)) {
-                    waitForElementById(targetId, 2000)
-                        .then(() => {
-                            console.log('WAIT2', postID);
-                            return Plotly.newPlot(plotlyDivID, vars[0], vars[1], vars[2]);
-                        })
-                        .catch(err => {
-                            console.error(`Initial active tab Plotly error (${postID}):`, err);
-                        });
-                    console.log('PLOT2', postID);
-                }
-            }
-
-            // Render the graphs when a modal tab becomes active when previously inactive
-            const observer = new MutationObserver(mutations => {
-                mutations.forEach(async mutation => {
-                    const isActivated = mutation.target.classList.contains("show") &&
-                                        mutation.target.classList.contains("active");
-
-                    if (isActivated) {
-                        // Avoid double rendering
-                        if (document.getElementById(plotlyDivID)) {
-                            return;  // Plot already rendered
-                        }
-
+                // Manually trigger for initially active tab
+                if (tabContentElement.classList.contains("active")) {
+                    if (!document.getElementById(plotlyDivID)) {
                         try {
-                            console.log('WAIT3', postID);
-                            await Plotly.newPlot(plotlyDivID, vars[0], vars[1], vars[2]);
-                            console.log('PLOT3', postID);
+                            await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                            await waitForPlotlyDiv(plotlyDivID);
+                            console.log('RIP - PLOT2', postID);
                         } catch (err) {
-                            console.error(`Plotly figure not rendered for postID ${postID}:`, err);
+                            console.error(`Initial active tab Plotly error (${postID}):`, err);
+                        }
+                    }
+                }
+
+                // Handle tabs activated later
+                const observer = new MutationObserver(async mutations => {
+                    for (let mutation of mutations) {
+                        const isActivated = mutation.target.classList.contains("show") || mutation.target.classList.contains("active");
+
+                        if (isActivated && !document.getElementById(plotlyDivID)) {
+                            try {                      
+                                await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                                console.log('RIP - PLOT3', postID);
+                            } catch (err) {
+                                console.error(`Plotly figure not rendered for postID ${postID}:`, err);
+                            }
                         }
                     }
                 });
-            });
 
-            // Observe tab elements for class changes (active tabs)
-            document.querySelectorAll(".tab-pane").forEach(tab => {
-                observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
-            });
+                document.querySelectorAll(".tab-pane").forEach(tab => {
+                    observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+                });
 
-            // Google Tags
+            } catch (err) {
+                console.error("Plotly interactive plot error:", err);
+            }
+
             figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
-
             break;
     }
-} 
+}
 
 /**
  * Renders tab content into the provided container element based on the information passed in the `info_obj` object. 
@@ -1417,76 +1407,71 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
             img.id = `javascript_figure_target_${postID}`;
             await figureDiv.appendChild(img);
 
-            // Use an IIFE to both await element presence and Plotly rendering
-            (async () => {
-                const targetId = `javascript_figure_target_${postID}`;
-                try {
-                    // Ensure the container exists in the DOM before proceeding
-                    waitForElementById(targetId, 5000);
-                    const interactive_arguments = info_obj["figure_interactive_arguments"];
-                    await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                    console.log('PLOT1', postID);
-                } catch (err) {
-                    console.error("Error rendering Plotly figure:", err);
-                }
+            // // Use an IIFE to both await element presence and Plotly rendering
+            // (async () => {
+            //     const targetId = `javascript_figure_target_${postID}`;
+            //     try {
+            //         // Ensure the container exists in the DOM before proceeding
+            //         //waitForElementById(targetId, 2000);
+            //         const interactive_arguments = info_obj["figure_interactive_arguments"];
+            //         await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+            //         console.log('PLOT1', postID);
+            //     } catch (err) {
+            //         console.error("Error rendering Plotly figure:", err);
+            //     }
 
 
-                // Manually trigger figure render for the initially active tab
-                if (tabContentElement.classList.contains("active")) {
-                    //console.log(`Manually rendering Plotly for initially active tab: ${tabContentElement.id}`);
+            //     // Manually trigger figure render for the initially active tab
+            //     if (tabContentElement.classList.contains("active") || tabContentElement.classList.contains("show")) {
+            //         //console.log(`Manually rendering Plotly for initially active tab: ${tabContentElement.id}`);
 
-                    const targetId = `javascript_figure_target_${postID}`;
-                    const plotId = `plotlyFigure${postID}`;
+            //         const targetId = `javascript_figure_target_${postID}`;
+            //         const interactive_arguments = info_obj["figure_interactive_arguments"];
+            //         //waitForElementById(targetId, 2000)
+            //         await producePlotlyLineFigure(targetId, interactive_arguments, postID);    
+            //         console.log('PLOT2', postID);
+                    
+            //     }
 
-                    if (!document.getElementById(plotId)) {
-                        waitForElementById(targetId, 5000)
-                            .then(() => {
-                                const interactive_arguments = info_obj["figure_interactive_arguments"];
-                                return producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                            })
-                            .catch(err => {
-                                console.error(`Initial active tab Plotly error (${postID}):`, err);
-                            });
-                        console.log('PLOT2', postID);
-                    }
-                }
-
-                // Render the graphs when a modal tab becomes active when was previously in an inactive state,
-                const observer = new MutationObserver(mutations => {
-                    mutations.forEach(async mutation => {
-                    const isActivated = mutation.target.classList.contains("show") &&
-                                        mutation.target.classList.contains("active");
+            //     // Render the graphs when a modal tab becomes active when was previously in an inactive state,
+            //     const observer = new MutationObserver(mutations => {
+            //         mutations.forEach(async mutation => {
+            //         // const isActivated = mutation.target.classList.contains("show") &&
+            //         //                     mutation.target.classList.contains("active");
+                    
+            //         //const isActivated = mutation.target.classList.contains("active");
                 
-                    if (isActivated) {
-                        //console.log(`Detected tab activation: ${mutation.target.id}`);
+            //         if (mutation.target.classList.contains("show") || !mutation.target.classList.contains("active") || mutation.target.classList.contains("show")) {
+            //             //console.log(`Detected tab activation: ${mutation.target.id}`);
                 
-                        const targetId = `javascript_figure_target_${postID}`;
-                        const plotId = `plotlyFigure${postID}`;
+            //             const targetId = `javascript_figure_target_${postID}`;
+            //             const plotId = `plotlyFigure${postID}`;
       
-                        // Avoid double rendering
-                        if (document.getElementById(plotId)) {
-                            //console.log(`Plotly figure ${plotId} already rendered.`);
-                        return;
-                        }
+            //             // Avoid double rendering
+            //             if (document.getElementById(plotId)) {
+            //                 //console.log(`Plotly figure ${plotId} already rendered.`);
+            //             return;
+            //             }
                 
-                        try {
-                            waitForElementById(targetId, 6000);  // Make sure container exists
-                            const interactive_arguments = info_obj["figure_interactive_arguments"];
-                            await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                            console.log('PLOT3', postID);
-                            //console.log(`Plotly figure ${plotId} rendered.`);
-                        } catch (err) {
-                            //console.error(`Plotly figure not rendered for postID ${postID}:`, err);
-                        }
-                    }
-                    });
-                });
+            //             try {
+            //                 //waitForElementById(targetId, 10000);  // Make sure container exists
+            //                 const interactive_arguments = info_obj["figure_interactive_arguments"];
+            //                 await waitForElementById(targetId, 2000)
+            //                 await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+            //                 console.log('PLOT3', postID);
+            //                 //console.log(`Plotly figure ${plotId} rendered.`);
+            //             } catch (err) {
+            //                 //console.error(`Plotly figure not rendered for postID ${postID}:`, err);
+            //             }
+            //         }
+            //         });
+            //     });
 
-                // Observe all tab-pane elements for class changes
-                document.querySelectorAll(".tab-pane").forEach(tab => {
-                    observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
-                });     
-            })();
+            //     // Observe all tab-pane elements for class changes
+            //     document.querySelectorAll(".tab-pane").forEach(tab => {
+            //         observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+            //     });     
+            // })();
 
             //Google Tags
             figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
@@ -1711,8 +1696,8 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                         };
                 
                         (async () => {
-                            await new Promise(resolve => setTimeout(resolve, 500)); // Stagger each render
                             await render_tab_info(tabContentElement, tabContentContainer, info_obj, idx);
+                            //await new Promise(resolve => setTimeout(resolve, 1000)); // Stagger each render
                             await render_interactive_plots(tabContentElement, info_obj);
                         })();
                     }
@@ -1840,7 +1825,11 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
             alert('Failed to copy link. Please try again.');
         }
     }
-    fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
+    //fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
+    (async () => {
+        await fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
+    })();
+
     
     //Google tags triggers
     modalTabLoaded(tab_label, modal_id, tab_id, gaMeasurementID);

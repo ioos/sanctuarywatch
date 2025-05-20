@@ -146,7 +146,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
 
             }
 
-            var container = document.getElementById(`javascript_figure_target_${postID}`);
+            var container = await document.getElementById(`javascript_figure_target_${postID}`);
 
             //ADMIN SIDE GRAPH DISPLAY SETTINGS
             if (window.location.href.includes("wp-admin/post.php")) {
@@ -170,7 +170,8 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     autosize: true, 
                     };
                 const config = {
-                    responsive: true  // This makes the plot resize with the browser window
+                    responsive: true,  // This makes the plot resize with the browser window
+                    renderer: 'svg'
                     };
                 
                 Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
@@ -200,14 +201,17 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     height: container.clientHeight
                     };
                 const config = {
-                responsive: true  // This makes the plot resize with the browser window
+                responsive: true,  // This makes the plot resize with the browser window
+                renderer: 'svg'
                 };
                 
                 document.getElementById(plotlyDivID).style.setProperty("width", "100%", "important");
                 document.getElementById(plotlyDivID).style.setProperty("max-width", "none", "important");
                 
-                Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
-                return[allLinesPlotly, layout, config];
+                
+                await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+
+                //return[allLinesPlotly, layout, config];
 
             }
         } else {}
