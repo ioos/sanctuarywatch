@@ -174,7 +174,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     renderer: 'svg'
                     };
                 
-                Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+                await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
 
             }
             //THEME SIDE GRAPH DISPLAY SETTINGS
@@ -196,22 +196,31 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         linewidth: 1,
                         range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
                     },
-                    //autosize: true, 
-                    width: container.clientWidth, 
-                    height: container.clientHeight
+                    autosize: true,
+                    //margin: { t: 30, b: 50, l: 50, r: 30 },
+                    //width: container.clientWidth, 
+                    //height: container.clientHeight,
+                    cliponaxis: true
                     };
                 const config = {
                 responsive: true,  // This makes the plot resize with the browser window
                 renderer: 'svg'
                 };
-                
-                document.getElementById(plotlyDivID).style.setProperty("width", "100%", "important");
-                document.getElementById(plotlyDivID).style.setProperty("max-width", "none", "important");
-                
+
+                const plotDiv = document.getElementById(plotlyDivID);         
+                plotDiv.style.setProperty("width", "100%", "important");
+                plotDiv.style.setProperty("max-width", "none", "important");
                 
                 await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
 
-                //return[allLinesPlotly, layout, config];
+                // Constrain inner .svg-container to match parent
+                const svgContainer = plotDiv?.querySelector('.svg-container');
+                if (svgContainer) {
+                    svgContainer.style.width = '100%';
+                    svgContainer.style.maxWidth = '100%';
+                    svgContainer.style.boxSizing = 'border-box'; // prevent overflow
+                    svgContainer.style.overflow = 'hidden';
+                }
 
             }
         } else {}

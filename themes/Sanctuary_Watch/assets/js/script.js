@@ -570,8 +570,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
             mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%")
             sceneFluid.setAttribute("style", "margin-top: 25%;margin-left: -1.5%; display: block");
             colmd2.setAttribute("style", "width: 100%")
-            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
-            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
+            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
+            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
 
         } else  {
           numCols = 3;
@@ -587,8 +587,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
             sceneFluid.setAttribute("style", ogSceneFluid);
             colmd2.setAttribute("style", '');
             colmd2.setAttribute("style", ogColmd2);
-            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
-            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
+            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
+            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
 
         }
 
@@ -1167,6 +1167,20 @@ async function render_interactive_plots(tabContentElement, info_obj) {
         }
         throw new Error(`Plotly div ${plotlyDivID} not found after ${retries * interval}ms`);
     }
+
+    // Additional mobile-specific adjustments
+    function adjustPlotlyLayoutForMobile(postID) {
+        if (window.innerWidth <= 768) {  // basic mobile width check
+            const plotlyDivID = `plotlyFigure${postID}`;
+            const plotDiv = document.getElementById(plotlyDivID);
+            if (plotDiv) {
+                plotDiv.style.maxWidth = "100%";
+                plotDiv.style.height = "300px"; // Force a good height for mobile
+                plotDiv.style.width = "100%";
+                Plotly.Plots.resize(plotDiv);
+            }
+        }
+    }
     
     switch (figureType) {
         case "Interactive":
@@ -1178,6 +1192,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                 //await waitForElementByIdPolling(targetId, 10000);
                 await producePlotlyLineFigure(targetId, interactive_arguments, postID);
                 await waitForPlotlyDiv(plotlyDivID);
+                adjustPlotlyLayoutForMobile(postID);
                 console.log('RIP - PLOT1', postID);
                 
 
@@ -1187,6 +1202,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                         try {
                             await producePlotlyLineFigure(targetId, interactive_arguments, postID);
                             await waitForPlotlyDiv(plotlyDivID);
+                            adjustPlotlyLayoutForMobile(postID);
                             console.log('RIP - PLOT2', postID);
                         } catch (err) {
                             console.error(`Initial active tab Plotly error (${postID}):`, err);
@@ -1194,25 +1210,39 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                     }
                 }
 
-                // Handle tabs activated later
-                const observer = new MutationObserver(async mutations => {
-                    for (let mutation of mutations) {
-                        const isActivated = mutation.target.classList.contains("show") || mutation.target.classList.contains("active");
+                // // Handle tabs activated later
+                // const observer = new MutationObserver(async mutations => {
+                //     for (let mutation of mutations) {
+                //         const isActivated = mutation.target.classList.contains("show") || mutation.target.classList.contains("active");
 
-                        if (isActivated && !document.getElementById(plotlyDivID)) {
-                            try {                      
-                                await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                                console.log('RIP - PLOT3', postID);
-                            } catch (err) {
-                                console.error(`Plotly figure not rendered for postID ${postID}:`, err);
-                            }
+                //         if (isActivated && !document.getElementById(plotlyDivID)) {
+                //             try {                      
+                //                 await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                //                 console.log('RIP - PLOT3', postID);
+                //             } catch (err) {
+                //                 console.error(`Plotly figure not rendered for postID ${postID}:`, err);
+                //             }
+                //         }
+                //     }
+                // });
+
+                // document.querySelectorAll(".tab-pane").forEach(tab => {
+                //     observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
+                // });
+
+                document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
+                    tab.addEventListener('shown.bs.tab', () => {
+                        const plotDiv = document.getElementById(plotlyDivID);
+                        if (plotDiv) {
+                            setTimeout(() => {
+                                Plotly.Plots.resize(plotDiv);
+                                console.log("Bootstrap event triggered resize:", plotlyDivID);
+                            }, 150);
                         }
-                    }
+                    });
                 });
 
-                document.querySelectorAll(".tab-pane").forEach(tab => {
-                    observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
-                });
+                
 
             } catch (err) {
                 console.error("Plotly interactive plot error:", err);
