@@ -1,4 +1,20 @@
-
+/**
+ * Debounces a function, delaying its execution until after a specified wait time
+ * has elapsed since the last time it was invoked.
+ * @param {Function} func The function to debounce.
+ * @param {number} delay The number of milliseconds to delay.
+ * @returns {Function} The new debounced function.
+ */
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(context, args);
+        }, delay);
+    };
+}
 
 function hexToRgba(hex, opacity) {
     // Remove the hash if it's present
@@ -88,13 +104,13 @@ let thisScene;
 let sceneLoc;
 // let colors;
 let sectionObj = {};
-//console.log('sectionObj' , sectionObj);
+
 let sectColors = {};
 
 if (!is_mobile()) {
     // Create a new style element
     const style = document.createElement('style');
-    // style.type = 'text/css';
+
     style.innerHTML = `
         @media (min-width: 512px) and (max-width: 768px) {
             #toc-container{
@@ -370,16 +386,12 @@ async function make_title() {
         } else {
             col2.appendChild(titleTagline);
         }
-        // row.setAttribute("style", "display: flex; justify-content: center; margin-right: -15px; margin-left: -15px; margin-top: 1%");
         row.appendChild(col2);
         row.appendChild(col1);
-        // row.appendChild(col2);
+
         row.setAttribute("style", "margin-top: 1%");
 
         titleDom.append(row);
-        // return scene_location;
-        //console.log(scene_data);
-
  
         let instance_overview_scene = scene_data['instance_overview_scene'];
         if (instance_overview_scene == null){
@@ -415,7 +427,6 @@ function has_mobile_layer(mob_icons, elemname){
         let label = child.getAttribute('id');
         let mobileElemName = elemname + "-mobile";
         if (label === mobileElemName){
-            //console.log(`found ${label}`);
             return true;
         }             
     }
@@ -507,24 +518,36 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     cont.appendChild(svgClone);
                     let currIcon = iconsArr[idx];
 
-                    let key  ='';
-                    if (!has_mobile_layer(mobile_icons, currIcon)){
+                    let key; // Declare key
+                    if (!has_mobile_layer(mobile_icons, currIcon)) {
                         key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
                     } else {
-                        currIconMobile = currIcon + "-mobile";
-                        key = get_mobile_layer(mobile_icons, currIconMobile);
-                
-                        let temp = svgElement.querySelector(`#${currIconMobile}`).cloneNode(true);
+                        const currIconMobile = currIcon + "-mobile";
+                        const mobileLayerElement = get_mobile_layer(mobile_icons, currIconMobile);
 
-                        let tempId = temp.getAttribute("id");
-                        key.setAttribute("id",  tempId);
+                        if (mobileLayerElement) {
+                            key = mobileLayerElement.cloneNode(true); // Corrected: clone the node
+                        } else {
+                            // This case implies an inconsistency if has_mobile_layer returned true.
+                            // Fallback to non-mobile version.
+                            console.warn(`Mobile layer for ${currIcon} expected but not found by get_mobile_layer. Using non-mobile version.`);
+                            key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                        }
+                        // The original attempt to set ID via 'temp' is no longer needed
+                        // as cloning the mobileLayerElement preserves its ID.
+                    }
+
+                    // Ensure 'key' was actually assigned a node.
+                    if (!key) {
+                        console.error(`SVG element for icon '${currIcon}' or its mobile variant could not be found.`);
+                        continue; // Skip this icon if its element can't be found
                     }
                     cont.setAttribute("id", `${currIcon}-container`);
-                    svgClone.append(defs);
+                    svgClone.append(defs.cloneNode(true)); // Corrected: clone defs for each SVG
                     svgClone.append(key);
                     
                     let caption = document.createElement("div");
-                    if (child_obj[currIcon]){
+                    if (child_obj[currIcon]) {
                         caption.innerText = child_obj[currIcon].title;
                     } else {
                         caption.innerText = "not in wp yet, have to add";
@@ -550,6 +573,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
     }
 
     function updateNumCols() {
+        console.log("updateNumCols fired (debounced)"); // Confirms debounced execution
+
         let numCols;
         let numRows;
         // let mobViewImage = document.querySelector("#mobile-view-image");
@@ -598,11 +623,13 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
         // mobViewImage.remove();
         add_modal();
 
-      }
+    }
+    // Call updateNumCols directly for the initial setup
     updateNumCols();
-    window.addEventListener("resize", updateNumCols);
 
-   
+    // Create a debounced version for resize events (e.g., 250ms delay)
+    const debouncedUpdateNumCols = debounce(updateNumCols, 250);
+    window.addEventListener("resize", debouncedUpdateNumCols);
 }
 
 
@@ -1569,7 +1596,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
              break;
     }
-      
+
 }
 
 /**
@@ -1640,8 +1667,6 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                 // both are missing or invalid → sort by ID
                 return a.id - b.id;
             });
-
-            //console.log(all_figure_data);
 
             if (!all_figure_data){
                 //we don't create anything here...
@@ -2216,13 +2241,11 @@ function sectioned_list(){
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];
-        //console.log('section:', section);
 
         if (!sections.includes(section) && section!='None') {
             sections.push(section);
         }
         sectionObj[key] = section;
-        //console.log('sectionObj[key]]:', sectionObj[key]); 
     }
     sections.sort();
     sections.push('None');
@@ -2585,7 +2608,6 @@ function table_of_contents(){
 
 function list_toc(){
     
-    //console.log(child_obj);
     let sections = [];
     for (let key in child_obj) {
         let section = child_obj[key]['section_name'];

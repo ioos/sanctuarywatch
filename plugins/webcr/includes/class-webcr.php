@@ -165,8 +165,8 @@ class Webcr {
 		$this->loader->add_action( 'login_head', $plugin_admin, 'add_favicon' ); 
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'add_favicon' ); 
 		$this->loader->add_action( 'wp_head', $plugin_admin, 'add_favicon' ); 
-		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_admin, 'remove_comments' ); 
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'remove_comments_menu' ); 
+		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_admin, 'remove_admin_bar_options' ); 
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'remove_elements_from_menu' ); 
 		$this->loader->add_action( 'wp_dashboard_setup', $plugin_admin, 'remove_dashboard_widgets' ); 
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'wppversionremove' ); 
 		$this->loader->add_action( 'get_sample_permalink_html', $plugin_admin, 'wppversionremove' ); 
@@ -184,6 +184,8 @@ class Webcr {
 		$this->loader->add_filter( 'gettext', $plugin_admin, 'modify_publish_button_text', 10, 3); 
 		add_filter( 'xmlrpc_enabled', '__return_false' ); 		//Disable Xlmrpc.php file
 		add_filter('screen_options_show_screen', '__return_false'); //Disable Screen Options in admin screens
+		$this->loader->add_filter( 'post_row_actions', $plugin_admin, 'remove_view_link_from_post_type', 10, 2); 
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'plugin_check_required_theme' ); 
 
 		// Load  class and functions associated with About custom content type
 		$plugin_admin_about = new Webcr_About ( $this->get_plugin_name(), $this->get_version() );		
@@ -223,6 +225,7 @@ class Webcr {
 		$this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'scene_admin_notice' ); 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_scene, 'scene_filter_dropdowns' ); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_filter_results' ); 
+		$this->loader->add_action( 'current_screen', $plugin_admin_scene, 'cleanup_expired_scene_filters' ); 
 		$this->loader->add_action( 'admin_menu', $plugin_admin_scene, 'create_scene_fields', 1 ); 
 		$this->loader->add_action( 'manage_scene_posts_columns', $plugin_admin_scene, 'change_scene_columns' ); 
 		$this->loader->add_action( 'manage_scene_posts_custom_column', $plugin_admin_scene, 'custom_scene_column', 10, 2 ); 
@@ -244,6 +247,7 @@ class Webcr {
 		$this->loader->add_action( 'admin_notices', $plugin_admin_modal, 'modal_admin_notice' ); 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); 
+		$this->loader->add_action( 'current_screen', $plugin_admin_modal, 'cleanup_expired_modal_filters' ); 
 		$this->loader->add_action( 'admin_menu', $plugin_admin_modal, 'create_modal_fields', 1 ); 
 		$this->loader->add_action( 'manage_modal_posts_columns', $plugin_admin_modal, 'change_modal_columns' ); 
 		$this->loader->add_action( 'manage_modal_posts_custom_column', $plugin_admin_modal, 'custom_modal_column', 10, 2 ); 
@@ -251,7 +255,6 @@ class Webcr {
 		$this->loader->add_filter( 'bulk_actions-edit-modal', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_modal, 'register_modal_rest_fields' );
 		$this->loader->add_filter( 'rest_modal_query', $plugin_admin_modal, 'filter_modal_by_modal_scene', 10, 2); 
-		$this->loader->add_filter( 'post_row_actions', $plugin_admin_modal, 'remove_view_link_from_modal_post_type', 10, 2); 
 		$this->loader->add_filter( 'manage_edit-modal_sortable_columns', $plugin_admin_scene, 'register_status_as_sortable_column'); 
 
 		// Load  class and functions associated with Figure custom content type
@@ -262,11 +265,11 @@ class Webcr {
 		$this->loader->add_action( 'manage_figure_posts_custom_column', $plugin_admin_figure, 'custom_figure_column', 10, 2 ); 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_figure, 'figure_filter_dropdowns' ); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_figure, 'figure_location_filter_results' ); 
+		$this->loader->add_action( 'current_screen', $plugin_admin_figure, 'cleanup_expired_figure_filters' ); 
 		$this->loader->add_action( 'admin_notices', $plugin_admin_figure, 'figure_admin_notice' ); 
 		$this->loader->add_filter( 'bulk_actions-edit-figure', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_figure, 'register_figure_rest_fields' ); 
 		$this->loader->add_filter( 'rest_figure_query', $plugin_admin_figure, 'filter_figure_by_figure_modal', 10, 2); 
-		$this->loader->add_filter( 'post_row_actions', $plugin_admin_figure, 'remove_view_link_from_figure_post_type', 10, 2); 
 		$this->loader->add_filter( 'manage_edit-figure_sortable_columns', $plugin_admin_scene, 'register_status_as_sortable_column'); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_figure, 'register_get_alt_text_by_url_route');
 

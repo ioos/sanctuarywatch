@@ -1,46 +1,37 @@
 <?php
 defined('ABSPATH') || exit;
 $instance_num =  get_post_meta(get_the_ID(), 'scene_location', true);
-$instance_footer_about = get_post_meta($instance_num, 'instance_footer', true);
+$instance_footer = get_post_meta($instance_num, 'instance_footer', true);
 
-if (count(array_filter($instance_footer_about)) === 0) {
-    echo "All values are false";
-}
+if (!empty($instance_footer)) {
+    $instance_footer_element_number =count($instance_footer);
 
+    echo '<footer class="site-footer" >';
+    echo '<div class="container" style="margin: 0 auto; max-width: 1200px;">';
+    echo '<div class="row">';
+    $footer_component = array('about','contact','reports');
+    for ($i = 0; $i < 3; $i++) {
+        $footer_array_key = 'instance_footer_' . $footer_component[$i];
+        $footer_entry = $instance_footer[$footer_array_key];
+        if (!empty($footer_entry)) {
+            // Apply flex styling to .col-sm to center its direct child (the new wrapper)
+            echo '<div class="col-sm footer-column">';
+            // This wrapper will be centered in .col-sm, and its text content will be left-aligned.
+            echo '  <div class="footer-content-wrapper">';
+            echo '    <h6 class="text-white">' . ucfirst($footer_component[$i]) . '</h6>';
+            echo '    <div class="footer_component">';
+            echo $footer_entry;
+            echo '    </div>';
+            echo '  </div>'; // Closing footer-content-wrapper
+            echo '</div>';
+        } 
+    }   
 
-?>
-<script> 
-let instance_footer_about = <?php echo json_encode($instance_footer_about); ?>;
+    echo '</div>';
+    echo '</div>';
+    echo '</footer>';
+} 
 
-</script>
-
-<footer class="site-footer" style="background-color: #03386c; color: white; padding: 32px 12px; font-size: 13px;">
-    <div class="container" style="margin: 0 auto; max-width: 1200px; padding: 0 15px;">
-        <div class="row">
-            <div class="col-12 col-sm-4 mb-4 mb-sm-0">
-                <h5 class="text-white mb-3">About</h5>
-                <div class="footer_component"> 
-                    <?php echo $instance_footer_about['instance_footer_about']; ?>
-                </div>
-            </div>
-            
-            <div class="col-12 col-sm-4 mb-4 mb-sm-0">
-                <h5 class="text-white mb-3">Contact</h5>
-                <div class="footer_component"> 
-                    <?php echo $instance_footer_about['instance_footer_contact']; ?>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-4 mb-4 mb-sm-0">
-                <h5 class="text-white mb-3">Reports</h5>
-                <div class="footer_component" > 
-                    <?php echo $instance_footer_about['instance_footer_reports']; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<?php wp_footer(); ?>
-</body>
-</html>
+wp_footer();
+echo '</body>';
+echo '</html>';

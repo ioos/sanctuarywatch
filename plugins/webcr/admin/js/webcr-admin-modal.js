@@ -2,9 +2,6 @@
 
 let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
 
-// In case of data entry error with modal post, let's set the modal fields values to the values in the cookie
-writeCookieValuesToModalFields();
-
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
 document.addEventListener('DOMContentLoaded', redText);
 
@@ -31,6 +28,9 @@ iconFunction();
 modalWindow();
 modal_scene_change();
 modal_location_change();
+
+// In case of data entry error with modal post, let's set the modal fields values to the values in the cookie
+writeCookieValuesToModalFields();
 
 hideIconSection();
 
@@ -179,6 +179,7 @@ function modalWindow(){
         document.getElementsByName("modal_photo_entries")[0].parentElement.parentElement.style.display = "block";
         document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "block";
         document.getElementsByClassName("modal_preview")[0].parentElement.parentElement.style.display = "block";
+        displayTabEntries(document.getElementsByName("modal_tab_number")[0].value);
     } else {
 
         document.getElementsByName("modal_tagline")[0].parentElement.parentElement.style.display = "none";
@@ -199,8 +200,8 @@ function modalWindow(){
 
         // Set the Modal Tab entries to 0, run displayTabEntries to hide all of the resulting Modal Tab fields 
         // and then hide the Modal Tab range 
-        document.getElementsByName("modal_tab_number")[0].value = 0;
-        document.getElementsByName("modal_tab_number")[0].nextSibling.value = 0;
+        document.getElementsByName("modal_tab_number")[0].value = 1;
+        document.getElementsByName("modal_tab_number")[0].nextSibling.value = 1;
         displayTabEntries(0);
         document.getElementsByName("modal_tab_number")[0].parentElement.parentElement.style.display = "none";
 
@@ -769,13 +770,28 @@ function writeCookieValuesToModalFields() {
 		if (cookieExists("modal_error_all_fields")) {
 			const modalCookie = getCookie("modal_error_all_fields");
 			const modalCookieValues = JSON.parse(modalCookie);
-console.log(modalCookieValues);
+
 			const modalFieldNames = ["modal_published", "modal_location", "modal_scene", "modal_icons", "modal_icon_order", "icon_toc_section",
                 "icon_function", "icon_external_url", "icon_scene_out", "modal_tagline", "modal_info_entries", "modal_photo_entries", "modal_tab_number"];
 
-			// Fill in values for simple fields
+			// Fill in values for simple fields 
+            // Note for dropdowns, we need to fill in all potential values for the dropdown field before giving the value
 			modalFieldNames.forEach((element) => {
-				document.getElementsByName(element)[0].value = modalCookieValues[element];
+                document.getElementsByName(element)[0].value = modalCookieValues[element];
+                if (element != "" && element != " " && element != null) {
+                    switch (element) { //jai
+                        case "modal_location":
+                            modal_location_change();
+
+                            break;    
+                        case "modal_scene":
+                            modal_scene_change();
+                            break;
+                        default:        
+                            break;                                           
+                    }; 
+                }
+
 			});
 
 			// Fill in values for complex fieldsets

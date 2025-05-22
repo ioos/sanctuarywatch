@@ -3,7 +3,7 @@ Theme Name: Sanctuary Watch
 Theme URI: https://github.com/ioos/sanctuarywatch
 Author: The Sanctuary Watch Team
 Description: Sanctuary Watch is an interactive theme used for the easy visualization of scientific data, within the Sanctuary Watch framework. 
-Version: 0.1.0-beta
+Version: 0.3.0-beta
 */
 
 @import url('assets/css/bootstrap.css');
@@ -41,18 +41,14 @@ body{
   text-decoration: none;
 }
 
-.footer {
-  background-color: #020e38;
-  background-image: url(https://ioos.us/images/bg_footer.png);
-  background-position: top center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: relative;
-  width: 100%;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  padding-left: 10%;
-  padding-right: 10%;
+.site-footer {
+  background-color: #03386c; 
+  color: white; 
+  padding-top: 32px;
+  font-size: 13px;
+}
+.footer-content-wrapper{
+  text-align: left;
 }
 
 .footer-container {
@@ -61,23 +57,16 @@ body{
 }
 
 .footer-column {
-  flex: 1;
+  display: flex; 
+  justify-content: center;
 }
 
-.footer-column a {
-  text-decoration: none;
-  color: #55d6f8;
-}
+/* Apply styles for mobile devices where .col-sm stacks (typically below 576px) */
+@media (max-width: 575.98px) {
+  .footer-column {
+      justify-content: flex-start; /* Left-justify the .footer-content-wrapper */
+  }
 
-.footer h5 {
-  color: white;
-  font-size: 1.125rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-p[itemprop="name"], p[itemprop="address"] {
-  color: white;
 }
 
 .navbar {
@@ -1032,7 +1021,6 @@ body > nav > div{
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 12px;
-  font-size: 17px;
+  font-size: 1rem; 
   display: inline-block;
 }

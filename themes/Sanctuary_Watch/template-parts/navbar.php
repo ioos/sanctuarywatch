@@ -29,13 +29,12 @@
         <div class="navbar-wrapper">
             <?php
             $postMeta = get_post_meta(get_the_ID());
-            $sceneLocation = $postMeta['scene_location'][0];
-            $inst_overview_scene = get_post_meta($sceneLocation, 'instance_overview_scene')[0];
-            $title = get_post_meta($sceneLocation, 'post_title')[0];
-            // $scene_published = get_post_meta($sceneLocation, 'scene_published', true);
+            $sceneLocation = isset($postMeta['scene_location'][0]) ? $postMeta['scene_location'][0] : '';
 
-            if($sceneLocation){
+            $inst_overview_scene = isset($postMeta['instance_overview_scene'][0]) ? $postMeta['instance_overview_scene'][0] : '';
 
+            if(!empty($sceneLocation)){
+                $title = get_post_meta($sceneLocation, 'post_title')[0];
                 echo "<span class='navbar-brand'>$title</span>";
 
             }else {
