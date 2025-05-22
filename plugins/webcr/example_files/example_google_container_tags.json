@@ -1,21 +1,22 @@
 {
     "exportFormatVersion": 2,
-    "exportTime": "2025-04-16 19:59:08",
+    "exportTime": "2025-05-15 18:02:52",
     "containerVersion": {
-        "path": "accounts/6251110826/containers/209664662/versions/0",
+        "path": "accounts/6251110826/containers/209664662/versions/5",
         "accountId": "6251110826",
         "containerId": "209664662",
-        "containerVersionId": "0",
+        "containerVersionId": "5",
+        "name": "Version5",
         "container": {
             "path": "accounts/6251110826/containers/209664662",
             "accountId": "6251110826",
             "containerId": "209664662",
-            "name": "sw-test.ioos.us (54.210.168.88)",
-            "publicId": "GTM-MV24W4NK",
+            "name": "54.210.168.88",
+            "publicId": "GTM-EXAMPLE",
             "usageContext": [
                 "WEB"
             ],
-            "fingerprint": "1744832206921",
+            "fingerprint": "1747331309660",
             "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/6251110826/containers/209664662/workspaces?apiLink=container",
             "features": {
                 "supportUserPermissions": true,
@@ -34,7 +35,7 @@
                 "supportTransformations": false
             },
             "tagIds": [
-                "GTM-MV24W4NK"
+                "GTM-EXAMPLE"
             ]
         },
         "tag": [
@@ -48,10 +49,10 @@
                     {
                         "type": "TEMPLATE",
                         "key": "tagId",
-                        "value": "{{GA4_MeasurementID}}"
+                        "value": "G-EXAMPLE"
                     }
                 ],
-                "fingerprint": "1744833434565",
+                "fingerprint": "1747331889950",
                 "firingTriggerId": [
                     "7"
                 ],
@@ -663,10 +664,10 @@
                     {
                         "type": "TEMPLATE",
                         "key": "tagId",
-                        "value": "{{GA4_MeasurementID}}"
+                        "value": "G-EXAMPLE"
                     }
                 ],
-                "fingerprint": "1744833444714",
+                "fingerprint": "1747331896390",
                 "firingTriggerId": [
                     "27"
                 ],
@@ -1233,10 +1234,10 @@
                     {
                         "type": "TEMPLATE",
                         "key": "tagId",
-                        "value": "{{GA4_MeasurementID}}"
+                        "value": "G-EXAMPLE"
                     }
                 ],
-                "fingerprint": "1744833418320",
+                "fingerprint": "1747331882187",
                 "firingTriggerId": [
                     "31"
                 ],
@@ -1470,10 +1471,10 @@
                     {
                         "type": "TEMPLATE",
                         "key": "tagId",
-                        "value": "{{GA4_MeasurementID}}"
+                        "value": "G-EXAMPLE"
                     }
                 ],
-                "fingerprint": "1744833407032",
+                "fingerprint": "1747331873832",
                 "firingTriggerId": [
                     "2147479573"
                 ],
@@ -2466,7 +2467,7 @@
                 "name": "Event"
             }
         ],
-        "fingerprint": "1744833548224",
-        "tagManagerUrl": "https://tagmanager.google.com/#/versions/accounts/6251110826/containers/209664662/versions/0?apiLink=version"
+        "fingerprint": "1747331928886",
+        "tagManagerUrl": "https://tagmanager.google.com/#/versions/accounts/6251110826/containers/209664662/versions/5?apiLink=version"
     }
 }

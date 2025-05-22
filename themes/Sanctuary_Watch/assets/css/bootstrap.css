@@ -88,6 +88,7 @@
   --bs-body-color: #495057;
   --bs-body-color-rgb: 73, 80, 87;
   --bs-body-bg: #fff;
+  --bs-body-bg2: #f2f2f3;
   --bs-body-bg-rgb: 255, 255, 255;
   --bs-emphasis-color: #000;
   --bs-emphasis-color-rgb: 0, 0, 0;
@@ -748,7 +749,7 @@ progress {
 .container-lg,
 .container-md,
 .container-sm {
-  --bs-gutter-x: 1.5rem;
+  /*--bs-gutter-x: 1.5rem;*/
   --bs-gutter-y: 0;
   width: 82%;
   padding-right: calc(var(--bs-gutter-x) * 0.5);
@@ -3863,6 +3864,24 @@ textarea.form-control-lg {
   cursor: default;
 }
 
+@media (max-width: 768px) {
+  .nav-tabs {
+    flex-direction: column !important;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .nav-tabs .nav-item {
+    width: 100%;
+  }
+
+  .nav-tabs .nav-link {
+    width: 100%;
+    text-align: center;
+    border-radius: var(--bs-border-radius);
+  }
+}
+
 .nav-tabs {
   --bs-nav-tabs-border-width: var(--bs-border-width);
   --bs-nav-tabs-border-color: var(--bs-border-color);
@@ -3870,7 +3889,9 @@ textarea.form-control-lg {
   --bs-nav-tabs-link-hover-border-color: var(--bs-secondary-bg) var(--bs-secondary-bg) var(--bs-border-color);
   --bs-nav-tabs-link-active-color: var(--bs-emphasis-color);
   --bs-nav-tabs-link-active-bg: var(--bs-body-bg);
-  --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-body-bg);
+  --bs-nav-tabs-link-active-bg2: var(--bs-body-bg2);
+  /* below is the active tab color */
+  --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-border-color);
   border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
 }
 .nav-tabs .nav-link {
@@ -3878,15 +3899,20 @@ textarea.form-control-lg {
   border: var(--bs-nav-tabs-border-width) solid transparent;
   border-top-left-radius: var(--bs-nav-tabs-border-radius);
   border-top-right-radius: var(--bs-nav-tabs-border-radius);
+  color: var(--bs-nav-tabs-link-active-color);
+  background-color: var(--bs-nav-tabs-link-active-bg);
+  border-color: var(--bs-nav-tabs-link-active-border-color);
+  border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
 }
 .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
   isolation: isolate;
   border-color: var(--bs-nav-tabs-link-hover-border-color);
 }
+
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
   color: var(--bs-nav-tabs-link-active-color);
-  background-color: var(--bs-nav-tabs-link-active-bg);
+  background-color: var(--bs-nav-tabs-link-active-bg2);
   border-color: var(--bs-nav-tabs-link-active-border-color);
 }
 .nav-tabs .dropdown-menu {
@@ -5545,7 +5571,7 @@ textarea.form-control-lg {
   min-height: calc(100% - var(--bs-modal-margin) * 2);
 }
 
-.modal-content {
+/* .modal-content {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -5557,6 +5583,36 @@ textarea.form-control-lg {
   border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
   border-radius: var(--bs-modal-border-radius);
   outline: 0;
+} */
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /*max-width: 600px; /* default modal width on desktop */
+  margin: auto;
+  color: var(--bs-modal-color);
+  pointer-events: auto;
+  background-color: var(--bs-modal-bg);
+  background-clip: padding-box;
+  border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
+  border-radius: var(--bs-modal-border-radius);
+  outline: 0;
+}
+
+/* Mobile override */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 96vw;
+    height: 100%;
+    /*width: 100vw;*/
+    /*height: 100vh;*/
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+  }
 }
 
 .modal-backdrop {

@@ -53,6 +53,9 @@ function waitForElementById(id, timeout = 1000) {
     });
 }
 
+
+
+
 async function producePlotlyLineFigure(targetFigureElement, interactive_arguments, postID){
 
     try {
@@ -143,7 +146,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
 
             }
 
-            var container = document.getElementById(`javascript_figure_target_${postID}`);
+            var container = await document.getElementById(`javascript_figure_target_${postID}`);
 
             //ADMIN SIDE GRAPH DISPLAY SETTINGS
             if (window.location.href.includes("wp-admin/post.php")) {
@@ -167,14 +170,11 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     autosize: true, 
                     };
                 const config = {
-                    responsive: true  // This makes the plot resize with the browser window
+                    responsive: true,  // This makes the plot resize with the browser window
+                    renderer: 'svg'
                     };
-
-                function waitOneSecond() {
-                    return new Promise(resolve => setTimeout(resolve, 1000));
-                }
                 
-                Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+                await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
 
             }
             //THEME SIDE GRAPH DISPLAY SETTINGS
@@ -196,18 +196,31 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         linewidth: 1,
                         range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
                     },
-                    //autosize: true, 
-                    width: container.clientWidth, 
-                    height: container.clientHeight
+                    autosize: true,
+                    //margin: { t: 30, b: 50, l: 50, r: 30 },
+                    //width: container.clientWidth, 
+                    //height: container.clientHeight,
+                    cliponaxis: true
                     };
                 const config = {
-                responsive: true  // This makes the plot resize with the browser window
+                responsive: true,  // This makes the plot resize with the browser window
+                renderer: 'svg'
                 };
+
+                const plotDiv = document.getElementById(plotlyDivID);         
+                plotDiv.style.setProperty("width", "100%", "important");
+                plotDiv.style.setProperty("max-width", "none", "important");
                 
-                document.getElementById(plotlyDivID).style.setProperty("width", "100%", "important");
-                document.getElementById(plotlyDivID).style.setProperty("max-width", "none", "important");
-                
-                Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+                await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+
+                // Constrain inner .svg-container to match parent
+                const svgContainer = plotDiv?.querySelector('.svg-container');
+                if (svgContainer) {
+                    svgContainer.style.width = '100%';
+                    svgContainer.style.maxWidth = '100%';
+                    svgContainer.style.boxSizing = 'border-box'; // prevent overflow
+                    svgContainer.style.overflow = 'hidden';
+                }
 
             }
         } else {}
