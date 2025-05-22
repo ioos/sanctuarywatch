@@ -1157,7 +1157,6 @@ async function render_interactive_plots(tabContentElement, info_obj) {
             })();
         });
     }
-    
     async function waitForPlotlyDiv(plotlyDivID, retries = 20, interval = 250) {
         for (let i = 0; i < retries; i++) {
             const el = document.getElementById(plotlyDivID);
