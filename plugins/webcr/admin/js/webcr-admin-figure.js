@@ -763,7 +763,7 @@ function writeCookieValuesToFigureFields() {
                 }
             }
             const figureFieldNames = ["location", "figure_scene", "figure_modal", "figure_tab", "figure_order", "figure_path", "figure_image",
-                "figure_external_url", "figure_external_alt", "figure_code", "figure_interactive_arguments", "figure_caption_short", "figure_caption_long"];
+                "figure_external_url", "figure_external_alt", "figure_code", "figure_interactive_arguments", "figure_caption_short", "figure_caption_long", "figure_title"];
     
             // Fill in values for simple fields
             figureFieldNames.forEach((element) => {

@@ -118,7 +118,7 @@ class webcr_validation {
                     curl_close($ch);
 
                     if ($headers["http_code"] != 200){
-                        array_push($instance_warnings, "The Legacy content URL cannot be accessed.");                               
+                        array_push($instance_warnings, "The Legacy content URL cannot be accessed. This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                     }
                 }
             }
@@ -233,7 +233,7 @@ class webcr_validation {
                     curl_close($ch);
 
                     if ($headers["http_code"] != 200){
-                        array_push($figure_warnings, "The External URL cannot be accessed.");                               
+                        array_push($figure_warnings, "The External URL cannot be accessed. This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                     }
                 }
             }
@@ -284,7 +284,7 @@ class webcr_validation {
                         curl_close($ch);
 
                         if ($headers["http_code"] != 200){
-                            array_push($figure_warnings, "The URL for the " . $error_notice_name[$field_type] . " link cannot be accessed");                               
+                            array_push($figure_warnings, "The URL for the " . $error_notice_name[$field_type] . " link cannot be accessed, This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                         }
                     }
                 }
@@ -443,7 +443,7 @@ class webcr_validation {
                         curl_close($ch);
 
                         if ($headers["http_code"] != 200){
-                            array_push($modal_warnings, "The Icon External URL cannot be accessed.");                               
+                            array_push($modal_warnings, "The Icon External URL cannot be accessed. This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                         }
                     }
                 }
@@ -512,7 +512,7 @@ class webcr_validation {
                             curl_close($ch);
 
                             if ($headers["http_code"] != 200){
-                                array_push($modal_warnings, "The URL for Modal " . ucfirst($field_type) . " Link " . $i . " cannot be accessed");                               
+                                array_push($modal_warnings, "The URL for Modal " . ucfirst($field_type) . " Link " . $i . " cannot be accessed. This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                             }
                         }
                     }
@@ -542,7 +542,7 @@ class webcr_validation {
 
         // save simple field values to the array
         $figure_field_names = ["location", "figure_scene", "figure_modal", "figure_tab", "figure_order", "figure_path", "figure_image",
-            "figure_external_url", "figure_external_alt", "figure_code", "figure_interactive_arguments", "figure_caption_short", "figure_caption_long"];
+            "figure_external_url", "figure_external_alt", "figure_code", "figure_interactive_arguments", "figure_caption_short", "figure_caption_long", "figure_title"];
 
         $figure_fields = [];
         foreach ($figure_field_names as $individual_figure_field_name){

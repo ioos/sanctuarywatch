@@ -24,13 +24,15 @@ window.onload = function() {
     setTimeout(changePageLoad, 1000);
 };
 
+// In case of data entry error with modal post, let's set the modal fields values to the values in the cookie
+writeCookieValuesToModalFields();
+
 iconFunction();
 modalWindow();
 modal_scene_change();
 modal_location_change();
 
-// In case of data entry error with modal post, let's set the modal fields values to the values in the cookie
-writeCookieValuesToModalFields();
+
 
 hideIconSection();
 
@@ -412,6 +414,15 @@ function modal_section_options (){
 }
 
 function modal_scene_change(){
+
+    // Let's remove the preview window if it already exists
+    const previewWindow = document.getElementById('preview_window');
+    // If the element exists
+    if (previewWindow) {
+        // Remove the scene window
+        previewWindow.parentNode.removeChild(previewWindow);
+    }
+
     const sceneID = document.querySelector("select[name='modal_scene']").value;
 
     if (sceneID != " " && sceneID != "" && sceneID != null) {
@@ -420,15 +431,6 @@ function modal_scene_change(){
         }
 
         modal_section_options();
-
-
-        // Let's remove the preview window if it already exists
-		const previewWindow = document.getElementById('preview_window');
-		// If the element exists
-		if (previewWindow) {
-			// Remove the scene window
-			previewWindow.parentNode.removeChild(previewWindow);
-		}
 
 		let newDiv = document.createElement('div');
 		newDiv.id = "preview_window";
@@ -521,8 +523,6 @@ function modal_scene_change(){
             imageRow.appendChild(imageColumn);
             newDiv.appendChild(imageRow);
             document.getElementsByClassName("exopite-sof-field-select")[1].appendChild(newDiv);
-
-
     }
 }
 

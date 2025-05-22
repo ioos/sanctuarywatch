@@ -572,6 +572,7 @@ class Webcr_Figure {
                     'id'          => 'figure_title',
                     'type'        => 'text',
                     'title'       => 'Figure Title',
+                    'description' => 'Should the figure have a title in the modal window? If this field is left blank than no title will be shown.',
                 ),
                 array(
                     'id'    => 'figure_image',
