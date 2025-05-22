@@ -1831,6 +1831,7 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
             alert('Failed to copy link. Please try again.');
         }
     }
+    
     //fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
     (async () => {
         await fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
