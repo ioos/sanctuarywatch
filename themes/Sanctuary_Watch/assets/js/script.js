@@ -1157,7 +1157,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
             })();
         });
     }
-
+    
     async function waitForPlotlyDiv(plotlyDivID, retries = 20, interval = 250) {
         for (let i = 0; i < retries; i++) {
             const el = document.getElementById(plotlyDivID);
@@ -1175,7 +1175,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
             const plotDiv = document.getElementById(plotlyDivID);
             if (plotDiv) {
                 plotDiv.style.maxWidth = "100%";
-                plotDiv.style.height = "300px"; // Force a good height for mobile
+                plotDiv.style.height = "350px"; // Force a good height for mobile
                 plotDiv.style.width = "100%";
                 Plotly.Plots.resize(plotDiv);
             }
@@ -1252,6 +1252,8 @@ async function render_interactive_plots(tabContentElement, info_obj) {
             break;
     }
 }
+
+
 
 /**
  * Renders tab content into the provided container element based on the information passed in the `info_obj` object. 
@@ -1435,80 +1437,8 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
         case "Interactive":
             img = document.createElement('div');
             img.id = `javascript_figure_target_${postID}`;
-            await figureDiv.appendChild(img);
-
-            // // Use an IIFE to both await element presence and Plotly rendering
-            // (async () => {
-            //     const targetId = `javascript_figure_target_${postID}`;
-            //     try {
-            //         // Ensure the container exists in the DOM before proceeding
-            //         //waitForElementById(targetId, 2000);
-            //         const interactive_arguments = info_obj["figure_interactive_arguments"];
-            //         await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-            //         console.log('PLOT1', postID);
-            //     } catch (err) {
-            //         console.error("Error rendering Plotly figure:", err);
-            //     }
-
-
-            //     // Manually trigger figure render for the initially active tab
-            //     if (tabContentElement.classList.contains("active") || tabContentElement.classList.contains("show")) {
-            //         //console.log(`Manually rendering Plotly for initially active tab: ${tabContentElement.id}`);
-
-            //         const targetId = `javascript_figure_target_${postID}`;
-            //         const interactive_arguments = info_obj["figure_interactive_arguments"];
-            //         //waitForElementById(targetId, 2000)
-            //         await producePlotlyLineFigure(targetId, interactive_arguments, postID);    
-            //         console.log('PLOT2', postID);
-                    
-            //     }
-
-            //     // Render the graphs when a modal tab becomes active when was previously in an inactive state,
-            //     const observer = new MutationObserver(mutations => {
-            //         mutations.forEach(async mutation => {
-            //         // const isActivated = mutation.target.classList.contains("show") &&
-            //         //                     mutation.target.classList.contains("active");
-                    
-            //         //const isActivated = mutation.target.classList.contains("active");
-                
-            //         if (mutation.target.classList.contains("show") || !mutation.target.classList.contains("active") || mutation.target.classList.contains("show")) {
-            //             //console.log(`Detected tab activation: ${mutation.target.id}`);
-                
-            //             const targetId = `javascript_figure_target_${postID}`;
-            //             const plotId = `plotlyFigure${postID}`;
-      
-            //             // Avoid double rendering
-            //             if (document.getElementById(plotId)) {
-            //                 //console.log(`Plotly figure ${plotId} already rendered.`);
-            //             return;
-            //             }
-                
-            //             try {
-            //                 //waitForElementById(targetId, 10000);  // Make sure container exists
-            //                 const interactive_arguments = info_obj["figure_interactive_arguments"];
-            //                 await waitForElementById(targetId, 2000)
-            //                 await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-            //                 console.log('PLOT3', postID);
-            //                 //console.log(`Plotly figure ${plotId} rendered.`);
-            //             } catch (err) {
-            //                 //console.error(`Plotly figure not rendered for postID ${postID}:`, err);
-            //             }
-            //         }
-            //         });
-            //     });
-
-            //     // Observe all tab-pane elements for class changes
-            //     document.querySelectorAll(".tab-pane").forEach(tab => {
-            //         observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
-            //     });     
-            // })();
-
-            //Google Tags
-            figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
-            
+            await figureDiv.appendChild(img);           
         break;
-        
-
 
         case "Code":
             img = '';
@@ -1559,7 +1489,8 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     figureDiv.style.justifyContent = "center"; // Center horizontally
     figureDiv.style.alignItems = "center";
     figureDiv.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
-
+    
+  
     //CREATE PARAGRAPH ELEMENT UNDER "myTabContent" > div class="figure"
     const caption = document.createElement('p');
     caption.classList.add('caption');
@@ -1567,6 +1498,27 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     caption.style.marginTop = '10px';
     figureDiv.appendChild(caption);
     tabContentElement.appendChild(figureDiv);
+
+
+    // Add "Go to Top" link
+    const goToTopLink = document.createElement('a');
+    goToTopLink.href = "#";
+    goToTopLink.textContent = "↑ Back to Top";
+    goToTopLink.style.display = "block";
+    goToTopLink.style.textAlign = "right";
+    goToTopLink.style.marginTop = "5px";
+    goToTopLink.style.color = "#0056b3";
+    goToTopLink.style.textDecoration = "none";
+    goToTopLink.style.fontSize = "0.8em";
+    figureDiv.appendChild(goToTopLink);  // append link to figureDiv
+
+    goToTopLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('modal-title').scrollIntoView({ top:0, behavior: 'smooth' });
+        //const modalContent = document.querySelector('.modal-title');
+        //modalContent.scrollTop = 0; // or:
+        //modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
     // Create the details element
     const details = document.createElement('details');

@@ -88,6 +88,7 @@
   --bs-body-color: #495057;
   --bs-body-color-rgb: 73, 80, 87;
   --bs-body-bg: #fff;
+  --bs-body-bg2: #f2f2f3;
   --bs-body-bg-rgb: 255, 255, 255;
   --bs-emphasis-color: #000;
   --bs-emphasis-color-rgb: 0, 0, 0;
@@ -3863,6 +3864,24 @@ textarea.form-control-lg {
   cursor: default;
 }
 
+@media (max-width: 768px) {
+  .nav-tabs {
+    flex-direction: column !important;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .nav-tabs .nav-item {
+    width: 100%;
+  }
+
+  .nav-tabs .nav-link {
+    width: 100%;
+    text-align: center;
+    border-radius: var(--bs-border-radius);
+  }
+}
+
 .nav-tabs {
   --bs-nav-tabs-border-width: var(--bs-border-width);
   --bs-nav-tabs-border-color: var(--bs-border-color);
@@ -3870,7 +3889,9 @@ textarea.form-control-lg {
   --bs-nav-tabs-link-hover-border-color: var(--bs-secondary-bg) var(--bs-secondary-bg) var(--bs-border-color);
   --bs-nav-tabs-link-active-color: var(--bs-emphasis-color);
   --bs-nav-tabs-link-active-bg: var(--bs-body-bg);
-  --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-body-bg);
+  --bs-nav-tabs-link-active-bg2: var(--bs-body-bg2);
+  /* below is the active tab color */
+  --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-border-color);
   border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
 }
 .nav-tabs .nav-link {
@@ -3878,15 +3899,20 @@ textarea.form-control-lg {
   border: var(--bs-nav-tabs-border-width) solid transparent;
   border-top-left-radius: var(--bs-nav-tabs-border-radius);
   border-top-right-radius: var(--bs-nav-tabs-border-radius);
+  color: var(--bs-nav-tabs-link-active-color);
+  background-color: var(--bs-nav-tabs-link-active-bg);
+  border-color: var(--bs-nav-tabs-link-active-border-color);
+  border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
 }
 .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
   isolation: isolate;
   border-color: var(--bs-nav-tabs-link-hover-border-color);
 }
+
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
   color: var(--bs-nav-tabs-link-active-color);
-  background-color: var(--bs-nav-tabs-link-active-bg);
+  background-color: var(--bs-nav-tabs-link-active-bg2);
   border-color: var(--bs-nav-tabs-link-active-border-color);
 }
 .nav-tabs .dropdown-menu {
