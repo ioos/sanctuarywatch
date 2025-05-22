@@ -13,9 +13,9 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Sanctuary Watch Framework
- * Plugin URI:        https://sanctuarywatch.ioos.us
+ * Plugin URI:        hhttps://github.com/ioos/sanctuarywatch
  * Description:       This plugin customizes a Wordpress installation for the requirements of the Sanctuary Watch framework.
- * Version:           0.1.0-beta
+ * Version:           0.3.0-beta
  * Author:            Sanctuary Watch Team
  * Author URI:        https://www.noaa.gov
  * License:           GPL-2.0+
@@ -30,33 +30,25 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// Prevent direct access
+if (!defined('ABSPATH')) exit;
+
 /**
  * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WEBCR_VERSION', '1.0.0' );
+define( 'WEBCR_VERSION', '0.2.0-beta' );
 
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-webcr-activator.php
- */
-function activate_webcr() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-webcr-activator.php';
-	Webcr_Activator::activate();
-}
+// Include the GitHub Updater class
+require_once plugin_dir_path(__FILE__) . 'admin/class-webcr-github-updater.php';
 
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-webcr-deactivator.php
- */
-function deactivate_webcr() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-webcr-deactivator.php';
-	Webcr_Deactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate_webcr' );
-register_deactivation_hook( __FILE__, 'deactivate_webcr' );
+// Initialize the GitHub Updater 
+    new GitHub_Updater(
+        __FILE__,
+        'ioos', // the GitHub username
+        'sanctuarywatch', // the repository name
+        false, // This is a plugin, not a theme
+        'plugins/webcr' // Subdirectory path in the repository
+    );
 
 /**
  * The core plugin class that is used to define
@@ -71,7 +63,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-webcr.php';
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    1.0.0
+ * @since    0.2.0-beta
  */
 function run_webcr() {
 

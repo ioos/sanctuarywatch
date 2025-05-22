@@ -1,8 +1,9 @@
-# Sanctuary Watch <img align="right" width="150" height="150" src="https://github.com/ioos/sanctuarywatch/assets/1744300/c1ae96bc-4837-43e5-8e18-69a01af1a7ea">
-In this repo, you'll find the Wordpress plugin and theme that create the customized "Webenized Condition Report" experience within a Wordpress environment. 
+# Sanctuary Watch <img align="right" width="150" height="150" src="https://github.com/user-attachments/assets/5b053a75-79e7-41d7-bc87-b906b0230771">
+In this repo, you'll find the Wordpress plugin and theme that create the customized Sanctuary Watch experience within a Wordpress environment. 
+
 
 ## Getting Started
-The plugin, called webCR, is based upon the structure provided by Joe Sz's [Wordpress Plugin Boilerplate Tutorial](https://github.com/JoeSz/WordPress-Plugin-Boilerplate-Tutorial) - which is itself based upon the structure provided by Devin Vinson's [Wordpress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate). The purpose of using this template structure is to provide, in the words of Devin, "a standardized, organized, object-oriented foundation for building high-quality WordPress plugins".
+The plugin, called the Sanctuary Watch Framework, is based upon the structure provided by Joe Sz's [Wordpress Plugin Boilerplate Tutorial](https://github.com/JoeSz/WordPress-Plugin-Boilerplate-Tutorial) - which is itself based upon the structure provided by Devin Vinson's [Wordpress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate). The purpose of using this template structure is to provide, in the words of Devin, "a standardized, organized, object-oriented foundation for building high-quality WordPress plugins".
 
 How to get started with the code in this repo? The best way is to get a new instance of WordPress running locally on your computer and then import this repo in.
 

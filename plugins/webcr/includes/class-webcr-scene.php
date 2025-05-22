@@ -171,27 +171,159 @@ class Webcr_Scene {
     }
 
     /**
-	 * Add two filter dropdowns, field length and scene location, for the admin screen for the Scene content type.
-	 *
-	 * @since    1.0.0
-	 */
-    function scene_filter_dropdowns () {
+     * Store filter values in user metadata with 20-minute expiration.
+     *
+     * This function captures the current Scene filter selections from the URL parameters
+     * and stores them in user metadata with a 20-minute expiration timestamp.
+     * It only runs on the Scene post type admin screen and requires a logged-in user.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @return   void
+     */
+    public function store_scene_filter_values() {
+        $screen = get_current_screen();
+        if ($screen->id != 'edit-scene') {
+            return;
+        }
+        
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return;
+        }
+        
+        // Get current timestamp
+        $current_time = time();
+        
+        // Store the expiration time (20 minutes = 1200 seconds)
+        $expiration_time = $current_time + 1200;
+        
+        // Store field_length filter value if it exists
+        if (isset($_GET['field_length']) && !empty($_GET['field_length'])) {
+            update_user_meta($user_id, 'webcr_scene_field_length', sanitize_key($_GET['field_length']));
+            update_user_meta($user_id, 'webcr_scene_field_length_expiration', $expiration_time);
+        }
+        
+        // Store scene_instance filter value if it exists
+        if (isset($_GET['scene_instance']) && !empty($_GET['scene_instance'])) {
+            update_user_meta($user_id, 'webcr_scene_instance', absint($_GET['scene_instance']));
+            update_user_meta($user_id, 'webcr_scene_instance_expiration', $expiration_time);
+        }
+    }
+
+    /**
+     * Check if stored filter values are still valid and retrieve them if they are.
+     *
+     * This function retrieves a stored filter value from user metadata and verifies
+     * if it has exceeded its expiration time. If the value has expired, it cleans up
+     * the metadata entries and returns false. Otherwise, it returns the stored value.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @param    string  $meta_key  The meta key to check expiration for.
+     * @return   bool|string|int    False if expired or not found, the value if still valid.
+     */
+    public function get_scene_filter_value($meta_key) {
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return false;
+        }
+        
+        $value = get_user_meta($user_id, $meta_key, true);
+        if (empty($value)) {
+            return false;
+        }
+        
+        // Check if the value has expired
+        $expiration_time = get_user_meta($user_id, $meta_key . '_expiration', true);
+        $current_time = time();
+        
+        if ($current_time > $expiration_time) {
+            // Delete expired values
+            delete_user_meta($user_id, $meta_key);
+            delete_user_meta($user_id, $meta_key . '_expiration');
+            return false;
+        }
+        
+        return $value;
+    }
+
+    /**
+     * Clean up expired scene filter values in user metadata.
+     *
+     * This function runs on admin page load and checks if any stored filter values
+     * have exceeded their 20-minute expiration time. Any expired values are removed
+     * from the database to maintain clean user metadata and prevent stale filters
+     * from being applied.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @return   void
+     */
+    public function cleanup_expired_scene_filters() {
+        $screen = get_current_screen();
+        if (!$screen || $screen->id != 'edit-scene') {
+            return;
+        }
+        
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return;
+        }
+        
+        $current_time = time();
+        
+        // Check and clean up field_length
+        $expiration_time = get_user_meta($user_id, 'webcr_scene_field_length_expiration', true);
+        if ($expiration_time && $current_time > $expiration_time) {
+            delete_user_meta($user_id, 'webcr_scene_field_length');
+            delete_user_meta($user_id, 'webcr_scene_field_length_expiration');
+        }
+        
+        // Check and clean up scene_instance
+        $expiration_time = get_user_meta($user_id, 'webcr_scene_instance_expiration', true);
+        if ($expiration_time && $current_time > $expiration_time) {
+            delete_user_meta($user_id, 'webcr_scene_instance');
+            delete_user_meta($user_id, 'webcr_scene_instance_expiration');
+        }
+    }
+
+    /**
+     * Add filter dropdowns for the Scene admin screen with persistent selection support.
+     *
+     * This function creates and outputs filter dropdowns for field length and instance
+     * on the Scene post type admin screen. It first checks for filter values in the URL 
+     * parameters, then falls back to stored user metadata values if they haven't expired.
+     * After displaying the dropdowns, it stores the current selections for future use.
+     * This function handles proper user capability checks to show only assigned instances
+     * for content editors.
+     *
+     * @since    1.0.0
+     * @access   public
+     * @return   void
+     */
+    public function scene_filter_dropdowns() {
         $screen = get_current_screen();
         // Only proceed if we are on the 'scene' edit screen.
-        if ( ! $screen || $screen->id !== 'edit-scene' ) {
+        if (!$screen || $screen->id !== 'edit-scene') {
             return;
         }
 
-        // --- Field Length Dropdown (remains the same) ---
+        // Run cleanup of expired filters
+        $this->cleanup_expired_scene_filters();
+
+        // --- Field Length Dropdown ---
         $fieldOptions = array(
             array("", "large", "Full tagline"),
             array("", "medium", "Medium tagline"),
             array("", "small", "Short tagline")
         );
 
-        if (isset($_GET["field_length"])) {
-            $field_length = sanitize_key($_GET["field_length"]); // Sanitize input
-            switch ($field_length){
+        // Check for filter in URL first, then check for stored value
+        $field_length = isset($_GET["field_length"]) ? sanitize_key($_GET["field_length"]) : $this->get_scene_filter_value('webcr_scene_field_length');
+        
+        if ($field_length) {
+            switch ($field_length) {
                 case "large":
                     $fieldOptions[0][0] = "selected ";
                     break;
@@ -207,8 +339,8 @@ class Webcr_Scene {
         }
 
         $field_length_dropdown = '<select name="field_length" id="field_length">';
-        for ($i=0; $i <3; $i++){
-            $field_length_dropdown .= '<option ' . $fieldOptions[$i][0] .  'value="' . esc_attr($fieldOptions[$i][1]) .'">' . esc_html($fieldOptions[$i][2]) . '</option>';
+        for ($i = 0; $i < 3; $i++) {
+            $field_length_dropdown .= '<option ' . $fieldOptions[$i][0] . 'value="' . esc_attr($fieldOptions[$i][1]) . '">' . esc_html($fieldOptions[$i][2]) . '</option>';
         }
         $field_length_dropdown .= '</select>';
 
@@ -221,7 +353,7 @@ class Webcr_Scene {
         $current_user = wp_get_current_user();
 
         // Check if user is content manager but not administrator
-        if ( current_user_can('content_editor') && ! current_user_can('administrator') ) {
+        if (current_user_can('content_editor') && !current_user_can('administrator')) {
             // Get assigned instances for the content manager
             $user_instances = get_user_meta($current_user->ID, 'webcr_assigned_instances', true);
 
@@ -232,7 +364,6 @@ class Webcr_Scene {
                 $instance_ids_sql = implode(',', $instance_ids);
 
                 // Query only the assigned instances
-                // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $instance_ids_sql is sanitized via absint and implode
                 $instances = $wpdb->get_results("
                     SELECT ID, post_title
                     FROM {$wpdb->posts}
@@ -240,7 +371,6 @@ class Webcr_Scene {
                     AND post_status = 'publish'
                     AND ID IN ({$instance_ids_sql})
                     ORDER BY post_title ASC");
-                // phpcs:enable
             }
             // If content manager has no assigned instances, $instances remains empty, so only "All Instances" shows.
 
@@ -254,13 +384,15 @@ class Webcr_Scene {
                 ORDER BY post_title ASC");
         }
 
+        // Get selected instance from URL or from stored value
+        $current_selection = isset($_GET['scene_instance']) ? absint($_GET['scene_instance']) : $this->get_scene_filter_value('webcr_scene_instance');
+
         // Generate the dropdown HTML
         echo '<select name="scene_instance" id="scene_instance">';
         echo '<option value="">' . esc_html__('All Instances', 'webcr') . '</option>'; // Use translation function
 
         // Check if $instances is not null and is an array before looping
         if (is_array($instances)) {
-            $current_selection = isset($_GET['scene_instance']) ? absint($_GET['scene_instance']) : ''; // Sanitize current selection
             foreach ($instances as $instance) {
                 // Ensure $instance is an object with ID and post_title properties
                 if (is_object($instance) && isset($instance->ID) && isset($instance->post_title)) {
@@ -270,26 +402,42 @@ class Webcr_Scene {
             }
         }
         echo '</select>';
+        
+        // Store the filter values after displaying the dropdowns
+        $this->store_scene_filter_values();
     }
 
     /**
-     * Filter the results for the Scene admin screen by the Scene Location dropdown field.
+     * Filter the Scene admin screen results based on selected or stored filter values.
      *
-     * @param WP_Query $query The WordPress Query instance that is passed to the function.
+     * This function modifies the WordPress query to filter Scene posts based on the
+     * selected location (instance) values. It first checks for values in the URL parameters,
+     * then falls back to stored user metadata values that haven't expired. This ensures
+     * filter persistence for 20 minutes across page loads.
+     *
      * @since    1.0.0
+     * @access   public
+     * @param    WP_Query  $query  The WordPress Query instance being filtered.
+     * @return   void
      */
-    function scene_location_filter_results($query){
+    public function scene_location_filter_results($query) {
         global $pagenow;
         $type = 'scene';
-        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type && isset($_GET['scene_instance']) && $_GET['scene_instance'] != '') {
-            $meta_query = array(
-                array(
-                    'key' => 'scene_location', // The custom field storing the instance ID
-                    'value' => $_GET['scene_instance'],
-                    'compare' => '='
-                )
-            );
-            $query->set('meta_query', $meta_query);
+        
+        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == $type) {
+            // Check URL params first, then check stored values
+            $instance = isset($_GET['scene_instance']) ? absint($_GET['scene_instance']) : $this->get_scene_filter_value('webcr_scene_instance');
+            
+            if ($instance) {
+                $meta_query = array(
+                    array(
+                        'key' => 'scene_location', // The custom field storing the instance ID
+                        'value' => $instance,
+                        'compare' => '='
+                    )
+                );
+                $query->set('meta_query', $meta_query);
+            }
         }
     }
 
@@ -323,11 +471,13 @@ class Webcr_Scene {
     public function custom_scene_column( $column, $post_id ) {  
 
         if (isset($_GET["field_length"])) {
-            $field_length = $_GET["field_length"];
+            $field_length = sanitize_key($_GET["field_length"]);
         } else {
-            $field_length = "small";
+            $stored_field_length = $this->get_scene_filter_value('webcr_scene_field_length');
+            $field_length = $stored_field_length ? $stored_field_length : "small"; // Default to "small" if no stored value or expired
         }
 
+        // Populate columns based on the determined field_length
         if ( $column === 'scene_location' ) {
             $instance_id = get_post_meta( $post_id, 'scene_location', true ); 
             echo get_the_title($instance_id ); 
@@ -905,7 +1055,7 @@ class Webcr_Scene {
     }
 
     /**
-	 * Add scene rewrite rules for permalinks (Skanda). THIS FUNCTION IS NOT IN USE AND REPLACED WITH OTHER REWRITE RULE FUNCTIONS. REMOVE?
+	 * Add scene rewrite rules for permalinks.
 	 *
 	 * @since    1.0.0
 	 */

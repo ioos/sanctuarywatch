@@ -102,7 +102,8 @@ if ( get_header_textcolor() ) : ?>
 			if (get_the_ID() != false){
 				$postMeta = get_post_meta(get_the_ID());
 				//Trying to access array offset on value of type null ??
-				$sceneLocation = $postMeta['scene_location'][0];
+				$sceneLocation = isset($postMeta['scene_location'][0]) ? $postMeta['scene_location'][0] : '';
+
 				// Split the 'scene_location' string into an array based on spaces.
 				$sceneArr = explode(' ', $sceneLocation);
 				if (!empty($sceneLocation)){
