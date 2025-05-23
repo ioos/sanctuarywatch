@@ -53,8 +53,21 @@ function waitForElementById(id, timeout = 1000) {
     });
 }
 
+function computeStandardDeviation(arr) {
+    const n = arr.length;
+    const mean = arr.reduce((a, b) => a + b, 0) / n;
+    const variance = arr.reduce((acc, val) => acc + (val - mean) ** 2, 0) / n;
+    return Math.sqrt(variance);
+}
 
-
+function computePercentile(arr, percentile) {
+    const sorted = [...arr].sort((a, b) => a - b);
+    const index = (percentile / 100) * (sorted.length - 1);
+    const lower = Math.floor(index);
+    const upper = Math.ceil(index);
+    if (lower === upper) return sorted[lower];
+    return sorted[lower] + (index - lower) * (sorted[upper] - sorted[lower]);
+}
 
 async function producePlotlyLineFigure(targetFigureElement, interactive_arguments, postID){
 
@@ -120,59 +133,110 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             let targetLineColumn;
             let singleLinePlotly;
             let allLinesPlotly = [];
+            let errorVisible = true;
+            let sdVisible = true;
+            let percentileVisible = true;
+            let meanVisible = true;
 
-            for (let i = 1; i <= numLines; i++){
-                targetLineColumn = "Line" + i;
-                columnXHeader = figureArguments['XAxis'];
+            // Plotly figure production logic
+            for (let i = 1; i <= figureArguments['NumberOfLines']; i++) {
+                const targetLineColumn = 'Line' + i;
+                const columnXHeader = figureArguments['XAxis'];
+                const columnYHeader = figureArguments[targetLineColumn];
 
-                plotlyX = dataToBePlotted[columnXHeader];
-                columnYHeader = figureArguments[targetLineColumn];
-                plotlyY = dataToBePlotted[columnYHeader];
-                singleLinePlotly = {
+                const plotlyX = dataToBePlotted[columnXHeader];
+                const plotlyY = dataToBePlotted[columnYHeader];
+
+                const stdDev = computeStandardDeviation(plotlyY);
+
+                // Main line with error bars
+                const singleLinePlotly = {
                     x: plotlyX,
                     y: plotlyY,
                     mode: 'lines+markers',
                     type: 'scatter',
+                    name: 'Data',
+                    showlegend: false,
                     marker: {
-                        color: figureArguments[targetLineColumn + "Color"]
+                        color: figureArguments[targetLineColumn + 'Color']
                     },
-                    name: figureArguments[targetLineColumn + "Title"],
-                    hovertemplate: 
-                    figureArguments['XAxisTitle'] + ': %{x}<br>' +  // Custom label for x-axis
-                    figureArguments['YAxisTitle'] + ': %{y}' // Custom label for y-axis
-                    };
-                    //console.log(singleLinePlotly);
-                    allLinesPlotly.push(singleLinePlotly);
+                    name: figureArguments[targetLineColumn + 'Title'],
+                    error_y: {
+                        type: 'data',
+                        array: new Array(plotlyY.length).fill(stdDev),
+                        visible: true,
+                        color: figureArguments[targetLineColumn + 'Color'],
+                        thickness: 1.5,
+                        width: 8
+                    },
+                    hovertemplate:
+                        figureArguments['XAxisTitle'] + ': %{x}<br>' +
+                        figureArguments['YAxisTitle'] + ': %{y}'
+                };
+                allLinesPlotly.push(singleLinePlotly);
 
+                // Standard deviation shaded area
+                const upperY = plotlyY.map(y => y + stdDev);
+                const lowerY = plotlyY.map(y => y - stdDev);
+
+                const stdFill = {
+                    x: [...plotlyX, ...plotlyX.slice().reverse()],
+                    y: [...upperY, ...lowerY.slice().reverse()],
+                    fill: 'toself',
+                    fillcolor: figureArguments[targetLineColumn + 'Color'] + '33',
+                    line: { color: 'transparent' },
+                    name: `${figureArguments[targetLineColumn + 'Title']} ±1 SD`,
+                    type: 'scatter',
+                    hoverinfo: 'skip',
+                    showlegend: true,
+                    visible: true
+                };
+                allLinesPlotly.push(stdFill);
             }
 
-            var container = await document.getElementById(`javascript_figure_target_${postID}`);
+            // Add percentile lines
+            const allYValues = allLinesPlotly
+                .filter(trace => trace.mode === 'lines+markers')
+                .flatMap(trace => trace.y);
+            const p10 = allYValues.length ? allYValues.sort((a, b) => a - b)[Math.floor(0.1 * allYValues.length)] : 0;
+            const p90 = allYValues.length ? allYValues.sort((a, b) => a - b)[Math.floor(0.9 * allYValues.length)] : 0;
+            const Mean = allYValues.length ? allYValues.sort((a, b) => a - b)[Math.floor(0.5 * allYValues.length)] : 0;
+
+            allLinesPlotly.push({
+                x: [Math.min(...dataToBePlotted[figureArguments['XAxis']]), Math.max(...dataToBePlotted[figureArguments['XAxis']])],
+                y: [p10, p10],
+                mode: 'lines',
+                line: { dash: 'dash', color: 'gray' },
+                name: '10th Percentile',
+                type: 'scatter',
+                visible: true
+            });
+
+            allLinesPlotly.push({
+                x: [Math.min(...dataToBePlotted[figureArguments['XAxis']]), Math.max(...dataToBePlotted[figureArguments['XAxis']])],
+                y: [p90, p90],
+                mode: 'lines',
+                line: { dash: 'dash', color: 'gray' },
+                name: '90th Percentile',
+                type: 'scatter',
+                visible: true
+            });
+
+            allLinesPlotly.push({
+                x: [Math.min(...dataToBePlotted[figureArguments['XAxis']]), Math.max(...dataToBePlotted[figureArguments['XAxis']])],
+                y: [Mean, Mean],
+                mode: 'lines',
+                line: { dash: 'solid', color: 'red' },
+                name: 'Mean',
+                type: 'scatter',
+                visible: true
+            });
+
+            //var container = await document.getElementById(`javascript_figure_target_${postID}`);
 
             //ADMIN SIDE GRAPH DISPLAY SETTINGS
             if (window.location.href.includes("wp-admin/post.php")) {
-                var layout = {
-                    xaxis: {
-                        title: {
-                        text: figureArguments['XAxisTitle']
-                        },
-                        linecolor: 'black', 
-                        linewidth: 1,
-                        range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
-                    },
-                    yaxis: {
-                        title: {
-                        text: figureArguments['YAxisTitle']
-                        },
-                        linecolor: 'black', 
-                        linewidth: 1,
-                        range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
-                    },
-                    autosize: true, 
-                    };
-                const config = {
-                    responsive: true,  // This makes the plot resize with the browser window
-                    renderer: 'svg'
-                    };
+
                 
                 await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
 
@@ -196,6 +260,13 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         linewidth: 1,
                         range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
                     },
+                    legend: {
+                    orientation: 'h',       // horizontal layout
+                    y: 1.1,                 // position legend above the plot
+                    x: 0.5,                 // center the legend
+                    xanchor: 'center',
+                    yanchor: 'bottom'
+                    },
                     autosize: true,
                     //margin: { t: 30, b: 50, l: 50, r: 30 },
                     //width: container.clientWidth, 
@@ -204,7 +275,62 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     };
                 const config = {
                 responsive: true,  // This makes the plot resize with the browser window
-                renderer: 'svg'
+                renderer: 'svg',
+                displayModeBar: true,
+                // modeBarButtons: [
+                //     'zoom2d', 'select2d', 'lasso2d', 'autoScale2d', 'resetScale2d',
+                //     'hoverClosestCartesian', 'hoverCompareCartesian',
+                //     'toggleSpikelines', 'toImage']
+                modeBarButtonsToAdd: [
+                    {
+                        name: 'Standard Error Bars',
+                        icon: Plotly.Icons.autoscale,
+                        click: function(gd) {
+                            errorVisible = !errorVisible;
+                            const indices = gd.data
+                                .map((trace, i) => trace.error_y ? i : null)
+                                .filter(i => i !== null);
+
+                            Plotly.restyle(gd, { 'error_y.visible': errorVisible }, indices);
+                        }
+                    },
+                    {
+                        name: 'Standard Deviation',
+                        icon: Plotly.Icons.compare,
+                        click: function(gd) {
+                            sdVisible = !sdVisible;
+                            const indices = gd.data
+                                .map((trace, i) => trace.fill === 'toself' ? i : null)
+                                .filter(i => i !== null);
+
+                            Plotly.restyle(gd, { visible: sdVisible }, indices);
+                        }
+                    },
+                    {
+                        name: 'Mean',
+                        icon: Plotly.Icons.line,
+                        click: function(gd) {
+                            meanVisible = !meanVisible;
+                            const indices = gd.data
+                                .map((trace, i) => ['Mean'].includes(trace.name) ? i : null)
+                                .filter(i => i !== null);
+
+                            Plotly.restyle(gd, { visible: meanVisible }, indices);
+                        }
+                    },
+                    {
+                        name: 'Percentiles',
+                        icon: Plotly.Icons.line,
+                        click: function(gd) {
+                            percentileVisible = !percentileVisible;
+                            const indices = gd.data
+                                .map((trace, i) => ['10th Percentile', '90th Percentile'].includes(trace.name) ? i : null)
+                                .filter(i => i !== null);
+
+                            Plotly.restyle(gd, { visible: percentileVisible }, indices);
+                        }
+                    }
+                ]
                 };
 
                 const plotDiv = document.getElementById(plotlyDivID);         
