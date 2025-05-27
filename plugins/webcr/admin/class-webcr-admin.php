@@ -429,5 +429,15 @@ class Webcr_Admin {
 		}
 	}
 
+	/**
+	 * Starts the PHP session (used for field validation) using the 'init' WordPress hook.
+	 *
+	 * @since 1.0.0
+	 */
+	function start_session () {
+		if (!session_id() && !headers_sent()) {
+			session_start();
+		}
+	}
 
 }

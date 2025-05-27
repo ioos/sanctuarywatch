@@ -24,8 +24,6 @@ window.onload = function() {
     setTimeout(changePageLoad, 1000);
 };
 
-// In case of data entry error with modal post, let's set the modal fields values to the values in the cookie
-writeCookieValuesToModalFields();
 
 iconFunction();
 modalWindow();
@@ -760,50 +758,4 @@ document.querySelector('[data-depend-id="modal_preview"]').addEventListener('cli
 
 });
 
-// This function is the last stop on a field validation path. When a user edits a modal post and hits save, the following happens:
-// 1. The modal post is validated. If there are errors, the field values are not saved to the database but they are saved to a temporary cookie.
-// 2. The user is redirected back to the edit page for the modal post and an error message is displayed.
-// 3. The cookie is read and the field values are written to the fields on the edit page. It is this last step that is done by this function. 
-function writeCookieValuesToModalFields() {
 
-	if (onCorrectEditPage("modal") == true) {
-		if (cookieExists("modal_error_all_fields")) {
-			const modalCookie = getCookie("modal_error_all_fields");
-			const modalCookieValues = JSON.parse(modalCookie);
-
-			const modalFieldNames = ["modal_published", "modal_location", "modal_scene", "modal_icons", "modal_icon_order", "icon_toc_section",
-                "icon_function", "icon_external_url", "icon_scene_out", "modal_tagline", "modal_info_entries", "modal_photo_entries", "modal_tab_number"];
-
-			// Fill in values for simple fields 
-            // Note for dropdowns, we need to fill in all potential values for the dropdown field before giving the value
-			modalFieldNames.forEach((element) => {
-                document.getElementsByName(element)[0].value = modalCookieValues[element];
-                if (element != "" && element != " " && element != null) {
-                    switch (element) { //jai
-                        case "modal_location":
-                            modal_location_change();
-
-                            break;    
-                        case "modal_scene":
-                            modal_scene_change();
-                            break;
-                        default:        
-                            break;                                           
-                    }; 
-                }
-
-			});
-
-			// Fill in values for complex fieldsets
-			for (let i = 1; i < 7; i++){
-				document.getElementsByName("modal_info" + i + "[modal_info_url" + i + "]")[0].value = modalCookieValues["modal_info_url" + i];
-				document.getElementsByName("modal_info" + i + "[modal_info_text" + i + "]")[0].value = modalCookieValues["modal_info_text" + i];
-				document.getElementsByName("modal_photo" + i + "[modal_photo_url" + i + "]")[0].value = modalCookieValues["modal_photo_url" + i];
-				document.getElementsByName("modal_photo" + i + "[modal_photo_text" + i + "]")[0].value = modalCookieValues["modal_photo_text" + i];
-				document.getElementsByName("modal_photo" + i + "[modal_photo_location" + i + "]")[0].value = modalCookieValues["modal_photo_location" + i];
-				document.getElementsByName("modal_photo" + i + "[modal_photo_internal" + i + "]")[0].value = modalCookieValues["modal_photo_internal" + i];
-				document.getElementsByName("modal_tab_title" + i)[0].value = modalCookieValues["modal_tab_title" + i];
-			}
-		}
-	}
-}
