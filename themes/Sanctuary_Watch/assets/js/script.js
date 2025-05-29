@@ -1211,7 +1211,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
     switch (figureType) {
         case "Interactive":
             try {
-                console.log('NEW TRY');
+                //console.log('NEW TRY');
                 await waitForElementByIdPolling(targetId, 1000);
                 //let isLoadedPlotly = document.getElementById(plotlyDivID);         
                 
@@ -1219,7 +1219,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                 await producePlotlyLineFigure(targetId, interactive_arguments, postID);
                 await waitForPlotlyDiv(plotlyDivID);
                 adjustPlotlyLayoutForMobile(postID);
-                console.log('RIP - PLOT1', postID);
+                //console.log('RIP - PLOT1', postID);
                 
 
                 // Manually trigger for initially active tab
@@ -1229,7 +1229,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                             await producePlotlyLineFigure(targetId, interactive_arguments, postID);
                             await waitForPlotlyDiv(plotlyDivID);
                             adjustPlotlyLayoutForMobile(postID);
-                            console.log('RIP - PLOT2', postID);
+                            //console.log('RIP - PLOT2', postID);
                         } catch (err) {
                             console.error(`Initial active tab Plotly error (${postID}):`, err);
                         }
@@ -1262,7 +1262,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                         if (plotDiv) {
                             setTimeout(() => {
                                 Plotly.Plots.resize(plotDiv);
-                                console.log("Bootstrap event triggered resize:", plotlyDivID);
+                                //console.log("Bootstrap event triggered resize:", plotlyDivID);
                             }, 150);
                         }
                     });
