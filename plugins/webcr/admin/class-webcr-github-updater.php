@@ -111,6 +111,17 @@ class GitHub_Updater {
      * Fetches the latest release or, if no releases, the latest commit from the default branch.
      */
     private function get_repository_info() {
+        // Define a unique transient key based on the repository and slug
+        $transient_key = 'github_updater_repo_info_' . md5($this->username . '/' . $this->repository . '/' . $this->slug);
+
+        // Try to get cached data from the transient
+        $cached_response = get_transient($transient_key);
+
+        if (false !== $cached_response) {
+            // Cache hit! Use the cached response.
+            $this->github_response = $cached_response;
+            return;
+        }
         if (is_null($this->github_response)) {
             // Configure API request options
             $request_options = array(
@@ -193,6 +204,11 @@ class GitHub_Updater {
             // Log error for debugging
             if (is_null($this->github_response)) {
                 error_log('GitHub Updater: Failed to get repository info for ' . $this->username . '/' . $this->repository);
+            }
+
+            // Cache the response for a set duration (e.g., 12 hours)
+            if (!is_null($this->github_response)) {
+                 set_transient($transient_key, $this->github_response, HOUR_IN_SECONDS * 12); // Cache for 12 hours
             }
         }
     }

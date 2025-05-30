@@ -118,7 +118,7 @@ class webcr_validation {
                     curl_close($ch);
 
                     if ($headers["http_code"] != 200){
-                        array_push($instance_warnings, "The Legacy content URL cannot be accessed.");                               
+                        array_push($instance_warnings, "The 'Legacy content URL' field cannot be accessed. This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                     }
                 }
             }
@@ -165,15 +165,17 @@ class webcr_validation {
         setcookie("instance_error_all_fields", $instance_fields_cookie_value, time() + 10, "/"); 
     }
 
-    // The purpose of this function is to validate the fields of the Figure custom content type. If validation fails, it sets a cookie with the error messages and the values of the fields that were submitted. 
-    // It also sets a cookie to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
+    // The purpose of this function is to validate the fields of the Figure custom content type. If validation fails, it saves to the session the error messages and the values of the fields that were submitted. 
+    // It also save to the session to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
     // However, the page is reloaded and an error message is displayed to the user.
     public function validate_figure (){
         $save_figure_fields = true;
 
-        // Set the error list cookie expiration time to a past date in order to delete it, if it is there
-        setcookie("figure_errors", 0, time() - 3000, "/");
-        setcookie("figure_warnings", 0, time() - 3000, "/");
+        // Clear previous figure validation data from session
+        unset($_SESSION["figure_errors"]);
+        unset($_SESSION["figure_warnings"]);
+        unset($_SESSION["figure_post_status"]);
+        unset($_SESSION["figure_error_all_fields"]); // This is set by figure_fields_to_session
 
         $figure_errors = [];
         $figure_warnings = [];
@@ -200,7 +202,7 @@ class webcr_validation {
         }
 
         if ($_POST["figure_path"] == "Internal" && $_POST["figure_image"] == ""){
-            array_push($figure_errors,  "If the Figure Type is set to 'Internal image', then the Figure image field cannot be left blank.");
+            array_push($figure_errors,  "If the Figure Type is set to 'Internal image', then the 'Figure image' field cannot be left blank.");
             $save_figure_fields = FALSE;
         }
 
@@ -233,7 +235,7 @@ class webcr_validation {
                     curl_close($ch);
 
                     if ($headers["http_code"] != 200){
-                        array_push($figure_warnings, "The External URL cannot be accessed.");                               
+                        array_push($figure_warnings, "The 'External URL' field cannot be accessed. This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                     }
                 }
             }
@@ -284,7 +286,7 @@ class webcr_validation {
                         curl_close($ch);
 
                         if ($headers["http_code"] != 200){
-                            array_push($figure_warnings, "The URL for the " . $error_notice_name[$field_type] . " link cannot be accessed");                               
+                            array_push($figure_warnings, "The URL for the " . $error_notice_name[$field_type] . " link cannot be accessed. This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                         }
                     }
                 }
@@ -292,16 +294,14 @@ class webcr_validation {
         }
 
         if (!empty($figure_warnings)){
-            $warning_list_cookie_value = json_encode($figure_warnings);
-            setcookie("figure_warnings", $warning_list_cookie_value, time() + 10, "/");          
+            $_SESSION["figure_warnings"] = $figure_warnings; // Store array directly   
         }
         if ($save_figure_fields == FALSE) {
-            $error_list_cookie_value = json_encode($figure_errors);
-            setcookie("figure_errors", $error_list_cookie_value, time() + 10, "/");           
-            setcookie("figure_post_status", "post_error", time() + 10, "/");
-            $this->figure_fields_to_cookie();
+            $_SESSION["figure_errors"] = $figure_errors; // Store array directly
+            $_SESSION["figure_post_status"] = "post_error";
+            $this->figure_fields_to_session(); // Call the renamed method
         } else {
-            setcookie("figure_post_status", "post_good", time() + 10, "/");
+            $_SESSION["figure_post_status"] = "post_good";
         }
         return $save_figure_fields;
     }
@@ -312,9 +312,11 @@ class webcr_validation {
     public function validate_modal(){
         $save_modal_fields = true;
 
-        // Set the error list cookie expiration time to a past date in order to delete it, if it is there
-        setcookie("modal_errors", 0, time() - 3000, "/");
-        setcookie("modal_warnings", 0, time() - 3000, "/");
+        // Clear previous figure validation data from session
+        unset($_SESSION["modal_errors"]);
+        unset($_SESSION["modal_warnings"]);
+        unset($_SESSION["modal_post_status"]);
+        unset($_SESSION["modal_error_all_fields"]); // This is set by figure_fields_to_session
 
         $modal_errors = [];
         $modal_warnings = [];
@@ -443,7 +445,7 @@ class webcr_validation {
                         curl_close($ch);
 
                         if ($headers["http_code"] != 200){
-                            array_push($modal_warnings, "The Icon External URL cannot be accessed.");                               
+                            array_push($modal_warnings, "The 'Icon External URL' field cannot be accessed. This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                         }
                     }
                 }
@@ -512,7 +514,7 @@ class webcr_validation {
                             curl_close($ch);
 
                             if ($headers["http_code"] != 200){
-                                array_push($modal_warnings, "The URL for Modal " . ucfirst($field_type) . " Link " . $i . " cannot be accessed");                               
+                                array_push($modal_warnings, "The URL for Modal " . ucfirst($field_type) . " Link " . $i . " cannot be accessed. This may be because there is something wrong with that URL. Alternatively, the automatic process used to check URL's might have been blocked in this case.");                               
                             }
                         }
                     }
@@ -521,28 +523,26 @@ class webcr_validation {
         }
 
         if (!empty($modal_warnings)){
-            $warning_list_cookie_value = json_encode($modal_warnings);
-            setcookie("modal_warnings", $warning_list_cookie_value, time() + 10, "/");          
+            $_SESSION["modal_warnings"] = $modal_warnings; // Store array directly          
         }
         if ($save_modal_fields == FALSE) {
-            $error_list_cookie_value = json_encode($modal_errors);
-            setcookie("modal_errors", $error_list_cookie_value, time() + 10, "/");           
-            setcookie("modal_post_status", "post_error", time() + 10, "/");
-            $this->modal_fields_to_cookie();
+            $_SESSION["modal_errors"] = $modal_errors; // Store array directly
+            $_SESSION["modal_post_status"] = "post_error";
+            $this->modal_fields_to_session();
         } else {
-            setcookie("modal_post_status", "post_good", time() + 10, "/");
+            $_SESSION["modal_post_status"] = "post_good";
         }
 
         return $save_modal_fields;
     }
 
-    // Write all values from the fields of the edit figure post to a cookie. 
+    // Write all values from the fields of the edit figure post to the session.
     // This is used to repopulate the fields in the figure edit form if there are errors in the submission.
-    public function figure_fields_to_cookie () {
+    public function figure_fields_to_session () {
 
         // save simple field values to the array
         $figure_field_names = ["location", "figure_scene", "figure_modal", "figure_tab", "figure_order", "figure_path", "figure_image",
-            "figure_external_url", "figure_external_alt", "figure_code", "figure_interactive_arguments", "figure_caption_short", "figure_caption_long"];
+            "figure_external_url", "figure_external_alt", "figure_code", "figure_interactive_arguments", "figure_caption_short", "figure_caption_long", "figure_title"];
 
         $figure_fields = [];
         foreach ($figure_field_names as $individual_figure_field_name){
@@ -555,15 +555,13 @@ class webcr_validation {
         $figure_fields['figure_data_link_text'] = $_POST["figure_data_info"]["figure_data_link_text"];
         $figure_fields['figure_data_link_url'] = $_POST["figure_data_info"]["figure_data_link_url"];
 
-        $figure_fields_cookie_value = json_encode($figure_fields);
-
-        // write array to cookie
-        setcookie("figure_error_all_fields", $figure_fields_cookie_value, time() + 10, "/"); 
+        // write array to session
+        $_SESSION["figure_error_all_fields"] = $figure_fields; // Store array directly
     }
 
     // Write all values from the fields of the edit modal post to a cookie. 
     // This is used to repopulate the fields in the modal edit form if there are errors in the submission.
-    public function modal_fields_to_cookie () {
+    public function modal_fields_to_session () {
 
         $modal_field_names = ["modal_published", "modal_location", "modal_scene", "modal_icons", "modal_icon_order", "icon_toc_section",
             "icon_function", "icon_external_url", "icon_scene_out", "modal_tagline", "modal_info_entries", "modal_photo_entries", "modal_tab_number"];
@@ -582,9 +580,9 @@ class webcr_validation {
             $modal_fields['modal_photo_internal' . $i] = $_POST["modal_photo" . $i]["modal_photo_internal" . $i];
             $modal_fields['modal_tab_title' . $i] = $_POST['modal_tab_title' . $i];
         }
-        $modal_fields_cookie_value = json_encode($modal_fields);
 
-        setcookie("modal_error_all_fields", $modal_fields_cookie_value, time() + 10, "/"); 
+        // write array to session
+        $_SESSION["modal_error_all_fields"] = $modal_fields; 
     }
 
     // The purpose of this function is to validate the fields of the Scene custom content type. If validation fails, it sets a cookie with the error messages and the values of the fields that were submitted. 

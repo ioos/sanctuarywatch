@@ -25,8 +25,8 @@ class Webcr_Instance_Type {
     // Add menu item to WordPress admin
     function webcr_add_admin_menu() {
         add_menu_page(
-            'Theme Settings', // Page title
-            'Theme Settings', // Menu title
+            'Site Settings', // Page title
+            'Site Settings', // Menu title
             'manage_options', // Capability required
             'theme_settings', // Menu slug
             [$this, 'webcr_settings_page'] // Function to display the page

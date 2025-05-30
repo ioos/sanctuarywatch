@@ -461,6 +461,12 @@ class Webcr_Figure {
         $function_utilities = new Webcr_Utility();
         $locations = $function_utilities -> returnAllInstances();
 
+        $session_fields_exist = false;
+        if (isset($_SESSION["figure_error_all_fields"])) {
+            $session_fields = $_SESSION["figure_error_all_fields"];
+            $session_fields_exist = true;
+        }  
+
         $scene_titles = [];
         $modal_icons = [];
         $modal_tabs = [];
@@ -469,11 +475,28 @@ class Webcr_Figure {
         if (array_key_exists("post", $_GET)) {
                 $figure_id = intval($_GET["post"]);
                 $location = get_post_meta($figure_id, "location", true);
-                $scene_titles = $function_utilities -> returnScenesFigure($location);
+                if ($session_fields_exist){
+                    $scene_titles = $function_utilities -> returnScenesFigure($session_fields["location"]);
+                } else {
+                    $scene_titles = $function_utilities -> returnScenesFigure($location);
+                }   
+
                 $scene_id = get_post_meta($figure_id, "figure_scene", true);
-                $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
+                if ($session_fields_exist){
+                    $modal_icons = $function_utilities -> returnFigureIcons($session_fields["figure_scene"]);
+                } else {
+                    $modal_icons = $function_utilities -> returnFigureIcons($scene_id);
+                }  
+
                 $modal_id = get_post_meta($figure_id, "figure_modal", true);
-                $modal_tabs = $function_utilities -> returnModalTabs($modal_id);
+
+                if ($session_fields_exist){
+                    $modal_tabs = $function_utilities -> returnModalTabs($session_fields["figure_modal"]);       
+                } else {
+                    $modal_tabs = $function_utilities -> returnModalTabs($modal_id);
+                }  
+
+
         }
 
         $fields[] = array(
@@ -487,7 +510,7 @@ class Webcr_Figure {
                     'title'          => 'Instance*',
                     'options'        => $locations,
                     'description' => 'What instance is this figure part of?',
-                 //   'class'      => 'chosen', 
+                    'default'        => $session_fields_exist ? $session_fields["location"] : '',
                 ),
                 array(
                     'id'             => 'figure_scene',
@@ -495,13 +518,15 @@ class Webcr_Figure {
                     'title'          => 'Scene*',
                     'options'        => $scene_titles,
                     'description' => 'What scene is this figure part of?',
+                    'default'        => $session_fields_exist ? $session_fields["figure_scene"] : '',
                 ),
                 array(
                     'id'             => 'figure_modal',
                     'type'           => 'select',
                     'title'          => 'Icon*',
-                    'options'        => $modal_icons, // array (" " => "Modal Icons")
+                    'options'        => $modal_icons, 
                     'description' => 'What icon is this figure part of?',
+                    'default'        => $session_fields_exist ? $session_fields["figure_modal"] : '',
                 ),
                 array(
                     'id'             => 'figure_tab',
@@ -509,6 +534,7 @@ class Webcr_Figure {
                     'title'          => 'Tab*',
                     'options'        => $modal_tabs,
                     'description' => 'What modal tab is this figure part of?',
+                    'default'        => $session_fields_exist ? $session_fields["figure_tab"] : '',
                 ),
                 array(
                     'id'      => 'figure_order',
@@ -519,6 +545,7 @@ class Webcr_Figure {
                     'min'     => '1',                                    
                     'max'     => '4',      
                     'step'    => '1',   
+                    'default'        => $session_fields_exist ? $session_fields["figure_order"] : '',
                 ),
                 array(
                     'type' => 'fieldset',
@@ -531,12 +558,14 @@ class Webcr_Figure {
                             'type'        => 'text',
                             'title'       => 'Text',
                             'class'       => 'text-class',
+                            'default'        => $session_fields_exist ? $session_fields["figure_science_link_text"] : '',
                         ),
                         array(
                             'id'          => 'figure_science_link_url',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
+                            'default'        => $session_fields_exist ? $session_fields["figure_science_link_url"] : '',
                         ),
                     ),
                 ),
@@ -551,12 +580,14 @@ class Webcr_Figure {
                             'type'        => 'text',
                             'title'       => 'Text',
                             'class'       => 'text-class',
+                            'default'        => $session_fields_exist ? $session_fields["figure_data_link_text"] : '',
                         ),
                         array(
                             'id'          => 'figure_data_link_url',
                             'type'        => 'text',
                             'title'       => 'URL',
                             'class'       => 'text-class',
+                            'default'        => $session_fields_exist ? $session_fields["figure_data_link_url"] : '',
                         ),
                     ),
                 ),
@@ -565,19 +596,22 @@ class Webcr_Figure {
                     'type'           => 'select',
                     'title'          => 'Figure type*',
                     'options'        => array("Internal" => "Internal image", "External" => "External image", "Interactive" => "Interactive", "Code" => "Code"),
-                    'default'        => "Internal",
+                    'default'        => $session_fields_exist ? $session_fields["figure_path"] : 'Internal',
                     'description' => 'Is the figure type an image stored within this website, or at some external location, is it piece a code, or does it need to be an interactive figure generated from data?',
                 ),
                 array(
                     'id'          => 'figure_title',
                     'type'        => 'text',
                     'title'       => 'Figure Title',
+                    'description' => 'Should the figure have a title in the modal window? If this field is left blank than no title will be shown.',
+                    'default'        => $session_fields_exist ? $session_fields["figure_title"] : '',
                 ),
                 array(
                     'id'    => 'figure_image',
                     'type'  => 'image',
                     'title' => 'Figure image*',
                     'description' => 'What is the figure image?',
+                    'default'        => $session_fields_exist ? $session_fields["figure_image"] : '',
                 ),
                 array(
                     'id'          => 'figure_external_url',
@@ -585,6 +619,7 @@ class Webcr_Figure {
                     'title'       => 'External URL*',
                     'class'       => 'text-class',
                     'description' => 'This external URL should link just to the image itself (that is the URL should end in .png .jpeg .jpg or .tiff)',
+                    'default'        => $session_fields_exist ? $session_fields["figure_external_url"] : '',
                 ),
                 array(
                     'id'          => 'figure_external_alt',
@@ -592,6 +627,7 @@ class Webcr_Figure {
                     'title'       => 'Alt text for external image*',
                     'class'       => 'text-class',
                     'description' => 'What is the "alternative text" that should be associated with this image for accessibility?',
+                    'default'        => $session_fields_exist ? $session_fields["figure_external_alt"] : '',
                 ),
                 // New HTML/JS Code Editor Field
                 array(
@@ -631,6 +667,7 @@ class Webcr_Figure {
                     'id'          => 'figure_interactive_arguments',
                     'type'        => 'textarea',
                     'title'       => 'Figure: interactive arguments',
+                    'default'        => $session_fields_exist ? $session_fields["figure_interactive_arguments"] : '',
                 ),    
                 array(
                     'id'          => 'figure_interactive_settings',
@@ -649,14 +686,16 @@ class Webcr_Figure {
                     'type'   => 'editor',
                     'editor' => 'trumbowyg',
                     'title'  => 'Short figure caption', 
-                    'description' => 'What is the short version of the figure caption?'
+                    'description' => 'What is the short version of the figure caption?',
+                    'default'        => $session_fields_exist ? $session_fields["figure_caption_short"] : '',
                 ),
                 array(
                     'id'     => 'figure_caption_long',
                     'type'   => 'editor',
                     'editor' => 'trumbowyg',
                     'title'  => 'Extended caption', 
-                    'description' => 'This caption appears in the "Click for Details" section under the short caption. If nothing is provided in this field, then the "Click for Details" section will be be blank for this figure.'
+                    'description' => 'This caption appears in the "Click for Details" section under the short caption. If nothing is provided in this field, then the "Click for Details" section will be be blank for this figure.',
+                    'default'        => $session_fields_exist ? $session_fields["figure_caption_long"] : '',
                 ),
                 //Preview button for displaying the internal or external images at the bottom of form
                 array(
@@ -673,6 +712,9 @@ class Webcr_Figure {
                 ),
             )
         );
+
+        // If there are session fields, remove them
+        unset($_SESSION["figure_error_all_fields"]);
 
         // instantiate the admin page
         $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
@@ -935,7 +977,8 @@ class Webcr_Figure {
     
 
     /**
-     * Displays admin notices for the WebCR plugin.
+     * Displays admin notices for the WebCR plugin for Figure posts.
+     * 
      * Shows informational, error, or warning messages based on the status of the figure post.
      * Notices are displayed only on the "figure" post type edit screen after a post has been updated.
      *
@@ -949,16 +992,15 @@ class Webcr_Figure {
             $current_screen = get_current_screen();
             if ($current_screen){
                 if ($current_screen->base == "post" && $current_screen->id =="figure" && !($current_screen->action =="add") ) { 
-                    if( isset( $_COOKIE["figure_post_status"] ) ) {
-                        $modal_post_status =  $_COOKIE["figure_post_status"];
+                    if( isset( $_SESSION["figure_post_status"] ) ) {
+                        $modal_post_status =  $_SESSION["figure_post_status"];
                         if ($modal_post_status == "post_good") {
                             echo '<div class="notice notice-info is-dismissible"><p>Figure created or updated.</p></div>';
                         } 
                         else {
-                            if (isset($_COOKIE["figure_errors"])) {
+                            if (isset($_SESSION["figure_errors"])) {
                                 $error_message = "<p>Error or errors in figure</p>";
-                                $error_list_coded = stripslashes($_COOKIE["figure_errors"]);
-                                $error_list_array = json_decode($error_list_coded);
+                                $error_list_array = $_SESSION["figure_errors"];
                                 $error_array_length = count($error_list_array);
                                 $error_message = $error_message . '<p><ul>';
                                 for ($i = 0; $i < $error_array_length; $i++){
@@ -970,10 +1012,9 @@ class Webcr_Figure {
                         }
                     //   setcookie("scene_post_status", "", time() - 300, "/");
                     }
-                    if (isset($_COOKIE["figure_warnings"])){
+                    if (isset($_SESSION["figure_warnings"])){
                         $warning_message = "<p>Warning or warnings in figure</p>";
-                        $warning_list_coded = stripslashes($_COOKIE["figure_warnings"]);
-                        $warning_list_array = json_decode($warning_list_coded);
+                        $warning_list_array = $_SESSION["figure_warnings"];
                         $warning_array_length = count($warning_list_array);
                         $warning_message = $warning_message . '<p><ul>';
                         for ($i = 0; $i < $warning_array_length; $i++){
@@ -982,6 +1023,11 @@ class Webcr_Figure {
                         $warning_message = $warning_message . '</ul></p>';
                         echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
                     }
+
+                    // Unset the session variables so that the notices are not shown again on page reload.
+                    unset($_SESSION["figure_errors"]);
+                    unset($_SESSION["figure_warnings"]);
+                    unset($_SESSION["figure_post_status"]);             
                 }
             }
         }
