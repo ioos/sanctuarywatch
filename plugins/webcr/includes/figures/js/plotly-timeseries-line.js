@@ -205,7 +205,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     y: plotlyY,
                     mode: 'lines+markers',
                     type: 'scatter',
-                    name: `${columnYHeader}`,
+                    name: `${figureArguments[targetLineColumn + 'Title']}`,
                     showlegend: showLegendBool,
                     marker: {
                         color: figureArguments[targetLineColumn + 'Color']
@@ -227,7 +227,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         fill: 'toself',
                         fillcolor: figureArguments[targetLineColumn + 'Color'] + '33',
                         line: { color: 'transparent' },
-                        name: `${columnYHeader} ±1 SD`,
+                        name: `${figureArguments[targetLineColumn + 'Title']} ±1 SD`,
                         type: 'scatter',
                         hoverinfo: 'skip',
                         showlegend: showLegendBool,
@@ -251,7 +251,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                             y: [p10, p10],
                             mode: 'lines',
                             line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
-                            name: `${columnYHeader} 10th Percentile (Bottom)`,
+                            name: `${figureArguments[targetLineColumn + 'Title']} 10th Percentile (Bottom)`,
                             type: 'scatter',
                             visible: true,
                             showlegend: showLegendBool
@@ -261,7 +261,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                             y: [p90, p90],
                             mode: 'lines',
                             line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
-                            name: `${columnYHeader} 90th Percentile (Top)`,
+                            name: `${figureArguments[targetLineColumn + 'Title']} 90th Percentile (Top)`,
                             type: 'scatter',
                             visible: true,
                             showlegend: showLegendBool
@@ -274,7 +274,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                             y: [mean, mean],
                             mode: 'lines',
                             line: { dash: 'solid', color: figureArguments[targetLineColumn + 'Color'] },
-                            name: `${columnYHeader} Mean`,
+                            name: `${figureArguments[targetLineColumn + 'Title']} Mean`,
                             type: 'scatter',
                             visible: true,
                             showlegend: showLegendBool
@@ -295,7 +295,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         fill: 'toself',
                         fillcolor: figureArguments[targetLineColumn + 'Color'] + '33',
                         line: { color: 'transparent' },
-                        name: `${columnYHeader} ±1 SD`,
+                        name: `${figureArguments[targetLineColumn + 'Title']} ±1 SD`,
                         type: 'scatter',
                         hoverinfo: 'skip',
                         showlegend: showLegendBool,
@@ -317,7 +317,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         y: [p10, p10],
                         mode: 'lines',
                         line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
-                        name: `${columnYHeader} 10th Percentile (Bottom)`,
+                        name: `${figureArguments[targetLineColumn + 'Title']} 10th Percentile (Bottom)`,
                         type: 'scatter',
                         visible: false,
                         showlegend: showLegendBool
@@ -328,7 +328,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         y: [p90, p90],
                         mode: 'lines',
                         line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
-                        name: `${columnYHeader} 90th Percentile (Top)`,
+                        name: `${figureArguments[targetLineColumn + 'Title']} 90th Percentile (Top)`,
                         type: 'scatter',
                         visible: false,
                         showlegend: showLegendBool
@@ -339,7 +339,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         y: [mean, mean],
                         mode: 'lines',
                         line: { dash: 'solid', color: figureArguments[targetLineColumn + 'Color'] },
-                        name: `${columnYHeader} Mean`,
+                        name: `${figureArguments[targetLineColumn + 'Title']} Mean`,
                         type: 'scatter',
                         visible: false,
                         showlegend: showLegendBool
@@ -350,11 +350,8 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
 
             //ADMIN SIDE GRAPH DISPLAY SETTINGS
             if (window.location.href.includes("wp-admin/post.php")) {
-
-                var layout = {}
-                
+                var layout = {}             
                 await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
-
             }
             //THEME SIDE GRAPH DISPLAY SETTINGS
             else {
@@ -410,7 +407,6 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 ],
                 
                 modeBarButtonsToAdd: [
-
                     // {   
                     //     name: 'Standard Error Bars',
                     //     icon: Plotly.Icons.autoscale,
@@ -463,13 +459,15 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 ]
                 };
 
+                // Set up the plotlyDiv (The div the the plot will be rendered in)
                 const plotDiv = document.getElementById(plotlyDivID);         
                 plotDiv.style.setProperty("width", "100%", "important");
                 plotDiv.style.setProperty("max-width", "none", "important");
                 
+                // Create the plot with all lines
                 await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
 
-                // Constrain inner .svg-container to match parent
+                // Constrain inner .svg-container to match plotlyDiv
                 const svgContainer = plotDiv?.querySelector('.svg-container');
                 if (svgContainer) {
                     svgContainer.style.width = '100%';
