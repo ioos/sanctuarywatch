@@ -155,10 +155,12 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             let targetLineColumn;
             let singleLinePlotly;
             let allLinesPlotly = [];
-            let errorVisible = false;
-            let sdVisible = false;
-            let percentileVisible = false;
-            let meanVisible = false;
+
+            // Used for graph button functionality
+            // let errorVisible = false;
+            // let sdVisible = false;
+            // let percentileVisible = false;
+            // let meanVisible = false;
 
             // Plotly figure production logic
             for (let i = 1; i <= figureArguments['NumberOfLines']; i++) {
@@ -171,13 +173,9 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
 
                 const stdDev = computeStandardDeviation(plotlyY);
 
-                const showSD = figureArguments[targetLineColumn + 'StdDev'];
-                const showMean = figureArguments[targetLineColumn + 'Mean'];
-                const showPercentiles = figureArguments[targetLineColumn + 'Percentiles'];
-                const showError = figureArguments[targetLineColumn + 'ErrorBars'];
-                const showLegend = figureArguments[targetLineColumn + 'Legend'];
 
                 //Shows the legend if it is set to 'on' in the figure arguments
+                const showLegend = figureArguments[targetLineColumn + 'Legend'];
                 if (showLegend === 'on') {
                     var showLegendBool = true;     
                 } else {
@@ -185,15 +183,32 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 }
 
                 //Standard error bars
+                const showError = figureArguments[targetLineColumn + 'ErrorBars'];
+                const showError_highValuesOpt = figureArguments[targetLineColumn + 'ErrorBarsHighField'];
+                const showError_lowValuesOpt = figureArguments[targetLineColumn + 'ErrorBarsLowField'];
                 if (showError === 'on') {
-                    var errorBarY = {
-                        type: 'data',
-                        array: new Array(plotlyY.length).fill(stdDev),
-                        visible: true,
-                        color: figureArguments[targetLineColumn + 'Color'],
-                        thickness: 1.5,
-                        width: 8
-                    };       
+
+                    if (showError_highValuesOpt === 'auto' && showError_lowValuesOpt === 'auto') {
+                        console.log(new Array(plotlyY.length).fill(stdDev), 'stdDev');
+                        var errorBarY = {
+                            type: 'data',
+                            array: new Array(plotlyY.length).fill(stdDev),
+                            visible: true,
+                            color: figureArguments[targetLineColumn + 'Color'],
+                            thickness: 1.5,
+                            width: 8
+                        };   
+                    }
+                    if (showError_highValuesOpt != 'auto' && showError_lowValuesOpt != 'auto') {
+                        var errorBarY = {
+                            type: 'data',
+                            array: new Array(plotlyY.length).fill(stdDev),
+                            visible: true,
+                            color: figureArguments[targetLineColumn + 'Color'],
+                            thickness: 1.5,
+                            width: 8
+                        };  
+                    }          
                 }
                 if (showError != 'on') {
                     var errorBarY = {};
@@ -218,11 +233,15 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 allLinesPlotly.push(singleLinePlotly);
 
                 //Standard Deviation shaded area
-                if (showSD == 'on') {
-                    const upperY = plotlyY.map(y => y + stdDev);
-                    const lowerY = plotlyY.map(y => y - stdDev);
+                const showSD = figureArguments[targetLineColumn + 'StdDev'];
+                const showSD_highValuesOpt = figureArguments[targetLineColumn + 'StdDevHighField'];
+                const showSD_lowValuesOpt = figureArguments[targetLineColumn + 'StdDevLowField'];
+                if (showSD == 'on' && showSD_highValuesOpt === 'auto' && showSD_lowValuesOpt === 'auto') {
+                    const upperY = plotlyY.filter(item => item !== "").map(y => y + stdDev);
+                    const lowerY = plotlyY.filter(item => item !== "").map(y => y - stdDev);
+                    const filteredX = plotlyX.filter(item => item !== "");
                     const stdFill = {
-                        x: [...plotlyX, ...plotlyX.slice().reverse()],
+                        x: [...filteredX, ...filteredX.slice().reverse()],
                         y: [...upperY, ...lowerY.slice().reverse()],
                         fill: 'toself',
                         fillcolor: figureArguments[targetLineColumn + 'Color'] + '33',
@@ -233,21 +252,42 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         showlegend: showLegendBool,
                         visible: true
                     };
-                    console.log(stdFill.name);
+                    allLinesPlotly.push(stdFill);
+                }
+                if (showSD == 'on' && showSD_highValuesOpt != 'auto' && showSD_lowValuesOpt != 'auto') {
+                    const upperY = dataToBePlotted[showSD_highValuesOpt].filter(item => item !== "");
+                    const lowerY = dataToBePlotted[showSD_lowValuesOpt].filter(item => item !== "");
+                    const filteredX = plotlyX.filter(item => item !== "");
+                    const stdFill = {
+                        x: [...filteredX, ...filteredX.slice().reverse()],
+                        y: [...upperY.filter(item => item !== ""), ...lowerY.filter(item => item !== "").slice().reverse()],
+                        fill: 'toself',
+                        fillcolor: figureArguments[targetLineColumn + 'Color'] + '33',
+                        line: { color: 'transparent' },
+                        name: `${figureArguments[targetLineColumn + 'Title']} ±1 SD`,
+                        type: 'scatter',
+                        hoverinfo: 'skip',
+                        showlegend: showLegendBool,
+                        visible: true
+                    };
                     allLinesPlotly.push(stdFill);
                 }
                 
                 //Percentiles and Mean lines
+                const showPercentiles = figureArguments[targetLineColumn + 'Percentiles'];
+                const showMean = figureArguments[targetLineColumn + 'Mean'];
+                const showMean_ValuesOpt = figureArguments[targetLineColumn + 'MeanField'];
                 if (showPercentiles === 'on' || showMean === 'on') {
+
+                    //Calculate Percentiles
                     const p10 = computePercentile(plotlyY, 10);
                     const p90 = computePercentile(plotlyY, 90);
-                    const mean = plotlyY.reduce((a, b) => a + b, 0) / plotlyY.length;
-                    const xMin = Math.min(...plotlyX);
-                    const xMax = Math.max(...plotlyX);
-
+                    const filteredX = plotlyX.filter(item => item !== "");
+                    const xMinPercentile = Math.min(...filteredX);
+                    const xMaxPercentile = Math.max(...filteredX);
                     if (showPercentiles === 'on') {
                         allLinesPlotly.push({
-                            x: [xMin, xMax],
+                            x: [xMinPercentile, xMaxPercentile],
                             y: [p10, p10],
                             mode: 'lines',
                             line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
@@ -257,7 +297,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                             showlegend: showLegendBool
                         });
                         allLinesPlotly.push({
-                            x: [xMin, xMax],
+                            x: [xMinPercentile, xMaxPercentile],
                             y: [p90, p90],
                             mode: 'lines',
                             line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
@@ -268,7 +308,29 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         });
                     }
 
-                    if (showMean === 'on') {
+                    // Calculate mean
+                    if (showMean_ValuesOpt === 'auto' && showMean === 'on') {
+                        const mean = plotlyY.reduce((a, b) => a + b, 0) / plotlyY.length;
+                        const filteredX = plotlyX.filter(item => item !== "");
+                        const xMin = Math.min(...filteredX);
+                        const xMax = Math.max(...filteredX);
+                        allLinesPlotly.push({
+                            x: [xMin, xMax],
+                            y: [mean, mean],
+                            mode: 'lines',
+                            line: { dash: 'solid', color: figureArguments[targetLineColumn + 'Color'] },
+                            name: `${figureArguments[targetLineColumn + 'Title']} Mean`,
+                            type: 'scatter',
+                            visible: true,
+                            showlegend: showLegendBool
+                        });
+                    }
+                    if (showMean_ValuesOpt != 'auto' && showMean === 'on') {
+                        const ExistingMeanValue = dataToBePlotted[showMean_ValuesOpt];
+                        const mean = ExistingMeanValue[0];
+                        const filteredX = plotlyX.filter(item => item !== "");
+                        const xMin = Math.min(...filteredX);
+                        const xMax = Math.max(...filteredX);
                         allLinesPlotly.push({
                             x: [xMin, xMax],
                             y: [mean, mean],
@@ -282,69 +344,69 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     }
                 }
 
-
+                //NOT CURRENTLY USED
                 //Functions triggered from button in the graph toolbar
-                if (showSD != 'on') {
-                    // Standard deviation shaded area for buttons in graph toolbar
-                    const upperY = plotlyY.map(y => y + stdDev);
-                    const lowerY = plotlyY.map(y => y - stdDev);
+                // if (showSD != 'on') {
+                //     // Standard deviation shaded area for buttons in graph toolbar
+                //     const upperY = plotlyY.map(y => y + stdDev);
+                //     const lowerY = plotlyY.map(y => y - stdDev);
 
-                    const stdFill = {
-                        x: [...plotlyX, ...plotlyX.slice().reverse()],
-                        y: [...upperY, ...lowerY.slice().reverse()],
-                        fill: 'toself',
-                        fillcolor: figureArguments[targetLineColumn + 'Color'] + '33',
-                        line: { color: 'transparent' },
-                        name: `${figureArguments[targetLineColumn + 'Title']} ±1 SD`,
-                        type: 'scatter',
-                        hoverinfo: 'skip',
-                        showlegend: showLegendBool,
-                        visible: false
-                    };
-                    allLinesPlotly.push(stdFill);
-                }
+                //     const stdFill = {
+                //         x: [...plotlyX, ...plotlyX.slice().reverse()],
+                //         y: [...upperY, ...lowerY.slice().reverse()],
+                //         fill: 'toself',
+                //         fillcolor: figureArguments[targetLineColumn + 'Color'] + '33',
+                //         line: { color: 'transparent' },
+                //         name: `${figureArguments[targetLineColumn + 'Title']} ±1 SD`,
+                //         type: 'scatter',
+                //         hoverinfo: 'skip',
+                //         showlegend: showLegendBool,
+                //         visible: false
+                //     };
+                //     allLinesPlotly.push(stdFill);
+                // }
 
-                if (showPercentiles != 'on' || showMean != 'on') {
-                    // // Add percentile lines or mean line for buttons in graph toolbar
-                    const p10 = computePercentile(plotlyY, 10);
-                    const p90 = computePercentile(plotlyY, 90);
-                    const mean = plotlyY.reduce((a, b) => a + b, 0) / plotlyY.length;
-                    const xMin = Math.min(...plotlyX);
-                    const xMax = Math.max(...plotlyX);
+                // if (showPercentiles != 'on' || showMean != 'on') {
+                //     // // Add percentile lines or mean line for buttons in graph toolbar
+                //     const p10 = computePercentile(plotlyY, 10);
+                //     const p90 = computePercentile(plotlyY, 90);
+                //     const mean = plotlyY.reduce((a, b) => a + b, 0) / plotlyY.length;
+                //     const xMin = Math.min(...plotlyX);
+                //     const xMax = Math.max(...plotlyX);
 
-                    allLinesPlotly.push({
-                        x: [xMin, xMax],
-                        y: [p10, p10],
-                        mode: 'lines',
-                        line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
-                        name: `${figureArguments[targetLineColumn + 'Title']} 10th Percentile (Bottom)`,
-                        type: 'scatter',
-                        visible: false,
-                        showlegend: showLegendBool
-                    });
+                //     allLinesPlotly.push({
+                //         x: [xMin, xMax],
+                //         y: [p10, p10],
+                //         mode: 'lines',
+                //         line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
+                //         name: `${figureArguments[targetLineColumn + 'Title']} 10th Percentile (Bottom)`,
+                //         type: 'scatter',
+                //         visible: false,
+                //         showlegend: showLegendBool
+                //     });
 
-                    allLinesPlotly.push({
-                        x: [xMin, xMax],
-                        y: [p90, p90],
-                        mode: 'lines',
-                        line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
-                        name: `${figureArguments[targetLineColumn + 'Title']} 90th Percentile (Top)`,
-                        type: 'scatter',
-                        visible: false,
-                        showlegend: showLegendBool
-                    });
+                //     allLinesPlotly.push({
+                //         x: [xMin, xMax],
+                //         y: [p90, p90],
+                //         mode: 'lines',
+                //         line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
+                //         name: `${figureArguments[targetLineColumn + 'Title']} 90th Percentile (Top)`,
+                //         type: 'scatter',
+                //         visible: false,
+                //         showlegend: showLegendBool
+                //     });
 
-                    allLinesPlotly.push({
-                        x: [xMin, xMax],
-                        y: [mean, mean],
-                        mode: 'lines',
-                        line: { dash: 'solid', color: figureArguments[targetLineColumn + 'Color'] },
-                        name: `${figureArguments[targetLineColumn + 'Title']} Mean`,
-                        type: 'scatter',
-                        visible: false,
-                        showlegend: showLegendBool
-                    });
-                }
+                //     allLinesPlotly.push({
+                //         x: [xMin, xMax],
+                //         y: [mean, mean],
+                //         mode: 'lines',
+                //         line: { dash: 'solid', color: figureArguments[targetLineColumn + 'Color'] },
+                //         name: `${figureArguments[targetLineColumn + 'Title']} Mean`,
+                //         type: 'scatter',
+                //         visible: false,
+                //         showlegend: showLegendBool
+                //     });
+                // }
             }
 
 
@@ -380,7 +442,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     yanchor: 'bottom'
                     },
                     autosize: true,
-                    //margin: { t: 30, b: 50, l: 50, r: 30 },
+                    margin: { t: -30, b: -30, l: -30, r: -30 },
                     //width: container.clientWidth, 
                     //height: container.clientHeight,
                     cliponaxis: true
@@ -767,17 +829,71 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
               newRow.append(newColumn1, newColumn2);
               newDiv.append(newRow);
 
-              // Add checkboxes for error bars, standard deviation, mean, and percentiles
-              const features = ["Legend", "ErrorBars", "StdDev", "Mean", "Percentiles"];
-              const featureNames = ["Legend", "Error Bars", "Standard Deviation", "Mean", "90th & 10th Percentiles"];
-              for (let i = 0; i < features.length; i++) {
+              
+
+              //Add checkboxes for error bars, standard deviation, mean, and percentiles
+            //   const features = ["Legend", "ErrorBars", "StdDev", "Mean", "Percentiles"];
+            //   const featureNames = ["Legend", "Error Bars", "Standard Deviation", "Mean", "90th & 10th Percentiles"];
+            //   for (let i = 0; i < features.length; i++) {
+            //     const feature = features[i];
+            //     const featureName = featureNames[i];
+            //     let newRow = document.createElement("div");
+            //     newRow.classList.add("row", "fieldPadding");
+            //     if (fieldLabelNumber % 2 != 0) {
+            //         newRow.classList.add("row", "fieldBackgroundColor");
+            //     }
+            //     let newColumn1 = document.createElement("div");
+            //     newColumn1.classList.add("col-3");
+            //     let newColumn2 = document.createElement("div");
+            //     newColumn2.classList.add("col");
+
+            //     let label = document.createElement("label");
+            //     label.for = fieldLabel[0] + feature;
+            //     label.innerHTML = `${featureName} Visible?`;
+            //     let checkbox = document.createElement("input");
+            //     checkbox.type = "checkbox";
+            //     checkbox.id = fieldLabel[0] + feature;
+            //     checkbox.name = "plotFields";
+
+            //     let fieldValueSaved = fillFormFieldValues(checkbox.id, interactive_arguments);
+
+            //     if (checkbox.id != '' && checkbox.value != 'no') { // Prevent [ "", "no" ] data field error.
+            //         if (fieldValueSaved === 'on') {
+            //             checkbox.value = fieldValueSaved;
+            //             checkbox.checked = true;
+            //         }
+            //         if (fieldValueSaved === "") {
+            //             checkbox.value = fieldValueSaved;
+            //             checkbox.checked = false;
+            //         }
+            //         if (fieldValueSaved === undefined) {
+            //             checkbox.value = "";
+            //             checkbox.checked = false;
+            //         }
+
+            //         checkbox.addEventListener('change', function() {
+            //             checkbox.value = checkbox.checked ? 'on' : "";  // Store "on" if checked, "" if not
+            //             logFormFieldValues();
+            //         });
+            //     }
+
+            //     newColumn1.appendChild(label);
+            //     newColumn2.appendChild(checkbox);
+            //     newRow.append(newColumn1, newColumn2);
+            //     newDiv.append(newRow);
+            // }
+            const features = ["Legend", "ErrorBars", "StdDev", "Mean", "Percentiles"];
+            const featureNames = ["Graph Legend", "Error Bars", "Standard Deviation", "Mean", "90th & 10th Percentiles"];
+            for (let i = 0; i < features.length; i++) {
                 const feature = features[i];
                 const featureName = featureNames[i];
+
                 let newRow = document.createElement("div");
                 newRow.classList.add("row", "fieldPadding");
                 if (fieldLabelNumber % 2 != 0) {
                     newRow.classList.add("row", "fieldBackgroundColor");
                 }
+
                 let newColumn1 = document.createElement("div");
                 newColumn1.classList.add("col-3");
                 let newColumn2 = document.createElement("div");
@@ -792,33 +908,89 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
                 checkbox.name = "plotFields";
 
                 let fieldValueSaved = fillFormFieldValues(checkbox.id, interactive_arguments);
-
-                if (checkbox.id != '' && checkbox.value != 'no') { // Prevent [ "", "no" ] data field error.
-                    if (fieldValueSaved === 'on') {
-                        checkbox.value = fieldValueSaved;
-                        checkbox.checked = true;
-                    }
-                    if (fieldValueSaved === "") {
-                        checkbox.value = fieldValueSaved;
-                        checkbox.checked = false;
-                    }
-                    if (fieldValueSaved === undefined) {
-                        checkbox.value = "";
-                        checkbox.checked = false;
-                    }
-
-                    checkbox.addEventListener('change', function() {
-                        checkbox.value = checkbox.checked ? 'on' : "";  // Store "on" if checked, "" if not
-                        logFormFieldValues();
-                    });
-                }
+                checkbox.value = fieldValueSaved === 'on' ? 'on' : "";
+                checkbox.checked = fieldValueSaved === 'on';
 
                 newColumn1.appendChild(label);
                 newColumn2.appendChild(checkbox);
                 newRow.append(newColumn1, newColumn2);
                 newDiv.append(newRow);
+
+                // === Add dropdowns for feature-specific data ===
+                if (["Mean", "ErrorBars", "StdDev"].includes(feature)) {
+                    const dropdownContainer = document.createElement("div");
+                    dropdownContainer.classList.add("row", "fieldPadding");
+                    if (fieldLabelNumber % 2 != 0) {
+                        dropdownContainer.classList.add("row", "fieldBackgroundColor");
+                    }
+
+                    const dropdownLabelCol = document.createElement("div");
+                    dropdownLabelCol.classList.add("col-3");
+                    const dropdownInputCol = document.createElement("div");
+                    dropdownInputCol.classList.add("col");
+
+                    function createDropdown(labelText, selectId) {
+                        const label = document.createElement("label");
+                        label.innerHTML = labelText;
+                        const select = document.createElement("select");
+                        select.id = selectId;
+                        select.name = "plotFields";
+
+                        const autoOpt = document.createElement("option");
+                        autoOpt.value = "auto";
+                        autoOpt.innerHTML = "Auto Calculate";
+                        select.appendChild(autoOpt);
+
+                        for (let col of Object.values(jsonColumns)) {
+                            const opt = document.createElement("option");
+                            opt.value = col;
+                            opt.innerHTML = col;
+                            select.appendChild(opt);
+                        }
+
+                        const saved = fillFormFieldValues(select.id, interactive_arguments);
+                        if (saved) select.value = saved;
+
+                        select.addEventListener("change", logFormFieldValues);
+                        return { label, select };
+                    }
+
+                    const controls = [];
+
+                    if (feature === "Mean") {
+                        const { label, select } = createDropdown("Mean Source Column", fieldLabel[0] + feature + "Field");
+                        controls.push(label, select);
+                    }
+
+                    if (feature === "ErrorBars" || feature === "StdDev") {
+                        const { label: labelHigh, select: selectHigh } = createDropdown(`${featureName} High Column`, fieldLabel[0] + feature + "HighField");
+                        const { label: labelLow, select: selectLow } = createDropdown(`${featureName} Low Column`, fieldLabel[0] + feature + "LowField");
+                        controls.push(labelHigh, selectHigh, labelLow, selectLow);
+                    }
+
+                    // Initially hide the dropdown container
+                    dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
+
+                    controls.forEach(control => dropdownInputCol.appendChild(control));
+                    dropdownContainer.append(dropdownLabelCol, dropdownInputCol);
+                    newDiv.append(dropdownContainer);
+
+                    // Toggle visibility dynamically
+                    checkbox.addEventListener('change', function () {
+                        checkbox.value = checkbox.checked ? 'on' : "";
+                        dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
+                        logFormFieldValues();
+                    });
+                } else {
+                    checkbox.addEventListener('change', function () {
+                        checkbox.value = checkbox.checked ? 'on' : "";
+                        logFormFieldValues();
+                    });
+                }
             }
+            
           }
+        
 
           const targetElement = document.getElementById('graphGUI');
           targetElement.appendChild(newDiv);
