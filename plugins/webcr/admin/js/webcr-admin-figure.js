@@ -420,7 +420,7 @@ function run_webcr_admin_figures() {
         } catch (error) {
             // Log any errors that occur during the JSON loading process
             console.error('Error loading JSON:', error);
-            targetContainer.innerHTML = "The .csv formatting is incorrect. Please fix the error and reupload your file.";
+            targetContainer.innerHTML = "The file formatting is incorrect. Please fix the error and reupload your file.";
 
         }
     }
@@ -594,13 +594,6 @@ function run_webcr_admin_figures() {
         newDiv.id = "preview_window";
         newDiv.classList.add("container", "figure_preview");
 
-        //Figure title options
-        const figure_title = document.getElementsByName("figure_title")[0].value;
-        let figureTitle = document.createElement("div");
-        figureTitle.innerHTML = figure_title;
-        figureTitle.classList.add("figureTitle");
-        newDiv.appendChild(figureTitle); //Append the figure title
-
         
         // Add science and data URLs if available
         const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
@@ -644,6 +637,13 @@ function run_webcr_admin_figures() {
 
             newDiv.appendChild(firstRow);
         } 
+
+        //Figure title options
+        const figure_title = document.getElementsByName("figure_title")[0].value;
+        let figureTitle = document.createElement("div");
+        figureTitle.innerHTML = figure_title;
+        figureTitle.classList.add("figureTitle");
+        newDiv.appendChild(figureTitle); //Append the figure title
 
         // Add the figure image or interactive/code preview
         let imageRow = document.createElement("div");
