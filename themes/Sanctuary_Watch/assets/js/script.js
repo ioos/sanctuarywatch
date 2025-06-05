@@ -331,12 +331,6 @@ async function make_title() {
             accgroup.appendChild(acc1); 
         }
    
-        // if there is no "more info" and "more photo" accordions, then we'll need to put some extra padding under the scene tagline
-        let blankAccordion = false;
-        if (scene_data["scene_info_entries"] ==0 && scene_data["scene_photo_entries"] == 0){
-            blankAccordion = true;
-        }
-
         let row = document.createElement("div");
         row.classList.add("row");
 
@@ -350,19 +344,11 @@ async function make_title() {
         if (!is_mobile()) {
             col1.classList.add("col-md-2");
             col2.classList.add("col-md-10");
-            // adding padding below tagline
-            if (blankAccordion == true){
-                row.classList.add("blankAccordion");
-            }
-            // col2.style.marginLeft =  `-12%`;
-            // col1.style.marginLeft = '-12%';
-            // document.querySelector("#title-container").style.marginLeft = '0%';
+
             function adjustTitleContainerMargin() {
                 if (window.innerWidth < 512) {
                     document.querySelector("#title-container").style.marginLeft = '0%';
-                } else {
-                    document.querySelector("#title-container").style.marginLeft = '9%'; // Reset or apply other styles if needed
-                }
+                } 
             }
             adjustTitleContainerMargin();
             window.addEventListener('resize', adjustTitleContainerMargin);

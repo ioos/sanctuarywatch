@@ -8,6 +8,15 @@ Version: 0.3.0-beta
 
 @import url('assets/css/bootstrap.css');
 
+#entire_thing { 
+  max-width: 1400px !important;
+  margin: 0 auto;
+  background: #f2f2f2;
+  padding-bottom: 3%;
+  margin-top: -20px;
+  padding-top: 1%;
+}
+
 body{
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
@@ -570,7 +579,7 @@ input:checked + .slider:before {
 }
 
 #title-container > div > div.col-md-10 > p{
-  max-width: 85%;
+ /* max-width: 85%; */
 }
 
 #toc-group{
@@ -667,9 +676,9 @@ body > nav > div > div{
 
 
 #title-container > div > div.col-md-2 > div{
-  margin-top: 2%;
+ /* margin-top: 2%;
   margin-bottom: 2%;
-  max-width: 87%;
+  max-width: 87%; */
 }
 
 
@@ -883,26 +892,33 @@ button:focus,
   z-index: 999;
 }
 @media (min-width: 769px) {  /* a bunch of new stuff here for updated formatting */
+ 
+ #title-container .accordion-button {
+  justify-content: left;
+ }
   #title-container > div > div.col-md-2{
-    width: 21%;
-    margin-left: 71.4%;
-  }
+      padding-right: 2%;
+
+  /*   width: 21%;
+    margin-left: 71.4%; */
+  } 
   #title-container > div > div.col-md-2 > div{
-    margin-top: 2%;
+ /*    margin-top: 2%;
     margin-left: 19%;
     margin-bottom: 2%;
-    max-width: 87%;
+    max-width: 87%;*/
   }
   #title-container{
-    margin-left: 9%;
+     margin-left: 4%; 
   }
   #title-container > h1{
-    margin-left: -5%;
+  /*   margin-left: -5%; */
   }
   #title-container > div > div.col-md-10{
-    margin-left: -12%;
+    padding-right:4%;
+  /*   margin-left: -12%;
     margin-bottom: -8%;
-    width: 97.333333%;
+    width: 97.333333%; */
   }
   #scene-row > div.col-md-10{
     margin-left: -5.7% !important;
@@ -1003,11 +1019,6 @@ body > nav > div{
 #accordion-item-2{
   border-color: lightgrey;
   border-width: 1px;
-}
-
-/* padding under scene tagline when no photo or info accordions on a non-mobile view */
-.blankAccordion {
-  padding-bottom: 70px;
 }
 
 /* footer components */
