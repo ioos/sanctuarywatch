@@ -242,7 +242,7 @@ for (const [key, value] of sorted_child_entries) {
  */
 
 function make_scene_elements(info, iText, iUrl, scene_data, type, name){
-    let collapseListHTML = '<div>';
+    let collapseListHTML = '<div><ul>';
     for (let i = 1; i < 7; i++){
                 // let info_field = "scene_info" + i;
                 let info_field = info + i;
@@ -283,7 +283,7 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
 
                 // collapseList.appendChild(listItem);
                 collapseListHTML += `<li> <a href="${scene_info_url}" target="_blank">${scene_info_text}</a> </li>`;
-                collapseListHTML += '</div>';
+                collapseListHTML += '</ul></div>';
     }
     // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
     let acc = createAccordionItem(`${type}-item-1`, `${type}-header-1`, `${type}-collapse-1`, name, collapseListHTML);
@@ -1851,7 +1851,7 @@ function render_modal(key){
             let modal_info_entries = modal_data["modal_info_entries"];
             if (modal_info_entries != 0){
 
-                let collapseListHTML = '<div>';
+                let collapseListHTML = '<div><ul>';
                 for (let i = 1; i < 7; i++){
                     let info_field = "modal_info" + i;
                     let info_text = "modal_info_text" + i;
@@ -1872,7 +1872,7 @@ function render_modal(key){
 
                     // collapseList.appendChild(listItem);
                     collapseListHTML += `<li> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </li>`;
-                    collapseListHTML += '</div>';
+                    collapseListHTML += '</ul></div>';
                 }
                 let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
                 acc.appendChild(accordionItem1);
@@ -1881,7 +1881,7 @@ function render_modal(key){
             //for photos:
             let modal_photo_entries = modal_data["modal_photo_entries"];
             let modal_id = modal_data.id;
-            let collapsePhotoHTML = '<div>';
+            let collapsePhotoHTML = '<div><ul>';
     
             //Show the "Images" accordion item if the number of image entries is greater than 0 in the admin slider for modals.
             if (modal_photo_entries != 0){
@@ -1913,7 +1913,7 @@ function render_modal(key){
     
                     // collapseList.appendChild(listItem);
                     collapsePhotoHTML += `<li> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </li>`;
-                    collapsePhotoHTML += '</div>';
+                    collapsePhotoHTML += '</ul></div>';
                 }
 
                 let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", collapsePhotoHTML);
@@ -2631,7 +2631,7 @@ function list_toc(){
         toc_group.appendChild(item);
     }
     toc_container.appendChild(toc_group);
-    document.querySelector("#toc-container > ul").style.paddingLeft = '11rem';
+    document.querySelector("#toc-container > ul").style.paddingLeft = '12rem';
 }
 
 
