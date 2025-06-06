@@ -435,7 +435,7 @@ input:checked + .slider:before {
 }
 @media (min-width: 900px) {
   .modal-dialog {
-    min-width: 30%;
+    min-width: 60%;
     /*min-width: 30%;
     /* max-width: 70%; */
     /* transform: scale(1.3);  */

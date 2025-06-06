@@ -1172,6 +1172,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
     let targetId = `javascript_figure_target_${postID}`;
     let plotlyDivID = `plotlyFigure${postID}`;
     let interactive_arguments = info_obj["figure_interactive_arguments"];
+    let graphType = interactive_arguments['graphType']
 
     async function waitForElementByIdPolling(id, timeout = 10000, interval = 100) {
         const start = Date.now();
@@ -1184,13 +1185,20 @@ async function render_interactive_plots(tabContentElement, info_obj) {
             })();
         });
     }
-    async function waitForPlotlyDiv(plotlyDivID, retries = 20, interval = 250) {
+    async function waitForPlotlyDiv(plotlyDivID, retries = 20, interval = 250, graphType) {
         for (let i = 0; i < retries; i++) {
             const el = document.getElementById(plotlyDivID);
             if (el) return el;
             await new Promise(resolve => setTimeout(resolve, interval));
-            await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+
+            if (graphType === "Plotly line graph (time series)") {
+                await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+            }
+            if (graphType === "Plotly bar graph") {
+                await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+            }
         }
+
         throw new Error(`Plotly div ${plotlyDivID} not found after ${retries * interval}ms`);
     }
 
@@ -1211,23 +1219,29 @@ async function render_interactive_plots(tabContentElement, info_obj) {
     switch (figureType) {
         case "Interactive":
             try {
-                //console.log('NEW TRY');
                 await waitForElementByIdPolling(targetId, 1000);
-                //let isLoadedPlotly = document.getElementById(plotlyDivID);         
-                
-                //await waitForElementByIdPolling(targetId, 10000);
-                await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                await waitForPlotlyDiv(plotlyDivID);
+                    
+                if (graphType === "Plotly line graph (time series)") {
+                    await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                }
+                if (graphType === "Plotly bar graph") {
+                    await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                }
+                await waitForPlotlyDiv(plotlyDivID, graphType);
                 adjustPlotlyLayoutForMobile(postID);
-                //console.log('RIP - PLOT1', postID);
-                
 
+                
                 // Manually trigger for initially active tab
                 if (tabContentElement.classList.contains("active")) {
                     if (!document.getElementById(plotlyDivID)) {
                         try {
-                            await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                            await waitForPlotlyDiv(plotlyDivID);
+                            if (graphType === "Plotly line graph (time series)") {
+                                await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                            }
+                            if (graphType === "Plotly bar graph") {
+                                await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                            }
+                            await waitForPlotlyDiv(plotlyDivID, graphType);
                             adjustPlotlyLayoutForMobile(postID);
                             //console.log('RIP - PLOT2', postID);
                         } catch (err) {
@@ -1236,44 +1250,21 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                     }
                 }
 
-                // // Handle tabs activated later
-                // const observer = new MutationObserver(async mutations => {
-                //     for (let mutation of mutations) {
-                //         const isActivated = mutation.target.classList.contains("show") || mutation.target.classList.contains("active");
-
-                //         if (isActivated && !document.getElementById(plotlyDivID)) {
-                //             try {                      
-                //                 await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                //                 console.log('RIP - PLOT3', postID);
-                //             } catch (err) {
-                //                 console.error(`Plotly figure not rendered for postID ${postID}:`, err);
-                //             }
-                //         }
-                //     }
-                // });
-
-                // document.querySelectorAll(".tab-pane").forEach(tab => {
-                //     observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
-                // });
-
+                // Add event listener for Bootstrap tab shown event
                 document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
                     tab.addEventListener('shown.bs.tab', () => {
                         const plotDiv = document.getElementById(plotlyDivID);
                         if (plotDiv) {
                             setTimeout(() => {
                                 Plotly.Plots.resize(plotDiv);
-                                //console.log("Bootstrap event triggered resize:", plotlyDivID);
                             }, 150);
                         }
                     });
-                });
-
-                
+                });           
 
             } catch (err) {
                 console.error("Plotly interactive plot error:", err);
             }
-
             figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
             break;
     }
@@ -1449,17 +1440,6 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
             figureExternalImageLoaded(title, postID, gaMeasurementID);    
         break;
 
-        //#Anchor1
-        // case "Interactive":
-        //     img = document.createElement('div');
-        //     img.id = `javascript_figure_target_${postID}`;
-        //     figureDiv.appendChild(img); 
-        //     let interactive_arguments = info_obj["figure_interactive_arguments"];
-        //     await waitForElementById(`javascript_figure_target_${postID}`, 3000);
-        //     await producePlotlyLineFigure(`javascript_figure_target_${postID}`, interactive_arguments, postID);
-        //     figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
-        // break;
-
         case "Interactive":
             img = document.createElement('div');
             img.id = `javascript_figure_target_${postID}`;
@@ -1585,7 +1565,6 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
             break;
         case "Interactive":
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
-                
                 let plotDiv = document.querySelector(`#plotlyFigure${postID}`);
                 try {
                     plotDiv.style.width = "100%";
