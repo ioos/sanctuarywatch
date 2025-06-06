@@ -307,8 +307,8 @@ body > h1{
 /* Style each row */
 .row {
   display: flex;
-  justify-content: center; /* Center columns horizontally */
-   margin-bottom: 20px;  
+ /* justify-content: center; /* Center columns horizontally */
+ /*   margin-bottom: 20px;   */
 }
 
 /* Style each column */
@@ -875,22 +875,22 @@ button:focus,
   }
 
   #scene-row > div.col-md-10{
-    margin-left: -5.7% !important;
-    width: 97.333333% !important;
+  /*  margin-left: -5.7% !important;
+    width: 97.333333% !important; */
   }
 
   #svg1{
-    margin-left: -4% !important;
+/*     margin-left: -4% !important; */
   }
   #toc-container{
-    margin-left: -22% !important;
-    padding-right: 0% !important; 
+ /*     margin-left: -22% !important;
+    padding-right: 0% !important; */
   }
 
   #toc-group{
-    max-width: 61% !important;
+ /*     max-width: 61% !important;
     margin-left: 37% !important;
-    padding-top: 0% !important;
+    padding-top: 0% !important; */
   }
 
   #accordion-container{
