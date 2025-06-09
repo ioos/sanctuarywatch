@@ -584,6 +584,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 //You need the specific values for the entire yaxis
                 injectOverlays(plotDiv, layout, allLinesPlotly, figureArguments);
             });
+            Plotly.Plots.resize(plotDiv)
 
         } else {}
     } catch (error) {

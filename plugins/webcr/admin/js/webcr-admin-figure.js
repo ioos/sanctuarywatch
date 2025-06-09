@@ -484,6 +484,7 @@ function run_webcr_admin_figures() {
             case "Plotly bar graph":
                 // Clear any previously created graph fields
                 clearPreviousGraphFields();
+                plotlyBarParameterFields(jsonColumns, interactive_arguments);
                 break;
             case "Plotly line graph (time series)":
                 // Clear previous fields and create new fields specific to line graphs
@@ -721,14 +722,13 @@ function run_webcr_admin_figures() {
                 //Admin is able to call to the interactive_arguments using document.getElementsByName("figure_interactive_arguments")[0].value;
                 //interactive_arguments is for the theme side, it is blank here because it is a place holder variable
                 let interactive_arguments = document.getElementsByName("figure_interactive_arguments")[0].value;
-                let graphType = interactive_arguments['graphType']
+                let graphType = interactive_arguments['graphType'];
+                console.log('JS', graphType);
                 const figureID = document.getElementsByName("post_ID")[0].value;
-                if (graphType === "Plotly line graph (time series)") {
-                    producePlotlyLineFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
-                }
-                if (graphType === "Plotly bar graph") {
-                    producePlotlyBarFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
-                }
+
+                producePlotlyLineFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                //producePlotlyBarFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+
     
             } catch (error) {
                 alert('Please upload a a valid file before generating a graph.')
