@@ -722,14 +722,17 @@ function run_webcr_admin_figures() {
                 //Admin is able to call to the interactive_arguments using document.getElementsByName("figure_interactive_arguments")[0].value;
                 //interactive_arguments is for the theme side, it is blank here because it is a place holder variable
                 let interactive_arguments = document.getElementsByName("figure_interactive_arguments")[0].value;
-                let graphType = interactive_arguments['graphType'];
-                console.log('JS', graphType);
                 const figureID = document.getElementsByName("post_ID")[0].value;
+                const figure_arguments = Object.fromEntries(JSON.parse(interactive_arguments));
+                const graphType = figure_arguments["graphType"];
 
-                producePlotlyLineFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
-                //producePlotlyBarFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                if (graphType === "Plotly bar graph") {
+                    producePlotlyBarFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                }
+                if (graphType === "Plotly line graph (time series)") {
+                    producePlotlyLineFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                }
 
-    
             } catch (error) {
                 alert('Please upload a a valid file before generating a graph.')
             }
