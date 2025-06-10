@@ -154,7 +154,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
       </div>
     </div>
 
-    <div class="col-md-2" id="toc-container" style="margin-left: -6%">
+    <div class="col-md-2" id="toc-container" >
 
         <!-- TABLE OF CONTENTS WILL GO HERE -->
 

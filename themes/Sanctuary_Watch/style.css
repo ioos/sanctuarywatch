@@ -212,28 +212,29 @@ body > h1{
 
   /* Responsive image container */
   .responsive-image-container {
-    width: 90%;
+   /*  width: 100%;
     height: auto;
-    display: flex;
+     object-fit: contain; 
+     display: flex;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: center; */
   }
 
   /* Ensure the image scales properly */
-  .responsive-image-container img,
   .responsive-image-container svg {
-    width: 80%;
-    max-width: 80%;
+     width: 100%;
+    max-width: 100%;
     height: auto;
-    object-fit: contain;
+    object-fit: contain; 
   }
 
   /* Ensure the table of contents stays aligned */
   #toc-container {
-    flex: 0 0 25%;
+  /*   flex: 0 0 25%;
     /* max-width: 25%; */
-    position: relative;
+ /*    position: relative; */
     /* padding-right: 10%; */
+    
   }
 
   #toc1 {
@@ -274,27 +275,27 @@ body > h1{
   }
 
   #scene-row {
-    display: flex;
+   /*   display: flex;
     justify-content: center;
      margin-right: -15px;
-   margin-left: -15px;  
+   margin-left: -15px;   */
   }
 }
 
 /* Responsive image container for all screen sizes */
 .responsive-image-container {
-  width: 100%;
+/*  width: 100%;
   height: auto;
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: center;  */
 }
 
 .responsive-image-container img,
 .responsive-image-container svg {
-  width: 100%;
+ /* width: 100%;
   height: auto;
-  object-fit: contain;
+  object-fit: contain;  */
 }
 
 /* Style each row */
