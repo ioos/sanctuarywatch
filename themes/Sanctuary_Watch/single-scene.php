@@ -1,6 +1,7 @@
 
 
-<?php
+<?php 
+
 /**
  * Detailed Scene Page Template
  *
@@ -45,13 +46,6 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 
 ?>
 
-<script>
-//   document.addEventListener('DOMContentLoaded', function() {
-//     const postId = <?php echo json_encode($post_id); ?>;
-//     const instanceSlug = <?php echo json_encode($instance_slug); ?>;
-//     const overviewSceneId = <?php echo json_encode($overview); ?>;
-</script>
-
 <body>
 
   <!-- // Google Tags Container ID call from wp_options single-scene.php-->
@@ -82,10 +76,6 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
         <!-- Modal body.. -->
       </div>
 
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-      </div> -->
-
     </div>
   </div>
 </div>
@@ -110,35 +100,18 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
           <div id="accordion-container"  >
         
           </div>
-          <!-- <div id="tagline-container"  >
-            
-          </div> -->
+
         </div>
       </div>
 
       <!-- images go here -->
       <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-left: 1%">
-          <!-- <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
-          </li> -->
+
         
       </ul>
 
       <div class="tab-content" id="myTabContent" style="margin-top: 2%; margin-left: 2%; margin-right: 2%">
-          <!-- <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0"> -->
-            <!-- hard coded -->
-            
-        <!-- hard coded -->
-          <!-- </div> -->
-          <!-- <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">ok</div>
-          <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">bruh </div>  -->
-          <!-- <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">tuff</div> -->
+
       </div>
       <!-- image stuff ends here -->
 
@@ -147,22 +120,12 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 </div>
 
 
-<div id="entire_thing" style="
- 
-  max-width: 1700px !important;
-    margin: 0 auto;
-    background: #f2f2f2;
-    padding-bottom: 3%;
-    margin-top: -20px;
-    padding-top: 1%;
-
-    
-">  
-<div id="title-container" style="margin-left: 9%" ></div>
+<div id="entire_thing">  
+<div id="title-container" ></div>
 <div id="mobile-view-image"></div>
 <div class="container-fluid" id="scene-fluid">
   <div class="row" id="scene-row">
-    <div class="col-md-10" style="margin-left: -4%;">
+    <div class="col-md-10" >
       <div id="svg1" class="responsive-image-container">
         <?php
           $svg_url = get_post_meta($post_id, 'scene_infographic', true); 
@@ -191,15 +154,10 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
       </div>
     </div>
 
-    <div class="col-md-2" id="toc-container" style="margin-left: -6%">
-    <!-- <button style="margin-bottom: 5px; font-size: large;" class="btn btn-info fa fa-arrows-alt btn-block" id="top-button"> Full Screen</button> -->
+    <div class="col-md-2" id="toc-container" >
 
-      <!-- temporary, make the above a dropdown -->
-      <!-- <div class="row">  -->
-      <!-- <ul id="toc1">  -->
         <!-- TABLE OF CONTENTS WILL GO HERE -->
-      <!-- </ul> -->
-      <!-- </div> -->
+
     </div>
   </div>
   <script>
