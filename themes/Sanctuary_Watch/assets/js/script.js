@@ -1227,16 +1227,27 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                     
 
                     // Manually trigger for initially active tab
-                    if (tabContentElement.classList.contains("active")) {
+                    // if (tabContentElement.classList.contains("active")) {
+                    //     if (!document.getElementById(plotlyDivID)) {
+                    //         try {
+                    //             await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                    //             await waitForPlotlyDiv(plotlyDivID);
+                    //             adjustPlotlyLayoutForMobile(postID);
+                    //             //console.log('RIP - PLOT2', postID);
+                    //         } catch (err) {
+                    //             console.error(`Initial active tab Plotly error (${postID}):`, err);
+                    //         }
+                    //     }
+                    // }
+
+                    // Manually trigger for initially active tab
+                    const activeTab = document.querySelector('.tab-pane.active');
+                    if (activeTab && activeTab.id === tabContentElement.id) {
                         if (!document.getElementById(plotlyDivID)) {
-                            try {
-                                await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                                await waitForPlotlyDiv(plotlyDivID);
-                                adjustPlotlyLayoutForMobile(postID);
-                                //console.log('RIP - PLOT2', postID);
-                            } catch (err) {
-                                console.error(`Initial active tab Plotly error (${postID}):`, err);
-                            }
+                            await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                            await waitForPlotlyDiv(plotlyDivID);
+                            adjustPlotlyLayoutForMobile(postID);
+                            console.log('RIP - PLOT2', postID);
                         }
                     }
 
@@ -1277,18 +1288,28 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                     adjustPlotlyLayoutForMobile(postID);
                     //console.log('RIP - PLOT1', postID);
                     
+                    // // Manually trigger for initially active tab
+                    // if (tabContentElement.classList.contains("active")) {
+                    //     if (!document.getElementById(plotlyDivID)) {
+                    //         try {
+                    //             await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                    //             await waitForPlotlyDiv(plotlyDivID);
+                    //             adjustPlotlyLayoutForMobile(postID);
+                    //             //console.log('RIP - PLOT2', postID);
+                    //         } catch (err) {
+                    //             console.error(`Initial active tab Plotly error (${postID}):`, err);
+                    //         }
+                    //     }
+                    // }
 
                     // Manually trigger for initially active tab
-                    if (tabContentElement.classList.contains("active")) {
+                    const activeTab = document.querySelector('.tab-pane.active');
+                    if (activeTab && activeTab.id === tabContentElement.id) {
                         if (!document.getElementById(plotlyDivID)) {
-                            try {
-                                await producePlotlyBarFigure(targetId, interactive_arguments, postID);
-                                await waitForPlotlyDiv(plotlyDivID);
-                                adjustPlotlyLayoutForMobile(postID);
-                                //console.log('RIP - PLOT2', postID);
-                            } catch (err) {
-                                console.error(`Initial active tab Plotly error (${postID}):`, err);
-                            }
+                            await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                            await waitForPlotlyDiv(plotlyDivID);
+                            adjustPlotlyLayoutForMobile(postID);
+                            console.log('RIP - PLOT2', postID);
                         }
                     }
 
@@ -1309,7 +1330,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                 }
             }
             figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
-            
+
         break;
     }
 }
