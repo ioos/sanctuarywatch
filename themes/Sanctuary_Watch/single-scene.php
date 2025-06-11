@@ -63,7 +63,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
 
   <div class="modal" id="mobileModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
-  <div class="modal-dialog modal-lg" style="z-index: 9999;margin-top: 60%;max-width: 95%;/* margin-right: 10%; */">
+  <div class="modal-dialog modal-lg" style="z-index: 9999;margin-top: 5%; max-width: 95%;/* margin-right: 10%; */">
     <div class="modal-content" >
 
     <div class="modal-header">
@@ -82,7 +82,7 @@ $overview = get_post_meta($instance, 'instance_overview_scene', true);
 
 <!-- <body class="p-3 m-0 border-0 bd-example m-0 border-0"> -->
 <div class="modal" id="myModal" style="z-index: 9999; background-color: rgba(0,0,0,0.8);">
-  <div class="modal-dialog modal-lg" style="z-index: 9999; margin: 10% auto;   ">
+  <div class="modal-dialog modal-lg" style="z-index: 9999; margin: 5% auto; ">
     <div class="modal-content" aria-labelledby="modal-title">
 
       <!-- Modal Header -->

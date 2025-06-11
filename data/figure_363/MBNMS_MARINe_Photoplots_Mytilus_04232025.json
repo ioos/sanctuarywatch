@@ -1,0 +1,63 @@
+{
+    "metadata": {
+        "sanctuaryName": "MBNMS",
+        "sourceDataName": "MARINe Photoplots",
+        "sourceDataURL": "doi:10.6085/AA/marine_ltm.4.14",
+        "metadataCreatorName": "Marine Lebrec",
+        "metadataCreatorEmail": "mlebrec@mbari.org",
+        "variableUnit": "Percent Cover",
+        "timeFormat": "YYYY-MM-DD",
+        "targetAssemblage": "Mytilus",
+        "indicatorSpecies": "Mytilus californianus"
+    },
+    "data": {
+        "Date Scott Creek": [
+            "2002-11-03",
+            "2003-10-25",
+            "2004-10-29",
+            "2005-10-17",
+            "2006-11-19",
+            "2007-10-24",
+            "2008-10-29",
+            "2009-10-19",
+            "2010-10-07",
+            "2011-10-25",
+            "2012-10-17",
+            "2013-10-19",
+            "2014-10-08",
+            "2015-11-24",
+            "2016-10-16",
+            "2017-10-21",
+            "2018-10-09",
+            "2019-10-29",
+            "2020-10-16",
+            "2021-10-08",
+            "2022-10-25",
+            "2023-11-15"
+        ],
+        "Percent Cover Scott Creek": [
+            97.8,
+            98.4,
+            94.4,
+            92.6,
+            97.2,
+            99.0,
+            98.6,
+            87.2,
+            89.4,
+            77.8,
+            80.8,
+            88.8,
+            97.4,
+            98.0,
+            85.4,
+            88.4,
+            84.8,
+            50.2,
+            69.2,
+            90.6,
+            96.6,
+            98.4
+        ]
+    }
+}

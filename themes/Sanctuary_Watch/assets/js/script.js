@@ -562,8 +562,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
             mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%")
             sceneFluid.setAttribute("style", "margin-top: 25%;margin-left: -1.5%; display: block");
             colmd2.setAttribute("style", "width: 100%")
-            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
-            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 10%;max-width: 88%;");
+            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
+            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
 
         } else  {
           numCols = 3;
@@ -579,8 +579,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
             sceneFluid.setAttribute("style", ogSceneFluid);
             colmd2.setAttribute("style", '');
             colmd2.setAttribute("style", ogColmd2);
-            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
-            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 60%;max-width: 88%;");
+            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
+            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
 
         }
 
@@ -1117,25 +1117,157 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     return accordionItem;
 }
 
-function waitForElementById(id, timeout = 2500) {
-    return new Promise((resolve, reject) => {
-        const startTime = Date.now();
 
-        const checkExist = () => {
-            const el = document.getElementById(id);
-            if (el) {
-                resolve(el);
-            } else if (Date.now() - startTime >= timeout) {
-                reject(new Error(`Element with id ${id} not found after ${timeout}ms`));
-            } else {
-                requestAnimationFrame(checkExist); // avoids setTimeout-based jitter
+async function render_interactive_plots(tabContentElement, info_obj) {
+    let postID = info_obj["postID"];
+    let figureType = info_obj["figureType"];
+    let title = info_obj['figureTitle'];
+    let targetId = `javascript_figure_target_${postID}`;
+    let plotlyDivID = `plotlyFigure${postID}`;
+    let interactive_arguments = info_obj["figure_interactive_arguments"];
+
+    async function waitForElementByIdPolling(id, timeout = 10000, interval = 100) {
+        const start = Date.now();
+        return new Promise((resolve, reject) => {
+            (function poll() {
+                const element = document.getElementById(id);
+                if (element) return resolve(element);
+                if (Date.now() - start >= timeout) return reject(new Error(`Element with id ${id} not found after ${timeout}ms`));
+                setTimeout(poll, interval);
+            })();
+        });
+    }
+
+    // Additional mobile-specific adjustments
+    function adjustPlotlyLayoutForMobile(postID) {
+        if (window.innerWidth <= 768) {  // basic mobile width check
+            const plotlyDivID = `plotlyFigure${postID}`;
+            const plotDiv = document.getElementById(plotlyDivID);
+            if (plotDiv) {
+                plotDiv.style.maxWidth = "100%";
+                plotDiv.style.height = "350px"; // Force a good height for mobile
+                plotDiv.style.width = "100%";
+                Plotly.Plots.resize(plotDiv);
             }
-        };
-        checkExist();
-    });
+        }
+    }
+    
+    switch (figureType) {
+        case "Interactive":
+
+        const figure_arguments = Object.fromEntries(JSON.parse(interactive_arguments));
+        const graphType = figure_arguments["graphType"];
+
+            if (graphType === "Plotly line graph (time series)") {
+
+                async function waitForPlotlyDiv(plotlyDivID, retries = 20, interval = 250) {
+                    for (let i = 0; i < retries; i++) {
+                        const el = document.getElementById(plotlyDivID);
+                        if (el) return el;
+                        await new Promise(resolve => setTimeout(resolve, interval));
+                        await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                    }
+                    throw new Error(`Plotly div ${plotlyDivID} not found after ${retries * interval}ms`);
+                }
+
+                try {
+
+                    await waitForElementByIdPolling(targetId, 1000);
+                    await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                    await waitForPlotlyDiv(plotlyDivID);
+                    adjustPlotlyLayoutForMobile(postID);
+                    //console.log('RIP - PLOT1', postID);
+                    
+
+                    // Manually trigger for initially active tab
+                    if (tabContentElement.classList.contains("active")) {
+                        if (!document.getElementById(plotlyDivID)) {
+                            try {
+                                await producePlotlyLineFigure(targetId, interactive_arguments, postID);
+                                await waitForPlotlyDiv(plotlyDivID);
+                                adjustPlotlyLayoutForMobile(postID);
+                                //console.log('RIP - PLOT2', postID);
+                            } catch (err) {
+                                console.error(`Initial active tab Plotly error (${postID}):`, err);
+                            }
+                        }
+                    }
+
+                    document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
+                        tab.addEventListener('shown.bs.tab', () => {
+                            const plotDiv = document.getElementById(plotlyDivID);
+                            if (plotDiv) {
+                                setTimeout(() => {
+                                    Plotly.Plots.resize(plotDiv);
+                                    //console.log("Bootstrap event triggered resize:", plotlyDivID);
+                                }, 150);
+                            }
+                        });
+                    });            
+
+                } catch (err) {
+                    console.error("Plotly interactive plot error:", err);
+                }
+            }
+
+            if (graphType === "Plotly bar graph") {
+
+                 async function waitForPlotlyDiv(plotlyDivID, retries = 20, interval = 250) {
+                    for (let i = 0; i < retries; i++) {
+                        const el = document.getElementById(plotlyDivID);
+                        if (el) return el;
+                        await new Promise(resolve => setTimeout(resolve, interval));
+                        await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                    }
+                    throw new Error(`Plotly div ${plotlyDivID} not found after ${retries * interval}ms`);
+                }
+
+                try {
+
+                    await waitForElementByIdPolling(targetId, 1000);
+                    await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                    await waitForPlotlyDiv(plotlyDivID);
+                    adjustPlotlyLayoutForMobile(postID);
+                    //console.log('RIP - PLOT1', postID);
+                    
+
+                    // Manually trigger for initially active tab
+                    if (tabContentElement.classList.contains("active")) {
+                        if (!document.getElementById(plotlyDivID)) {
+                            try {
+                                await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                                await waitForPlotlyDiv(plotlyDivID);
+                                adjustPlotlyLayoutForMobile(postID);
+                                //console.log('RIP - PLOT2', postID);
+                            } catch (err) {
+                                console.error(`Initial active tab Plotly error (${postID}):`, err);
+                            }
+                        }
+                    }
+
+                    document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
+                        tab.addEventListener('shown.bs.tab', () => {
+                            const plotDiv = document.getElementById(plotlyDivID);
+                            if (plotDiv) {
+                                setTimeout(() => {
+                                    Plotly.Plots.resize(plotDiv);
+                                    //console.log("Bootstrap event triggered resize:", plotlyDivID);
+                                }, 150);
+                            }
+                        });
+                    });            
+
+                } catch (err) {
+                    console.error("Plotly interactive plot error:", err);
+                }
+            }
+            figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
+            
+        break;
+    }
 }
 
-  
+
 
 /**
  * Renders tab content into the provided container element based on the information passed in the `info_obj` object. 
@@ -1262,7 +1394,10 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
 
     switch (figureType) {
         case "Internal":
-            img = document.createElement('img');
+
+            
+            img = document.createElement(`img`);
+            img.id = `img_${postID}`;
             img.src = info_obj['imageLink'];
             if (info_obj['externalAlt']){
                 img.alt = info_obj['externalAlt'];
@@ -1283,97 +1418,38 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                 // Log any errors that occur during the fetch process
                 .catch((err) => {console.error(err)});
             }
-            figureDiv.appendChild(img);
+            if (img.id  === `img_${postID}`) {
+                figureDiv.appendChild(img);
+            } else
             window.dataLayer = window.dataLayer || [];
+
+            //Google Tags
             figureInternalImageLoaded(title, postID, gaMeasurementID); 
         break;
 
         case "External":
             img = document.createElement('img');
+            img.id = `img_${postID}`;
             img.src = info_obj['imageLink'];
             if (info_obj['externalAlt']){
                 img.alt = info_obj['externalAlt'];
             } else {
                 img.alt = '';
             }
-            figureDiv.appendChild(img);
+            if (img.id  === `img_${postID}`) {
+                figureDiv.appendChild(img);
+            } else {}
+
+            //Google Tags
             figureExternalImageLoaded(title, postID, gaMeasurementID);    
         break;
 
         case "Interactive":
             img = document.createElement('div');
             img.id = `javascript_figure_target_${postID}`;
-            figureDiv.appendChild(img);
+            await figureDiv.appendChild(img);           
 
-            // Use an IIFE to both await element presence and Plotly rendering
-            (async () => {
-                const targetId = `javascript_figure_target_${postID}`;
-                try {
-                    // Ensure the container exists in the DOM before proceeding
-                    await waitForElementById(targetId, 1500);  // You can adjust the timeout if needed
-                    const interactive_arguments = info_obj["figure_interactive_arguments"];
-                    await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                } catch (err) {
-                    console.error("Error rendering Plotly figure:", err);
-                }
-
-                // Manually trigger figure render for the initially active tab
-                if (tabContentElement.classList.contains("show") && tabContentElement.classList.contains("active")) {
-                    const targetId = `javascript_figure_target_${postID}`;
-                    const plotId = `plotlyFigure${postID}`;
-
-                    if (!document.getElementById(plotId)) {
-                        waitForElementById(targetId, 1500)
-                            .then(() => {
-                                const interactive_arguments = info_obj["figure_interactive_arguments"];
-                                return producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                            })
-                            .catch(err => {
-                                console.error(`Initial active tab Plotly error (${postID}):`, err);
-                            });
-                    }
-                }
-
-                // Render the graphs when a modal tab becomes active when was previously in an inactive state,
-                const observer = new MutationObserver(mutations => {
-                    mutations.forEach(async mutation => {
-                    const isActivated = mutation.target.classList.contains("show") &&
-                                        mutation.target.classList.contains("active");
-                
-                    if (isActivated && figureType == 'Interactive') {
-                
-                        const targetId = `javascript_figure_target_${postID}`;
-                        const plotId = `plotlyFigure${postID}`;
-                
-                        // Avoid double rendering
-                        if (document.getElementById(plotId)) {
-                           return;
-                        }
-                
-                        try {
-                            await waitForElementById(targetId, 3000);  // Make sure container exists
-                            const interactive_arguments = info_obj["figure_interactive_arguments"];
-                            await producePlotlyLineFigure(targetId, interactive_arguments, postID);
-                        } catch (err) {
-                            console.error(`Plotly figure not rendered for postID ${postID}:`, err);
-                        }
-                    }
-                    });
-                });
-
-                // Observe all tab-pane elements for class changes
-                document.querySelectorAll(".tab-pane").forEach(tab => {
-                    observer.observe(tab, { attributes: true, attributeFilter: ["class"] });
-                });
-
-                // Add a MutationObserver to watch for tab activation       
-            })();
-
-            figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
-            
         break;
-        
-
 
         case "Code":
             img = '';
@@ -1413,6 +1489,8 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
             });
             // Inject remaining HTML into the codeDiv
             codeDiv.innerHTML = tempDiv.innerHTML;
+
+            //Google Tags
             figureCodeDisplayLoaded(title, postID, gaMeasurementID);  
         break;
 
@@ -1422,7 +1500,8 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     figureDiv.style.justifyContent = "center"; // Center horizontally
     figureDiv.style.alignItems = "center";
     figureDiv.setAttribute("style", "width: 100% !important; height: auto; display: block; margin: 0; margin-top: 2%");
-
+    
+  
     //CREATE PARAGRAPH ELEMENT UNDER "myTabContent" > div class="figure"
     const caption = document.createElement('p');
     caption.classList.add('caption');
@@ -1430,6 +1509,27 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     caption.style.marginTop = '10px';
     figureDiv.appendChild(caption);
     tabContentElement.appendChild(figureDiv);
+
+
+    // Add "Go to Top" link
+    const goToTopLink = document.createElement('a');
+    goToTopLink.href = "#";
+    goToTopLink.textContent = "↑ Back to Top";
+    goToTopLink.style.display = "block";
+    goToTopLink.style.textAlign = "right";
+    goToTopLink.style.marginTop = "5px";
+    goToTopLink.style.color = "#0056b3";
+    goToTopLink.style.textDecoration = "none";
+    goToTopLink.style.fontSize = "0.8em";
+    figureDiv.appendChild(goToTopLink);  // append link to figureDiv
+
+    goToTopLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('modal-title').scrollIntoView({ top:0, behavior: 'smooth' });
+        //const modalContent = document.querySelector('.modal-title');
+        //modalContent.scrollTop = 0; // or:
+        //modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
     // Create the details element
     const details = document.createElement('details');
@@ -1449,7 +1549,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     tabContentContainer.appendChild(tabContentElement);
 
 
-    //Google tag registration for figure science and data links
+    //Google Tags registration for figure science and data links
     if (info_obj['scienceText']!=''){
         setupFigureScienceLinkTracking(postID);
     }
@@ -1478,7 +1578,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                 img.setAttribute("style", "width: 100% !important; height: auto; display: flex; margin: 0; margin-top: 2%");
              break;
     }
-         
+
 }
 
 /**
@@ -1583,8 +1683,9 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
                         };
                 
                         (async () => {
-                            await new Promise(resolve => setTimeout(resolve, 3000)); // Stagger each render
                             await render_tab_info(tabContentElement, tabContentContainer, info_obj, idx);
+                            //await new Promise(resolve => setTimeout(resolve, 1000)); // Stagger each render
+                            await render_interactive_plots(tabContentElement, info_obj);
                         })();
                     }
                 })();
@@ -1709,7 +1810,12 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
             alert('Failed to copy link. Please try again.');
         }
     }
-    fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
+    
+    //fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
+    (async () => {
+        await fetch_tab_info(tabContentElement, tabContentContainer, tab_label, tab_id, modal_id);
+    })();
+
     
     //Google tags triggers
     modalTabLoaded(tab_label, modal_id, tab_id, gaMeasurementID);
@@ -2129,7 +2235,8 @@ function sectioned_list(){
             heading.style.padding = '0 5px';
         }
         if (sections[i] != "None" && scene_data['scene_same_hover_color_sections'] == "yes"){
-            console.log('testing1')
+            // heading.innerHTML = sections[i];
+
             heading.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
             let color =  scene_default_hover_color;
             heading.style.backgroundColor = hexToRgba(color, 0.2);
@@ -2138,7 +2245,6 @@ function sectioned_list(){
             heading.style.padding = '0 5px';
         }
         if (sections[i] == "None"){
-            console.log('testing2')
             heading.innerHTML = 'No Section';
             let color = scene_default_hover_color;
             heading.style.backgroundColor = hexToRgba(color, 0.2);

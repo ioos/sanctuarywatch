@@ -420,7 +420,7 @@ function run_webcr_admin_figures() {
         } catch (error) {
             // Log any errors that occur during the JSON loading process
             console.error('Error loading JSON:', error);
-            targetContainer.innerHTML = "The .csv formatting is incorrect. Please fix the error and reupload your file.";
+            targetContainer.innerHTML = "The file formatting is incorrect. Please fix the error and reupload your file.";
 
         }
     }
@@ -484,6 +484,7 @@ function run_webcr_admin_figures() {
             case "Plotly bar graph":
                 // Clear any previously created graph fields
                 clearPreviousGraphFields();
+                plotlyBarParameterFields(jsonColumns, interactive_arguments);
                 break;
             case "Plotly line graph (time series)":
                 // Clear previous fields and create new fields specific to line graphs
@@ -594,13 +595,6 @@ function run_webcr_admin_figures() {
         newDiv.id = "preview_window";
         newDiv.classList.add("container", "figure_preview");
 
-        //Figure title options
-        const figure_title = document.getElementsByName("figure_title")[0].value;
-        let figureTitle = document.createElement("div");
-        figureTitle.innerHTML = figure_title;
-        figureTitle.classList.add("figureTitle");
-        newDiv.appendChild(figureTitle); //Append the figure title
-
         
         // Add science and data URLs if available
         const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
@@ -644,6 +638,13 @@ function run_webcr_admin_figures() {
 
             newDiv.appendChild(firstRow);
         } 
+
+        //Figure title options
+        const figure_title = document.getElementsByName("figure_title")[0].value;
+        let figureTitle = document.createElement("div");
+        figureTitle.innerHTML = figure_title;
+        figureTitle.classList.add("figureTitle");
+        newDiv.appendChild(figureTitle); //Append the figure title
 
         // Add the figure image or interactive/code preview
         let imageRow = document.createElement("div");
@@ -722,7 +723,16 @@ function run_webcr_admin_figures() {
                 //interactive_arguments is for the theme side, it is blank here because it is a place holder variable
                 let interactive_arguments = document.getElementsByName("figure_interactive_arguments")[0].value;
                 const figureID = document.getElementsByName("post_ID")[0].value;
-                producePlotlyLineFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                const figure_arguments = Object.fromEntries(JSON.parse(interactive_arguments));
+                const graphType = figure_arguments["graphType"];
+
+                if (graphType === "Plotly bar graph") {
+                    producePlotlyBarFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                }
+                if (graphType === "Plotly line graph (time series)") {
+                    producePlotlyLineFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                }
+
             } catch (error) {
                 alert('Please upload a a valid file before generating a graph.')
             }

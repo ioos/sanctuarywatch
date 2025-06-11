@@ -136,6 +136,9 @@ class Webcr_Admin {
 			// Enqueue plotly-timeseries-line.js
 			wp_enqueue_script('plotly-timeseries-line', dirname(plugin_dir_url(__FILE__)) .  '/includes/figures/js/plotly-timeseries-line.js', array(), '1.0.0', array('strategy'  => 'defer'));
 
+			// Enqueue plotly-bar.js
+			wp_enqueue_script('plotly-bar', dirname(plugin_dir_url(__FILE__)) .  '/includes/figures/js/plotly-bar.js', array(), '1.0.0', array('strategy'  => 'defer'));
+
 			wp_enqueue_script( "webcr-admin-figure", plugin_dir_url( __FILE__ ) . 'js/webcr-admin-figure.js', array( ), $this->version, array('strategy'  => 'defer') );
 
 		}

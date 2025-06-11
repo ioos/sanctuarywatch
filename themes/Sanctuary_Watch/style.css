@@ -156,7 +156,7 @@ body{
 
 
 .nav-link:hover{
-  background-color: #002a4c;
+  background-color: #a0a1a1;
 }
 
 #svg img {
@@ -255,6 +255,7 @@ body > h1{
   .nav-tabs .nav-link.active {
     color: black;
   }
+  
 
   /* Flicker animation */
   @keyframes flickerAnimation {
@@ -360,6 +361,7 @@ body > h1{
 
 .modal {
   z-index: 100001 ;
+
 }
 
 /* Toggle Switch CSS */
@@ -427,13 +429,27 @@ input:checked + .slider:before {
 }
 @media (min-width: 900px) {
   .modal-dialog {
-    min-width: 30%;
+    min-width: 60%;
+    /*min-width: 30%;
     /* max-width: 70%; */
     /* transform: scale(1.3);  */
     /* thought it'd be better to scale size instead of just max width; essentially a max width of 65% */
     transform-origin: top center;
     margin: 0 auto; 
   }
+
+  /* #CA_Sheephead-1-pane > div:nth-child(4){
+    width: 100% !important; 
+    height: auto; 
+    display: block; 
+    margin: 0;
+  }
+  #CA_Sheephead-1-pane > div:nth-child(4) > img{
+    width: 100% !important; 
+    height: auto; 
+    display: block;
+    margin: 0;
+  } */
   
   #tagline-container{
     max-width: 100%;
@@ -872,7 +888,12 @@ button:focus,
   }
 
   #title-container > div > div.col-md-10{
+
     padding-right:4%;
+    /* margin-left: -12%;
+    margin-bottom: -5%;
+    width: 97.333333%;*/
+
   }
 
   #scene-row > div.col-md-10{
