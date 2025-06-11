@@ -89,10 +89,7 @@ function trapFocus(modalElement) {
     };
 }
 
-//let child_ids = my_script_vars.child_ids;
 let child_obj = JSON.parse(JSON.stringify(child_ids));
-
-// let svg_url = my_script_vars.svg_url;
 
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
@@ -102,7 +99,7 @@ let testData;
 let thisInstance;
 let thisScene;
 let sceneLoc;
-// let colors;
+
 let sectionObj = {};
 
 let sectColors = {};
@@ -217,9 +214,6 @@ for (const [key, value] of sorted_child_entries) {
     child_ids_helper[value.title] = key;
 }
 
-
-// document.getElementById("svg1").innerHTML =`<img src="${url}" alt="">`;
-
 /**
  * Creates HTML elements that represent collapsible sections with links to additional scene information.
  * This function generates a list of scene information items (like text and URLs) and wraps them in an accordion component.
@@ -242,15 +236,11 @@ for (const [key, value] of sorted_child_entries) {
  */
 
 function make_scene_elements(info, iText, iUrl, scene_data, type, name){
-    let collapseListHTML = '<div>';
+    let collapseListHTML = '<div><ul>';
     for (let i = 1; i < 7; i++){
-                // let info_field = "scene_info" + i;
+
                 let info_field = info + i;
-
-                // let info_text = "scene_info_text" + i;
                 let info_text = iText + i;
-
-                // let info_url = "scene_info_url" + i;
                 let info_url = iUrl + i;
 
                 let scene_info_url;
@@ -281,11 +271,9 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
 
                 listItem.appendChild(anchor);
 
-                // collapseList.appendChild(listItem);
                 collapseListHTML += `<li> <a href="${scene_info_url}" target="_blank">${scene_info_text}</a> </li>`;
-                collapseListHTML += '</div>';
+                collapseListHTML += '</ul></div>';
     }
-    // let acc = createAccordionItem("test-item-1", "test-header-1", "test-collapse-1", "More Info", collapseListHTML);
     let acc = createAccordionItem(`${type}-item-1`, `${type}-header-1`, `${type}-collapse-1`, name, collapseListHTML);
 
     return acc;
@@ -301,7 +289,6 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
 async function make_title() {
     const protocol = window.location.protocol;
     const host = window.location.host;
-    // const fetchURL = `${protocol}//${host}/wp-json/wp/v2/scene?&order=asc`;
 
     try {
         scene_data = title_arr;
@@ -331,38 +318,22 @@ async function make_title() {
             accgroup.appendChild(acc1); 
         }
    
-        // if there is no "more info" and "more photo" accordions, then we'll need to put some extra padding under the scene tagline
-        let blankAccordion = false;
-        if (scene_data["scene_info_entries"] ==0 && scene_data["scene_photo_entries"] == 0){
-            blankAccordion = true;
-        }
-
         let row = document.createElement("div");
         row.classList.add("row");
 
         let col1 = document.createElement("div");
-        // col1.classList.add("col-md-2");
         col1.appendChild(accgroup);
 
         let col2 = document.createElement("div");
-        // col2.classList.add("col-md-10");
 
         if (!is_mobile()) {
             col1.classList.add("col-md-2");
             col2.classList.add("col-md-10");
-            // adding padding below tagline
-            if (blankAccordion == true){
-                row.classList.add("blankAccordion");
-            }
-            // col2.style.marginLeft =  `-12%`;
-            // col1.style.marginLeft = '-12%';
-            // document.querySelector("#title-container").style.marginLeft = '0%';
+
             function adjustTitleContainerMargin() {
                 if (window.innerWidth < 512) {
                     document.querySelector("#title-container").style.marginLeft = '0%';
-                } else {
-                    document.querySelector("#title-container").style.marginLeft = '9%'; // Reset or apply other styles if needed
-                }
+                } 
             }
             adjustTitleContainerMargin();
             window.addEventListener('resize', adjustTitleContainerMargin);
@@ -508,8 +479,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     cont.style.paddingTop = '5px';
                     cont.style.fontWeight = 'bold'; 
                     cont.style.border = '2px solid #000';
-                    // cont.style.color = '#008da8';
-                    // cont.style.background = 'white';
                     cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
                    
                     let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -566,7 +535,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
                     continue;
                 }
             }
-            // outer_cont.style.marginTop = '70%';
             outer_cont.style.marginLeft = '-1.5%';
             outer_cont.appendChild(row_cont);
         }
@@ -577,7 +545,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
 
         let numCols;
         let numRows;
-        // let mobViewImage = document.querySelector("#mobile-view-image");
         let ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%'
         let sceneFluid = document.querySelector("#scene-fluid");
         let ogSceneFluid = 'margin-top: 70%; margin-left: -1.5%;'
@@ -620,7 +587,6 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
         numRows = Math.ceil((iconsArr.length/numCols));
 
         updateLayout(numCols, numRows);
-        // mobViewImage.remove();
         add_modal();
 
     }
@@ -783,10 +749,9 @@ async function loadSVG(url, containerId) {
 
         //Append the SVG to the DOM
         const container = document.getElementById(containerId);
-        // container.appendChild(svgElement);
+
         // checking if user device is touchscreen
         if (is_touchscreen()){
-            // flicker_highlight_icons();
             if (is_mobile() && (deviceDetector.device != 'tablet')){ //a phone and not a tablet; screen will be its own UI here
 
                 //smaller image preview here for mobile
@@ -795,12 +760,10 @@ async function loadSVG(url, containerId) {
                 let titleRowCont = document.querySelector("#title-container > div");
                 let sceneButton = document.createElement("button");
                 sceneButton.innerHTML = "<strong>View Full Scene</strong>";
-                // sceneButton.setAttribute("style", "margin-left: -13%; max-width: 80%; border-radius: 10px");
                 sceneButton.setAttribute("style", "margin-left: -13%; max-width: 80%; border-radius: 10px; background-color: #008da8; color: white;");
 
                 sceneButton.setAttribute("class", "btn ");
                 sceneButton.setAttribute("data-toggle", "modal");
-                // sceneButton.setAttribute("data-target", "#exampleModal");
 
                 titleRowCont.appendChild(sceneButton);
                 let svgElementMobileDisplay = svgElement.cloneNode(true);
@@ -809,10 +772,8 @@ async function loadSVG(url, containerId) {
 
               
                 let modal = document.getElementById("mobileModal");
-                // let modalContent = document.querySelector("#mobileModal > div > div");
                 let modalBody = document.querySelector("#mobileModal > div > div > div.modal-body")
                 modalBody.appendChild(svgElementMobileDisplay);
-                // let span = document.getElementsByClassName("close")[0];
 
                 sceneButton.onclick = function() {
                     modal.style.display = "block";
@@ -829,10 +790,8 @@ async function loadSVG(url, containerId) {
                 // let closeButton = document.querySelector("#mobileModal > div > div > div.modal-footer > button");
                 let closeButton = document.querySelector("#close1");
                 closeButton.onclick = function() {
-                    // if (event.target == modal) {
                       modal.style.display = "none";
                       history.pushState("", document.title, window.location.pathname + window.location.search);
-                    // }
                   }
         
                 mobileBool = true;
@@ -859,10 +818,8 @@ async function loadSVG(url, containerId) {
                 
                 handleIconVisibility(svgElement, visible_modals);
                 container.appendChild(svgElement);
-                // flicker_highlight_icons();
                 toggle_text();
                 full_screen_button('svg1');
-                // if (thisInstance.instance_toc_style == "list"){
                 if (scene_toc_style === "list"){
                     list_toc();
                 } else {
@@ -887,7 +844,6 @@ async function loadSVG(url, containerId) {
  
             toggle_text();
             full_screen_button('svg1');
-            // if (thisInstance.instance_toc_style == "list"){
             if (scene_toc_style === "list"){
                 list_toc();
             } else {
@@ -924,9 +880,7 @@ function highlight_icons() {
 
             elemCollection.forEach(subElem => {
                 if (scene_same_hover_color_sections !== "yes" && sectionObj[key] !== "None") {
-                    //let section_name = sectionObj[key];
                     let section_name = child_obj[key].original_name;
-                    //let section_num = section_name.slice(-1);
                     let section_num = child_obj[key].section_name;
                     let this_scene_section = `scene_section${section_num}`;
                     let this_color = `scene_section_hover_color${section_num}`;
@@ -1131,7 +1085,6 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
 
     // Create Accordion Button
     let accordionButton = document.createElement('button');
-    // accordionButton.classList.add('accordion-button');
     accordionButton.classList.add('accordion-button', 'collapsed'); // Add 'collapsed' class
     accordionButton.setAttribute("type", "button");
     accordionButton.setAttribute("data-bs-toggle", "collapse");
@@ -1403,7 +1356,6 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
         secondLink.style.color = '#03386c';
         let icon2 = `<i class="fa fa-database" role="presentation" aria-label="database icon"></i>`;
         secondLink.appendChild(document.createTextNode(info_obj['dataText']));
-        // secondLink.innerHTML = secondLink.innerHTML + `  ` + icon2;
         secondLink.innerHTML = icon2 + `  ` + secondLink.innerHTML;
         secondLink.style.textDecoration = 'none';
         rightCellDiv.appendChild(secondLink);
@@ -1496,6 +1448,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
             img = document.createElement('div');
             img.id = `javascript_figure_target_${postID}`;
             await figureDiv.appendChild(img);           
+
         break;
 
         case "Code":
@@ -1582,8 +1535,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     const details = document.createElement('details');
     const summary = document.createElement('summary');
     summary.textContent = 'Click for Details';
-    // details.appendChild(summary);
-    // details.appendChild(document.createTextNode(info_obj['longCaption']));
+
     let longCaption = document.createElement("p");
     longCaption.innerHTML = info_obj['longCaption'];
     if (info_obj['longCaption'] != ''){
@@ -1594,7 +1546,6 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     }
     
     // Add the details element to the tab content element
-    // tabContentElement.appendChild(details);
     tabContentContainer.appendChild(tabContentElement);
 
 
@@ -1663,8 +1614,6 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
-            // all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
-            // all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
 
             all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
             all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
@@ -1777,8 +1726,6 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
  */
 function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
 
-    // tab_id = tab_label.replace(/\s+/g, '_').replace(/[()]/g, '_');
-    // title = title.replace(/\s+/g, '_').replace(/[()]/g, '_');
     tab_id = tab_label.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_'); //instead of tab id, it should just be the index (figure_data)
     title = title.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '_');
     tab_id = iter;
@@ -1906,7 +1853,6 @@ function render_modal(key){
     const protocol = window.location.protocol;
     const host = window.location.host;
     const fetchURL  =  protocol + "//" + host  + `/wp-json/wp/v2/modal/${id}`;
-    // let fetchURL = 'http://sanctuary.local/wp-json/wp/v2/modal?&order=asc'; //will have to change eventually, relevant code in admin-modal
     fetch(fetchURL)
         .then(response => response.json())
         .then(data => {
@@ -1927,20 +1873,18 @@ function render_modal(key){
             if (!is_mobile()){
                 tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
             }
-            // tagline_container.innerHTML =  "<em>" + modal_tagline + "<em>";
 
             //generate accordion
             // Select the container where the accordion will be appended
             let accordion_container = document.getElementById('accordion-container');
             //add stuff for formatting here...
-            // accordion_container.innerHTML = '';
+
             // Create the accordion element
             let acc = document.createElement("div");
             acc.classList.add("accordion");
 
             if (is_mobile()){
 
-                // tagline_container.setAttribute("class", "");
                 accordion_container.setAttribute("class", "");
 
             } else{
@@ -1948,16 +1892,14 @@ function render_modal(key){
                 accordion_container.setAttribute("class", "");
                 tagline_container.classList.add("col-9");
                 accordion_container.classList.add("col-3");
-                // tagline_container.setAttribute("style", "min-width: 300px;max-width: 85%; margin-left: -20%");
-                // accordion_container.setAttribute("style", "min-width: 300px; min-width: 10%; max-width: 20%;");
+
             }
-            // let collapseList = document.createElement("ul");
 
             //for more info
             let modal_info_entries = modal_data["modal_info_entries"];
             if (modal_info_entries != 0){
 
-                let collapseListHTML = '<div>';
+                let collapseListHTML = '<div><ul>';
                 for (let i = 1; i < 7; i++){
                     let info_field = "modal_info" + i;
                     let info_text = "modal_info_text" + i;
@@ -1976,9 +1918,8 @@ function render_modal(key){
 
                     listItem.appendChild(anchor);
 
-                    // collapseList.appendChild(listItem);
                     collapseListHTML += `<li> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </li>`;
-                    collapseListHTML += '</div>';
+                    collapseListHTML += '</ul></div>';
                 }
                 let accordionItem1 = createAccordionItem("accordion-item-1", "accordion-header-1", "accordion-collapse-1", "More Info", collapseListHTML);
                 acc.appendChild(accordionItem1);
@@ -1987,7 +1928,7 @@ function render_modal(key){
             //for photos:
             let modal_photo_entries = modal_data["modal_photo_entries"];
             let modal_id = modal_data.id;
-            let collapsePhotoHTML = '<div>';
+            let collapsePhotoHTML = '<div><ul>';
     
             //Show the "Images" accordion item if the number of image entries is greater than 0 in the admin slider for modals.
             if (modal_photo_entries != 0){
@@ -1995,7 +1936,6 @@ function render_modal(key){
                     let info_field = "modal_photo" + i;
                     let info_text = "modal_photo_text" + i;
     
-                    // let info_url = "modal_photo_url" + i;
                     let info_url;
                     let loc = "modal_photo_location" + i;
                     if (modal_data[info_field][loc] === "External"){
@@ -2017,9 +1957,8 @@ function render_modal(key){
     
                     listItem.appendChild(anchor);
     
-                    // collapseList.appendChild(listItem);
                     collapsePhotoHTML += `<li> <a href="${modal_info_url}" target="_blank">${modal_info_text}</a> </li>`;
-                    collapsePhotoHTML += '</div>';
+                    collapsePhotoHTML += '</ul></div>';
                 }
 
                 let accordionItem2 = createAccordionItem("accordion-item-2", "accordion-header-2", "accordion-collapse-2", "Images", collapsePhotoHTML);
@@ -2033,10 +1972,6 @@ function render_modal(key){
             }
 
             accordion_container.appendChild(acc);
-            // allkeyobj[key] = true;
-
-            //for tabs jere:
-            // window.addEventListener('load', function() {
             
             let num_tabs = Number(modal_data["modal_tab_number"]);
 
@@ -2051,13 +1986,13 @@ function render_modal(key){
                 }
 
                 let mdialog = document.querySelector("#myModal > div"); //document.querySelector("#myModal");
-                // trapFocus(myModal);
+
                 trapFocus(mdialog);
               
             }
             // Google Tags
             modalWindowLoaded(title, modal_id, gaMeasurementID);
-        // });
+
             
         })
     .catch(error => console.error('Error fetching data:', error));
@@ -2107,7 +2042,6 @@ function full_screen_button(svgId) {
         g.appendChild(rect);
         g.appendChild(text);
         g.setAttribute("transform", `translate(${viewBox.width - 87}, 10)`);
-        // g.style.borderRadius = '0 0 0 0'
 
         svg.appendChild(g);
         
@@ -2184,7 +2118,6 @@ function toggle_text() {
 
     let initialState = scene_text_toggle === "toggle_on"; //this should be done on the SCENE side of things
     let svgText = document.querySelector("#text");
-    // button.innerHTML = initialState ? "Hide Image Text" : "Show Image Text";
 
     if (initialState) {
         svgText.setAttribute("display", "");
@@ -2216,7 +2149,6 @@ function toggle_text() {
     g.appendChild(rect);
     g.appendChild(text);
     g.setAttribute("transform", `translate(${viewBox.width - 70}, 10)`);
-    //svg.appendChild(g);
 
     const toggleGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
@@ -2284,22 +2216,19 @@ function sectioned_list(){
 
     let toc_container = document.querySelector("#toc-container");
     let toc_group = document.createElement("div");
-    // toc_group.classList.add("accordion");
+
     toc_group.setAttribute("id", "toc-group");
-    // let colorIdx = 0;
 
     for (let i = 0; i < sections.length; i++) {
 
         let sect = document.createElement("div");
-        // sect.classList.add("accordion-item");
 
         let heading = document.createElement("h5");
         heading.setAttribute("id", `heading${i}`);
         if (sections[i] != "None" && scene_data['scene_same_hover_color_sections'] == "no"){
-            // heading.innerHTML = sections[i];
+
             heading.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
             let color =  scene_data[`scene_section${sections[i]}`][`scene_section_hover_color${i+1}`];
-            //let textcolor =  scene_data[`scene_section${sections[i]}`][`scene_section_hover_text_color${i+1}`];
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
@@ -2307,9 +2236,9 @@ function sectioned_list(){
         }
         if (sections[i] != "None" && scene_data['scene_same_hover_color_sections'] == "yes"){
             // heading.innerHTML = sections[i];
+
             heading.innerHTML = scene_data[`scene_section${sections[i]}`][`scene_section_title${i+1}`];
             let color =  scene_default_hover_color;
-            //let textcolor =  scene_default_hover_text_color;
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
@@ -2318,7 +2247,6 @@ function sectioned_list(){
         if (sections[i] == "None"){
             heading.innerHTML = 'No Section';
             let color = scene_default_hover_color;
-            //let textcolor = scene_default_hover_text_color;
             heading.style.backgroundColor = hexToRgba(color, 0.2);
             heading.style.color = 'black';
             heading.style.display = 'inline-block';
@@ -2332,7 +2260,6 @@ function sectioned_list(){
         let tocCollapse = document.createElement("div");
 
         let tocbody = document.createElement("div");
-        // tocbody.classList.add("accordion-body");
 
         let sectlist = document.createElement("ul");
         sectlist.setAttribute("id", sections[i]);
@@ -2380,7 +2307,6 @@ function toc_sections() {
     let toc_group = document.createElement("div");
     toc_group.classList.add("accordion");
     toc_group.setAttribute("id", "toc-group");
-    // let colorIdx = 0;
 
     for (let i = 0; i < sections.length; i++) {
 
@@ -2430,11 +2356,7 @@ function toc_sections() {
             button.style.backgroundColor = hexToRgba(color, 0.2);
 
         } else {
-            // button.innerHTML = 'No Section';
-            // let color = scene_default_hover_color;
-            // button.style.backgroundColor = hexToRgba(color, 0.2);
-            // button.style.color = 'black';
-            // button.style.display = 'inline-block';
+
         }
         
         let arrowSpan = document.createElement("span");
@@ -2455,7 +2377,6 @@ function toc_sections() {
         tocCollapse.setAttribute("id", `toccollapse${i}`);
         tocCollapse.classList.add("accordion-collapse", "collapse");
         tocCollapse.setAttribute("aria-labelledby", `heading${i}`);
-        // tocCollapse.setAttribute("data-bs-parent", "#toc-group");
 
         let tocbody = document.createElement("div");
         tocbody.classList.add("accordion-body");
@@ -2467,11 +2388,6 @@ function toc_sections() {
 
         sect.appendChild(tocCollapse);
 
-
-        // if (title_test != "") {
-        //     toc_group.appendChild(sect);;
-        // } else {
-        // }
         toc_group.appendChild(sect); //original options creakes blank boxes
     }
     toc_container.appendChild(toc_group);
@@ -2501,8 +2417,6 @@ function toc_sections() {
 
 function table_of_contents(){
 
-    // if (thisInstance.instance_toc_style == "accordion"){ //this should be done on the SCENE side of things
-
     if (scene_toc_style == "accordion"){ //this should be done on the SCENE side of things
         toc_sections();
     } else {
@@ -2514,7 +2428,7 @@ function table_of_contents(){
         let key = obj.original_name;
 
         if (sectionObj[key]=="None"){
-            // continue;
+
         }
         let elem = document.getElementById(child_obj[key]['section_name']);
         let item = document.createElement("li");
@@ -2539,26 +2453,24 @@ function table_of_contents(){
             let closeButton = document.getElementById("close");
             closeButton.addEventListener('click', function() {
                     
-                // modal.style.display = "none";
                 let accordion_container = document.getElementById('accordion-container');
                 accordion_container.innerHTML = '';
                 if (!is_mobile()){
                     let tagline_container = document.getElementById('tagline-container');
                     tagline_container.innerHTML = '';
                 }
-                // let tagline_container = document.getElementById('tagline-container');
+
                 document.getElementById("myTabContent").innerHTML = '';
-                // tagline_container.innerHTML = '';
+
                 history.pushState("", document.title, window.location.pathname + window.location.search);
         });
         window.onclick = function(event) {
             if (event.target === modal) { // Check if the click is outside the modal content
-                // modal.style.display = "none";
+
                 document.getElementById('accordion-container').innerHTML = '';
                 if (!is_mobile()){
                     document.getElementById('tagline-container').innerHTML = '';
                 }
-                // document.getElementById('tagline-container').innerHTML = '';
                 document.getElementById("myTabContent").innerHTML = '';
                 history.pushState("", document.title, window.location.pathname + window.location.search);
             }
@@ -2574,7 +2486,6 @@ function table_of_contents(){
 
         //CHANGE HERE FOR TABLET STUFF
         link.style.textDecoration = 'none';
-        // link.style.color = "#343a40";
         
         item.addEventListener('mouseover', ((key) => {
             return function() {
@@ -2583,7 +2494,6 @@ function table_of_contents(){
                 let subElements = svg_elem.querySelectorAll("*");
                 subElements.forEach(subElement => {
 
-                    //if (scene_same_hover_color_sections != "yes" && sectionObj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
                     if (scene_same_hover_color_sections != "yes" && child_obj[key]!="None" ){ //this should be done on the SCENE side of things, will havet o bring this back
 
                         let section_num = child_obj[key]['section_name'];
@@ -2672,8 +2582,6 @@ function list_toc(){
         if (modal) {
             link.setAttribute("href", `#`); //just added
             link.setAttribute("id",title_formatted);
-          
-            // link.setAttribute("role", "button");
 
             link.classList.add("modal-link");
             link.innerHTML = title;
@@ -2689,14 +2597,12 @@ function list_toc(){
             let closeButton = document.getElementById("close");
             closeButton.addEventListener('click', function() {
                 let modal = document.getElementById("myModal");
-                // link.setAttribute("href", ''); //just added
 
                 modal.style.display = "none";
                 history.pushState("", document.title, window.location.pathname + window.location.search);
             });
             window.onclick = function(event) {
                 if (event.target === modal) { 
-                    // link.setAttribute("href", ''); //just added
                     modal.style.display = "none";
                     history.pushState("", document.title, window.location.pathname + window.location.search);
 
@@ -2735,7 +2641,6 @@ function list_toc(){
         toc_group.appendChild(item);
     }
     toc_container.appendChild(toc_group);
-    document.querySelector("#toc-container > ul").style.paddingLeft = '11rem';
 }
 
 
@@ -2766,7 +2671,6 @@ function add_modal(){
     for (let key in child_obj){
         let elem = document.querySelector('g[id="' + key + '"]');
         if (child_obj[key]['modal']){
-            // let elem = document.querySelector('g[id="' + key + '"]');
             let modal = document.getElementById("myModal");
             let closeButton = document.getElementById("close");
             
@@ -2792,10 +2696,6 @@ function add_modal(){
                     let accordion_container = document.getElementById('accordion-container');
                     accordion_container.innerHTML = '';
 
-                    // let tagline_container = document.getElementById('tagline-container');
-                    // tagline_container.innerHTML = '';
-
-
                     let myTab = document.getElementById('myTab');
                     myTab.innerHTML = '';
 
@@ -2815,32 +2715,21 @@ function add_modal(){
             };
     
         } else {
-            elem.addEventListener('click', function(event) {
-                // gtag('event', 'modal_icon_click', {
-                //     'event_category': 'Button Interaction',
-                //     'event_label': 'Track Me Button',
-                //     'value': 1
-                //   });
-
+            elem.addEventListener('click', function(event) {    
                 let link =  child_obj[key]['external_url'];
                 window.location.href = link;
-
-        });
-        if (mobileBool){
-            let itemContainer = document.querySelector(`#${key}-container`);
-            itemContainer.addEventListener('click', function() {
-                let link =  child_obj[key]['external_url'];
-                window.location.href = link;
-
-        });
-        // let modalDialog = document.querySelector("#myModal > div");
-        // modalDialog.setAttribute("style", "z-index: 9999;/* margin: 10% auto; */margin-top: 65%;max-width: 90%;margin-left: 17px;");
-        }
+            });
+            if (mobileBool){
+                let itemContainer = document.querySelector(`#${key}-container`);
+                itemContainer.addEventListener('click', function() {
+                    let link =  child_obj[key]['external_url'];
+                    window.location.href = link;
+                });
+            }
         }
     }
 }
 
-// loadSVG(url, "svg1");
 /**
  * Waits for a DOM element matching the provided selector to become available.
  * 
@@ -2902,7 +2791,7 @@ async function handleHashNavigation() {
         } else{
             modName = modalName;
         }
-        // window.location.href = window.location.href;
+
         let modalButton = await waitForElement(`#${modName}`);
 
         modalButton.click();
