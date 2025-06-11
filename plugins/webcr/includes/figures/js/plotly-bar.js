@@ -30,78 +30,6 @@ function loadPlotlyScript() {
 }
 
 
-function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments) {
-    if (!plotDiv || !layout || !layout.yaxis || !layout.yaxis.range) {
-        console.warn("[Overlay] Missing layout or y-axis range");
-        return;
-    }
-
-    layout.xaxis = layout.xaxis || {};
-    layout.xaxis.type = 'date';
-
-    layout.yaxis = layout.yaxis || {};
-    layout.yaxis.type = 'linear';
-
-    const [yMin, yMax] = layout.yaxis.range || [0, 1];
-    const overlays = [];
-
-    for (let i = 1; i <= Number(figureArguments['NumberOfBars']); i++) {
-        const base = 'Bar' + i;
-        const showLegend = figureArguments[base + 'Legend'] === 'on';
-
-        // === Evaluation Period ===
-        if (figureArguments[base + 'EvaluationPeriod'] === 'on') {
-            let start = figureArguments[base + 'EvaluationPeriodStartDate'];
-            let end = figureArguments[base + 'EvaluationPeriodEndDate'];
-            console.log(`[Overlay] Processing evaluation period for ${base}:`, start, end);       
-
-            const fillColor = (figureArguments[base + 'EvaluationPeriodFillColor'] || '#999') + '15';
-
-            overlays.push({
-                x: [start, end, end, start],
-                y: [yMax, yMax, yMin, yMin],
-                fill: 'toself',
-                fillcolor: fillColor,
-                type: 'scatter',
-                mode: 'lines',
-                line: { color: fillColor, width: 0 },
-                hoverinfo: 'skip',
-                name: `${figureArguments[base + 'Title']} Evaluation Period`,
-                showlegend: showLegend,
-                yaxis: 'y',
-                xaxis: 'x'
-            });
-        }
-
-        // === Event Markers ===
-        for (let m = 1; m <= 2; m++) {
-            if (figureArguments[base + `EventMarker${m}`] === 'on') {
-                let date = figureArguments[base + `EventMarker${m}EventDate`];
-
-                const label = figureArguments[base + `EventMarker${m}EventText`] || `Event ${m}`;
-                const color = figureArguments[base + `EventMarker${m}EventColor`] || '#000';
-
-                overlays.push({
-                    x: [date, date],
-                    y: [yMin, yMax],
-                    type: 'scatter',
-                    mode: 'lines',
-                    line: { color, width: 2 },
-                    name: label,
-                    showlegend: showLegend,
-                    yaxis: 'y',
-                    xaxis: 'x',
-                    hoverinfo: label,
-                });
-
-                console.log(`[Overlay] Added event marker ${m} for ${base}:`, date);
-            }
-        }
-    }
-    Plotly.react(plotDiv, [...mainDataTraces, ...overlays], layout);
-}
-
-
 function waitForElementById(id, timeout = 1000) {
     return new Promise((resolve, reject) => {
         const intervalTime = 50;
@@ -141,11 +69,10 @@ function computePercentile(arr, percentile) {
 }
 
 async function producePlotlyBarFigure(targetFigureElement, interactive_arguments, postID){
-    // try {
+    try {
         await loadPlotlyScript(); // ensures Plotly is ready
 
         const rawField = interactive_arguments;
-        //console.log(rawField);
         const figureArguments = Object.fromEntries(JSON.parse(rawField));
         const rootURL = window.location.origin;
 
@@ -190,8 +117,7 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
 
         if (figureID == targetElementpostID) {
 
-            console.log(`Figure ID ${figureID} matches target element post ID ${targetElementpostID}`) ;            
-            // const targetElement = document.getElementById(targetFigureElement);
+            //console.log(`Figure ID ${figureID} matches target element post ID ${targetElementpostID}`) ;            
             const targetElement = await waitForElementById(targetFigureElement);
             targetElement.appendChild(newDiv);
             
@@ -206,81 +132,15 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
             let allBarsPlotly = [];
             let shapesForLayout = [];
 
-            const isStacked = figureArguments['Stacked'] === 'on'; 
-
             // Plotly figure production logic
             for (let i = 1; i <= figureArguments['NumberOfBars']; i++) {
                 const targetBarColumn = 'Bar' + i;
                 const columnXHeader = figureArguments['XAxis'];
                 const columnYHeader = figureArguments[targetBarColumn];
 
-                // Case when there is no X-axis (e.g., single sum bar without x axis column (e.g., years, categories))
-                if (columnXHeader === 'None') {
-                    plotlyX = [figureArguments[targetBarColumn + 'Title'] || `Bar ${i}`];
-                    const sumY = dataToBePlotted[columnYHeader]
-                        .map(val => parseFloat(val))
-                        .filter(val => !isNaN(val))
-                        .reduce((a, b) => a + b, 0);
-                    plotlyY = [sumY];  // wrap sum in array for Plotly compatibility
-                }
-                // Case displaying by x axis column (e.g., years, categories)
-                else {
-                    const rawYears = dataToBePlotted[columnXHeader];
-                    const rawValues = dataToBePlotted[columnYHeader].map(val => parseFloat(val));
-
-                    // Step 1: Display by category
-                    const grouped = {};
-                    rawYears.forEach((year, index) => {
-                        if (!grouped[year]) grouped[year] = 0;
-                        grouped[year] += rawValues[index] || 0;
-                    });
-
-                    // Step 2: Extract X and Y arrays
-                    plotlyX = Object.keys(grouped);  // Array of grouped years
-                    plotlyY = Object.values(grouped);  // Array of summed values for each year
-                }
-
-                // If stacking is enabled, we want to add a trace for each year
-                if (isStacked) {
-                    const yearValues = plotlyX.map(year => {
-                        return dataToBePlotted[columnYHeader].filter((value, index) => {
-                            return dataToBePlotted[columnXHeader][index] === year;
-                        });
-                    });
-
-                    // Generate each stacked trace
-                    yearValues.forEach((values, idx) => {
-                        const year = plotlyX[idx];
-                        const trace = {
-                            x: [year],  // Single x-value per trace (grouped by year)
-                            y: values,
-                            type: 'bar',
-                            name: `${year}`,
-                            showlegend: true,
-                            marker: {
-                                color: figureArguments[targetBarColumn + 'Color'] || 'blue'
-                            },
-                            hovertemplate: `${figureArguments['XAxisTitle']}: %{x}<br>${figureArguments['YAxisTitle']}: %{y}`
-                        };
-                        allBarsPlotly.push(trace);
-                    });
-                } else {
-                    // Non-stacked bars will continue as before
-                    const singleBarPlotly = {
-                        x: plotlyX,
-                        y: plotlyY,
-                        type: 'bar',
-                        name: `${figureArguments[targetBarColumn + 'Title']}`,
-                        showlegend: figureArguments[targetBarColumn + 'Legend'] === 'on',
-                        marker: {
-                            color: figureArguments[targetBarColumn + 'Color']
-                        },
-                        hovertemplate: `${figureArguments['XAxisTitle']}: %{x}<br>${figureArguments['YAxisTitle']}: %{y}`
-                    };
-                    allBarsPlotly.push(singleBarPlotly);
-                }
-
-
+                const isStacked = figureArguments[targetBarColumn + 'Stacked'];
+                const StackedSeparatorColor = figureArguments[targetBarColumn + 'StackedSeparatorLineColor'];
+                console.log(StackedSeparatorColor);
 
                 //Shows the legend if it is set to 'on' in the figure arguments
                 const showLegend = figureArguments[targetBarColumn + 'Legend'];
@@ -288,6 +148,96 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                     var showLegendBool = true;     
                 } else {
                     var showLegendBool = false;     
+                }
+
+                function lightenColor(hex, factor = 0.2) {
+                    const rgb = parseInt(hex.slice(1), 16);
+                    const r = Math.min(255, Math.floor(((rgb >> 16) & 0xff) + 255 * factor));
+                    const g = Math.min(255, Math.floor(((rgb >> 8) & 0xff) + 255 * factor));
+                    const b = Math.min(255, Math.floor((rgb & 0xff) + 255 * factor));
+                    return `rgb(${r},${g},${b})`;
+                }
+
+
+                if (isStacked === 'on' && columnXHeader !== 'None') {
+                    const categories = dataToBePlotted[columnXHeader];
+                    const values = dataToBePlotted[columnYHeader].map(val => parseFloat(val));
+
+                    const groupMap = {};
+                    categories.forEach((cat, idx) => {
+                        if (!groupMap[cat]) groupMap[cat] = 0;
+                        groupMap[cat] += !isNaN(values[idx]) ? values[idx] : 0;
+                    });
+
+                    const xValue = figureArguments[targetBarColumn + 'Title'] || `Bar ${i}`;
+                    Object.entries(groupMap).forEach(([stackCategory, val], j) => {
+                        allBarsPlotly.push({
+                            x: [xValue],
+                            y: [val],
+                            type: 'bar',
+                            name: `${stackCategory} ${figureArguments[targetBarColumn + 'Title']}`,
+                            showlegend: showLegendBool,
+                            marker: {
+                                color: lightenColor(figureArguments[targetBarColumn + 'Color'], j * 0.05),
+                                line: {
+                                    width: 1,
+                                    color: StackedSeparatorColor // adds crisp separation between segments
+                                }
+                            },
+                            hovertemplate: `${columnXHeader}: ${stackCategory}`
+                        });
+                    });
+                }
+
+                // No X column selected: One bar per category, sum total
+                else if (columnXHeader === 'None') {
+                    plotlyX = [figureArguments[targetBarColumn + 'Title'] || `Bar ${i}`];
+                    const sumY = dataToBePlotted[columnYHeader]
+                        .map(val => parseFloat(val))
+                        .filter(val => !isNaN(val))
+                        .reduce((a, b) => a + b, 0);
+                    plotlyY = [sumY];
+
+                    const singleBarPlotly = {
+                        x: plotlyX,
+                        y: plotlyY,
+                        type: 'bar',
+                        name: `${figureArguments[targetBarColumn + 'Title']}`,
+                        showlegend: showLegendBool,
+                        marker: {
+                            color: figureArguments[targetBarColumn + 'Color']
+                        },
+                        hovertemplate: `${figureArguments['YAxisTitle']}: %{y}`
+                    };
+                    allBarsPlotly.push(singleBarPlotly);
+                }
+
+                // X axis is selected and stacking is not requested
+                else {
+                    const categories = dataToBePlotted[columnXHeader];
+                    const values = dataToBePlotted[columnYHeader].map(val => parseFloat(val));
+
+                    const groupMap = {};
+                    categories.forEach((cat, idx) => {
+                        if (!groupMap[cat]) groupMap[cat] = 0;
+                        groupMap[cat] += !isNaN(values[idx]) ? values[idx] : 0;
+                    });
+
+                    plotlyX = Object.keys(groupMap);
+                    plotlyY = Object.values(groupMap);
+
+                    const singleBarPlotly = {
+                        x: plotlyX,
+                        y: plotlyY,
+                        type: 'bar',
+                        name: `${figureArguments[targetBarColumn + 'Title']}`,
+                        showlegend: showLegendBool,
+                        marker: {
+                            color: figureArguments[targetBarColumn + 'Color']
+                        },
+                        hovertemplate: `${figureArguments['XAxisTitle']}: %{x}<br>${figureArguments['YAxisTitle']}: %{y}`
+                    };
+                    allBarsPlotly.push(singleBarPlotly);
                 }
             
 
@@ -323,26 +273,6 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                 if (showError != 'on') {
                     var errorBarY = {};
                 }
-
-                // // Main line with or w/o error bars
-                // const singleBarPlotly = {
-                //     x: plotlyX,
-                //     y: plotlyY,
-                //     mode: 'bars',
-                //     type: 'bar',
-                //     barmode: isStacked ? 'stack' : 'group',  // Set to stack bars if 'on'
-                //     name: `${figureArguments[targetBarColumn + 'Title']}`,
-                //     showlegend: showLegendBool,
-                //     marker: {
-                //         color: figureArguments[targetBarColumn + 'Color']
-                //     },
-                //     error_y: errorBarY,
-                //     hovertemplate:
-                //         figureArguments['XAxisTitle'] + ': %{x}<br>' +
-                //         figureArguments['YAxisTitle'] + ': %{y}'
-                // };
-                // allBarsPlotly.push(singleBarPlotly);
-                
 
                 //Percentiles and Mean lines
                 const showPercentiles = figureArguments[targetBarColumn + 'Percentiles'];
@@ -423,7 +353,7 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
 
             //ADMIN SIDE GRAPH DISPLAY SETTINGS
             var layout = {
-                barmode: isStacked ? 'stack' : 'group',  // Set to stack bars if 'on'
+                barmode: 'stack',  // Set to stack bars if 'on'
                 xaxis: {
                     title: {
                         text: figureArguments['XAxisTitle'] || ''
@@ -481,17 +411,11 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                             
             // Create the plot with all lines
             Plotly.newPlot(plotlyDivID, allBarsPlotly, layout, config);
-            Plotly.newPlot(plotDiv, allBarsPlotly, layout, config).then(() => {
-                //After the plot is created, inject overlays if any, this is here because you can only get overlays that span the entire yaxis after the graph has been rendered.
-                //You need the specific values for the entire yaxis
-                //injectOverlays(plotDiv, layout, allBarsPlotly, figureArguments);
-                null;
-            });
 
         } else {}
-    // } catch (error) {
-    //     console.error('Error loading scripts:', error);
-    // }
+    } catch (error) {
+        console.error('Error loading scripts:', error);
+    }
 }
 
 function plotlyBarParameterFields(jsonColumns, interactive_arguments){
@@ -795,8 +719,8 @@ function displayBarFields (numBars, jsonColumns, interactive_arguments) {
               
 
             //Add checkboxes for error bars, standard deviation, mean, and percentiles
-            const features = ["Legend", "Stacked", "Mean", "StdDev", "ErrorBars", "Percentiles", "EvaluationPeriod", "EventMarker1", "EventMarker2"];
-            const featureNames = ["Graph Legend Visible?", "Stack by X Axis Column?", "Mean Bar", "Standard Deviation Fill", "Error Bars", "90th & 10th Percentile Bars (Auto Calculated)", "Evaluation Period", "Event Marker 1", "Event Marker 2"];
+            const features = ["Legend", "Stacked", "Mean", "ErrorBars", "Percentiles"];
+            const featureNames = ["Graph Legend Visible?", "Stack by X Axis Column?", "Mean Bar Visible?", "Error Bars Visible?", "90th & 10th Percentile Bars (Auto Calculated) Visible?"];
             for (let i = 0; i < features.length; i++) {
                 const feature = features[i];
                 const featureName = featureNames[i];
@@ -831,7 +755,7 @@ function displayBarFields (numBars, jsonColumns, interactive_arguments) {
                 
 
                 // === Add dropdowns for feature-specific data ===
-                if (["Mean", "ErrorBars", "StdDev", "EvaluationPeriod", "EventMarker1", "EventMarker2"].includes(feature)) {
+                if (["Mean", "ErrorBars", "Stacked"].includes(feature)) {
                     const dropdownContainer = document.createElement("div");
                     dropdownContainer.classList.add("row", "fieldPadding");
                     if (fieldLabelNumber % 2 != 0) {
@@ -850,7 +774,7 @@ function displayBarFields (numBars, jsonColumns, interactive_arguments) {
                         select.id = selectId;
                         select.name = "plotFields";
 
-                        if (feature === "Mean" || feature === "ErrorBars" || feature === "StdDev") {
+                        if (feature === "Mean" || feature === "ErrorBars") {
                             const autoOpt = document.createElement("option");
 
                             if (feature != "ErrorBars") {
@@ -940,34 +864,16 @@ function displayBarFields (numBars, jsonColumns, interactive_arguments) {
                         controls.push(label, select);
                     }
 
+                    if (feature === "Stacked") {
+                        const { label: labelColor, input: ColorValue } = createColorfield(`Separator Line Color`, fieldLabel[0] + feature + "SeparatorLineColor");
+                        controls.push(labelColor, document.createElement('br'), ColorValue);
+                    }
+
                     if (feature === "ErrorBars" || feature === "StdDev") {
                         const { label: labelValues, select: selectValues } = createDropdown(`${featureName} Input Column Values`, fieldLabel[0] + feature + "InputValues");
                         const { label: labelColor, input: ColorValue } = createColorfield(`Color`, fieldLabel[0] + feature + "Color");
                         controls.push(labelValues, document.createElement('br'), selectValues, document.createElement('br'), labelColor, document.createElement('br'), ColorValue);
                     }
-
-                    if (feature === "EvaluationPeriod") {
-                        const { label: labelStartDate, input: StartDateValues } = createDatefield(`Start Date`, fieldLabel[0] + feature + "StartDate");
-                        const { label: labelEndDate, input: EndDateValues } = createDatefield('End Date', fieldLabel[0] + feature + "EndDate");
-                        const { label: labelColor, input: ColorValue } = createColorfield(`Fill Color`, fieldLabel[0] + feature + "FillColor");
-                        controls.push(labelStartDate, document.createElement('br'), StartDateValues, document.createElement('br'), labelEndDate, document.createElement('br'), EndDateValues, document.createElement('br'), labelColor, document.createElement('br'), ColorValue);
-                    }
-
-                    if (feature === "EventMarker1") {
-                        const { label: labelEventDate1, input: EventDateValue1 } = createDatefield(`Event Date`, fieldLabel[0] + feature + "EventDate");
-                        const { label: labelEventText1, input: EventTextValue1 } = createTextfield(`Display Text`, fieldLabel[0] + feature + "EventText");
-                        const { label: labelEventColor1, input: EventColorValue1 } = createColorfield(`Bar Color`, fieldLabel[0] + feature + "EventColor");
-                        controls.push(labelEventDate1, document.createElement('br'), EventDateValue1, document.createElement('br'), labelEventText1, document.createElement('br'), EventTextValue1, document.createElement('br'), labelEventColor1, document.createElement('br'), EventColorValue1);
-                    }
-
-                    if (feature === "EventMarker2") {
-                        const { label: labelEventDate2, input: EventDateValue2 } = createDatefield(`Event Date`, fieldLabel[0] + feature + "EventDate");
-                        const { label: labelEventText2, input: EventTextValue2 } = createTextfield(`Display Text`, fieldLabel[0] + feature + "EventText");
-                        const { label: labelEventColor2, input: EventColorValue2 } = createColorfield(`Bar Color`, fieldLabel[0] + feature + "EventColor");
-                        controls.push(labelEventDate2, document.createElement('br'),EventDateValue2, document.createElement('br'), labelEventText2, document.createElement('br'), EventTextValue2,  document.createElement('br'), labelEventColor2, document.createElement('br'), EventColorValue2);
-                    }
-
-
 
                     // Initially hide the dropdown container
                     dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
