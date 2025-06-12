@@ -71,17 +71,7 @@ $google_tags_container_id = isset($settings['google_tags_container_id']) ? esc_j
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<div id="entire_thing" style="
- 
-  max-width: 1200px !important;
-    margin: 0 auto;
-    background: #f2f2f2;
-    padding-bottom: 9%;
-    margin-top: -20px;
-    padding-top: 1%;
-
-    
-"> 
+<div id="entire_thing"> 
 <div class="container-fluid">
 <!-- <i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon"></i> -->
 <div class="image-center">

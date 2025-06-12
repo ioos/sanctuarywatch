@@ -60,6 +60,13 @@ class Webcr_Instance_Type {
             'theme_settings',
             'webcr_settings_section'
         );
+        add_settings_field(
+            'sitewide_footer',
+            'Site-wide footer',
+            [$this, 'sitewide_footer_field_callback'],
+            'theme_settings',
+            'webcr_settings_section'
+        );
 
         // Add a new section
         add_settings_section(
@@ -84,6 +91,29 @@ class Webcr_Instance_Type {
             'theme_settings',
             'webcr_google_settings_section'
         );
+    }
+
+    /**
+     * Callback function to render the "Site footer" rich text editor field.
+     *
+     * @since 1.0.0
+     * @return void
+     */
+    function sitewide_footer_field_callback() {
+        $options = get_option('webcr_settings');
+        $value = isset($options['site_footer']) ? $options['site_footer'] : '';
+        $editor_id = 'webcr_site_footer_editor'; // Unique ID for the editor
+        $settings = array(
+            'textarea_name' => 'webcr_settings[site_footer]', // Important for saving
+            'media_buttons' => true, // Set to false if you don't want media buttons
+            'textarea_rows' => 10, // Number of rows
+            'tinymce'       => true, // Use TinyMCE
+            'quicktags'     => true  // Enable quicktags
+        );
+        wp_editor(wp_kses_post($value), $editor_id, $settings);
+        ?>
+        <p class="description">The content in this field will appear as the first column in the footer across all pages. If you don't want a site-wide footer, then leave this field blank.</p>
+        <?php
     }
 
     // Section callback
