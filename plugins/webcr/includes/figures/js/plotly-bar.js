@@ -51,9 +51,11 @@ function waitForElementById(id, timeout = 1000) {
 }
 
 function computeStandardDeviation(arr) {
+    if (!Array.isArray(arr) || arr.length === 0) return 0;
+
     const n = arr.length;
     const mean = arr.reduce((a, b) => a + b, 0) / n;
-    const variance = arr.reduce((acc, val) => acc + (val - mean) ** 2, 0) / n;
+    const variance = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
     return Math.sqrt(variance);
 }
 
@@ -132,7 +134,8 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
             let allBarsPlotly = [];
             let shapesForLayout = [];
 
-            // Plotly figure production logic
+            const barStackedByX = figureArguments['StackedBarColumns'] === 'on';
+
             for (let i = 1; i <= figureArguments['NumberOfBars']; i++) {
                 const targetBarColumn = 'Bar' + i;
                 const columnXHeader = figureArguments['XAxis'];
@@ -140,15 +143,8 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
 
                 const isStacked = figureArguments[targetBarColumn + 'Stacked'];
                 const StackedSeparatorColor = figureArguments[targetBarColumn + 'StackedSeparatorLineColor'];
-                console.log(StackedSeparatorColor);
-
-                //Shows the legend if it is set to 'on' in the figure arguments
                 const showLegend = figureArguments[targetBarColumn + 'Legend'];
-                if (showLegend === 'on') {
-                    var showLegendBool = true;     
-                } else {
-                    var showLegendBool = false;     
-                }
+                const showLegendBool = showLegend === 'on';
 
                 function lightenColor(hex, factor = 0.2) {
                     const rgb = parseInt(hex.slice(1), 16);
@@ -158,11 +154,10 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                     return `rgb(${r},${g},${b})`;
                 }
 
-
+                // === CASE: Individual Bar Column Stacking ===
                 if (isStacked === 'on' && columnXHeader !== 'None') {
                     const categories = dataToBePlotted[columnXHeader];
                     const values = dataToBePlotted[columnYHeader].map(val => parseFloat(val));
-
                     const groupMap = {};
                     categories.forEach((cat, idx) => {
                         if (!groupMap[cat]) groupMap[cat] = 0;
@@ -175,13 +170,13 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                             x: [xValue],
                             y: [val],
                             type: 'bar',
-                            name: `${stackCategory} ${figureArguments[targetBarColumn + 'Title']}`,
+                            name: `${stackCategory} ${xValue}`,
                             showlegend: showLegendBool,
                             marker: {
                                 color: lightenColor(figureArguments[targetBarColumn + 'Color'], j * 0.05),
                                 line: {
                                     width: 1,
-                                    color: StackedSeparatorColor // adds crisp separation between segments
+                                    color: StackedSeparatorColor
                                 }
                             },
                             hovertemplate: `${columnXHeader}: ${stackCategory}`
@@ -189,16 +184,13 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                     });
                 }
 
-                // No X column selected: One bar per category, sum total
+                // === CASE: Single Bar (no X axis) ===
                 else if (columnXHeader === 'None') {
                     plotlyX = [figureArguments[targetBarColumn + 'Title'] || `Bar ${i}`];
-                    const sumY = dataToBePlotted[columnYHeader]
-                        .map(val => parseFloat(val))
-                        .filter(val => !isNaN(val))
-                        .reduce((a, b) => a + b, 0);
+                    const sumY = dataToBePlotted[columnYHeader].map(val => parseFloat(val)).filter(val => !isNaN(val)).reduce((a, b) => a + b, 0);
                     plotlyY = [sumY];
 
-                    const singleBarPlotly = {
+                    allBarsPlotly.push({
                         x: plotlyX,
                         y: plotlyY,
                         type: 'bar',
@@ -208,15 +200,13 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                             color: figureArguments[targetBarColumn + 'Color']
                         },
                         hovertemplate: `${figureArguments['YAxisTitle']}: %{y}`
-                    };
-                    allBarsPlotly.push(singleBarPlotly);
+                    });
                 }
 
-                // X axis is selected and stacking is not requested
-                else {
+                // === CASE: Stacked across columns by X axis ===
+                else if (barStackedByX && columnXHeader !== 'None') {
                     const categories = dataToBePlotted[columnXHeader];
                     const values = dataToBePlotted[columnYHeader].map(val => parseFloat(val));
-
                     const groupMap = {};
                     categories.forEach((cat, idx) => {
                         if (!groupMap[cat]) groupMap[cat] = 0;
@@ -226,7 +216,7 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                     plotlyX = Object.keys(groupMap);
                     plotlyY = Object.values(groupMap);
 
-                    const singleBarPlotly = {
+                    allBarsPlotly.push({
                         x: plotlyX,
                         y: plotlyY,
                         type: 'bar',
@@ -236,44 +226,35 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                             color: figureArguments[targetBarColumn + 'Color']
                         },
                         hovertemplate: `${figureArguments['XAxisTitle']}: %{x}<br>${figureArguments['YAxisTitle']}: %{y}`
-                    };
-                    allBarsPlotly.push(singleBarPlotly);
-                }
-            
-
-                //Show Standard error bars
-                const showError = figureArguments[targetBarColumn + 'ErrorBars'];
-                const showError_InputValuesOpt = figureArguments[targetBarColumn + 'ErrorBarsInputValues'];
-                if (showError === 'on') {
-                    //Error bars using Standard Deviation based on dataset Y-axis values (Auto Calculated)
-                    if (showError_InputValuesOpt === 'auto') {
-                        var errorBarY = {
-                            type: 'data',
-                            array: new Array(plotlyY.length).fill(stdDev),
-                            visible: true,
-                            color: figureArguments[targetBarColumn + 'ErrorBarsColor'],
-                            thickness: 1.5,
-                            width: 8
-                        };   
-                    }
-                    //Error bars (values imported from spreadsheet per point in dataset)
-                    //Do we want high and low bounds here?
-                    if (showError_InputValuesOpt != 'auto') {
-                        const showError_InputValue = dataToBePlotted[showError_InputValuesOpt].filter(item => item !== "");
-                        var errorBarY = {
-                            type: 'data',
-                            array: showError_InputValue.map(val => parseFloat(val)), // Convert to number if needed
-                            visible: true,
-                            color: figureArguments[targetBarColumn + 'ErrorBarsColor'],
-                            thickness: 1.5,
-                            width: 8
-                        }; 
-                    }          
-                }
-                if (showError != 'on') {
-                    var errorBarY = {};
+                    });
                 }
 
+                // === CASE: Separate columns side-by-side per bar ===
+                else {
+                    const categories = dataToBePlotted[columnXHeader];
+                    const values = dataToBePlotted[columnYHeader].map(val => parseFloat(val));
+                    const groupMap = {};
+                    categories.forEach((cat, idx) => {
+                        if (!groupMap[cat]) groupMap[cat] = 0;
+                        groupMap[cat] += !isNaN(values[idx]) ? values[idx] : 0;
+                    });
+
+                    plotlyX = Object.keys(groupMap);
+                    plotlyY = Object.values(groupMap);
+
+                    allBarsPlotly.push({
+                        x: plotlyX,
+                        y: plotlyY,
+                        type: 'bar',
+                        name: `${figureArguments[targetBarColumn + 'Title']}`,
+                        showlegend: showLegendBool,
+                        marker: {
+                            color: figureArguments[targetBarColumn + 'Color']
+                        },
+                        hovertemplate: `${figureArguments['XAxisTitle']}: %{x}<br>${figureArguments['YAxisTitle']}: %{y}`
+                    });
+                }
+                
                 //Percentiles and Mean lines
                 const showPercentiles = figureArguments[targetBarColumn + 'Percentiles'];
                 const showMean = figureArguments[targetBarColumn + 'Mean'];
@@ -348,32 +329,59 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                         });
                     }
                 }
+                // === Optional Overlays and Error Bars ===
+                const errorArrayRaw = figureArguments[targetBarColumn + 'ErrorBars'] === 'on'
+                    ? figureArguments[targetBarColumn + 'ErrorBarsInputValues'] === 'auto'
+                        ? new Array(plotlyY.length).fill(computeStandardDeviation(plotlyY))
+                        : (dataToBePlotted[figureArguments[targetBarColumn + 'ErrorBarsInputValues']] || []).map(val => parseFloat(val)).filter(val => !isNaN(val))
+                    : null;
 
+                const error_y = errorArrayRaw ? {
+                    type: 'data',
+                    array: errorArrayRaw,
+                    visible: true,
+                    color: figureArguments[targetBarColumn + 'ErrorBarsColor'] || '#000',
+                    thickness: 1.5,
+                    width: 8
+                } : undefined;
+
+                if (!(isStacked === 'on' && columnXHeader !== 'None')) {
+                    trace = {
+                        x: plotlyX,
+                        y: plotlyY,
+                        type: 'bar',
+                        name: `${figureArguments[targetBarColumn + 'Title']}`,
+                        showlegend: showLegendBool,
+                        marker: {
+                            color: figureArguments[targetBarColumn + 'Color']
+                        },
+                        hovertemplate: `${figureArguments['XAxisTitle'] || ''}: %{x}<br>${figureArguments['YAxisTitle'] || ''}: %{y}`,
+                        ...(error_y ? { error_y } : {})
+                    };
+                    allBarsPlotly.push(trace);
+                }               
             }
 
-            //ADMIN SIDE GRAPH DISPLAY SETTINGS
+            
+
+
+            // Set layout barmode based on stacked column option
             var layout = {
-                barmode: 'stack',  // Set to stack bars if 'on'
+                barmode: barStackedByX ? 'stack' : 'group',
                 xaxis: {
-                    title: {
-                        text: figureArguments['XAxisTitle'] || ''
-                    },
+                    title: { text: figureArguments['XAxisTitle'] || '' },
                     linecolor: 'black',
                     linewidth: 1,
-                    tickmode: 'array',  // helpful if you only have a few bars
-                    tickangle: -45,      // optional: slant x-axis labels if long
+                    tickmode: 'array',
+                    tickangle: -45,
                     automargin: true
                 },
                 yaxis: {
-                    title: {
-                        text: figureArguments['YAxisTitle'] || ''
-                    },
+                    title: { text: figureArguments['YAxisTitle'] || '' },
                     linecolor: 'black',
                     linewidth: 1,
-                    rangemode: 'tozero',  // ensures y-axis starts at 0
-                    autorange: figureArguments['YAxisLowBound'] === '' && figureArguments['YAxisHighBound'] === ''
-                        ? true
-                        : false,
+                    rangemode: 'tozero',
+                    autorange: figureArguments['YAxisLowBound'] === '' && figureArguments['YAxisHighBound'] === '' ? true : false,
                     range: (
                         figureArguments['YAxisLowBound'] !== '' && figureArguments['YAxisHighBound'] !== ''
                         ? [parseFloat(figureArguments['YAxisLowBound']), parseFloat(figureArguments['YAxisHighBound'])]
@@ -574,333 +582,366 @@ function plotlyBarParameterFields(jsonColumns, interactive_arguments){
 
 // generate the form fields needed for users to indicate preferences for how a figure should appear 
 function displayBarFields (numBars, jsonColumns, interactive_arguments) {
-  let assignColumnsToPlot = document.getElementById('assignColumnsToPlot');
-  // If the element exists
-  if (assignColumnsToPlot) {
-      // Remove the scene window
-      assignColumnsToPlot.parentNode.removeChild(assignColumnsToPlot);
-  }
+    let assignColumnsToPlot = document.getElementById('assignColumnsToPlot');
+    // If the element exists
+    if (assignColumnsToPlot) {
+        // Remove the scene window
+        assignColumnsToPlot.parentNode.removeChild(assignColumnsToPlot);
+    }
 
-  if (numBars > 0) {
-      let newDiv = document.createElement("div");
-      newDiv.id = "assignColumnsToPlot";
+    if (numBars > 0) {
+        let newDiv = document.createElement("div");
+        newDiv.id = "assignColumnsToPlot";
 
-      let fieldLabels = [["XAxis", "X Axis Column"]];
-      for (let i = 1; i <= numBars; i++){
-          fieldLabels.push(["Bar" + i, "Bar " + i + " Column"]);
-      }
 
-      fieldLabels.forEach((fieldLabel) => {
-          let labelSelectColumn = document.createElement("label");
-          labelSelectColumn.for = fieldLabel[0];
-          labelSelectColumn.innerHTML = fieldLabel[1];
-          let selectColumn = document.createElement("select");
-          selectColumn.id = fieldLabel[0];
-          selectColumn.name = "plotFields";
-          selectColumn.addEventListener('change', function() {
-              logFormFieldValues();
-          });
+        // Add checkbox for StackedBarColumns
+        let labelStackedBarColumns = document.createElement("label");
+        labelStackedBarColumns.for = "StackedBarColumns";
+        labelStackedBarColumns.innerHTML = "Group Bars by X-axis (Stacked Columns)";
+        let checkboxStackedBarColumns = document.createElement("input");
+        checkboxStackedBarColumns.type = "checkbox";
+        checkboxStackedBarColumns.id = "StackedBarColumns";
+        checkboxStackedBarColumns.name = "plotFields";
+        checkboxStackedBarColumns.addEventListener("change", function () {
+            checkboxStackedBarColumns.value = checkboxStackedBarColumns.checked ? 'on' : "";
+            logFormFieldValues();
+        });
 
-          let selectColumnOption = document.createElement("option");
-          selectColumnOption.value = "None";
-          selectColumnOption.innerHTML = "None"; 
-          selectColumn.appendChild(selectColumnOption);
+        // Pre-fill value if previously saved
+        fieldValueSaved = fillFormFieldValues(checkboxStackedBarColumns.id, interactive_arguments);
+        if (fieldValueSaved === 'on') {
+            checkboxStackedBarColumns.checked = true;
+        }
 
-          Object.entries(jsonColumns).forEach(([jsonColumnsKey, jsonColumnsValue]) => {
-              selectColumnOption = document.createElement("option");
-              selectColumnOption.value = jsonColumnsValue;// jsonColumnsKey;
-              selectColumnOption.innerHTML = jsonColumnsValue; 
-              selectColumn.appendChild(selectColumnOption);
-          });
-          fieldValueSaved = fillFormFieldValues(selectColumn.id, interactive_arguments);
-          if (fieldValueSaved != undefined){
-              selectColumn.value = fieldValueSaved;
-          }
+        newRow = document.createElement("div");
+        newRow.classList.add("row", "fieldPadding");
+        newColumn1 = document.createElement("div");
+        newColumn1.classList.add("col-3");
+        newColumn2 = document.createElement("div");
+        newColumn2.classList.add("col");
 
-          let newRow = document.createElement("div");
-          newRow.classList.add("row", "fieldPadding");
+        newColumn1.appendChild(labelStackedBarColumns);
+        newColumn2.appendChild(checkboxStackedBarColumns);
+        newRow.append(newColumn1, newColumn2);
+        newDiv.append(newRow);
+        //end checkbox for StackedBarColumns
 
-          if (fieldLabel[0] != "XAxis"){      
-              fieldLabelNumber = parseInt(fieldLabel[0].slice(-1));
-              if (fieldLabelNumber % 2 != 0 ){
-                  newRow.classList.add("row", "fieldBackgroundColor");
-              }
-          }
+        let fieldLabels = [["XAxis", "X Axis Column"]];
+        for (let i = 1; i <= numBars; i++){
+            fieldLabels.push(["Bar" + i, "Bar " + i + " Column"]);
+        }
 
-          let newColumn1 = document.createElement("div");
-          newColumn1.classList.add("col-3");   
-          let newColumn2 = document.createElement("div");
-          newColumn2.classList.add("col");
+        fieldLabels.forEach((fieldLabel) => {
+            let labelSelectColumn = document.createElement("label");
+            labelSelectColumn.for = fieldLabel[0];
+            labelSelectColumn.innerHTML = fieldLabel[1];
+            let selectColumn = document.createElement("select");
+            selectColumn.id = fieldLabel[0];
+            selectColumn.name = "plotFields";
+            selectColumn.addEventListener('change', function() {
+                logFormFieldValues();
+            });
 
-          newColumn1.appendChild(labelSelectColumn);
-          newColumn2.appendChild(selectColumn);
-          newRow.append(newColumn1, newColumn2);
-          newDiv.append(newRow);
+            let selectColumnOption = document.createElement("option");
+            selectColumnOption.value = "None";
+            selectColumnOption.innerHTML = "None"; 
+            selectColumn.appendChild(selectColumnOption);
 
-          if (fieldLabel[0] != "XAxis"){
-              // Add line label field
-              newRow = document.createElement("div");
-              newRow.classList.add("row", "fieldPadding");
+            Object.entries(jsonColumns).forEach(([jsonColumnsKey, jsonColumnsValue]) => {
+                selectColumnOption = document.createElement("option");
+                selectColumnOption.value = jsonColumnsValue;// jsonColumnsKey;
+                selectColumnOption.innerHTML = jsonColumnsValue; 
+                selectColumn.appendChild(selectColumnOption);
+            });
+            fieldValueSaved = fillFormFieldValues(selectColumn.id, interactive_arguments);
+            if (fieldValueSaved != undefined){
+                selectColumn.value = fieldValueSaved;
+            }
 
-              if (fieldLabelNumber % 2 != 0 ){
-                  newRow.classList.add("row", "fieldBackgroundColor");
-              }
+            let newRow = document.createElement("div");
+            newRow.classList.add("row", "fieldPadding");
 
-              newColumn1 = document.createElement("div");
-              newColumn1.classList.add("col-3");   
-              newColumn2 = document.createElement("div");
-              newColumn2.classList.add("col");
+            if (fieldLabel[0] != "XAxis"){      
+                fieldLabelNumber = parseInt(fieldLabel[0].slice(-1));
+                if (fieldLabelNumber % 2 != 0 ){
+                    newRow.classList.add("row", "fieldBackgroundColor");
+                }
+            }
 
-              let labelInputTitle = document.createElement("label");
-              labelInputTitle.for = fieldLabel[0] + "Title";
-              labelInputTitle.innerHTML = fieldLabel[1] + " Title";
-              let inputTitle = document.createElement("input");
-              inputTitle.id = fieldLabel[0] + "Title";
-              inputTitle.size = "70";
-              inputTitle.name = "plotFields";
-              inputTitle.addEventListener('change', function() {
-                  logFormFieldValues();
-              });
-              fieldValueSaved = fillFormFieldValues(inputTitle.id, interactive_arguments);
-              if (fieldValueSaved != undefined){
-                  inputTitle.value = fieldValueSaved;
-              }
+            let newColumn1 = document.createElement("div");
+            newColumn1.classList.add("col-3");   
+            let newColumn2 = document.createElement("div");
+            newColumn2.classList.add("col");
 
-              newColumn1.appendChild(labelInputTitle);
-              newColumn2.appendChild(inputTitle);
-              newRow.append(newColumn1, newColumn2);
-              newDiv.append(newRow); 
+            newColumn1.appendChild(labelSelectColumn);
+            newColumn2.appendChild(selectColumn);
+            newRow.append(newColumn1, newColumn2);
+            newDiv.append(newRow);
 
-              // Add color field
-              newRow = document.createElement("div");
-              newRow.classList.add("row", "fieldPadding");
-              if (fieldLabelNumber % 2 != 0 ){
-                  newRow.classList.add("row", "fieldBackgroundColor");
-              }
-              newColumn1 = document.createElement("div");
-              newColumn1.classList.add("col-3");   
-              newColumn2 = document.createElement("div");
-              newColumn2.classList.add("col");
-
-              let labelInputColor = document.createElement("label");
-              labelInputColor.for = fieldLabel[0] + "Color";
-              labelInputColor.innerHTML = fieldLabel[1] + " Color";
-              let inputColor = document.createElement("input");
-              inputColor.id = fieldLabel[0] + "Color";
-              inputColor.name = "plotFields";
-              inputColor.type = "color";
-              fieldValueSaved = fillFormFieldValues(inputColor.id, interactive_arguments);
-              if (fieldValueSaved != undefined){
-                  inputColor.value = fieldValueSaved;
-              }
-              inputColor.addEventListener('change', function() {
-                  logFormFieldValues();
-              });
-
-              newColumn1.appendChild(labelInputColor);
-              newColumn2.appendChild(inputColor);
-              newRow.append(newColumn1, newColumn2);
-              newDiv.append(newRow);
-
-            //   // Create the informational text box
-            //   const infoBox = document.createElement("div");
-            //   infoBox.for = fieldLabel[0] + "Color";
-            //   infoBox.className = "info-box"; // Optional: for styling
-            //   infoBox.textContent = "Optional Settings Below";
-            //   infoBox.style.marginTop = "20px";
-            //   infoBox.style.marginTop = "20px";
-            //   infoBox.style.marginBottom = "20px";
-
-            //   // Insert the info box at the top of the container
-            //   newRow.classList.add("row", "fieldBackgroundColor");
-            //   newRow.appendChild(infoBox);
-            //   newDiv.appendChild(newRow);
-
-              
-
-            //Add checkboxes for error bars, standard deviation, mean, and percentiles
-            const features = ["Legend", "Stacked", "Mean", "ErrorBars", "Percentiles"];
-            const featureNames = ["Graph Legend Visible?", "Stack by X Axis Column?", "Mean Bar Visible?", "Error Bars Visible?", "90th & 10th Percentile Bars (Auto Calculated) Visible?"];
-            for (let i = 0; i < features.length; i++) {
-                const feature = features[i];
-                const featureName = featureNames[i];
-
-                let newRow = document.createElement("div");
+            if (fieldLabel[0] != "XAxis"){
+                // Add line label field
+                newRow = document.createElement("div");
                 newRow.classList.add("row", "fieldPadding");
-                if (fieldLabelNumber % 2 != 0) {
+
+                if (fieldLabelNumber % 2 != 0 ){
                     newRow.classList.add("row", "fieldBackgroundColor");
                 }
 
-                let newColumn1 = document.createElement("div");
-                newColumn1.classList.add("col-3");
-                let newColumn2 = document.createElement("div");
+                newColumn1 = document.createElement("div");
+                newColumn1.classList.add("col-3");   
+                newColumn2 = document.createElement("div");
                 newColumn2.classList.add("col");
 
-                let label = document.createElement("label");
-                label.for = fieldLabel[0] + feature;
-                label.innerHTML = `${featureName}`;
-                let checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.id = fieldLabel[0] + feature;
-                checkbox.name = "plotFields";
+                let labelInputTitle = document.createElement("label");
+                labelInputTitle.for = fieldLabel[0] + "Title";
+                labelInputTitle.innerHTML = fieldLabel[1] + " Title";
+                let inputTitle = document.createElement("input");
+                inputTitle.id = fieldLabel[0] + "Title";
+                inputTitle.size = "70";
+                inputTitle.name = "plotFields";
+                inputTitle.addEventListener('change', function() {
+                    logFormFieldValues();
+                });
+                fieldValueSaved = fillFormFieldValues(inputTitle.id, interactive_arguments);
+                if (fieldValueSaved != undefined){
+                    inputTitle.value = fieldValueSaved;
+                }
 
-                let fieldValueSaved = fillFormFieldValues(checkbox.id, interactive_arguments);
-                checkbox.value = fieldValueSaved === 'on' ? 'on' : "";
-                checkbox.checked = fieldValueSaved === 'on';
+                newColumn1.appendChild(labelInputTitle);
+                newColumn2.appendChild(inputTitle);
+                newRow.append(newColumn1, newColumn2);
+                newDiv.append(newRow); 
 
-                newColumn1.appendChild(label);
-                newColumn2.appendChild(checkbox);
+                // Add color field
+                newRow = document.createElement("div");
+                newRow.classList.add("row", "fieldPadding");
+                if (fieldLabelNumber % 2 != 0 ){
+                    newRow.classList.add("row", "fieldBackgroundColor");
+                }
+                newColumn1 = document.createElement("div");
+                newColumn1.classList.add("col-3");   
+                newColumn2 = document.createElement("div");
+                newColumn2.classList.add("col");
+
+                let labelInputColor = document.createElement("label");
+                labelInputColor.for = fieldLabel[0] + "Color";
+                labelInputColor.innerHTML = fieldLabel[1] + " Color";
+                let inputColor = document.createElement("input");
+                inputColor.id = fieldLabel[0] + "Color";
+                inputColor.name = "plotFields";
+                inputColor.type = "color";
+                fieldValueSaved = fillFormFieldValues(inputColor.id, interactive_arguments);
+                if (fieldValueSaved != undefined){
+                    inputColor.value = fieldValueSaved;
+                }
+                inputColor.addEventListener('change', function() {
+                    logFormFieldValues();
+                });
+
+                newColumn1.appendChild(labelInputColor);
+                newColumn2.appendChild(inputColor);
                 newRow.append(newColumn1, newColumn2);
                 newDiv.append(newRow);
+
+                //   // Create the informational text box
+                //   const infoBox = document.createElement("div");
+                //   infoBox.for = fieldLabel[0] + "Color";
+                //   infoBox.className = "info-box"; // Optional: for styling
+                //   infoBox.textContent = "Optional Settings Below";
+                //   infoBox.style.marginTop = "20px";
+                //   infoBox.style.marginTop = "20px";
+                //   infoBox.style.marginBottom = "20px";
+
+                //   // Insert the info box at the top of the container
+                //   newRow.classList.add("row", "fieldBackgroundColor");
+                //   newRow.appendChild(infoBox);
+                //   newDiv.appendChild(newRow);
+
                 
 
-                // === Add dropdowns for feature-specific data ===
-                if (["Mean", "ErrorBars", "Stacked"].includes(feature)) {
-                    const dropdownContainer = document.createElement("div");
-                    dropdownContainer.classList.add("row", "fieldPadding");
+                //Add checkboxes for error bars, standard deviation, mean, and percentiles
+                const features = ["Legend", "Mean", "ErrorBars", "Percentiles", "Stacked"];
+                const featureNames = ["Graph Legend Visible?", "Mean Bar Visible?", "Error Bars Visible?", "90th & 10th Percentile Bars (Auto Calculated) Visible?", "Stack Bar by X Axis Column? (Uncheck Mean, Error Bars, Percentiles)"];
+                for (let i = 0; i < features.length; i++) {
+                    const feature = features[i];
+                    const featureName = featureNames[i];
+
+                    let newRow = document.createElement("div");
+                    newRow.classList.add("row", "fieldPadding");
                     if (fieldLabelNumber % 2 != 0) {
-                        dropdownContainer.classList.add("row", "fieldBackgroundColor");
+                        newRow.classList.add("row", "fieldBackgroundColor");
                     }
 
-                    const dropdownLabelCol = document.createElement("div");
-                    dropdownLabelCol.classList.add("col-3");
-                    const dropdownInputCol = document.createElement("div");
-                    dropdownInputCol.classList.add("col");
+                    let newColumn1 = document.createElement("div");
+                    newColumn1.classList.add("col-3");
+                    let newColumn2 = document.createElement("div");
+                    newColumn2.classList.add("col");
 
-                    function createDropdown(labelText, selectId) {
-                        const label = document.createElement("label");
-                        label.innerHTML = labelText;
-                        const select = document.createElement("select");
-                        select.id = selectId;
-                        select.name = "plotFields";
+                    let label = document.createElement("label");
+                    label.for = fieldLabel[0] + feature;
+                    label.innerHTML = `${featureName}`;
+                    let checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = fieldLabel[0] + feature;
+                    checkbox.name = "plotFields";
 
-                        if (feature === "Mean" || feature === "ErrorBars") {
-                            const autoOpt = document.createElement("option");
+                    let fieldValueSaved = fillFormFieldValues(checkbox.id, interactive_arguments);
+                    checkbox.value = fieldValueSaved === 'on' ? 'on' : "";
+                    checkbox.checked = fieldValueSaved === 'on';
 
-                            if (feature != "ErrorBars") {
-                                autoOpt.value = "auto";
-                                autoOpt.innerHTML = "Auto Calculate Based on Bar Column Selection";
-                                select.appendChild(autoOpt);
-                            }
-                            if (feature === "ErrorBars") {
-                                autoOpt.value = "auto";
-                                autoOpt.innerHTML = "Example Error Bars";
-                                select.appendChild(autoOpt);
-                            }
+                    newColumn1.appendChild(label);
+                    newColumn2.appendChild(checkbox);
+                    newRow.append(newColumn1, newColumn2);
+                    newDiv.append(newRow);
+                    
 
-                        for (let col of Object.values(jsonColumns)) {
-                            const opt = document.createElement("option");
-                            opt.value = col;
-                            opt.innerHTML = col;
-                            select.appendChild(opt);
+                    // === Add dropdowns for feature-specific data ===
+                    if (["Mean", "ErrorBars", "Stacked"].includes(feature)) {
+                        const dropdownContainer = document.createElement("div");
+                        dropdownContainer.classList.add("row", "fieldPadding");
+                        if (fieldLabelNumber % 2 != 0) {
+                            dropdownContainer.classList.add("row", "fieldBackgroundColor");
                         }
 
-                        const saved = fillFormFieldValues(select.id, interactive_arguments);
-                        if (saved) select.value = saved;
+                        const dropdownLabelCol = document.createElement("div");
+                        dropdownLabelCol.classList.add("col-3");
+                        const dropdownInputCol = document.createElement("div");
+                        dropdownInputCol.classList.add("col");
 
-                        select.addEventListener("change", logFormFieldValues);
-                        return { label, select };
+                        function createDropdown(labelText, selectId) {
+                            const label = document.createElement("label");
+                            label.innerHTML = labelText;
+                            const select = document.createElement("select");
+                            select.id = selectId;
+                            select.name = "plotFields";
+
+                            if (feature === "Mean" || feature === "ErrorBars") {
+                                const autoOpt = document.createElement("option");
+
+                                if (feature != "ErrorBars") {
+                                    autoOpt.value = "auto";
+                                    autoOpt.innerHTML = "Auto Calculate Based on Bar Column Selection";
+                                    select.appendChild(autoOpt);
+                                }
+                                if (feature === "ErrorBars") {
+                                    autoOpt.value = "auto";
+                                    autoOpt.innerHTML = "Example Error Bars";
+                                    select.appendChild(autoOpt);
+                                }
+
+                            for (let col of Object.values(jsonColumns)) {
+                                const opt = document.createElement("option");
+                                opt.value = col;
+                                opt.innerHTML = col;
+                                select.appendChild(opt);
+                            }
+
+                            const saved = fillFormFieldValues(select.id, interactive_arguments);
+                            if (saved) select.value = saved;
+
+                            select.addEventListener("change", logFormFieldValues);
+                            return { label, select };
+                            }
+
                         }
 
-                    }
+                        function createDatefield(labelText, inputId) {
+                            const label = document.createElement("label");
+                            label.textContent = labelText;
+                            label.htmlFor = inputId; // Link label to input
 
-                    function createDatefield(labelText, inputId) {
-                        const label = document.createElement("label");
-                        label.textContent = labelText;
-                        label.htmlFor = inputId; // Link label to input
+                            const input = document.createElement("input"); // Correct element
+                            input.type = "date";
+                            input.id = inputId;
+                            input.name = "plotFields";
 
-                        const input = document.createElement("input"); // Correct element
-                        input.type = "date";
-                        input.id = inputId;
-                        input.name = "plotFields";
+                            const saved = fillFormFieldValues(input.id, interactive_arguments);
+                            if (saved) input.value = saved;
 
-                        const saved = fillFormFieldValues(input.id, interactive_arguments);
-                        if (saved) input.value = saved;
+                            input.addEventListener("change", logFormFieldValues);
+                            return { label, input };
+                        }
 
-                        input.addEventListener("change", logFormFieldValues);
-                        return { label, input };
-                    }
+                        function createTextfield(labelText, inputId) {
+                            const label = document.createElement("label");
+                            label.textContent = labelText;
+                            label.htmlFor = inputId; // Link label to input
 
-                    function createTextfield(labelText, inputId) {
-                        const label = document.createElement("label");
-                        label.textContent = labelText;
-                        label.htmlFor = inputId; // Link label to input
-
-                        const input = document.createElement("input"); // Correct element
-                        input.type = "text";
-                        input.id = inputId;
-                        input.name = "plotFields";
-                        input.style.width = "200px";
+                            const input = document.createElement("input"); // Correct element
+                            input.type = "text";
+                            input.id = inputId;
+                            input.name = "plotFields";
+                            input.style.width = "200px";
 
 
-                        const saved = fillFormFieldValues(input.id, interactive_arguments);
-                        if (saved) input.value = saved;
+                            const saved = fillFormFieldValues(input.id, interactive_arguments);
+                            if (saved) input.value = saved;
 
-                        input.addEventListener("change", logFormFieldValues);
-                        return { label, input };
-                    }
+                            input.addEventListener("change", logFormFieldValues);
+                            return { label, input };
+                        }
 
-                    function createColorfield(labelText, inputId) {
-                        const label = document.createElement("label");
-                        label.textContent = labelText;
-                        label.htmlFor = inputId; // Link label to input
+                        function createColorfield(labelText, inputId) {
+                            const label = document.createElement("label");
+                            label.textContent = labelText;
+                            label.htmlFor = inputId; // Link label to input
 
-                        const input = document.createElement("input"); // Correct element
-                        input.type = "color";
-                        input.id = inputId;
-                        input.name = "plotFields";
+                            const input = document.createElement("input"); // Correct element
+                            input.type = "color";
+                            input.id = inputId;
+                            input.name = "plotFields";
 
-                        const saved = fillFormFieldValues(input.id, interactive_arguments);
-                        if (saved) input.value = saved;
+                            const saved = fillFormFieldValues(input.id, interactive_arguments);
+                            if (saved) input.value = saved;
 
-                        input.addEventListener("change", logFormFieldValues);
-                        return { label, input };
-                    }
+                            input.addEventListener("change", logFormFieldValues);
+                            return { label, input };
+                        }
 
-                    const controls = [];
+                        const controls = [];
 
-                    if (feature === "Mean") {
-                        const { label, select } = createDropdown("Mean Source Column", fieldLabel[0] + feature + "Field");
-                        controls.push(label, select);
-                    }
+                        if (feature === "Mean") {
+                            const { label, select } = createDropdown("Mean Source Column", fieldLabel[0] + feature + "Field");
+                            controls.push(label, select);
+                        }
 
-                    if (feature === "Stacked") {
-                        const { label: labelColor, input: ColorValue } = createColorfield(`Separator Line Color`, fieldLabel[0] + feature + "SeparatorLineColor");
-                        controls.push(labelColor, document.createElement('br'), ColorValue);
-                    }
+                        if (feature === "Stacked") {
+                            const { label: labelColor, input: ColorValue } = createColorfield(`Separator Line Color`, fieldLabel[0] + feature + "SeparatorLineColor");
+                            controls.push(labelColor, document.createElement('br'), ColorValue);
+                        }
 
-                    if (feature === "ErrorBars" || feature === "StdDev") {
-                        const { label: labelValues, select: selectValues } = createDropdown(`${featureName} Input Column Values`, fieldLabel[0] + feature + "InputValues");
-                        const { label: labelColor, input: ColorValue } = createColorfield(`Color`, fieldLabel[0] + feature + "Color");
-                        controls.push(labelValues, document.createElement('br'), selectValues, document.createElement('br'), labelColor, document.createElement('br'), ColorValue);
-                    }
+                        if (feature === "ErrorBars" || feature === "StdDev") {
+                            const { label: labelValues, select: selectValues } = createDropdown(`${featureName} Input Column Values`, fieldLabel[0] + feature + "InputValues");
+                            const { label: labelColor, input: ColorValue } = createColorfield(`Color`, fieldLabel[0] + feature + "Color");
+                            controls.push(labelValues, document.createElement('br'), selectValues, document.createElement('br'), labelColor, document.createElement('br'), ColorValue);
+                        }
 
-                    // Initially hide the dropdown container
-                    dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
-
-                    controls.forEach(control => dropdownInputCol.appendChild(control));
-                    dropdownContainer.append(dropdownLabelCol, dropdownInputCol);
-                    newDiv.append(dropdownContainer);
-
-                    // Toggle visibility dynamically
-                    checkbox.addEventListener('change', function () {
-                        checkbox.value = checkbox.checked ? 'on' : "";
+                        // Initially hide the dropdown container
                         dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
-                        logFormFieldValues();
-                    });
-                } else {
-                    checkbox.addEventListener('change', function () {
-                        checkbox.value = checkbox.checked ? 'on' : "";
-                        logFormFieldValues();
-                    });
+
+                        controls.forEach(control => dropdownInputCol.appendChild(control));
+                        dropdownContainer.append(dropdownLabelCol, dropdownInputCol);
+                        newDiv.append(dropdownContainer);
+
+                        // Toggle visibility dynamically
+                        checkbox.addEventListener('change', function () {
+                            checkbox.value = checkbox.checked ? 'on' : "";
+                            dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
+                            logFormFieldValues();
+                        });
+                    } else {
+                        checkbox.addEventListener('change', function () {
+                            checkbox.value = checkbox.checked ? 'on' : "";
+                            logFormFieldValues();
+                        });
+                    }
                 }
+                
             }
             
-          }
-        
 
-          const targetElement = document.getElementById('graphGUI');
-          targetElement.appendChild(newDiv);
-      });
-  }
+            const targetElement = document.getElementById('graphGUI');
+            targetElement.appendChild(newDiv);
+        });
+    }
 }
