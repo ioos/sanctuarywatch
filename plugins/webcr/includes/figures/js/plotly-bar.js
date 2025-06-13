@@ -156,6 +156,7 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
 
                 // === CASE: Individual Bar Column Stacking ===
                 if (isStacked === 'on' && columnXHeader !== 'None') {
+                    console.log('// === CASE: Individual Bar Column Stacking ===');
                     const categories = dataToBePlotted[columnXHeader];
                     const values = dataToBePlotted[columnYHeader].map(val => parseFloat(val));
                     const groupMap = {};
@@ -186,6 +187,7 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
 
                 // === CASE: Single Bar (no X axis) ===
                 else if (columnXHeader === 'None') {
+                    console.log(' // === CASE: Single Bar (no X axis) ===');
                     plotlyX = [figureArguments[targetBarColumn + 'Title'] || `Bar ${i}`];
                     const sumY = dataToBePlotted[columnYHeader].map(val => parseFloat(val)).filter(val => !isNaN(val)).reduce((a, b) => a + b, 0);
                     plotlyY = [sumY];
@@ -205,6 +207,7 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
 
                 // === CASE: Stacked across columns by X axis ===
                 else if (barStackedByX && columnXHeader !== 'None') {
+                    console.log(' // === CASE: Stacked across columns by X axis ===');
                     const categories = dataToBePlotted[columnXHeader];
                     const values = dataToBePlotted[columnYHeader].map(val => parseFloat(val));
                     const groupMap = {};
@@ -231,6 +234,7 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
 
                 // === CASE: Separate columns side-by-side per bar ===
                 else {
+                    console.log('// === CASE: Separate columns side-by-side per bar ===');
                     const categories = dataToBePlotted[columnXHeader];
                     const values = dataToBePlotted[columnYHeader].map(val => parseFloat(val));
                     const groupMap = {};
@@ -240,19 +244,21 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                     });
 
                     plotlyX = Object.keys(groupMap);
+                    console.log(plotlyX);
                     plotlyY = Object.values(groupMap);
+                    console.log(plotlyY);
 
-                    allBarsPlotly.push({
-                        x: plotlyX,
-                        y: plotlyY,
-                        type: 'bar',
-                        name: `${figureArguments[targetBarColumn + 'Title']}`,
-                        showlegend: showLegendBool,
-                        marker: {
-                            color: figureArguments[targetBarColumn + 'Color']
-                        },
-                        hovertemplate: `${figureArguments['XAxisTitle']}: %{x}<br>${figureArguments['YAxisTitle']}: %{y}`
-                    });
+                    // allBarsPlotly.push({
+                    //     x: plotlyX,
+                    //     y: plotlyY,
+                    //     type: 'line',
+                    //     name: `${figureArguments[targetBarColumn + 'Title']}`,
+                    //     showlegend: showLegendBool,
+                    //     marker: {
+                    //         color: figureArguments[targetBarColumn + 'Color']
+                    //     },
+                    //     hovertemplate: `${figureArguments['XAxisTitle']}: %{x}<br>${figureArguments['YAxisTitle']}: %{y}`
+                    // });
                 }
                 
                 //Percentiles and Mean lines
@@ -341,8 +347,8 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                     array: errorArrayRaw,
                     visible: true,
                     color: figureArguments[targetBarColumn + 'ErrorBarsColor'] || '#000',
-                    thickness: 1.5,
-                    width: 8
+                    thickness: 1,
+                    width: 5
                 } : undefined;
 
                 if (!(isStacked === 'on' && columnXHeader !== 'None')) {
@@ -351,7 +357,7 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                         y: plotlyY,
                         type: 'bar',
                         name: `${figureArguments[targetBarColumn + 'Title']}`,
-                        showlegend: showLegendBool,
+                        showlegend: false,
                         marker: {
                             color: figureArguments[targetBarColumn + 'Color']
                         },
@@ -761,7 +767,7 @@ function displayBarFields (numBars, jsonColumns, interactive_arguments) {
 
                 //Add checkboxes for error bars, standard deviation, mean, and percentiles
                 const features = ["Legend", "Mean", "ErrorBars", "Percentiles", "Stacked"];
-                const featureNames = ["Graph Legend Visible?", "Mean Bar Visible?", "Error Bars Visible?", "90th & 10th Percentile Bars (Auto Calculated) Visible?", "Stack Bar by X Axis Column? (Uncheck Mean, Error Bars, Percentiles)"];
+                const featureNames = ["Graph Legend Visible?", "Mean Bar Visible?", "Error Bars Visible?", "90th & 10th Percentile Bars (Auto Calculated) Visible?", "Stack Bar by X Axis Column Values? (Not for use with Mean, Error Bars, or Percentiles)"];
                 for (let i = 0; i < features.length; i++) {
                     const feature = features[i];
                     const featureName = featureNames[i];
