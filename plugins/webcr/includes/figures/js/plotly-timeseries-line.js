@@ -209,9 +209,6 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             let allLinesPlotly = [];
             let shapesForLayout = [];
 
-
-            ConnectGaps
-
             // Plotly figure production logic
             for (let i = 1; i <= figureArguments['NumberOfLines']; i++) {
                 const targetLineColumn = 'Line' + i;
@@ -232,8 +229,9 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     var showLegendBool = false;     
                 }
 
-                const connectGaps = figureArguments[targetLineColumn + 'ConnectGaps'] === 'on';
-            
+
+                //Connects gaps in line where there is missing data
+                const connectGapsOpt = figureArguments[targetLineColumn + 'ConnectGaps'] === 'on';     
 
                 //Show Standard error bars
                 const showError = figureArguments[targetLineColumn + 'ErrorBars'];
@@ -281,7 +279,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         symbol: markerType
                     },
                     error_y: errorBarY,
-                    connectgaps: connectGaps, 
+                    connectgaps: connectGapsOpt, 
                     hovertemplate:
                         figureArguments['XAxisTitle'] + ': %{x}<br>' +
                         figureArguments['YAxisTitle'] + ': %{y}'
