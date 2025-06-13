@@ -181,25 +181,46 @@ class Webcr_Instance {
                     'description' => 'Information appearing in the footer for all of the Scenes for this instance.',
                     'fields' => array(
                         array(
-                            'id'     => 'instance_footer_about',
-                            'type'   => 'editor',
-                            'editor' => 'trumbowyg',
-                            'title'  => 'About the instance', 
-                            'description' => 'This is information that appears in the left "About" column of the footer'        
+                            'id'          => 'instance_footer_column_title_1',
+                            'type'        => 'text',
+                            'title'       => 'Footer Left Column Title',
+                            'description' => 'Title for the left footer column.',
+                            'class'       => 'text-class',
                         ),
                         array(
-                            'id'     => 'instance_footer_contact',
+                            'id'     => 'instance_footer_about',//'instance_footer_column_content_1',
                             'type'   => 'editor',
                             'editor' => 'trumbowyg',
-                            'title'  => 'Contact person for the instance', 
-                            'description' => 'This is information that appears in the center "Contact" column of the footer'        
+                            'title'  => 'Left Footer Column Content', 
+                            'description' => 'This is information that appears in the left column of the footer'        
                         ),
                         array(
-                            'id'          => 'instance_footer_reports',
+                            'id'          => 'instance_footer_column_title_2',
+                            'type'        => 'text',
+                            'title'       => 'Footer Middle Column Title',
+                            'description' => 'Title for the middle footer column.',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'     =>  'instance_footer_contact', //instance_footer_column_content_2',
                             'type'   => 'editor',
                             'editor' => 'trumbowyg',
-                            'title'  => 'Relevant reports associated with the instance', 
-                            'description' => 'This is information that appears in the right "Reports" column of the footer'     
+                            'title'  => 'Middle Footer Column Content', 
+                            'description' => 'This is information that appears in the middle column of the footer'        
+                        ),
+                        array(
+                            'id'          => 'instance_footer_column_title_3',
+                            'type'        => 'text',
+                            'title'       => 'Footer Right Column Title',
+                            'description' => 'Title for the right footer column.',
+                            'class'       => 'text-class',
+                        ),
+                        array(
+                            'id'     => 'instance_footer_reports', //'instance_footer_column_content_3',
+                            'type'   => 'editor',
+                            'editor' => 'trumbowyg',
+                            'title'  => 'Right Footer Column Content', 
+                            'description' => 'This is information that appears in the right column of the footer'        
                         ),
                     ),
                 ),
