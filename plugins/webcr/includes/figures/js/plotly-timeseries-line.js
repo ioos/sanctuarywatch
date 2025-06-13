@@ -210,6 +210,8 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             let shapesForLayout = [];
 
 
+            ConnectGaps
+
             // Plotly figure production logic
             for (let i = 1; i <= figureArguments['NumberOfLines']; i++) {
                 const targetLineColumn = 'Line' + i;
@@ -229,6 +231,8 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 } else {
                     var showLegendBool = false;     
                 }
+
+                const connectGaps = figureArguments[targetLineColumn + 'ConnectGaps'] === 'on';
             
 
                 //Show Standard error bars
@@ -277,6 +281,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         symbol: markerType
                     },
                     error_y: errorBarY,
+                    connectgaps: connectGaps, 
                     hovertemplate:
                         figureArguments['XAxisTitle'] + ': %{x}<br>' +
                         figureArguments['YAxisTitle'] + ': %{y}'
@@ -805,11 +810,10 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
             //   newRow.appendChild(infoBox);
             //   newDiv.appendChild(newRow);
 
-              
 
             //Add checkboxes for error bars, standard deviation, mean, and percentiles
-            const features = ["Legend", "Mean", "StdDev", "ErrorBars", "Percentiles", "EvaluationPeriod", "EventMarker1", "EventMarker2"];
-            const featureNames = ["Graph Legend", "Mean Line", "Standard Deviation Fill", "Error Bars", "90th & 10th Percentile Lines (Auto Calculated)", "Evaluation Period", "Event Marker 1", "Event Marker 2"];
+            const features = ["Legend", "ConnectGaps", "Mean", "StdDev", "ErrorBars", "Percentiles", "EvaluationPeriod", "EventMarker1", "EventMarker2"];
+            const featureNames = ["Graph Legend Visible?", "Connect Line Gaps (Missing Data)?","Mean Line Visible?", "Standard Deviation Fill Visible?", "Error Bars Visible?", "90th & 10th Percentile Lines (Auto Calculated) Visible?", "Evaluation Period Visible?", "Event Marker 1 Visible?", "Event Marker 2 Visible?"];
             for (let i = 0; i < features.length; i++) {
                 const feature = features[i];
                 const featureName = featureNames[i];
@@ -827,7 +831,7 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
 
                 let label = document.createElement("label");
                 label.for = fieldLabel[0] + feature;
-                label.innerHTML = `${featureName} Visible?`;
+                label.innerHTML = `${featureName}`;
                 let checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.id = fieldLabel[0] + feature;
