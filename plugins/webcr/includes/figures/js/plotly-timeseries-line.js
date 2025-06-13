@@ -209,11 +209,6 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             let allLinesPlotly = [];
             let shapesForLayout = [];
 
-            // Used for graph button functionality NOT USED CURRENTLY
-            // let errorVisible = false;
-            // let sdVisible = false;
-            // let percentileVisible = false;
-            // let meanVisible = false;
 
             // Plotly figure production logic
             for (let i = 1; i <= figureArguments['NumberOfLines']; i++) {
@@ -225,7 +220,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 const plotlyY = dataToBePlotted[columnYHeader];
 
                 const stdDev = computeStandardDeviation(plotlyY);
-
+                const markerType = figureArguments[targetLineColumn + 'MarkerType'];
 
                 //Shows the legend if it is set to 'on' in the figure arguments
                 const showLegend = figureArguments[targetLineColumn + 'Legend'];
@@ -278,7 +273,8 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     name: `${figureArguments[targetLineColumn + 'Title']}`,
                     showlegend: showLegendBool,
                     marker: {
-                        color: figureArguments[targetLineColumn + 'Color']
+                        color: figureArguments[targetLineColumn + 'Color'],
+                        symbol: markerType
                     },
                     error_y: errorBarY,
                     hovertemplate:
@@ -409,69 +405,6 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     }
                 }
 
-                //NOT CURRENTLY USED
-                //Functions triggered from button in the graph toolbar
-                // if (showSD != 'on') {
-                //     // Standard deviation shaded area for buttons in graph toolbar
-                //     const upperY = plotlyY.map(y => y + stdDev);
-                //     const lowerY = plotlyY.map(y => y - stdDev);
-
-                //     const stdFill = {
-                //         x: [...plotlyX, ...plotlyX.slice().reverse()],
-                //         y: [...upperY, ...lowerY.slice().reverse()],
-                //         fill: 'toself',
-                //         fillcolor: figureArguments[targetLineColumn + 'Color'] + '33',
-                //         line: { color: 'transparent' },
-                //         name: `${figureArguments[targetLineColumn + 'Title']} ±1 SD`,
-                //         type: 'scatter',
-                //         hoverinfo: 'skip',
-                //         showlegend: showLegendBool,
-                //         visible: false
-                //     };
-                //     allLinesPlotly.push(stdFill);
-                // }
-
-                // if (showPercentiles != 'on' || showMean != 'on') {
-                //     // // Add percentile lines or mean line for buttons in graph toolbar
-                //     const p10 = computePercentile(plotlyY, 10);
-                //     const p90 = computePercentile(plotlyY, 90);
-                //     const mean = plotlyY.reduce((a, b) => a + b, 0) / plotlyY.length;
-                //     const xMin = Math.min(...plotlyX);
-                //     const xMax = Math.max(...plotlyX);
-
-                //     allLinesPlotly.push({
-                //         x: [xMin, xMax],
-                //         y: [p10, p10],
-                //         mode: 'lines',
-                //         line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
-                //         name: `${figureArguments[targetLineColumn + 'Title']} 10th Percentile (Bottom)`,
-                //         type: 'scatter',
-                //         visible: false,
-                //         showlegend: showLegendBool
-                //     });
-
-                //     allLinesPlotly.push({
-                //         x: [xMin, xMax],
-                //         y: [p90, p90],
-                //         mode: 'lines',
-                //         line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] },
-                //         name: `${figureArguments[targetLineColumn + 'Title']} 90th Percentile (Top)`,
-                //         type: 'scatter',
-                //         visible: false,
-                //         showlegend: showLegendBool
-                //     });
-
-                //     allLinesPlotly.push({
-                //         x: [xMin, xMax],
-                //         y: [mean, mean],
-                //         mode: 'lines',
-                //         line: { dash: 'solid', color: figureArguments[targetLineColumn + 'Color'] },
-                //         name: `${figureArguments[targetLineColumn + 'Title']} Mean`,
-                //         type: 'scatter',
-                //         visible: false,
-                //         showlegend: showLegendBool
-                //     });
-                // }
             }
 
 
@@ -516,58 +449,6 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             modeBarButtonsToRemove: [
                 'zoom2d', 'lasso2d', 'autoScale2d',
                 'hoverClosestCartesian', 'hoverCompareCartesian' //'toImage', 'resetScale2d', 'select2d'
-            ],
-            
-            modeBarButtonsToAdd: [
-                // {   
-                //     name: 'Standard Error Bars',
-                //     icon: Plotly.Icons.autoscale,
-                //     click: function(gd) {
-                //         errorVisible = !errorVisible;
-                //         const indices = gd.data
-                //             .map((trace, i) => trace.error_y ? i : null)
-                //             .filter(i => i !== null);
-
-                //         Plotly.restyle(gd, { 'error_y.visible': errorVisible }, indices);
-                //     }
-                // },
-                
-                // {
-                //     name: 'Standard Deviation',
-                //     icon: Plotly.Icons.compare,
-                //     click: function(gd) {
-                //         sdVisible = !sdVisible;
-                //         const indices = gd.data
-                //             .map((trace, i) => trace.fill === 'toself' ? i : null)
-                //             .filter(i => i !== null);
-
-                //         Plotly.restyle(gd, { visible: sdVisible }, indices);
-                //     }
-                // },
-                // {
-                //     name: 'Mean',
-                //     icon: Plotly.Icons.line,
-                //     click: function(gd) {
-                //         meanVisible = !meanVisible;
-                //         const indices = gd.data
-                //             .map((trace, i) => ['Mean'].includes(trace.name) ? i : null)
-                //             .filter(i => i !== null);
-
-                //         Plotly.restyle(gd, { visible: meanVisible }, indices);
-                //     }
-                // },
-                // {
-                //     name: 'Percentiles',
-                //     icon: Plotly.Icons.line,
-                //     click: function(gd) {
-                //         percentileVisible = !percentileVisible;
-                //         const indices = gd.data
-                //             .map((trace, i) => ['90th Percentile (Top)', '10th Percentile (Bottom)'].includes(trace.name) ? i : null)
-                //             .filter(i => i !== null);
-
-                //         Plotly.restyle(gd, { visible: percentileVisible }, indices);
-                //     }
-                // }
             ]
             };
 
@@ -575,18 +456,18 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             const plotDiv = document.getElementById(plotlyDivID);         
             plotDiv.style.setProperty("width", "100%", "important");
             plotDiv.style.setProperty("max-width", "none", "important");
-
-                            
+                         
             // Create the plot with all lines
-            //await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
-            Plotly.newPlot(plotDiv, allLinesPlotly, layout, config).then(() => {
+            // await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+            await Plotly.newPlot(plotDiv, allLinesPlotly, layout, config).then(() => {
                 // After the plot is created, inject overlays if any, this is here because you can only get overlays that span the entire yaxis after the graph has been rendered.
-                //You need the specific values for the entire yaxis
+                // You need the specific values for the entire yaxis
                 injectOverlays(plotDiv, layout, allLinesPlotly, figureArguments);
             });
             Plotly.Plots.resize(plotDiv)
 
         } else {}
+
     } catch (error) {
         console.error('Error loading scripts:', error);
     }
@@ -765,6 +646,7 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
       }
 
       fieldLabels.forEach((fieldLabel) => {
+          //Select the data source from dropdown menu  
           let labelSelectColumn = document.createElement("label");
           labelSelectColumn.for = fieldLabel[0];
           labelSelectColumn.innerHTML = fieldLabel[1];
@@ -875,6 +757,39 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
               newColumn2.appendChild(inputColor);
               newRow.append(newColumn1, newColumn2);
               newDiv.append(newRow);
+
+              // Add marker type dropdown
+              const markerRow = document.createElement('div');
+              markerRow.classList.add('row', 'fieldPadding');
+              if (fieldLabelNumber % 2 != 0) markerRow.classList.add('fieldBackgroundColor');
+
+              const markerCol1 = document.createElement('div');
+              markerCol1.classList.add('col-3');
+              const markerCol2 = document.createElement('div');
+              markerCol2.classList.add('col');
+
+              const markerLabel = document.createElement('label');
+              markerLabel.textContent = fieldLabel[1] + ' Marker Type';
+              markerLabel.htmlFor = fieldLabel[0] + 'MarkerType';
+              const markerSelect = document.createElement('select');
+              markerSelect.id = fieldLabel[0] + 'MarkerType';
+              markerSelect.name = 'plotFields';
+
+              ['circle', 'square', 'diamond', 'star'].forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                opt.innerHTML = type.charAt(0).toUpperCase() + type.slice(1);
+                markerSelect.appendChild(opt);
+              });
+
+              const markerSaved = fillFormFieldValues(markerSelect.id, interactive_arguments);
+              if (markerSaved) markerSelect.value = markerSaved;
+
+              markerSelect.addEventListener('change', logFormFieldValues);
+              markerCol1.appendChild(markerLabel);
+              markerCol2.appendChild(markerSelect);
+              markerRow.append(markerCol1, markerCol2);
+              newDiv.append(markerRow);
 
             //   // Create the informational text box
             //   const infoBox = document.createElement("div");
