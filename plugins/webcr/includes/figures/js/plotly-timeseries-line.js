@@ -811,7 +811,7 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
 
             //Add checkboxes for error bars, standard deviation, mean, and percentiles
             const features = ["Legend", "ConnectGaps", "Mean", "StdDev", "ErrorBars", "Percentiles", "EvaluationPeriod", "EventMarker1", "EventMarker2"];
-            const featureNames = ["Graph Legend Visible?", "Connect Line Gaps (Missing Data)?","Mean Line Visible?", "Standard Deviation Fill Visible?", "Error Bars Visible?", "90th & 10th Percentile Lines (Auto Calculated) Visible?", "Evaluation Period Visible?", "Event Marker 1 Visible?", "Event Marker 2 Visible?"];
+            const featureNames = ["Graph Legend Visible?", "Connect Line Gaps (Missing Data)?","Mean Line Visible?", "Standard Deviation Fill Visible?", "Symmetric Error Bars Visible?", "90th & 10th Percentile Lines (Auto Calculated) Visible?", "Evaluation Period Visible?", "Event Marker 1 Visible?", "Event Marker 2 Visible?"];
             for (let i = 0; i < features.length; i++) {
                 const feature = features[i];
                 const featureName = featureNames[i];

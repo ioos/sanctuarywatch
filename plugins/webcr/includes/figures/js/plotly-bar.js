@@ -767,7 +767,7 @@ function displayBarFields (numBars, jsonColumns, interactive_arguments) {
 
                 //Add checkboxes for error bars, standard deviation, mean, and percentiles
                 const features = ["Legend", "Mean", "ErrorBars", "Percentiles", "Stacked"];
-                const featureNames = ["Graph Legend Visible?", "Mean Bar Visible?", "Error Bars Visible?", "90th & 10th Percentile Bars (Auto Calculated) Visible?", "Stack Bar by X Axis Column Values? (Not for use with Mean, Error Bars, or Percentiles)"];
+                const featureNames = ["Graph Legend Visible?", "Mean Bar Visible?", "Symmetric Error Bars Visible?", "90th & 10th Percentile Bars (Auto Calculated) Visible?", "Stack Bar by X Axis Column Values? (Not for use with Mean, Error Bars, or Percentiles)"];
                 for (let i = 0; i < features.length; i++) {
                     const feature = features[i];
                     const featureName = featureNames[i];
