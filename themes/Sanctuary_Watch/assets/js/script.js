@@ -1214,7 +1214,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
             const plotDiv = document.getElementById(plotlyDivID);
             if (plotDiv) {
                 plotDiv.style.maxWidth = "100%";
-                plotDiv.style.height = "350px"; // Force a good height for mobile
+                plotDiv.style.height = "400px"; // Force a good height for mobile
                 plotDiv.style.width = "100%";
                 Plotly.Plots.resize(plotDiv);
             }
@@ -1351,6 +1351,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
                     console.error("Plotly interactive plot error:", err);
                 }
             }
+            
             figureTimeseriesGraphLoaded(title, postID, gaMeasurementID);
 
         break;
