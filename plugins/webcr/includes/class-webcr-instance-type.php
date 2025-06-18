@@ -140,12 +140,27 @@ class Webcr_Instance_Type {
         <?php
     }
 
+    /**
+     * Callback function for rendering the Google Tags Container ID field in the settings page.
+     *
+     * This function generates an input field for the Google Tags Container ID and provides
+     * additional instructions and links for users to configure their Google Tag Manager setup.
+     * It also includes a JavaScript implementation to dynamically modify and download a JSON
+     * container file with user-provided IDs.
+     *
+     * @return void
+     */
     function google_tags_container_id_field_callback() {
+        // Retrieve the plugin settings from the WordPress options table.
         $options = get_option('webcr_settings');
+        // Get the Google Tags Container ID from the settings, or set a default empty value.
         $value = isset($options['google_tags_container_id']) ? $options['google_tags_container_id'] : '';
+        // Get the Google Analytics Measurement ID from the settings, or set a default empty value.
         $value_GTMContainer = isset($options['google_analytics_measurement_id']) ? $options['google_analytics_measurement_id'] : '';
+        // Define the example JSON file name and its folder path.
         $example_container_json = 'example_google_container_tags.json';
         $example_folder = get_site_url() . '/wp-content/plugins/webcr/example_files/';
+        // Generate the full URL for the example JSON file.
         $filedownload =  esc_url($example_folder . $example_container_json)
 
         ?>
@@ -169,6 +184,16 @@ class Webcr_Instance_Type {
 
 
         <script>
+            /**
+            * JavaScript functionality:
+            * - Listens for a click event on the "Download Container File" link.
+            * - Fetches the example JSON file from the server.
+            * - Dynamically replaces placeholder values ("G-EXAMPLE" and "GTM-EXAMPLE") in the JSON
+            *   with the user-provided Google Analytics Measurement ID and Google Tags Container ID.
+            * - Creates a downloadable JSON file with the modified data.
+            * - Triggers the download of the modified file.
+            * - Handles errors during the fetch process and logs them to the console.
+            */
             document.getElementById('downloadLink').addEventListener('click', function (event) {
                 event.preventDefault();  // Prevent the default link behavior
 
@@ -232,7 +257,6 @@ class Webcr_Instance_Type {
     }
 
     
-   
    // Create the settings page
    function webcr_settings_page() {
        // Check user capabilities
