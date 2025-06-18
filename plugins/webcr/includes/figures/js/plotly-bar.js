@@ -402,6 +402,7 @@ async function producePlotlyBarFigure(targetFigureElement, interactive_arguments
                     yanchor: 'bottom'
                 },
                 autosize: true,
+                margin: { t: 60, b: 60, l: 60, r: 60 },
                 cliponaxis: true
             };
                         

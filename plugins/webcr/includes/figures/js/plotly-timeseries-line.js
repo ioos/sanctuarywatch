@@ -410,8 +410,9 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
 
             }
 
+            //const container = document.getElementById(plotlyDivID); 
 
-            //ADMIN SIDE GRAPH DISPLAY SETTINGS
+            //GRAPH DISPLAY SETTINGS
             var layout = {
                 xaxis: {
                     title: {
@@ -437,7 +438,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     yanchor: 'bottom'
                 },
                 autosize: true,
-                //margin: { t: -30, b: -30, l: -30, r: -30 },
+                margin: { t: 60, b: 60, l: 60, r: 60 },
                 //width: container.clientWidth, 
                 //height: container.clientHeight,
                 cliponaxis: true
