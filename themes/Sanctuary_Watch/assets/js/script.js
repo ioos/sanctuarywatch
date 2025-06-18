@@ -16,6 +16,17 @@ function debounce(func, delay) {
     };
 }
 
+/**
+ * Converts a hex color code to an RGBA color string.
+ *
+ * @function
+ * @param {string} hex - The hex color code (e.g., "#ff0000" or "ff0000").
+ * @param {number} opacity - The opacity value for the RGBA color (between 0 and 1).
+ * @returns {string} The RGBA color string (e.g., "rgba(255, 0, 0, 0.5)").
+ *
+ * @example
+ * hexToRgba('#3498db', 0.7); // returns "rgba(52, 152, 219, 0.7)"
+ */
 function hexToRgba(hex, opacity) {
     // Remove the hash if it's present
     hex = hex.replace(/^#/, '');
@@ -29,6 +40,8 @@ function hexToRgba(hex, opacity) {
     // Return the rgba color string
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
+
+
 /**
  * Traps the focus within a specified modal element, ensuring that the user cannot tab out of it.
  *
@@ -39,8 +52,6 @@ function hexToRgba(hex, opacity) {
  * @param {HTMLElement} modalElement - The modal element within which focus should be trapped.
  * @returns {Function} cleanup - A function that removes the event listeners and deactivates the focus trap.
  */
-
-
 function trapFocus(modalElement) {
     function getFocusableElements() {
         return Array.from(modalElement.querySelectorAll(
@@ -234,7 +245,6 @@ for (const [key, value] of sorted_child_entries) {
  * a predefined set of numbered fields (from 1 to 6) in the `scene_data`, checking for non-empty text and URLs. If valid data is found, 
  * it creates a collapsible accordion section with the relevant links and displays them.
  */
-
 function make_scene_elements(info, iText, iUrl, scene_data, type, name){
     let collapseListHTML = '<div><ul>';
     for (let i = 1; i < 7; i++){
@@ -285,7 +295,6 @@ function make_scene_elements(info, iText, iUrl, scene_data, type, name){
  * @throws {Error} - Throws an error if the network response is not OK or if the SVG cannot be fetched or parsed.
  *  @throws {Error} - Throws an error if scene data not found or error fetching data
  */
-
 async function make_title() {
     const protocol = window.location.protocol;
     const host = window.location.host;
@@ -540,6 +549,35 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
         }
     }
 
+    /**
+     * Updates the number of columns and rows for the layout based on the current window dimensions.
+     * 
+     * This function dynamically adjusts the styles of various DOM elements to accommodate
+     * either landscape or portrait orientation. It sets the number of columns (`numCols`)
+     * and calculates the number of rows (`numRows`) required for displaying icons.
+     * 
+     * - In landscape mode (width > height), it applies specific styles for a wider layout.
+     * - In portrait mode, it restores original or mobile-specific styles.
+     * 
+     * The function then updates the layout and re-initializes modal dialogs.
+     * 
+     * Side Effects:
+     * - Modifies the `style` attribute of several DOM elements:
+     *   - `#mobile-view-image`
+     *   - `#scene-fluid`
+     *   - `#title-container > div > div.col-md-2`
+     *   - `#mobileModal > div`
+     *   - `#myModal > div`
+     * - Calls `updateLayout(numCols, numRows)` to update the grid.
+     * - Calls `add_modal()` to re-initialize modals.
+     * 
+     * Assumes:
+     * - `iconsArr` is a global array containing the icons to display.
+     * - `updateLayout` and `add_modal` are globally available functions.
+     * 
+     * @function
+     * @returns {void}
+     */
     function updateNumCols() {
         console.log("updateNumCols fired (debounced)"); // Confirms debounced execution
 
@@ -1117,7 +1155,38 @@ function createAccordionItem(accordionId, headerId, collapseId, buttonText, coll
     return accordionItem;
 }
 
-
+/**
+ * Renders interactive plots (e.g., Plotly graphs) within a specified tab content element.
+ * Handles dynamic loading, resizing for mobile, and tab switching behavior.
+ *
+ * @async
+ * @function render_interactive_plots
+ * @param {HTMLElement} tabContentElement - The DOM element representing the tab content where the plot will be rendered.
+ * @param {Object} info_obj - An object containing information about the plot to be rendered.
+ * @param {number} info_obj.postID - The unique identifier for the post associated with the plot.
+ * @param {string} info_obj.figureType - The type of figure to render (e.g., "Interactive").
+ * @param {string} info_obj.figureTitle - The title of the figure.
+ * @param {string} info_obj.figure_interactive_arguments - A JSON string containing arguments for rendering the interactive figure.
+ *
+ * @throws {Error} Throws an error if required DOM elements are not found within the specified timeout.
+ *
+ * @description
+ * This function dynamically renders interactive plots using Plotly. It includes:
+ * - Polling for required DOM elements before rendering.
+ * - Adjusting layout for mobile devices.
+ * - Handling tab switching events to resize plots appropriately.
+ * - Supporting multiple graph types, such as "Plotly line graph (time series)" and "Plotly bar graph".
+ *
+ * @example
+ * const tabContentElement = document.getElementById('tab-content');
+ * const info_obj = {
+ *   postID: 123,
+ *   figureType: "Interactive",
+ *   figureTitle: "Sample Plot",
+ *   figure_interactive_arguments: JSON.stringify({ graphType: "Plotly line graph (time series)" })
+ * };
+ * await render_interactive_plots(tabContentElement, info_obj);
+ */
 async function render_interactive_plots(tabContentElement, info_obj) {
     let postID = info_obj["postID"];
     let figureType = info_obj["figureType"];
@@ -1466,10 +1535,10 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
         break;
 
         case "Interactive":
+            // Create a div for the interactive figure, the rest will be handled by the render_interactive_plots function
             img = document.createElement('div');
             img.id = `javascript_figure_target_${postID}`;
             await figureDiv.appendChild(img);           
-
         break;
 
         case "Code":
@@ -1569,7 +1638,6 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     // Add the details element to the tab content element
     tabContentContainer.appendChild(tabContentElement);
 
-
     //Google Tags registration for figure science and data links
     if (info_obj['scienceText']!=''){
         setupFigureScienceLinkTracking(postID);
@@ -1577,8 +1645,6 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
     if (info_obj['dataLink']!=''){
         setupFigureDataLinkTracking(postID);
     }
-
-
     //Finish the containers and give them the correct properties.
     switch (figureType) {
         case "Internal":
@@ -2568,7 +2634,6 @@ function table_of_contents(){
  * called in load_svg if user wants a list with no sections displayed/no sections exist
  * 
  */
-
 function list_toc(){
     
     let sections = [];
