@@ -53,6 +53,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 			$existing_file = get_post_meta($post_id, 'uploaded_file', true);
 			$file_label = $existing_file ? 'Current File: ' . basename($existing_file) : '';
 
+
 			// Style for the .custom-div where the light grey text is located. 
 			echo '<style>
 			.custom-div {
@@ -84,10 +85,17 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
 			<div class="custom-div">
 				<?php
+				// Output the existing file information if it exists
+				if ( $existing_file ) {
+					$existing_file_folder = get_site_url() . '/wp-content/data/figure_' . $post_id . '/';
+					echo '<a href="' . esc_url($existing_file_folder . $existing_file) . '" target="_blank">Download Your File</a><br>';
+				}
 				echo '<br>';
 				echo '<strong>Upload Information:</strong><br>';
 				echo esc_attr__( 'Max amount of files: ', 'exopite-sof' ) . $this->field['options']['filecount'] . '<br>';
-				echo esc_attr__( 'Allowed file types: ', 'exopite-sof' ) . '.csv, .json'  . '<br><br>';
+				echo esc_attr__( 'Allowed file types: ', 'exopite-sof' ) . '.csv, .json'  . '<br>';
+				echo esc_attr__( 'Maximum Allowed File Size: ', 'exopite-sof' ) . '300MB'  . '<br>';
+				echo esc_attr__( 'Recommended File Size: ', 'exopite-sof' ) . '<= 5MB'  . '<br><br>';
 
 				// Output links to example files
 				// Define the folder path inside wp-content
