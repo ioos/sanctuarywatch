@@ -90,6 +90,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 					$existing_file_folder = get_site_url() . '/wp-content/data/figure_' . $post_id . '/';
 					echo '<a href="' . esc_url($existing_file_folder . $existing_file) . '" target="_blank">Download Your File</a><br>';
 				}
+				if ( !$existing_file ) {
+					echo 'Click "Browse" to select a file, Then click "Upload" to upload the file.<br>';
+				}
 				echo '<br>';
 				echo '<strong>Upload Information:</strong><br>';
 				echo esc_attr__( 'Max amount of files: ', 'exopite-sof' ) . $this->field['options']['filecount'] . '<br>';
@@ -112,7 +115,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				echo ' - Please see the date examples in the example files for accepted date formats and no data handling. <br>';
 				echo ' - The date formats are best viewed in Notepad or a similar text editor, MS Excel may automatically change date formats. <br>';
 				echo '<br>';
-				echo '<strong>Example Files:</strong><br>';
+				echo '<strong>Correctly Formatted Example Files:</strong><br>';
 				echo 'Please format your .csv or .json file as shown in the examples below. If they are not formatted properly, your file will be rejected.<br>';
 				echo '<a href="' . esc_url($example_folder . $example_csv) . '" target="_blank">Download example.csv</a><br>';
 				echo '<a href="' . esc_url($example_folder . $example_json) . '" target="_blank">Download example.json</a>';
@@ -286,7 +289,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
 			<script>
 			function clickUpdateButton() {
-				let updateButton = document.getElementById("publish"); // Find the button by ID
+				const updateButton = document.getElementById("publish"); // Find the button by ID
 				if (updateButton) {
 					updateButton.click(); // Simulate a click event
 					console.log("Update button clicked!");
@@ -294,6 +297,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 					console.error("Update button not found!");
 				}
 			}
+	
 			</script>
 
 
@@ -347,7 +351,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 					console.log("Server response:", data); // Debugging
 					if (data.success) {
 						alert("Success: " + (data.message || "File deleted successfully."));
-						location.reload(); // Refresh the page to reflect deletion
+						clickUpdateButton(); // Save and reload the page to reflect deletion
 					} else {
 						alert("Error: " + (data.message || "Delete failed."));
 					}
