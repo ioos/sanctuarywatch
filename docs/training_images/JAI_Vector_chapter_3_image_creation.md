@@ -31,10 +31,10 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     3. background
 
  - When optimizing a graphic for desktop and mobile, the required layer order of a JAI Vector image is shown in the image below.
-    1. text
-    2. icons
-    3. background
-    4. mobile
+    1. text (optional)
+    2. icons 
+    3. background (optional)
+    4. mobile (optional)
 
     - <img src="updated_images/image2-illustrator.png" alt="Alt Text" width="70%" height="70%">
 
@@ -109,6 +109,8 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orientation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the icons from your JAI Vector scene to be displayed in rows that are 3 across from top left to bottom right in with each of the graphics form the "icons" layer displayed inside of a grey rectangular button. 
 
      - Also, it is important to note that the layers from "icons" are automatically applied to the mobile format. Meaning you don't have to create them separately to for them to be displayed in mobile view. Only if an icon contains multiple components, or is an odd shape which is too wide or long, is it recommended to use this layer to create a "mobile" version of that specific icon. Put more simply, you only have to use this layer if you have icons that would need to be optimized for mobile view, with a different version of the icon than the one that is in the "icons" layer. 
+
+     - Within the mobile layer, all icon names should have the suffix "-mobile" added to them. For example, let's say we have an icon called "coral-reefs" within a svg that has an alternate view for mobile. Within the mobile layer, the relevant layer should be called "coral-reefs-mobile". 
 
      -  Below is an example of what your icons might look like when displayed in mobile view:
      - <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
@@ -242,7 +244,9 @@ If you check out the Layers panel for the image, you’ll see the following:
 
 4. **mobile**:
 
-     - This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orientation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the icons from your JAI Vector scene to be displayed in rows that are 3 across from top left to bottom right in with each of the graphics form the "icons" layer displayed inside of a grey rectangular button. 
+     - This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orientation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the icons from your JAI Vector scene to be displayed in rows that are 3 across from top left to bottom right in with each of the graphics form the "icons" layer displayed inside of a grey rectangular button.
+
+     - Within the mobile layer, all icon names should have the suffix "-mobile" added to them. For example, let's say we have an icon called "coral-reefs" within a svg that has an alternate view for mobile. Within the mobile layer, the relevant layer should be called "coral-reefs-mobile". 
 
      - Also, it is important to note that the layers from "icons" are automatically applied to the mobile format. Meaning you don't have to create them separately to for them to be displayed in mobile view. Only if an icon contains multiple components, or is an odd shape which is too wide or long, is it recommended to use this layer to create a "mobile" version of that specific icon. Put more simply, you only have to use this layer if you have icons that would need to be optimized for mobile view, with a different version of the icon than the one that is in the "icons" layer. 
 
