@@ -174,6 +174,10 @@ function process_child_obj(){
             let lastChar = oldkey.charAt(oldkey.length - 1);
 
             let isNumeric = /\d/.test(lastChar);
+
+            //The section of code below was commented out in accordance with issue #230 on github.
+            //icons in svgs not displaying when "-2" or "-3" being added to the name #230
+            //https://github.com/ioos/sanctuarywatch/issues/230
             // if (isNumeric){
             //     let newkey = child_obj[key]["original_name"];
             //     child_obj[newkey] = child_obj[key];
