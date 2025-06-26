@@ -102,6 +102,8 @@ function trapFocus(modalElement) {
 
 let child_obj = JSON.parse(JSON.stringify(child_ids));
 
+console.log(child_obj);
+
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
 
@@ -172,11 +174,11 @@ function process_child_obj(){
             let lastChar = oldkey.charAt(oldkey.length - 1);
 
             let isNumeric = /\d/.test(lastChar);
-            if (isNumeric){
-                let newkey = child_obj[key]["original_name"];
-                child_obj[newkey] = child_obj[key];
-                delete child_obj[key];
-            }
+            // if (isNumeric){
+            //     let newkey = child_obj[key]["original_name"];
+            //     child_obj[newkey] = child_obj[key];
+            //     delete child_obj[key];
+            // }
         }
     }
     //now sort by icon order
@@ -909,7 +911,6 @@ async function loadSVG(url, containerId) {
 function highlight_icons() {
     for (let key in child_obj) {
         let elem = document.querySelector('g[id="' + key + '"]');
-
         elem.addEventListener('mouseover', function (e) {
 
             let elemCollection = elem.querySelectorAll("*");
