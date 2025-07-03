@@ -175,14 +175,15 @@ function process_child_obj(){
 
             let isNumeric = /\d/.test(lastChar);
 
-            //The section of code below was commented out in accordance with issue #230 on github.
-            //icons in svgs not displaying when "-2" or "-3" being added to the name #230
-            //https://github.com/ioos/sanctuarywatch/issues/230
-            // if (isNumeric){
-            //     let newkey = child_obj[key]["original_name"];
-            //     child_obj[newkey] = child_obj[key];
-            //     delete child_obj[key];
-            // }
+            // The section of code below was commented out in accordance with issue #230 on github.
+            // icons in svgs not displaying when "-2" or "-3" being added to the name #230
+            // https://github.com/ioos/sanctuarywatch/issues/230
+            
+            if (isNumeric){
+                let newkey = child_obj[key]["original_name"];
+                child_obj[newkey] = child_obj[key];
+                delete child_obj[key];
+            }
         }
     }
     //now sort by icon order
@@ -779,6 +780,7 @@ function handleIconVisibility(svgElement, visible_modals) {
 async function loadSVG(url, containerId) {
     try {
         // Step 1: Fetch the SVG content
+        //console.log(url);
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -1311,6 +1313,69 @@ async function render_interactive_plots(tabContentElement, info_obj) {
 
                     await waitForElementByIdPolling(targetId, 1000);
                     await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                    await waitForPlotlyDiv(plotlyDivID);
+                    adjustPlotlyLayoutForMobile(postID);
+                    //console.log('RIP - PLOT1', postID);
+                    
+                    // // Manually trigger for initially active tab
+                    // if (tabContentElement.classList.contains("active")) {
+                    //     if (!document.getElementById(plotlyDivID)) {
+                    //         try {
+                    //             await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                    //             await waitForPlotlyDiv(plotlyDivID);
+                    //             adjustPlotlyLayoutForMobile(postID);
+                    //             //console.log('RIP - PLOT2', postID);
+                    //         } catch (err) {
+                    //             console.error(`Initial active tab Plotly error (${postID}):`, err);
+                    //         }
+                    //     }
+                    // }
+
+                    // Manually trigger for initially active tab
+                    const activeTab = document.querySelector('.tab-pane.active');
+                    if (activeTab && activeTab.id === tabContentElement.id) {
+                        if (!document.getElementById(plotlyDivID)) {
+                            await producePlotlyBarFigure(targetId, interactive_arguments, postID);
+                            await waitForPlotlyDiv(plotlyDivID);
+                            adjustPlotlyLayoutForMobile(postID);
+                            console.log('RIP - PLOT2', postID);
+                        }
+                    }
+
+                    document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
+                        tab.addEventListener('shown.bs.tab', () => {
+                            const plotDiv = document.getElementById(plotlyDivID);
+                            if (plotDiv) {
+                                setTimeout(() => {
+                                    Plotly.Plots.resize(plotDiv);
+                                    //console.log("Bootstrap event triggered resize:", plotlyDivID);
+                                }, 150);
+                            }
+                        });
+                    });            
+
+                } catch (err) {
+                    console.error("Plotly interactive plot error:", err);
+                }
+            }
+
+
+            if (graphType === "Plotly map") {
+
+                 async function waitForPlotlyDiv(plotlyDivID, retries = 20, interval = 250) {
+                    for (let i = 0; i < retries; i++) {
+                        const el = document.getElementById(plotlyDivID);
+                        if (el) return el;
+                        await new Promise(resolve => setTimeout(resolve, interval));
+                        await producePlotlyMap(targetId, interactive_arguments, postID);
+                    }
+                    throw new Error(`Plotly div ${plotlyDivID} not found after ${retries * interval}ms`);
+                }
+
+                try {
+
+                    await waitForElementByIdPolling(targetId, 1000);
+                    await producePlotlyMap(targetId, interactive_arguments, postID);
                     await waitForPlotlyDiv(plotlyDivID);
                     adjustPlotlyLayoutForMobile(postID);
                     //console.log('RIP - PLOT1', postID);
