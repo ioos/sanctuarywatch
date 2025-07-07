@@ -79,6 +79,8 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - The elements in the sub-layer, if named, should not have the same name as the sub-layer itself. So, for example, the following won’t work :
          - <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="60%" height="60%">
 
+     - Layer names for clickable elements cannot end with a dash followed by a number. For example, "octopus" is an acceptable name, but "octopus-1" and "octopus-4" are not.
+
     **Adding a background to complex objects to make them easy to highlight:**
 
      - It might be necessary to add a transparent rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches. In our example, we will use an added layer called "sardines" which is located in layers under "icons > sardines". 
@@ -230,7 +232,9 @@ If you check out the Layers panel for the image, you’ll see the following:
 
      - Each sub-layer contains all of the elements for a single clickable icon.
 
-     - The elements in the sub-layer, if named, should not have the same name as the sub-layer itself. 
+     - The elements in the sub-layer, if named, should not have the same name as the sub-layer itself. For   example, if a clickable sub-layer within the icons layer is intended to be called "whales", "whales" can only occur once as a layer name in the entire Illustrator file.
+
+     - Layer names for clickable elements cannot end with a dash followed by a number. For example, "whales" is an acceptable name, but "whales-1" and "whales-4" are not.
 
     **Adding a background to complex objects to make them easy to highlight:**
 
