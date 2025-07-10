@@ -5,6 +5,12 @@
  */
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_Instance {
+    
+    /**
+     * The plugin name
+     * @var string
+     */
+    private $plugin_name;
 
     public function __construct( $plugin_name ) {
 		$this->plugin_name = $plugin_name;
@@ -174,6 +180,17 @@ class Webcr_Instance {
                     'description' => 'What is the URL of the legacy content?',
                     'class'       => 'text-class',
                 ),
+            array(
+                'id'      => 'instance_footer_columns',
+                'type'    => 'range',
+                'title'   => 'Number of Instance Footer Columns',
+                'description' => 'How many instance-specific columns should there be in the footer?',
+                'min'     => 0,     
+                'max'     => 3,         
+                'step'    => 1,  
+                'default'     => $session_fields_exist ? $session_fields["instance_footer_columns"] : 0,         
+            ),     
+
                 array(
                     'type' => 'fieldset',
                     'id' => 'instance_footer',
@@ -218,6 +235,35 @@ class Webcr_Instance {
                 ),
             )
         );
+
+        // Step 1: Create an array to hold the new info sub-arrays
+        $footerInstanceFields = array();
+
+
+        // Step 2: Use a loop to generate the new info sub-arrays
+        for ($i = 1; $i <= 3; $i++) {
+            $footerInstanceFields[] = array(
+                'type' => 'fieldset',
+                'id' => 'instance_footer_column' . $i,
+                'title'   => 'Footer column ' . $i,
+                'fields' => array(
+                    array(
+                        'id'          => 'instance_footer_column_title' . $i,
+                        'type'        => 'text',
+                        'title'       => 'Column header',
+                        'class'       => 'text-class',
+                        'default'     => $session_fields_exist ? $session_fields['instance_footer_column_title' . $i] : '',  
+                    ),
+                    array(
+                        'id'          => 'instance_footer_column_content' . $i,
+                        'type'   => 'editor',
+                        'editor' => 'trumbowyg',
+                        'title'  => 'Column content', 
+                        'default'     => $session_fields_exist ? $session_fields['instance_footer_column_content' . $i] : '', 
+                    ),
+                ),
+            );
+        }
 
         // instantiate the admin page
         $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );

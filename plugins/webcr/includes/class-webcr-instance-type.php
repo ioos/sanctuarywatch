@@ -112,10 +112,10 @@ class Webcr_Instance_Type {
         $options = get_option('webcr_settings');
         // Ensure the correct option key is used, assuming it's 'sitewide_footer_title'
         $value = isset($options['sitewide_footer_title']) ? $options['sitewide_footer_title'] : '';
-        
+        ?>
         <input type="text" name="webcr_settings[sitewide_footer_title]" value="<?php echo esc_attr($value); ?>" class="regular-text">
 
-        ?>
+
         <p class="description">Enter the title for the site-wide footer. This will appear as the heading for the first column in the footer across all pages. If you don't want a title, leave this field blank.</p>
         <?php
     }

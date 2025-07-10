@@ -9,6 +9,12 @@ include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility
 class Webcr_Figure {
 
     /**
+     * The plugin name
+     * @var string
+     */
+    private $plugin_name;
+    
+    /**
      * Class constructor for the WebCR Figure class.
      * Initializes the class with the plugin name and registers AJAX actions for file upload and deletion.
      *

@@ -6,6 +6,12 @@
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_About {
 
+    /**
+     * The plugin name
+     * @var string
+     */
+    private $plugin_name;
+
     public function __construct( $plugin_name ) {
 		$this->plugin_name = $plugin_name;
 	}
