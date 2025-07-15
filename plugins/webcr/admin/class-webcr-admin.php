@@ -440,4 +440,53 @@ class Webcr_Admin {
 		}
 	}
 
+	/**
+	 * Adjusts post time display for custom post types from UTC to local timezone.
+	 * 
+	 * This function intercepts WordPress post time retrieval and converts UTC timestamps
+	 * to the site's local timezone for specified custom post types. It works for both
+	 * post publication dates and modification dates.
+	 * 
+	 * The function only processes custom post types defined in the $custom_post_types
+	 * array and only when the GMT parameter is false (indicating local time is requested).
+	 * This ensures that UTC times are preserved when explicitly requested.
+	 * 
+	 * @param string|int     $time The formatted time string or Unix timestamp being filtered.
+	 * @param string         $d    The date/time format. If empty, defaults to Unix timestamp ('U').
+	 * @param bool           $gmt  Whether to retrieve the GMT/UTC time. If true, no conversion is applied.
+	 * 
+	 * @return string|int The time value, converted to local timezone if conditions are met,
+	 *                    otherwise returns the original time value unchanged.
+	 * 
+	 * @global WP_Post $post The current post object being processed.
+	 * 
+	 * @uses get_post_type()      To retrieve the post type of the current post.
+	 * @uses get_date_from_gmt()  To convert GMT/UTC time to local timezone.
+	 * @uses in_array()           To check if current post type is in the custom types array.
+	 * 
+	 */
+	function adjust_post_time_for_custom_types($time, $d, $gmt) {
+		if (is_admin()) {
+			global $post;
+			
+			// Define custom post types that need timezone adjustment
+			$custom_post_types = array('instance', 'scene', 'modal', 'figure', 'about');
+			
+			// Only process if we have a post object, it's a custom post type, and local time is requested
+			if ($post && in_array(get_post_type($post), $custom_post_types) && !$gmt) {
+				// Get the raw post date from the post object
+				$post_date = $post->post_date;
+				
+				// Convert from UTC to local timezone using WordPress function
+				$local_date = get_date_from_gmt($post_date, $d ?: 'U');
+				
+				return $local_date;
+			}
+			
+			return $time;
+		}
+	}
+
+
 }
+
