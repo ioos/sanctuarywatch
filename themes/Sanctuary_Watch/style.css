@@ -884,7 +884,7 @@ button:focus,
   } 
 
   #title-container{
-     margin-left: 4%; 
+     padding-left: 4%; 
   }
 
   #title-container > div > div.col-md-10{
@@ -899,6 +899,7 @@ button:focus,
   #scene-row > div.col-md-10{
   /*  margin-left: -5.7% !important;
     width: 97.333333% !important; */
+    padding-left: 3.5%;
   }
 
   #svg1{
@@ -907,6 +908,7 @@ button:focus,
   #toc-container{
  /*     margin-left: -22% !important;
     padding-right: 0% !important; */
+    padding-left: 3.4%;
   }
 
   #toc-group{

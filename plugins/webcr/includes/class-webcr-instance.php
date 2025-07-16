@@ -5,6 +5,12 @@
  */
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_Instance {
+    
+    /**
+     * The plugin name
+     * @var string
+     */
+    private $plugin_name;
 
     public function __construct( $plugin_name ) {
 		$this->plugin_name = $plugin_name;
@@ -86,6 +92,13 @@ class Webcr_Instance {
             'tabbed'            => true,
             'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
         );
+
+        $session_fields_exist = false;
+        if (isset($_SESSION["instance_error_all_fields"])) {
+            $session_fields = $_SESSION["instance_error_all_fields"];
+            $session_fields_exist = true;
+        }  
+
 
         // get list of locations, which is saved as a taxonomy
         $function_utilities = new Webcr_Utility();
@@ -174,6 +187,17 @@ class Webcr_Instance {
                     'description' => 'What is the URL of the legacy content?',
                     'class'       => 'text-class',
                 ),
+            array(
+                'id'      => 'instance_footer_columns',
+                'type'    => 'range',
+                'title'   => 'Number of Instance Footer Columns',
+                'description' => 'How many instance-specific columns should there be in the footer?',
+                'min'     => 0,     
+                'max'     => 3,         
+                'step'    => 1,  
+                'default'     => $session_fields_exist ? $session_fields["instance_footer_columns"] : 0,         
+            ),     
+
                 array(
                     'type' => 'fieldset',
                     'id' => 'instance_footer',
@@ -239,6 +263,35 @@ class Webcr_Instance {
                 ),
             )
         );
+
+        // Step 1: Create an array to hold the new info sub-arrays
+        $footerInstanceFields = array();
+
+
+        // Step 2: Use a loop to generate the new info sub-arrays
+        for ($i = 1; $i <= 3; $i++) {
+            $footerInstanceFields[] = array(
+                'type' => 'fieldset',
+                'id' => 'instance_footer_column' . $i,
+                'title'   => 'Footer column ' . $i,
+                'fields' => array(
+                    array(
+                        'id'          => 'instance_footer_column_title' . $i,
+                        'type'        => 'text',
+                        'title'       => 'Column header',
+                        'class'       => 'text-class',
+                        'default'     => $session_fields_exist ? $session_fields['instance_footer_column_title' . $i] : '',  
+                    ),
+                    array(
+                        'id'          => 'instance_footer_column_content' . $i,
+                        'type'   => 'editor',
+                        'editor' => 'trumbowyg',
+                        'title'  => 'Column content', 
+                        'default'     => $session_fields_exist ? $session_fields['instance_footer_column_content' . $i] : '', 
+                    ),
+                ),
+            );
+        }
 
         // instantiate the admin page
         $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
@@ -339,14 +392,15 @@ class Webcr_Instance {
         }
 
         if ($column === "status"){
-            date_default_timezone_set('America/Los_Angeles'); 
-            $last_modified_time = get_post_modified_time('g:i A', false, $post_id, true);
-            $last_modified_date = get_post_modified_time('F j, Y', false, $post_id, true);
+            $last_modified_timestamp = get_post_modified_time('U', false, $post_id);
+            $last_modified_time_str = wp_date(get_option('time_format'), $last_modified_timestamp);
+            $last_modified_date_str = wp_date(get_option('date_format'), $last_modified_timestamp);
+
             $last_modified_user_id = get_post_field('post_author', $post_id);
             $last_modified_user = get_userdata($last_modified_user_id);
             $last_modified_name = $last_modified_user -> first_name . " " . $last_modified_user -> last_name; 
 
-            echo "Last updated at " . $last_modified_time . " Pacific Time on " . $last_modified_date . " by " . $last_modified_name;
+            echo "Last updated at " . esc_html($last_modified_time_str) . " on " . esc_html($last_modified_date_str) . " by " . esc_html($last_modified_name);
         }
     }
 

@@ -446,4 +446,107 @@ class Webcr_Admin {
 		}
 	}
 
+function adjust_admin_post_time_display() {
+    global $post;
+    
+    // Only run on edit screens for your custom post types
+    $screen = get_current_screen();
+    if (!$screen || $screen->base !== 'post') {
+        return;
+    }
+    
+    $custom_post_types = array('instance', 'scene', 'modal', 'figure', 'about');
+    if (!in_array($screen->post_type, $custom_post_types)) {
+        return;
+    }
+    
+    // Get the post and convert time to local timezone
+    if ($post && $post->post_date) {
+        // Convert to 12-hour format with AM/PM
+        $local_time = get_date_from_gmt($post->post_date, 'F j, Y @ g:i A');
+        
+        // Get the user who published the post
+        $author = get_userdata($post->post_author);
+        
+        if ($author) {
+            $first_name = $author->first_name;
+            $last_name = $author->last_name;
+            
+            // Use first name + last name if both are available
+            if (!empty($first_name) && !empty($last_name)) {
+                $author_name = $first_name . ' ' . $last_name;
+            } elseif (!empty($first_name)) {
+                // Use just first name if only first name is available
+                $author_name = $first_name;
+            } elseif (!empty($last_name)) {
+                // Use just last name if only last name is available
+                $author_name = $last_name;
+            } else {
+                // Fall back to display name if no first/last name
+                $author_name = $author->display_name;
+            }
+        } else {
+            $author_name = 'Unknown';
+        }
+        
+        // Get the last modification details
+        $last_modified_time = '';
+        $last_modified_by = '';
+        
+        // Get the most recent revision
+        $revisions = wp_get_post_revisions($post->ID, array(
+            'numberposts' => 1,
+            'orderby' => 'date',
+            'order' => 'DESC'
+        ));
+        
+        if (!empty($revisions)) {
+            // Get the most recent revision
+            $latest_revision = reset($revisions);
+            
+            // Get the modification time and convert to local timezone
+            $last_modified_time = get_date_from_gmt($latest_revision->post_date, 'F j, Y @ g:i A');
+            
+            // Get the user who made the last modification
+            $modifier = get_userdata($latest_revision->post_author);
+            
+            if ($modifier) {
+                $modifier_first_name = $modifier->first_name;
+                $modifier_last_name = $modifier->last_name;
+                
+                // Use first name + last name if both are available
+                if (!empty($modifier_first_name) && !empty($modifier_last_name)) {
+                    $last_modified_by = $modifier_first_name . ' ' . $modifier_last_name;
+                } elseif (!empty($modifier_first_name)) {
+                    // Use just first name if only first name is available
+                    $last_modified_by = $modifier_first_name;
+                } elseif (!empty($modifier_last_name)) {
+                    // Use just last name if only last name is available
+                    $last_modified_by = $modifier_last_name;
+                } else {
+                    // Fall back to display name if no first/last name
+                    $last_modified_by = $modifier->display_name;
+                }
+            } else {
+                $last_modified_by = 'Unknown';
+            }
+        }
+        
+        ?>
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            // Find and replace the timestamp in the publish metabox
+            <?php if (!empty($revisions)): ?>
+            replacementText = "Published on: <b><?php echo esc_js($local_time); ?></b> by <b><?php echo esc_js($author_name); ?></b><br><span class='dashicons dashicons-calendar-alt' style='margin-right: 5px;'></span>Last modified on: <b><?php echo esc_js($last_modified_time); ?></b> by <b><?php echo esc_js($last_modified_by); ?></b>";
+            <?php else: ?>
+            replacementText = "Published on: <b><?php echo esc_js($local_time); ?></b> by <b><?php echo esc_js($author_name); ?></b>";
+            <?php endif; ?>
+            $('#timestamp').html(replacementText);
+        });
+        </script>
+        <?php
+    }
 }
+
+}
+

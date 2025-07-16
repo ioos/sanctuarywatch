@@ -316,7 +316,7 @@ async function make_title() {
 
         let accgroup = document.createElement("div");
         if (!is_mobile()) {
-            accgroup.setAttribute("style", "margin-top: 2%");
+      //      accgroup.setAttribute("style", "margin-top: 2%");
         } else {
             accgroup.setAttribute("style", "max-width: 85%; margin-top: 2%");
         }
@@ -372,8 +372,6 @@ async function make_title() {
         }
         row.appendChild(col2);
         row.appendChild(col1);
-
-        row.setAttribute("style", "margin-top: 1%");
 
         titleDom.append(row);
  

@@ -187,7 +187,8 @@ class Webcr {
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin, 'remove_view_link_from_post_type', 10, 2); 
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'plugin_check_required_theme' ); 
 		$this->loader->add_action( 'init', $plugin_admin, 'start_session' ); 
-
+		$this->loader->add_action( 'admin_footer-post.php', $plugin_admin, 'adjust_admin_post_time_display', 10); 
+		$this->loader->add_action( 'admin_footer-post-new.php', $plugin_admin, 'adjust_admin_post_time_display', 10); 
 
 		// Load  class and functions associated with About custom content type
 		$plugin_admin_about = new Webcr_About ( $this->get_plugin_name(), $this->get_version() );		
