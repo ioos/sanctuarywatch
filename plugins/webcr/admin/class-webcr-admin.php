@@ -440,53 +440,62 @@ class Webcr_Admin {
 		}
 	}
 
-	/**
-	 * Adjusts post time display for custom post types from UTC to local timezone.
-	 * 
-	 * This function intercepts WordPress post time retrieval and converts UTC timestamps
-	 * to the site's local timezone for specified custom post types. It works for both
-	 * post publication dates and modification dates.
-	 * 
-	 * The function only processes custom post types defined in the $custom_post_types
-	 * array and only when the GMT parameter is false (indicating local time is requested).
-	 * This ensures that UTC times are preserved when explicitly requested.
-	 * 
-	 * @param string|int     $time The formatted time string or Unix timestamp being filtered.
-	 * @param string         $d    The date/time format. If empty, defaults to Unix timestamp ('U').
-	 * @param bool           $gmt  Whether to retrieve the GMT/UTC time. If true, no conversion is applied.
-	 * 
-	 * @return string|int The time value, converted to local timezone if conditions are met,
-	 *                    otherwise returns the original time value unchanged.
-	 * 
-	 * @global WP_Post $post The current post object being processed.
-	 * 
-	 * @uses get_post_type()      To retrieve the post type of the current post.
-	 * @uses get_date_from_gmt()  To convert GMT/UTC time to local timezone.
-	 * @uses in_array()           To check if current post type is in the custom types array.
-	 * 
-	 */
-	function adjust_post_time_for_custom_types($time, $d, $gmt) {
-		if (is_admin()) {
-			global $post;
-			
-			// Define custom post types that need timezone adjustment
-			$custom_post_types = array('instance', 'scene', 'modal', 'figure', 'about');
-			
-			// Only process if we have a post object, it's a custom post type, and local time is requested
-			if ($post && in_array(get_post_type($post), $custom_post_types) && !$gmt) {
-				// Get the raw post date from the post object
-				$post_date = $post->post_date;
-				
-				// Convert from UTC to local timezone using WordPress function
-				$local_date = get_date_from_gmt($post_date, $d ?: 'U');
-				
-				return $local_date;
-			}
-			
-			return $time;
-		}
-	}
+function adjust_admin_post_time_display() {
+    global $post;
+    
+    // Only run on edit screens for your custom post types
+    $screen = get_current_screen();
+    if (!$screen || $screen->base !== 'post') {
+        return;
+    }
+    
+    $custom_post_types = array('instance', 'scene', 'modal', 'figure', 'about');
+    if (!in_array($screen->post_type, $custom_post_types)) {
+        return;
+    }
+    
+    // Get the post and convert time to local timezone
+    if ($post && $post->post_date) {
+        // Convert to 12-hour format with AM/PM
+        $local_time = get_date_from_gmt($post->post_date, 'F j, Y @ g:i A');
+        
+        // Get the user who published the post
+        $author = get_userdata($post->post_author);
+        
+        if ($author) {
+            $first_name = $author->first_name;
+            $last_name = $author->last_name;
+            
+            // Use first name + last name if both are available
+            if (!empty($first_name) && !empty($last_name)) {
+                $author_name = $first_name . ' ' . $last_name;
+            } elseif (!empty($first_name)) {
+                // Use just first name if only first name is available
+                $author_name = $first_name;
+            } elseif (!empty($last_name)) {
+                // Use just last name if only last name is available
+                $author_name = $last_name;
+            } else {
+                // Fall back to display name if no first/last name
+                $author_name = $author->display_name;
+            }
+        } else {
+            $author_name = 'Unknown';
+        }
+        
+        ?>
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            // Find and replace the timestamp in the publish metabox
+			replacementText = "Published on: <b><?php echo esc_js($local_time); ?></b> by <b><?php echo esc_js($author_name); ?></b><br><span class='dashicons dashicons-calendar-alt' style='margin-right: 5px;'></span>Last modified on: "
+  //          $('#timestamp').html('Published on: <b><?php echo esc_js($local_time); ?></b> by <b><?php echo esc_js($author_name); ?></b><br><span class="dashicons dashicons-calendar-alt" style="margin-right: 5px;"></span>Last modified on:' );
+            $('#timestamp').html(replacementText );
 
+		});
+        </script>
+        <?php
+    }
+}
 
 }
 
