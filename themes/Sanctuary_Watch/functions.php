@@ -526,6 +526,28 @@ function enqueue_plotly_script() {
 add_action('wp_enqueue_scripts', 'enqueue_plotly_script');
 
 
+function enqueue_plotly_bar_script() {
+  wp_enqueue_script(
+    'plotly-bar', 
+    content_url() . '/plugins/webcr/includes/figures/js/plotly-bar.js', 
+    array(), '1.0.0', 
+    array('strategy'  => 'defer')
+  );
+}
+add_action('wp_enqueue_scripts', 'enqueue_plotly_bar_script');
+
+
+function enqueue_plotly_map_script() {
+  wp_enqueue_script(
+    'plotly-map', 
+    content_url() . '/plugins/webcr/includes/figures/js/plotly-map.js', 
+    array(), '1.0.0', 
+    array('strategy'  => 'defer')
+  );
+}
+add_action('wp_enqueue_scripts', 'enqueue_plotly_map_script');
+
+
 function enqueue_google_tags_scripts() {
   wp_enqueue_script(
       'googletags',

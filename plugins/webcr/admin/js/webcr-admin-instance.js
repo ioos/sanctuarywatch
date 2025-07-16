@@ -37,7 +37,8 @@ function writeCookieValuesToInstanceFields() {
             
             // Fill in values for simple fields
             const instanceFieldNames = ["instance_short_title", "instance_slug", "instance_type", "instance_overview_scene",
-                "instance_status", "instance_tile", "instance_legacy_content", "instance_legacy_content_url"];
+                "instance_status", "instance_tile", "instance_legacy_content", "instance_legacy_content_url", "instance_footer_column_title_1",
+                "instance_footer_column_title_2", "instance_footer_column_title_3"];
 
 			instanceFieldNames.forEach((element) => {
 				document.getElementsByName(element)[0].value = instanceCookieValues[element];

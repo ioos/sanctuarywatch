@@ -690,13 +690,6 @@ class Webcr_Scene {
                 'options'        => $instances, 
                 'description' => 'What instance is the scene part of? '
             ),
-            // array(
-            //     'id'             => 'instance_overview_scene',
-            //     'type'           => 'select',
-            //     'title'          => 'Overview Scene',
-            //     //'options'        => $scenes,
-            //     'description' => '',
-            // ),
             array(
                 'id'   => 'scene_infographic',
                 'type' => 'image',

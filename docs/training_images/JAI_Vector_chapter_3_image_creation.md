@@ -31,41 +31,17 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     3. background
 
  - When optimizing a graphic for desktop and mobile, the required layer order of a JAI Vector image is shown in the image below.
-    1. mobile
-    2. text
-    3. icons
-    4. background
+    1. text (optional)
+    2. icons 
+    3. background (optional)
+    4. mobile (optional)
 
     - <img src="updated_images/image2-illustrator.png" alt="Alt Text" width="70%" height="70%">
 
 ### 3.1.1 Layer organization
 
-1. **mobile**: 
-     - This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orientation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the icons from your JAI Vector scene to be displayed in rows that are 3 across from top left to bottom right in with each of the graphics form the "icons" layer displayed inside of a grey rectangular button. 
 
-     - Also, it is important to note that the layers from "icons" are automatically applied to the mobile format. Meaning you don't have to create them separately to for them to be displayed in mobile view. Only if an icon contains multiple components, or is an odd shape which is too wide or long, is it recommended to use this layer to create a "mobile" version of that specific icon. Put more simply, you only have to use this layer if you have icons that would need to be optimized for mobile view, with a different version of the icon than the one that is in the "icons" layer. 
-
-     -  Below is an example of what your icons might look like when displayed in mobile view:
-     - <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
-     
-     **How to create a mobile icon:**
-
-     - For this example, we are going to show you how to create the "sardines" sublayer that is currently under the "mobile" layer (Top Navigation Bar > Window > Layers > mobile). The "sardines" sublayer under the "icons" layer, as seen below is clunky and would not make a good mobile icon. Therefore, we are going to re-imagine it in a format that would suit a mobile button by placing it inside of the "mobile" layer. To avoid confusion, you can turn off the existing "mobile > sardines" layer by clicking the right-arrow next to "mobile" to expand the layer, then clicking on the eye ball icon to the left of the sublayer named "sardines" that is nested under "mobile".
-     - <img src="updated_images/image22-illustrator.png" alt="Alt Text" width="40%" height="40%">
-     
-     - Step 1: Click on the "mobile" layer. In the top-right click the three stacked lines to access the layers menu. Then click on "New Sublayer" in the dropdown menu. You can also create the top level "mobile" layer here as needed by selecting "New Layer" instead. 
-     - <img src="updated_images/image7-illustrator.png" alt="Alt Text" width="70%" height="70%">
-        
-     - Step 2: In the dialog box that appears go ahead and give your new sublayer a name. For this example, we have just created a new "mobile" sublayer called "sardines". Click "OK" to finish.
-     - <img src="updated_images/image8-illustrator.png" alt="Alt Text" width="40%" height="40%"> 
-
-     - Step 3: Your new sublayer names "sardines" will now appear nested inside the "mobile" layer. With "sardines" selected in the layers panel, It is then possible to paste vector items and artwork inside of it (To be sure it is a vector object, See 3.1.2 Dealing with raster-based elements below). For this example we selected the original "sardines" layer  under "icons" then copied a single sardine using "CTRL + C", then pasted it 3 times using "CTRL + V" inside of the of "sardines" layer under "mobile". We did this three times and repositioned each individual sardine to stack them vertically. The layer nesting (hierarchical structure of the layers and sublayers) should reflect how the "mobile" layer is displayed in the example below. 
-     - <img src="updated_images/image21-illustrator.png" alt="Alt Text" width="90%" height="90%">
-    
-     - Step 4: Now, when being used on your web page, the "sardines" layer will appear as shown in the "mobile" layer and not as previously as shown in the layer graphic meant for a desktop computer. The example below allows for you to see the two potential icons next to each other. The "sardines" icon in the top-left is more clear and easy to understand. The top-center "sardines" icon to the right of it could be any small fish, and is more ambiguous to interpret visually.  
-     - <img src="updated_images/image23-illustrator.png" alt="Alt Text" width="35%" height="35%">
-
-2. **text**: 
+1. **text**: 
     
     **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
 
@@ -83,7 +59,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
 
     C. Double check that the font you select for the text elements displays well in a browser. The default font for Illustrator is often “Myriad Pro”, which does not display well. There are many great alternatives, with one being “Arial”.
 
-3. **icons**: 
+2. **icons**: 
 
     **This layer is required** and contains all of the clickable elements in the image. This layer can be named anything, except for “text” or the name of any other clickable element in the image. We recommend the name "icons" though.
 
@@ -102,6 +78,8 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
 
      - The elements in the sub-layer, if named, should not have the same name as the sub-layer itself. So, for example, the following won’t work :
          - <img src="updated_images/image6-illustrator.png" alt="Alt Text" width="60%" height="60%">
+
+     - Layer names for clickable elements cannot end with a dash followed by a number. For example, "octopus" is an acceptable name, but "octopus-1" and "octopus-4" are not.
 
     **Adding a background to complex objects to make them easy to highlight:**
 
@@ -125,9 +103,39 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     - Step 6: Everything should look like this when you're complete.
         - <img src="updated_images/image20-6-illustrator.png" alt="Alt Text" width="90%" height="90%">
 
-4. **background**:
+3. **background**:
 
     This is an optional layer that contains all non-responsive elements of the image. This layer can be called anything (other than “text” or the name of a clickable sub-layer). It is ignored by the JAI Vectors Javascript. We recommend calling it "background" though.
+
+4. **mobile**: 
+     - This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orientation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the icons from your JAI Vector scene to be displayed in rows that are 3 across from top left to bottom right in with each of the graphics form the "icons" layer displayed inside of a grey rectangular button. 
+
+     - Also, it is important to note that the layers from "icons" are automatically applied to the mobile format. Meaning you don't have to create them separately to for them to be displayed in mobile view. Only if an icon contains multiple components, or is an odd shape which is too wide or long, is it recommended to use this layer to create a "mobile" version of that specific icon. Put more simply, you only have to use this layer if you have icons that would need to be optimized for mobile view, with a different version of the icon than the one that is in the "icons" layer. 
+
+     - Within the mobile layer, all icon names should have the suffix "-mobile" added to them. For example, let's say we have an icon called "coral-reefs" within a svg that has an alternate view for mobile. Within the mobile layer, the relevant layer should be called "coral-reefs-mobile". 
+
+     -  Below is an example of what your icons might look like when displayed in mobile view:
+     - <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
+     
+     **How to create a mobile icon:**
+
+     - For this example, we are going to show you how to create the "sardines" sublayer that is currently under the "mobile" layer (Top Navigation Bar > Window > Layers > mobile). The "sardines" sublayer under the "icons" layer, as seen below is clunky and would not make a good mobile icon. Therefore, we are going to re-imagine it in a format that would suit a mobile button by placing it inside of the "mobile" layer. To avoid confusion, you can turn off the existing "mobile > sardines" layer by clicking the right-arrow next to "mobile" to expand the layer, then clicking on the eye ball icon to the left of the sublayer named "sardines" that is nested under "mobile".
+     - <img src="updated_images/image22-illustrator.png" alt="Alt Text" width="40%" height="40%">
+     
+     - Step 1: Click on the "mobile" layer. In the top-right click the three stacked lines to access the layers menu. Then click on "New Sublayer" in the dropdown menu. You can also create the top level "mobile" layer here as needed by selecting "New Layer" instead. 
+     - <img src="updated_images/image7-illustrator.png" alt="Alt Text" width="70%" height="70%">
+        
+     - Step 2: In the dialog box that appears go ahead and give your new sublayer a name. For this example, we have just created a new "mobile" sublayer called "sardines". Click "OK" to finish.
+     - <img src="updated_images/image8-illustrator.png" alt="Alt Text" width="40%" height="40%"> 
+
+     - Step 3: Your new sublayer names "sardines" will now appear nested inside the "mobile" layer. With "sardines" selected in the layers panel, It is then possible to paste vector items and artwork inside of it (To be sure it is a vector object, See 3.1.2 Dealing with raster-based elements below). For this example we selected the original "sardines" layer  under "icons" then copied a single sardine using "CTRL + C", then pasted it 3 times using "CTRL + V" inside of the of "sardines" layer under "mobile". We did this three times and repositioned each individual sardine to stack them vertically. The layer nesting (hierarchical structure of the layers and sublayers) should reflect how the "mobile" layer is displayed in the example below. 
+     - <img src="updated_images/image21-illustrator.png" alt="Alt Text" width="90%" height="90%">
+    
+     - Step 4: Now, when being used on your web page, the "sardines" layer will appear as shown in the "mobile" layer and not as previously as shown in the layer graphic meant for a desktop computer. The example below allows for you to see the two potential icons next to each other. The "sardines" icon in the top-left is more clear and easy to understand. The top-center "sardines" icon to the right of it could be any small fish, and is more ambiguous to interpret visually.  
+     - <img src="updated_images/image23-illustrator.png" alt="Alt Text" width="35%" height="35%">
+
+
+
     
 ### 3.1.2 Dealing with raster-based elements
 
@@ -196,18 +204,7 @@ If you check out the Layers panel for the image, you’ll see the following:
 
 ### 3.2.1 Layer organization
 
-1. **mobile**:
-
-     - This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orientation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the icons from your JAI Vector scene to be displayed in rows that are 3 across from top left to bottom right in with each of the graphics form the "icons" layer displayed inside of a grey rectangular button. 
-
-     - Also, it is important to note that the layers from "icons" are automatically applied to the mobile format. Meaning you don't have to create them separately to for them to be displayed in mobile view. Only if an icon contains multiple components, or is an odd shape which is too wide or long, is it recommended to use this layer to create a "mobile" version of that specific icon. Put more simply, you only have to use this layer if you have icons that would need to be optimized for mobile view, with a different version of the icon than the one that is in the "icons" layer. 
-
-     -  Below is an example of what your icons might look like when displayed in mobile view:
-     - <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
-
-     - See this section in the Illustrator instructions above for "1.mobile > How to create a mobile icon" for a general outline of what needs to be done in Inkscape as well. The exact method will differ in Inkscape.
-     
-2. **text**:
+1. **text**:
 
     **This layer is required** and must be called lower case “text”. It contains additional explanatory text and graphics for the image that the JAI Vector can toggle on and off.
 
@@ -221,7 +218,7 @@ If you check out the Layers panel for the image, you’ll see the following:
 
     C. Double check that the font you select for the text elements displays well in a browser. The default font for Illustrator is often “Myriad Pro”, which does not display well. There are many great alternatives, with one being “Arial”.
 
-3. **icons**:
+2. **icons**:
 
     **This layer is required** and contains all of the clickable elements in the image. This layer can be named anything, except for “text” or the name of any clickable element in the image. If you check out the Layers panel for “icons” (see image just above), you’ll see that it contains four sub-layers (chart examples 1 through 6). Each of these sub-layers defines a single clickable component of the image.
 
@@ -235,7 +232,9 @@ If you check out the Layers panel for the image, you’ll see the following:
 
      - Each sub-layer contains all of the elements for a single clickable icon.
 
-     - The elements in the sub-layer, if named, should not have the same name as the sub-layer itself. 
+     - The elements in the sub-layer, if named, should not have the same name as the sub-layer itself. For   example, if a clickable sub-layer within the icons layer is intended to be called "whales", "whales" can only occur once as a layer name in the entire Illustrator file.
+
+     - Layer names for clickable elements cannot end with a dash followed by a number. For example, "whales" is an acceptable name, but "whales-1" and "whales-4" are not.
 
     **Adding a background to complex objects to make them easy to highlight:**
 
@@ -243,9 +242,22 @@ If you check out the Layers panel for the image, you’ll see the following:
 
      - See this section in the Illustrator instructions above for "3.icons > Adding a background to complex objects to make them easy to highlight" for a general outline of what needs to be done in Inkscape as well. The exact method will differ in Inkscape.
 
-4. **background**:
+3. **background**:
 
     Another optional layer that contains all non-responsive elements of the image. This layer can be called anything (other than “text” or the name of a clickable layer). It is ignored by the JAI Vectors Javascript.
+
+4. **mobile**:
+
+     - This layer is optional. However, when viewing the same webpage on your desktop (or laptop) computer compared to a mobile device, you may have noticed that the area and orientation of the screen shifts from landscape (like your TV) to portrait (like your mobile device). This shift causes the icons from your JAI Vector scene to be displayed in rows that are 3 across from top left to bottom right in with each of the graphics form the "icons" layer displayed inside of a grey rectangular button.
+
+     - Within the mobile layer, all icon names should have the suffix "-mobile" added to them. For example, let's say we have an icon called "coral-reefs" within a svg that has an alternate view for mobile. Within the mobile layer, the relevant layer should be called "coral-reefs-mobile". 
+
+     - Also, it is important to note that the layers from "icons" are automatically applied to the mobile format. Meaning you don't have to create them separately to for them to be displayed in mobile view. Only if an icon contains multiple components, or is an odd shape which is too wide or long, is it recommended to use this layer to create a "mobile" version of that specific icon. Put more simply, you only have to use this layer if you have icons that would need to be optimized for mobile view, with a different version of the icon than the one that is in the "icons" layer. 
+
+     -  Below is an example of what your icons might look like when displayed in mobile view:
+     - <img src="updated_images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
+
+     - See this section in the Illustrator instructions above for "1.mobile > How to create a mobile icon" for a general outline of what needs to be done in Inkscape as well. The exact method will differ in Inkscape.
 
 ### 3.2.2 Editing the layer XML
 

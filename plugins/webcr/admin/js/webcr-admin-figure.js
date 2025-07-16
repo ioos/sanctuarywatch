@@ -303,6 +303,7 @@ function run_webcr_admin_figures() {
         // REST API call to get the uploaded JSON file path
         const figureID = document.getElementsByName("post_ID")[0].value;
         const figureRestCall = `${rootURL}/wp-json/wp/v2/figure/${figureID}?_fields=uploaded_path_json`;
+        console.log(figureRestCall);
         const response = await fetch(figureRestCall);
         const data = await response.json();
         const uploaded_path_json = data.uploaded_path_json;
@@ -323,6 +324,7 @@ function run_webcr_admin_figures() {
             }
             const data = await response.json();
 
+
             // Convert metadata keys into an array of key-value pairs for display
             let metadataRows = [];
             if (data.metadata && Object.keys(data.metadata).length > 0) {
@@ -332,10 +334,28 @@ function run_webcr_admin_figures() {
                 }));
             }
 
-            // Map data columns into an object with index-based keys
-            jsonColumns = Object.fromEntries(
-                Object.keys(data.data).map((key, index) => [index, key])); 
-                jsonColumns
+            if (!uploaded_path_json.includes(".geojson")) {
+
+                // Map data columns into an object with index-based keys
+                jsonColumns = Object.fromEntries(
+                    Object.keys(data.data).map((key, index) => [index, key])); 
+                    jsonColumns
+            }
+            if (uploaded_path_json.includes(".geojson")) {
+
+                function extractJsonColumnsFromGeojson(geojson) {
+                    if (!geojson || !geojson.features || geojson.features.length === 0) return {};
+
+                    const props = geojson.features[0].properties;
+                    return Object.fromEntries(
+                        Object.keys(props).map((key, index) => [index, key])
+                    );
+                }
+
+                jsonColumns = extractJsonColumnsFromGeojson(data);
+
+            }
+            
             
             // Check the number of columns in the JSON data
             const lengthJsonColumns = (Object.entries(jsonColumns).length);
@@ -373,10 +393,14 @@ function run_webcr_admin_figures() {
                 graphType2.innerHTML = "Plotly bar graph";
                 let graphType3 = document.createElement("option");
                 graphType3.value = "Plotly line graph (time series)";
-                graphType3.innerHTML = "Plotly line graph (time series)"; 
+                graphType3.innerHTML = "Plotly line graph (time series)";
+                // let graphType4 = document.createElement("option");
+                // graphType4.value = "Plotly map";
+                // graphType4.innerHTML = "Plotly map"; 
                 selectGraphType.appendChild(graphType1);
                 selectGraphType.appendChild(graphType2);    
-                selectGraphType.appendChild(graphType3);   
+                selectGraphType.appendChild(graphType3);
+                // selectGraphType.appendChild(graphType4);  
 
                 
                 //Admin is able to call to the interactive_arguments using document.getElementsByName("figure_interactive_arguments")[0].value;
@@ -420,7 +444,7 @@ function run_webcr_admin_figures() {
         } catch (error) {
             // Log any errors that occur during the JSON loading process
             console.error('Error loading JSON:', error);
-            targetContainer.innerHTML = "The .csv formatting is incorrect. Please fix the error and reupload your file.";
+            targetContainer.innerHTML = "The file formatting is incorrect. Please fix the error and reupload your file.";
 
         }
     }
@@ -481,9 +505,15 @@ function run_webcr_admin_figures() {
                 // Clear any previously created graph fields
                 clearPreviousGraphFields();
                 break;
+            case "Plotly map":
+                // Clear any previously created graph fields
+                clearPreviousGraphFields();
+                plotlyMapParameterFields(jsonColumns, interactive_arguments);
+                break;
             case "Plotly bar graph":
                 // Clear any previously created graph fields
                 clearPreviousGraphFields();
+                plotlyBarParameterFields(jsonColumns, interactive_arguments);
                 break;
             case "Plotly line graph (time series)":
                 // Clear previous fields and create new fields specific to line graphs
@@ -594,13 +624,6 @@ function run_webcr_admin_figures() {
         newDiv.id = "preview_window";
         newDiv.classList.add("container", "figure_preview");
 
-        //Figure title options
-        const figure_title = document.getElementsByName("figure_title")[0].value;
-        let figureTitle = document.createElement("div");
-        figureTitle.innerHTML = figure_title;
-        figureTitle.classList.add("figureTitle");
-        newDiv.appendChild(figureTitle); //Append the figure title
-
         
         // Add science and data URLs if available
         const scienceUrl = document.getElementsByName("figure_science_info[figure_science_link_url]")[0].value;
@@ -644,6 +667,13 @@ function run_webcr_admin_figures() {
 
             newDiv.appendChild(firstRow);
         } 
+
+        //Figure title options
+        const figure_title = document.getElementsByName("figure_title")[0].value;
+        let figureTitle = document.createElement("div");
+        figureTitle.innerHTML = figure_title;
+        figureTitle.classList.add("figureTitle");
+        newDiv.appendChild(figureTitle); //Append the figure title
 
         // Add the figure image or interactive/code preview
         let imageRow = document.createElement("div");
@@ -722,7 +752,20 @@ function run_webcr_admin_figures() {
                 //interactive_arguments is for the theme side, it is blank here because it is a place holder variable
                 let interactive_arguments = document.getElementsByName("figure_interactive_arguments")[0].value;
                 const figureID = document.getElementsByName("post_ID")[0].value;
-                producePlotlyLineFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                const figure_arguments = Object.fromEntries(JSON.parse(interactive_arguments));
+                const graphType = figure_arguments["graphType"];
+
+                if (graphType === "Plotly bar graph") {
+                    producePlotlyBarFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                }
+                if (graphType === "Plotly map") {
+                    console.log(`javascript_figure_target_${figureID}`);
+                    producePlotlyMap(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                }
+                if (graphType === "Plotly line graph (time series)") {
+                    producePlotlyLineFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
+                }
+
             } catch (error) {
                 alert('Please upload a a valid file before generating a graph.')
             }

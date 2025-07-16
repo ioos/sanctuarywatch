@@ -33,6 +33,78 @@ function loadPlotlyScript() {
 }
 
 
+function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments) {
+    if (!plotDiv || !layout || !layout.yaxis || !layout.yaxis.range) {
+        console.warn("[Overlay] Missing layout or y-axis range");
+        return;
+    }
+
+    layout.xaxis = layout.xaxis || {};
+    layout.xaxis.type = 'date';
+
+    layout.yaxis = layout.yaxis || {};
+    layout.yaxis.type = 'linear';
+
+    const [yMin, yMax] = layout.yaxis.range || [0, 1];
+    const overlays = [];
+
+    for (let i = 1; i <= Number(figureArguments['NumberOfLines']); i++) {
+        const base = 'Line' + i;
+        const showLegend = figureArguments[base + 'Legend'] === 'on';
+
+        // === Evaluation Period ===
+        if (figureArguments[base + 'EvaluationPeriod'] === 'on') {
+            let start = figureArguments[base + 'EvaluationPeriodStartDate'];
+            let end = figureArguments[base + 'EvaluationPeriodEndDate'];
+            console.log(`[Overlay] Processing evaluation period for ${base}:`, start, end);       
+
+            const fillColor = (figureArguments[base + 'EvaluationPeriodFillColor'] || '#999') + '15';
+
+            overlays.push({
+                x: [start, end, end, start],
+                y: [yMax, yMax, yMin, yMin],
+                fill: 'toself',
+                fillcolor: fillColor,
+                type: 'scatter',
+                mode: 'lines',
+                line: { color: fillColor, width: 0 },
+                hoverinfo: 'skip',
+                name: `${figureArguments[base + 'Title']} Evaluation Period`,
+                showlegend: showLegend,
+                yaxis: 'y',
+                xaxis: 'x'
+            });
+        }
+
+        // === Event Markers ===
+        for (let m = 1; m <= 2; m++) {
+            if (figureArguments[base + `EventMarker${m}`] === 'on') {
+                let date = figureArguments[base + `EventMarker${m}EventDate`];
+
+                const label = figureArguments[base + `EventMarker${m}EventText`] || `Event ${m}`;
+                const color = figureArguments[base + `EventMarker${m}EventColor`] || '#000';
+
+                overlays.push({
+                    x: [date, date],
+                    y: [yMin, yMax],
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { color, width: 2 },
+                    name: label,
+                    showlegend: showLegend,
+                    yaxis: 'y',
+                    xaxis: 'x',
+                    hoverinfo: label,
+                });
+
+                console.log(`[Overlay] Added event marker ${m} for ${base}:`, date);
+            }
+        }
+    }
+    Plotly.react(plotDiv, [...mainDataTraces, ...overlays], layout);
+}
+
+
 function waitForElementById(id, timeout = 1000) {
     return new Promise((resolve, reject) => {
         const intervalTime = 50;
@@ -53,12 +125,30 @@ function waitForElementById(id, timeout = 1000) {
     });
 }
 
-async function producePlotlyLineFigure(targetFigureElement, interactive_arguments, postID){
+function computeStandardDeviation(arr) {
+    const n = arr.length;
+    const mean = arr.reduce((a, b) => a + b, 0) / n;
+    const variance = arr.reduce((acc, val) => acc + (val - mean) ** 2, 0) / n;
+    return Math.sqrt(variance);
+}
 
+function computePercentile(arr, percentile) {
+    if (arr.length === 0) return undefined;
+    if (arr.length === 1) return arr[0];
+    const sorted = [...arr].sort((a, b) => a - b);
+    const index = (percentile / 100) * (sorted.length - 1);
+    const lower = Math.floor(index);
+    const upper = Math.ceil(index);
+    if (lower === upper) return sorted[lower];
+    return sorted[lower] + (index - lower) * (sorted[upper] - sorted[lower]);
+}
+
+async function producePlotlyLineFigure(targetFigureElement, interactive_arguments, postID){
     try {
         await loadPlotlyScript(); // ensures Plotly is ready
 
         const rawField = interactive_arguments;
+        //console.log(rawField);
         const figureArguments = Object.fromEntries(JSON.parse(rawField));
         const rootURL = window.location.origin;
 
@@ -117,100 +207,271 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             let targetLineColumn;
             let singleLinePlotly;
             let allLinesPlotly = [];
+            let shapesForLayout = [];
 
-            for (let i = 1; i <= numLines; i++){
-                targetLineColumn = "Line" + i;
-                columnXHeader = figureArguments['XAxis'];
+            // Plotly figure production logic
+            for (let i = 1; i <= figureArguments['NumberOfLines']; i++) {
+                const targetLineColumn = 'Line' + i;
+                const columnXHeader = figureArguments['XAxis'];
+                const columnYHeader = figureArguments[targetLineColumn];
 
-                plotlyX = dataToBePlotted[columnXHeader];
-                columnYHeader = figureArguments[targetLineColumn];
-                plotlyY = dataToBePlotted[columnYHeader];
-                singleLinePlotly = {
+                const plotlyX = dataToBePlotted[columnXHeader];
+                const plotlyY = dataToBePlotted[columnYHeader];
+
+                const stdDev = computeStandardDeviation(plotlyY);
+                const markerType = figureArguments[targetLineColumn + 'MarkerType'];
+
+                //Shows the legend if it is set to 'on' in the figure arguments
+                const showLegend = figureArguments[targetLineColumn + 'Legend'];
+                if (showLegend === 'on') {
+                    var showLegendBool = true;     
+                } else {
+                    var showLegendBool = false;     
+                }
+
+
+                //Connects gaps in line where there is missing data
+                const connectGapsOpt = figureArguments[targetLineColumn + 'ConnectGaps'] === 'on';     
+
+                //Show Standard error bars
+                const showError = figureArguments[targetLineColumn + 'ErrorBars'];
+                const showError_InputValuesOpt = figureArguments[targetLineColumn + 'ErrorBarsInputValues'];
+                if (showError === 'on') {
+                    //Error bars using Standard Deviation based on dataset Y-axis values (Auto Calculated)
+                    if (showError_InputValuesOpt === 'auto') {
+                        var errorBarY = {
+                            type: 'data',
+                            array: new Array(plotlyY.length).fill(stdDev),
+                            visible: true,
+                            color: figureArguments[targetLineColumn + 'ErrorBarsColor'],
+                            thickness: 1.5,
+                            width: 8
+                        };   
+                    }
+                    //Error bars (values imported from spreadsheet per point in dataset)
+                    //Do we want high and low bounds here?
+                    if (showError_InputValuesOpt != 'auto') {
+                        const showError_InputValue = dataToBePlotted[showError_InputValuesOpt].filter(item => item !== "");
+                        var errorBarY = {
+                            type: 'data',
+                            array: showError_InputValue.map(val => parseFloat(val)), // Convert to number if needed
+                            visible: true,
+                            color: figureArguments[targetLineColumn + 'ErrorBarsColor'],
+                            thickness: 1.5,
+                            width: 8
+                        }; 
+                    }          
+                }
+                if (showError != 'on') {
+                    var errorBarY = {};
+                }
+
+                // Main line with or w/o error bars
+                const singleLinePlotly = {
                     x: plotlyX,
                     y: plotlyY,
                     mode: 'lines+markers',
                     type: 'scatter',
+                    name: `${figureArguments[targetLineColumn + 'Title']}`,
+                    showlegend: showLegendBool,
                     marker: {
-                        color: figureArguments[targetLineColumn + "Color"]
+                        color: figureArguments[targetLineColumn + 'Color'],
+                        symbol: markerType
                     },
-                    name: figureArguments[targetLineColumn + "Title"],
-                    hovertemplate: 
-                    figureArguments['XAxisTitle'] + ': %{x}<br>' +  // Custom label for x-axis
-                    figureArguments['YAxisTitle'] + ': %{y}' // Custom label for y-axis
+                    error_y: errorBarY,
+                    connectgaps: connectGapsOpt, 
+                    hovertemplate:
+                        figureArguments['XAxisTitle'] + ': %{x}<br>' +
+                        figureArguments['YAxisTitle'] + ': %{y}'
+                };
+                allLinesPlotly.push(singleLinePlotly);
+
+
+                //Show Standard Deviation Filled/Shaded Area
+                const showSD = figureArguments[targetLineColumn + 'StdDev'];
+                const showSD_InputValuesOpt = figureArguments[targetLineColumn + 'StdDevInputValues'];
+                //Standard Deviation of dataset based on dataset Y-axis values (AutoCalculated)
+                if (showSD == 'on' && showSD_InputValuesOpt === 'auto') {
+                    const mean = plotlyY.reduce((a, b) => a + b, 0) / plotlyY.length;
+                    const upperY = plotlyY.filter(item => item !== "").map(y => mean + stdDev);
+                    const lowerY = plotlyY.filter(item => item !== "").map(y => mean - stdDev);
+                    const filteredX = plotlyX.filter(item => item !== "");
+                    const stdFill = {
+                        x: [...filteredX, ...filteredX.slice().reverse()],
+                        y: [...upperY, ...lowerY.slice().reverse()],
+                        fill: 'toself',
+                        fillcolor: figureArguments[targetLineColumn + 'StdDevColor'] + '27',
+                        line: { color: 'transparent' },
+                        name: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`,
+                        type: 'scatter',
+                        hoverinfo: 'skip',
+                        showlegend: showLegendBool,
+                        visible: true
                     };
-                    //console.log(singleLinePlotly);
-                    allLinesPlotly.push(singleLinePlotly);
-
-            }
-
-            var container = document.getElementById(`javascript_figure_target_${postID}`);
-
-            //ADMIN SIDE GRAPH DISPLAY SETTINGS
-            if (window.location.href.includes("wp-admin/post.php")) {
-                var layout = {
-                    xaxis: {
-                        title: {
-                        text: figureArguments['XAxisTitle']
-                        },
-                        linecolor: 'black', 
-                        linewidth: 1,
-                        range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
-                    },
-                    yaxis: {
-                        title: {
-                        text: figureArguments['YAxisTitle']
-                        },
-                        linecolor: 'black', 
-                        linewidth: 1,
-                        range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
-                    },
-                    autosize: true, 
+                    allLinesPlotly.push(stdFill);
+                }
+                //Standard Deviation (values imported from spreadsheet per point in dataset)
+                //Do we want high and low bounds here?
+                if (showSD == 'on' && showSD_InputValuesOpt != 'auto') {
+                    const stdSingleValue = dataToBePlotted[showSD_InputValuesOpt].filter(item => item !== "").reduce((a, b) => a + b, 0) / dataToBePlotted[showSD_InputValuesOpt].length;
+                    const mean = plotlyY.reduce((a, b) => a + b, 0) / plotlyY.length;
+                    const upperY = plotlyY.filter(item => item !== "").map(y => mean + stdSingleValue);
+                    const lowerY = plotlyY.filter(item => item !== "").map(y => mean - stdSingleValue);
+                    const filteredX = plotlyX.filter(item => item !== "");
+                    const stdFill = {
+                        x: [...filteredX, ...filteredX.slice().reverse()],
+                        y: [...upperY.filter(item => item !== ""), ...lowerY.filter(item => item !== "").slice().reverse()],
+                        fill: 'toself',
+                        fillcolor: figureArguments[targetLineColumn + 'StdDevColor'] + '27',
+                        line: { color: 'transparent' },
+                        name: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`,
+                        type: 'scatter',
+                        hoverinfo: 'skip',
+                        showlegend: showLegendBool,
+                        visible: true
                     };
-                const config = {
-                    responsive: true  // This makes the plot resize with the browser window
-                    };
-
-                function waitOneSecond() {
-                    return new Promise(resolve => setTimeout(resolve, 1000));
+                    allLinesPlotly.push(stdFill);
                 }
                 
-                Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+                //Percentiles and Mean lines
+                const showPercentiles = figureArguments[targetLineColumn + 'Percentiles'];
+                const showMean = figureArguments[targetLineColumn + 'Mean'];
+                const showMean_ValuesOpt = figureArguments[targetLineColumn + 'MeanField'];
+                if (showPercentiles === 'on' || showMean === 'on') {
+
+                    //Calculate Percentiles (Auto Calculated) based on dataset Y-axis values
+                    //Do we want to be able to set high and low bounds per point here? (That wouldn't make sense to me)
+                    const p10 = computePercentile(plotlyY, 10);
+                    const p90 = computePercentile(plotlyY, 90);
+                    const filteredX = plotlyX.filter(item => item !== "");
+                    const xMinPercentile = Math.min(...filteredX);
+                    const xMaxPercentile = Math.max(...filteredX);
+                    if (showPercentiles === 'on') {
+                        allLinesPlotly.push({
+                            x: [xMinPercentile, xMaxPercentile],
+                            y: [p10, p10],
+                            mode: 'lines',
+                            line: { dash: 'dot', color: figureArguments[targetLineColumn + 'Color'] + '60'},
+                            name: `${figureArguments[targetLineColumn + 'Title']} 10th Percentile (Bottom)`,
+                            type: 'scatter',
+                            visible: true,
+                            showlegend: false
+                        });
+                        allLinesPlotly.push({
+                            x: [xMinPercentile, xMaxPercentile],
+                            y: [p90, p90],
+                            mode: 'lines',
+                            line: { dash: 'dot', color: figureArguments[targetLineColumn + 'Color'] + '60'},
+                            name: `${figureArguments[targetLineColumn + 'Title']} 10th & 90th Percentile`,
+                            type: 'scatter',
+                            visible: true,
+                            showlegend: showLegendBool
+                        });
+                    }
+
+                    // Calculate mean
+
+                    //Calculate mean (Auto Calculated) based on dataset Y-axis values
+                    if (showMean_ValuesOpt === 'auto' && showMean === 'on') {
+                        const mean = plotlyY.reduce((a, b) => a + b, 0) / plotlyY.length;
+                        const filteredX = plotlyX.filter(item => item !== "");
+                        const xMin = Math.min(...filteredX);
+                        const xMax = Math.max(...filteredX);
+                        allLinesPlotly.push({
+                            x: [xMin, xMax],
+                            y: [mean, mean],
+                            mode: 'lines',
+                            line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] + '60'},
+                            name: `${figureArguments[targetLineColumn + 'Title']} Mean`,
+                            type: 'scatter',
+                            visible: true,
+                            showlegend: showLegendBool
+                        });
+                    }
+                    //Get mean from the spreadsheet (values imported from spreadsheet per point in dataset)
+                    if (showMean_ValuesOpt != 'auto' && showMean === 'on') {
+                        const ExistingMeanValue = dataToBePlotted[showMean_ValuesOpt].filter(item => item !== "");
+                        const mean = ExistingMeanValue.reduce((a, b) => a + b, 0) / ExistingMeanValue.length;
+                        const filteredX = plotlyX.filter(item => item !== "");
+                        const xMin = Math.min(...filteredX);
+                        const xMax = Math.max(...filteredX);
+                        allLinesPlotly.push({
+                            x: [xMin, xMax],
+                            y: [mean, mean],
+                            mode: 'lines',
+                            line: { dash: 'dash', color: figureArguments[targetLineColumn + 'Color'] + '60'},
+                            name: `${figureArguments[targetLineColumn + 'Title']} Mean`,
+                            type: 'scatter',
+                            visible: true,
+                            showlegend: showLegendBool
+                        });
+                    }
+                }
 
             }
-            //THEME SIDE GRAPH DISPLAY SETTINGS
-            else {
-                var layout = {
-                    xaxis: {
-                        title: {
-                        text: figureArguments['XAxisTitle']
-                        },
-                        linecolor: 'black', 
-                        linewidth: 1,
-                        range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
+
+            //const container = document.getElementById(plotlyDivID); 
+
+            //GRAPH DISPLAY SETTINGS
+            var layout = {
+                xaxis: {
+                    title: {
+                    text: figureArguments['XAxisTitle']
                     },
-                    yaxis: {
-                        title: {
-                        text: figureArguments['YAxisTitle']
-                        },
-                        linecolor: 'black', 
-                        linewidth: 1,
-                        range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['XAxisLowBound'], figureArguments['XAxisHighBound']]                      
+                },
+                yaxis: {
+                    title: {
+                    text: figureArguments['YAxisTitle']
                     },
-                    //autosize: true, 
-                    width: container.clientWidth, 
-                    height: container.clientHeight
-                    };
-                const config = {
-                responsive: true  // This makes the plot resize with the browser window
+                    linecolor: 'black', 
+                    linewidth: 1,
+                    range: [figureArguments['YAxisLowBound'], figureArguments['YAxisHighBound']]     
+                },
+                legend: {
+                    orientation: 'h',       // horizontal layout
+                    y: 1.1,                 // position legend above the plot
+                    x: 0.5,                 // center the legend
+                    xanchor: 'center',
+                    yanchor: 'bottom'
+                },
+                autosize: true,
+                margin: { t: 60, b: 60, l: 60, r: 60 },
+                //width: container.clientWidth, 
+                //height: container.clientHeight,
+                cliponaxis: true
                 };
-                
-                document.getElementById(plotlyDivID).style.setProperty("width", "100%", "important");
-                document.getElementById(plotlyDivID).style.setProperty("max-width", "none", "important");
-                
-                Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+            
 
-            }
+            const config = {
+            responsive: true,  // This makes the plot resize with the browser window
+            renderer: 'svg',
+            displayModeBar: true,
+            displaylogo: false,
+            modeBarButtonsToRemove: [
+                'zoom2d', 'lasso2d', 'autoScale2d',
+                'hoverClosestCartesian', 'hoverCompareCartesian' //'toImage', 'resetScale2d', 'select2d'
+            ]
+            };
+
+            // Set up the plotlyDiv (The div the the plot will be rendered in)
+            const plotDiv = document.getElementById(plotlyDivID);         
+            plotDiv.style.setProperty("width", "100%", "important");
+            plotDiv.style.setProperty("max-width", "none", "important");
+                         
+            // Create the plot with all lines
+            // await Plotly.newPlot(plotlyDivID, allLinesPlotly, layout, config);
+            await Plotly.newPlot(plotDiv, allLinesPlotly, layout, config).then(() => {
+                // After the plot is created, inject overlays if any, this is here because you can only get overlays that span the entire yaxis after the graph has been rendered.
+                // You need the specific values for the entire yaxis
+                injectOverlays(plotDiv, layout, allLinesPlotly, figureArguments);
+            });
+            Plotly.Plots.resize(plotDiv)
+
         } else {}
+
     } catch (error) {
         console.error('Error loading scripts:', error);
     }
@@ -389,6 +650,7 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
       }
 
       fieldLabels.forEach((fieldLabel) => {
+          //Select the data source from dropdown menu  
           let labelSelectColumn = document.createElement("label");
           labelSelectColumn.for = fieldLabel[0];
           labelSelectColumn.innerHTML = fieldLabel[1];
@@ -498,8 +760,254 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
               newColumn1.appendChild(labelInputColor);
               newColumn2.appendChild(inputColor);
               newRow.append(newColumn1, newColumn2);
-              newDiv.append(newRow);    
+              newDiv.append(newRow);
+
+              // Add marker type dropdown
+              const markerRow = document.createElement('div');
+              markerRow.classList.add('row', 'fieldPadding');
+              if (fieldLabelNumber % 2 != 0) markerRow.classList.add('fieldBackgroundColor');
+
+              const markerCol1 = document.createElement('div');
+              markerCol1.classList.add('col-3');
+              const markerCol2 = document.createElement('div');
+              markerCol2.classList.add('col');
+
+              const markerLabel = document.createElement('label');
+              markerLabel.textContent = fieldLabel[1] + ' Marker Type';
+              markerLabel.htmlFor = fieldLabel[0] + 'MarkerType';
+              const markerSelect = document.createElement('select');
+              markerSelect.id = fieldLabel[0] + 'MarkerType';
+              markerSelect.name = 'plotFields';
+
+              ['circle', 'square', 'diamond', 'star'].forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                opt.innerHTML = type.charAt(0).toUpperCase() + type.slice(1);
+                markerSelect.appendChild(opt);
+              });
+
+              const markerSaved = fillFormFieldValues(markerSelect.id, interactive_arguments);
+              if (markerSaved) markerSelect.value = markerSaved;
+
+              markerSelect.addEventListener('change', logFormFieldValues);
+              markerCol1.appendChild(markerLabel);
+              markerCol2.appendChild(markerSelect);
+              markerRow.append(markerCol1, markerCol2);
+              newDiv.append(markerRow);
+
+            //   // Create the informational text box
+            //   const infoBox = document.createElement("div");
+            //   infoBox.for = fieldLabel[0] + "Color";
+            //   infoBox.className = "info-box"; // Optional: for styling
+            //   infoBox.textContent = "Optional Settings Below";
+            //   infoBox.style.marginTop = "20px";
+            //   infoBox.style.marginTop = "20px";
+            //   infoBox.style.marginBottom = "20px";
+
+            //   // Insert the info box at the top of the container
+            //   newRow.classList.add("row", "fieldBackgroundColor");
+            //   newRow.appendChild(infoBox);
+            //   newDiv.appendChild(newRow);
+
+
+            //Add checkboxes for error bars, standard deviation, mean, and percentiles
+            const features = ["Legend", "ConnectGaps", "Mean", "StdDev", "ErrorBars", "Percentiles", "EvaluationPeriod", "EventMarker1", "EventMarker2"];
+            const featureNames = ["Graph Legend Visible?", "Connect Line Gaps (Missing Data)?","Mean Line Visible?", "Standard Deviation Fill Visible?", "Symmetric Error Bars Visible?", "90th & 10th Percentile Lines (Auto Calculated) Visible?", "Evaluation Period Visible?", "Event Marker 1 Visible?", "Event Marker 2 Visible?"];
+            for (let i = 0; i < features.length; i++) {
+                const feature = features[i];
+                const featureName = featureNames[i];
+
+                let newRow = document.createElement("div");
+                newRow.classList.add("row", "fieldPadding");
+                if (fieldLabelNumber % 2 != 0) {
+                    newRow.classList.add("row", "fieldBackgroundColor");
+                }
+
+                let newColumn1 = document.createElement("div");
+                newColumn1.classList.add("col-3");
+                let newColumn2 = document.createElement("div");
+                newColumn2.classList.add("col");
+
+                let label = document.createElement("label");
+                label.for = fieldLabel[0] + feature;
+                label.innerHTML = `${featureName}`;
+                let checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = fieldLabel[0] + feature;
+                checkbox.name = "plotFields";
+
+                let fieldValueSaved = fillFormFieldValues(checkbox.id, interactive_arguments);
+                checkbox.value = fieldValueSaved === 'on' ? 'on' : "";
+                checkbox.checked = fieldValueSaved === 'on';
+
+                newColumn1.appendChild(label);
+                newColumn2.appendChild(checkbox);
+                newRow.append(newColumn1, newColumn2);
+                newDiv.append(newRow);
+                
+
+                // === Add dropdowns for feature-specific data ===
+                if (["Mean", "ErrorBars", "StdDev", "EvaluationPeriod", "EventMarker1", "EventMarker2"].includes(feature)) {
+                    const dropdownContainer = document.createElement("div");
+                    dropdownContainer.classList.add("row", "fieldPadding");
+                    if (fieldLabelNumber % 2 != 0) {
+                        dropdownContainer.classList.add("row", "fieldBackgroundColor");
+                    }
+
+                    const dropdownLabelCol = document.createElement("div");
+                    dropdownLabelCol.classList.add("col-3");
+                    const dropdownInputCol = document.createElement("div");
+                    dropdownInputCol.classList.add("col");
+
+                    function createDropdown(labelText, selectId) {
+                        const label = document.createElement("label");
+                        label.innerHTML = labelText;
+                        const select = document.createElement("select");
+                        select.id = selectId;
+                        select.name = "plotFields";
+
+                        if (feature === "Mean" || feature === "ErrorBars" || feature === "StdDev") {
+                            const autoOpt = document.createElement("option");
+
+                            if (feature != "ErrorBars") {
+                                autoOpt.value = "auto";
+                                autoOpt.innerHTML = "Auto Calculate Based on Line Column Selection";
+                                select.appendChild(autoOpt);
+                            }
+                            if (feature === "ErrorBars") {
+                                autoOpt.value = "auto";
+                                autoOpt.innerHTML = "Example Error Bars";
+                                select.appendChild(autoOpt);
+                            }
+
+                        for (let col of Object.values(jsonColumns)) {
+                            const opt = document.createElement("option");
+                            opt.value = col;
+                            opt.innerHTML = col;
+                            select.appendChild(opt);
+                        }
+
+                        const saved = fillFormFieldValues(select.id, interactive_arguments);
+                        if (saved) select.value = saved;
+
+                        select.addEventListener("change", logFormFieldValues);
+                        return { label, select };
+                        }
+
+                    }
+
+                    function createDatefield(labelText, inputId) {
+                        const label = document.createElement("label");
+                        label.textContent = labelText;
+                        label.htmlFor = inputId; // Link label to input
+
+                        const input = document.createElement("input"); // Correct element
+                        input.type = "date";
+                        input.id = inputId;
+                        input.name = "plotFields";
+
+                        const saved = fillFormFieldValues(input.id, interactive_arguments);
+                        if (saved) input.value = saved;
+
+                        input.addEventListener("change", logFormFieldValues);
+                        return { label, input };
+                    }
+
+                    function createTextfield(labelText, inputId) {
+                        const label = document.createElement("label");
+                        label.textContent = labelText;
+                        label.htmlFor = inputId; // Link label to input
+
+                        const input = document.createElement("input"); // Correct element
+                        input.type = "text";
+                        input.id = inputId;
+                        input.name = "plotFields";
+                        input.style.width = "200px";
+
+
+                        const saved = fillFormFieldValues(input.id, interactive_arguments);
+                        if (saved) input.value = saved;
+
+                        input.addEventListener("change", logFormFieldValues);
+                        return { label, input };
+                    }
+
+                    function createColorfield(labelText, inputId) {
+                        const label = document.createElement("label");
+                        label.textContent = labelText;
+                        label.htmlFor = inputId; // Link label to input
+
+                        const input = document.createElement("input"); // Correct element
+                        input.type = "color";
+                        input.id = inputId;
+                        input.name = "plotFields";
+
+                        const saved = fillFormFieldValues(input.id, interactive_arguments);
+                        if (saved) input.value = saved;
+
+                        input.addEventListener("change", logFormFieldValues);
+                        return { label, input };
+                    }
+
+                    const controls = [];
+
+                    if (feature === "Mean") {
+                        const { label, select } = createDropdown("Mean Source Column", fieldLabel[0] + feature + "Field");
+                        controls.push(label, select);
+                    }
+
+                    if (feature === "ErrorBars" || feature === "StdDev") {
+                        const { label: labelValues, select: selectValues } = createDropdown(`${featureName} Input Column Values`, fieldLabel[0] + feature + "InputValues");
+                        const { label: labelColor, input: ColorValue } = createColorfield(`Color`, fieldLabel[0] + feature + "Color");
+                        controls.push(labelValues, document.createElement('br'), selectValues, document.createElement('br'), labelColor, document.createElement('br'), ColorValue);
+                    }
+
+                    if (feature === "EvaluationPeriod") {
+                        const { label: labelStartDate, input: StartDateValues } = createDatefield(`Start Date`, fieldLabel[0] + feature + "StartDate");
+                        const { label: labelEndDate, input: EndDateValues } = createDatefield('End Date', fieldLabel[0] + feature + "EndDate");
+                        const { label: labelColor, input: ColorValue } = createColorfield(`Fill Color`, fieldLabel[0] + feature + "FillColor");
+                        controls.push(labelStartDate, document.createElement('br'), StartDateValues, document.createElement('br'), labelEndDate, document.createElement('br'), EndDateValues, document.createElement('br'), labelColor, document.createElement('br'), ColorValue);
+                    }
+
+                    if (feature === "EventMarker1") {
+                        const { label: labelEventDate1, input: EventDateValue1 } = createDatefield(`Event Date`, fieldLabel[0] + feature + "EventDate");
+                        const { label: labelEventText1, input: EventTextValue1 } = createTextfield(`Display Text`, fieldLabel[0] + feature + "EventText");
+                        const { label: labelEventColor1, input: EventColorValue1 } = createColorfield(`Line Color`, fieldLabel[0] + feature + "EventColor");
+                        controls.push(labelEventDate1, document.createElement('br'), EventDateValue1, document.createElement('br'), labelEventText1, document.createElement('br'), EventTextValue1, document.createElement('br'), labelEventColor1, document.createElement('br'), EventColorValue1);
+                    }
+
+                    if (feature === "EventMarker2") {
+                        const { label: labelEventDate2, input: EventDateValue2 } = createDatefield(`Event Date`, fieldLabel[0] + feature + "EventDate");
+                        const { label: labelEventText2, input: EventTextValue2 } = createTextfield(`Display Text`, fieldLabel[0] + feature + "EventText");
+                        const { label: labelEventColor2, input: EventColorValue2 } = createColorfield(`Line Color`, fieldLabel[0] + feature + "EventColor");
+                        controls.push(labelEventDate2, document.createElement('br'),EventDateValue2, document.createElement('br'), labelEventText2, document.createElement('br'), EventTextValue2,  document.createElement('br'), labelEventColor2, document.createElement('br'), EventColorValue2);
+                    }
+
+
+
+                    // Initially hide the dropdown container
+                    dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
+
+                    controls.forEach(control => dropdownInputCol.appendChild(control));
+                    dropdownContainer.append(dropdownLabelCol, dropdownInputCol);
+                    newDiv.append(dropdownContainer);
+
+                    // Toggle visibility dynamically
+                    checkbox.addEventListener('change', function () {
+                        checkbox.value = checkbox.checked ? 'on' : "";
+                        dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
+                        logFormFieldValues();
+                    });
+                } else {
+                    checkbox.addEventListener('change', function () {
+                        checkbox.value = checkbox.checked ? 'on' : "";
+                        logFormFieldValues();
+                    });
+                }
+            }
+            
           }
+        
 
           const targetElement = document.getElementById('graphGUI');
           targetElement.appendChild(newDiv);

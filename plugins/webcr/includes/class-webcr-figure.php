@@ -844,7 +844,7 @@ class Webcr_Figure {
 
         // Get the file extension and check it to make sure it is of the type that are allowed
         $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $allowed_types = ['json', 'csv'];
+        $allowed_types = ['json', 'csv', 'geojson'];
         if (!in_array($file_ext, $allowed_types)) {
             wp_send_json_error(['message' => 'Invalid file type.'], 400);
         }
@@ -866,6 +866,7 @@ class Webcr_Figure {
         // Retrieve existing file paths from post metadata
         $csv_path = get_post_meta($post_id, 'uploaded_path_csv', true);
         $json_path = get_post_meta($post_id, 'uploaded_path_json', true);
+        $geojson_path = get_post_meta($post_id, 'uploaded_path_geojson', true);
 
         // Define the directory where the file is to be uploaded
         //$upload_dir = ABSPATH . 'wp-content/data/instance_' . $instance_id . '/figure_' . $post_id  . '/';
@@ -896,6 +897,12 @@ class Webcr_Figure {
             if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'json' && $csv_path != '') {
                 update_post_meta($post_id, 'uploaded_path_json', $destination);
             }
+
+            if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'geojson') {
+                update_post_meta($post_id, 'uploaded_path_geojson', $destination);
+                update_post_meta($post_id, 'uploaded_path_json', $destination);
+                update_post_meta($post_id, 'uploaded_file', $file['name']);
+            } 
             // Send a success response with the file path
             wp_send_json_success(['message' => 'File uploaded successfully.', 'path' => $destination]);
 
@@ -959,6 +966,14 @@ class Webcr_Figure {
         if (pathinfo($file_name, PATHINFO_EXTENSION) === 'csv'){
             unlink($file_path_json);
             update_post_meta($post_id, 'uploaded_path_csv', '');
+            update_post_meta($post_id, 'uploaded_path_json', '');
+            update_post_meta($post_id, 'uploaded_file', '');
+        }
+
+        // Delete the converted json file if it was originally a csv. file.
+        if (pathinfo($file_name, PATHINFO_EXTENSION) === 'geojson'){
+            unlink($file_path_json);
+            update_post_meta($post_id, 'uploaded_path_geojson', '');
             update_post_meta($post_id, 'uploaded_path_json', '');
             update_post_meta($post_id, 'uploaded_file', '');
         }

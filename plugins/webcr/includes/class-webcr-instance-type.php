@@ -3,6 +3,8 @@
  * Register class that defines the Instance Type functions  
  * 
  */
+
+ 
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_Instance_Type {
 
@@ -195,11 +197,27 @@ class Webcr_Instance_Type {
         <?php
     }
 
+    /**
+     * Callback function for rendering the Google Tags Container ID field in the settings page.
+     *
+     * This function generates an input field for the Google Tags Container ID and provides
+     * additional instructions and links for users to configure their Google Tag Manager setup.
+     * It also includes a JavaScript implementation to dynamically modify and download a JSON
+     * container file with user-provided IDs.
+     *
+     * @return void
+     */
     function google_tags_container_id_field_callback() {
+        // Retrieve the plugin settings from the WordPress options table.
         $options = get_option('webcr_settings');
+        // Get the Google Tags Container ID from the settings, or set a default empty value.
         $value = isset($options['google_tags_container_id']) ? $options['google_tags_container_id'] : '';
+        // Get the Google Analytics Measurement ID from the settings, or set a default empty value.
+        $value_GTMContainer = isset($options['google_analytics_measurement_id']) ? $options['google_analytics_measurement_id'] : '';
+        // Define the example JSON file name and its folder path.
         $example_container_json = 'example_google_container_tags.json';
         $example_folder = get_site_url() . '/wp-content/plugins/webcr/example_files/';
+        // Generate the full URL for the example JSON file.
         $filedownload =  esc_url($example_folder . $example_container_json)
 
         ?>
@@ -207,18 +225,95 @@ class Webcr_Instance_Type {
         <p class="description">
             Enter the Google Tags Container ID for your site.
             <br>
-            <a href="https://support.google.com/analytics/answer/9539598" target="_blank" rel="noopener noreferrer">Learn how to find your Container ID</a>.
+            <a href="https://support.google.com/tagmanager/answer/14847097?hl=en" target="_blank" rel="noopener noreferrer">Learn how to find your Container ID (2. Install a web container > Step 4)</a>.
             <br>
             <br>
-            You will also need to download, then import this container into your Google Tag Manager instance.
+            Enter both IDs above, then click below to download, then import this container into your Google Tag Manager instance.
             <br>
-            <a href="<?php echo esc_url($filedownload); ?>" target="_blank" rel="noopener noreferrer">Download Container File</a>
+            <a href="#" id="downloadLink" target="" rel="noopener noreferrer">Download Container File</a>
             <br>
             <a href="https://support.google.com/tagmanager/answer/6106997" target="_blank" rel="noopener noreferrer">Learn how to import a container into Google Tag Manager</a>
+            <br>
+            <br>
+            Be sure to click the "Save Changes" below.
+            <br>
         </p>
+
+
+        <script>
+            /**
+            * JavaScript functionality:
+            * - Listens for a click event on the "Download Container File" link.
+            * - Fetches the example JSON file from the server.
+            * - Dynamically replaces placeholder values ("G-EXAMPLE" and "GTM-EXAMPLE") in the JSON
+            *   with the user-provided Google Analytics Measurement ID and Google Tags Container ID.
+            * - Creates a downloadable JSON file with the modified data.
+            * - Triggers the download of the modified file.
+            * - Handles errors during the fetch process and logs them to the console.
+            */
+            document.getElementById('downloadLink').addEventListener('click', function (event) {
+                event.preventDefault();  // Prevent the default link behavior
+
+                // GA4 Measurement ID passed from PHP
+                var gaMeasurementId = "<?php echo esc_js($value); ?>"; 
+
+                // GA4 Measurement ID passed from PHP
+                var gtmContainerId = "<?php echo esc_js($value_GTMContainer); ?>";
+
+
+                // Fetch the GTM container JSON from the local server
+                const rootURL = window.location.origin;
+                const figureRestCall = `${rootURL}/wp-content/plugins/webcr/example_files/example_google_container_tags.json`;
+                fetch(figureRestCall)  // Update with the correct path
+                    .then(response => response.json())  // Parse JSON
+                    .then(jsonData => {
+                        // Loop through the tags and replace "G-EXAMPLE" with the dynamic GA Measurement ID
+                        jsonData.containerVersion.tag.forEach(tag => {
+                            tag.parameter.forEach(param => {
+                                if (param.key === "tagId" && param.value === "G-EXAMPLE") {
+                                    param.value = gaMeasurementId;  // Replace with the actual GA Measurement ID
+                                }
+                                if (param.key === "publicId" && param.value === "GTM-EXAMPLE") {
+                                    param.value = gtmContainerId;  // Replace with the actual GA Measurement ID
+                                }
+                            });
+                        });
+
+                        // Loop through the tagIds array and replace "GTM-EXAMPLE" with gtmContainerId
+                        jsonData.containerVersion.container.tagIds.forEach((tagId, index) => {
+                            if (tagId === "GTM-EXAMPLE") {
+                                jsonData.containerVersion.container.tagIds[index] = gtmContainerId;  // Replace with the GTM Container ID
+                            }
+                        });
+
+                        // Create a Blob from the modified JSON data
+                        const jsonString = JSON.stringify(jsonData, null, 2);  // Format JSON with indentation
+                        const blob = new Blob([jsonString], { type: 'application/json' });
+
+                        console.log(jsonString);
+                        console.log(blob);
+
+                        // Create a download link for the modified file
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'GTM-EXAMPLE-CONTAINER.json';  // Set the filename for the download
+
+                        // Programmatically click the download link to trigger the download
+                        a.click();
+
+                        // Clean up the object URL after the download
+                        URL.revokeObjectURL(url);
+                    })
+                    .catch(error => {
+                        console.error("Error fetching the JSON file:", error);
+                    });
+            });
+        </script>
         <?php
     }
-   
+
+    
    // Create the settings page
    function webcr_settings_page() {
        // Check user capabilities
@@ -512,8 +607,10 @@ class Webcr_Instance_Type {
                     document.getElementById('edit_instance_navbar_name').value = termNavbarName;
                 }
             </script>
+
         </div>
         <?php
     }
 
 }
+
