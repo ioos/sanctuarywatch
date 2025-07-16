@@ -48,6 +48,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 			$instance_id = get_post_meta( $post_id, 'location', true );
 			$uploaded_path_csv = get_post_meta( $post_id, 'uploaded_path_csv', true );
 			$uploaded_path_json = get_post_meta( $post_id, 'uploaded_path_json', true );
+			$uploaded_path_geojson = get_post_meta( $post_id, 'uploaded_path_geojson', true );
 
 			// Check if a file exists in postmeta before rendering the file input button
 			$existing_file = get_post_meta($post_id, 'uploaded_file', true);
@@ -75,7 +76,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				</label>
 
 				<?php if (!$existing_file): ?>
-					<input type="file" name="uploaded_file" id="uploaded-file" accept=".json, .csv">
+					<input type="file" name="uploaded_file" id="uploaded-file" accept=".json, .csv, .geojson" <?php echo ( $this->field['options']['attach'] ) ? 'multiple' : ''; ?> />
 					<button type="button" id="upload-btn">Upload</button>
 				<?php endif; ?>
 				<?php if ($existing_file): ?>
@@ -96,6 +97,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				echo '<br>';
 				echo '<strong>Upload Information:</strong><br>';
 				echo esc_attr__( 'Max amount of files: ', 'exopite-sof' ) . $this->field['options']['filecount'] . '<br>';
+				//echo esc_attr__( 'Allowed file types: ', 'exopite-sof' ) . '.csv, .json, .geojson'  . '<br>';
 				echo esc_attr__( 'Allowed file types: ', 'exopite-sof' ) . '.csv, .json'  . '<br>';
 				echo esc_attr__( 'Maximum Allowed File Size: ', 'exopite-sof' ) . '300MB'  . '<br>';
 				echo esc_attr__( 'Recommended File Size: ', 'exopite-sof' ) . '<= 5MB'  . '<br><br>';
@@ -107,6 +109,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				// Example file names
 				$example_csv = 'example.csv';
 				$example_json = 'example.json';
+				$example_geojson = 'example.geojson';
 
 				echo '<strong>Correct Formatting for .csv Files:</strong>';
 				echo '<br>';
@@ -118,7 +121,8 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				echo '<strong>Correctly Formatted Example Files:</strong><br>';
 				echo 'Please format your .csv or .json file as shown in the examples below. If they are not formatted properly, your file will be rejected.<br>';
 				echo '<a href="' . esc_url($example_folder . $example_csv) . '" target="_blank">Download example.csv</a><br>';
-				echo '<a href="' . esc_url($example_folder . $example_json) . '" target="_blank">Download example.json</a>';
+				echo '<a href="' . esc_url($example_folder . $example_json) . '" target="_blank">Download example.json</a><br>';
+				//echo '<a href="' . esc_url($example_folder . $example_geojson) . '" target="_blank">Download example.geojson</a><br>';
 				echo '<br>';
 				echo '<br>';
 				?>
@@ -560,6 +564,29 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 									deleteUploadedFile();
 									alert("JSON Validation Failed: " + error.message);
 									console.error("JSON Validation Error:", error);
+								}
+							};
+							reader.readAsText(file); // Read file content as text
+											
+						} 
+						// If the file is a .json file, trigger json validation script
+						if (fileName.endsWith(".geojson")) {
+							var reader = new FileReader();
+							reader.onload = function(event) {
+								try {
+
+									//alert("Success: " + (data.message || "File Upload Successful.") + "\n\n" + "Click 'Update' button in the top-right to save your changes, access the delete button, and the Interactive Figure Settings.");
+									alert("Success: " + (data.message || "File Upload Successful." + '\n\n' + 'Click "OK" to save your changes.'));
+
+									// Hide the upload button and the file input
+									uploadBtn.style.display = "none";
+									fileInput.style.display = "none";
+									clickUpdateButton();
+
+								} catch (error) {
+									deleteUploadedFile();
+									alert("GEOJSON Upload Failed: " + error.message);
+									console.error("GEOJSONJSON Upload Error:", error);
 								}
 							};
 							reader.readAsText(file); // Read file content as text
