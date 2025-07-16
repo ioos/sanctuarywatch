@@ -175,10 +175,7 @@ function process_child_obj(){
 
             let isNumeric = /\d/.test(lastChar);
 
-            // The section of code below was commented out in accordance with issue #230 on github.
-            // icons in svgs not displaying when "-2" or "-3" being added to the name #230
-            // https://github.com/ioos/sanctuarywatch/issues/230
-            
+            //prevent duplicates:  For example, if there is a separate mobile icon for the icon named "whales", then in the mobile layer, that icon should be named "whales-mobile".
             if (isNumeric){
                 let newkey = child_obj[key]["original_name"];
                 child_obj[newkey] = child_obj[key];
@@ -473,175 +470,425 @@ function remove_outer_div(){
  * 
  * @returns {void}
  */
-function mobile_helper(svgElement, iconsArr, mobile_icons){
+
+function mobile_helper(svgElement, iconsArr, mobile_icons) {
+    // Clear any existing mobile layout DOM container
     remove_outer_div();
+
+    // Grab the <defs> section of the SVG (symbol definitions, gradients, etc.)
     let defs = svgElement.firstElementChild;
-   
+    let scene_toc_style = scene_data.scene_toc_style;
+
+    function groupIconsBySection(iconsArr) {
+        
+        const grouped = {};
+        const sectionOrderMap = {};
+        iconsArr.forEach(iconId => {
+
+            if (scene_same_hover_color_sections !== "yes" && child_obj[iconId] !== "None") {
+                let section_num = child_obj[iconId].section_name;
+                let modal_icon_order = child_obj[iconId].modal_icon_order;
+                let modal_title = child_obj[iconId].title;
+                let this_scene_section = `scene_section${section_num}`;
+                let this_scene_section_title = `scene_section_title${section_num}`;
+                let this_color = `scene_section_hover_color${section_num}`;
+                let text_color = `scene_section_hover_text_color${section_num}`;
+                const hoverColor = scene_data[this_scene_section][this_color];
+                const sectionTitle = scene_data[this_scene_section][this_scene_section_title];
+                const hoverTextColor = scene_data[this_scene_section][text_color];
+                const groupTitle = sectionTitle || "Other";
+                
+                // Track section_num for sorting later
+                sectionOrderMap[groupTitle] = parseInt(section_num);
+
+                if (!grouped[groupTitle]) {
+                    grouped[groupTitle] = {
+                        sectionNum: parseInt(section_num),
+                        sectionColor: hoverColor,
+                        textColor: hoverTextColor,
+                        modal_titles: [],
+                        modal_orders: [],
+                        iconIds: []
+                    };
+                }
+                grouped[groupTitle].iconIds.push(iconId);
+                grouped[groupTitle].modal_titles.push(modal_title);
+                grouped[groupTitle].modal_orders.push(modal_icon_order);
+            }
+            if (scene_same_hover_color_sections == "yes") {
+                let section_num = child_obj[iconId].section_name;
+                let modal_icon_order = child_obj[iconId].modal_icon_order;
+                let modal_title = child_obj[iconId].title;
+                let this_scene_section = `scene_section${section_num}`;
+                let this_scene_section_title = `scene_section_title${section_num}`;
+                const hoverColor = scene_default_hover_color;
+                const sectionTitle = scene_data[this_scene_section][this_scene_section_title] ;
+                const hoverTextColor = scene_default_hover_text_color;
+                const groupTitle = sectionTitle || "Other";
+
+                // Track section_num for sorting later
+                sectionOrderMap[groupTitle] = parseInt(section_num);
+
+                if (!grouped[groupTitle]) {
+                    grouped[groupTitle] = {
+                        sectionNum: parseInt(section_num),
+                        sectionColor: hoverColor,
+                        textColor: hoverTextColor,
+                        modal_titles: [],
+                        modal_orders: [],
+                        iconIds: []
+                    };
+                }
+                grouped[groupTitle].iconIds.push(iconId);
+                grouped[groupTitle].modal_titles.push(modal_title);
+                grouped[groupTitle].modal_orders.push(modal_icon_order);
+            }
+        });
+
+        // Sort group titles by section_num
+        const sortedGroupTitles = Object.entries(sectionOrderMap)
+            .sort((a, b) => a[1] - b[1]) // sort by section_num
+            .map(entry => entry[0]);     // get groupTitle
+
+        // Rebuild grouped and hoverColors in sorted order
+        const groupedSorted = {};
+
+        sortedGroupTitles.forEach(groupTitle => {
+            const group = grouped[groupTitle];
+
+            // Combine icon data into sortable array
+            const combined = group.iconIds.map((iconId, i) => ({
+                iconId,
+                order: group.modal_orders[i] ?? 9999,  // fallback for undefined/null
+                title: group.modal_titles[i] ?? ""
+            }));
+
+            // Sort: first by modal_icon_order (numerically), then by title (alphabetically)
+            combined.sort((a, b) => {
+                const orderA = parseInt(a.order, 10);
+                const orderB = parseInt(b.order, 10);
+                if (orderA === orderB) {
+                    return a.title.localeCompare(b.title);
+                }
+                return orderA - orderB;
+            });
+
+            // Overwrite iconIds with sorted version
+            group.iconIds = combined.map(item => item.iconId);
+
+            // Clean up: no need to keep modal_titles/modal_orders unless needed later
+            delete group.modal_titles;
+            delete group.modal_orders;
+
+            groupedSorted[groupTitle] = group;
+        });
+
+        return groupedSorted;
+    }
+
+    async function buildAccordionLayout(groupedIcons, numCols, numRows) {
+        const outer_cont = document.querySelector("body > div.container-fluid");
+        outer_cont.innerHTML = '';
+
+        Object.entries(groupedIcons).forEach(([sectionTitle, sectionData], groupIndex) => {
+            const { sectionNum, sectionColor, textColor, iconIds } = sectionData;
+
+            let renderedIcons = 0;
+
+            const accordionWrapper = document.createElement("div");
+            accordionWrapper.classList.add("accordion-group");
+
+            const header = document.createElement("div");
+            header.classList.add("accordion-header");
+            header.textContent = sectionTitle;
+            header.style.cursor = "pointer";
+            header.style.padding = "10px";
+            header.style.backgroundColor = sectionColor; 
+            header.style.fontWeight = "bold";
+            header.style.color = textColor;
+            //header.style.border = "1px solid #ccc";
+            header.style.borderRadius = "8px";
+            header.style.marginBottom = "16px";
+            header.setAttribute("data-target", `accordion-body-${groupIndex}`);
+
+            accordionWrapper.appendChild(header);
+
+            const body = document.createElement("div");
+            body.classList.add("accordion-body");
+            body.setAttribute("id", `accordion-body-${groupIndex}`);
+            body.style.display = "none";
+            body.style.padding = "10px";
+            body.style.border = "";
+
+            let idx = 0; // Index of current icon in iconsArr
+            // Create the grid rows
+            for (let i = 0; i < numRows; i++) {
+                let row_cont = document.createElement("div");
+                row_cont.classList.add("row", "flex-wrap", "justify-content-center");
+                row_cont.setAttribute("id", `row-${i}`);
+
+
+                // Create the columns in each row
+                for (let j = 0; j < numCols; j++) {
+                    if (idx < iconIds.length) {
+                        // Create a Bootstrap column container for each icon
+                        let cont = document.createElement("div");
+                        cont.classList.add("col-4");
+                        cont.style.paddingBottom = '10px';
+                        cont.style.paddingTop = '5px';
+                        cont.style.fontWeight = 'bold'; 
+                        cont.style.border = '2px solid #000';
+                        cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
+
+                        // Identify the current icon ID
+                        let currIcon = iconIds[idx];
+                        let key;
+
+                        if (child_obj[currIcon] && child_obj[currIcon].section_name == sectionNum) {
+
+                            // If there is no mobile layer, use the default icon layer
+                            if (!has_mobile_layer(mobile_icons, currIcon)) {
+                                key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                            } else {
+                                // Try to get the mobile-specific version of the icon
+                                const currIconMobile = currIcon + "-mobile";
+                                const mobileLayerElement = get_mobile_layer(mobile_icons, currIconMobile);
+
+                                if (mobileLayerElement) {
+                                    key = mobileLayerElement.cloneNode(true);
+                                } else {
+                                    console.warn(`Mobile layer for ${currIcon} expected but not found. Using default.`);
+                                    key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                                }
+                            }
+
+                            if (!key) {
+                                console.error(`Could not find SVG element for icon: ${currIcon}`);
+                                continue; // Skip rendering if the icon couldn't be found
+                            }
+                            // Set a unique ID for the container
+                            cont.setAttribute("id", `${currIcon}-container`);
+                            
+                            // Create a blank SVG container
+                            // Add shared <defs> and icon content to the new SVG
+                            let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                            svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                            svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+                            svgClone.append(defs.cloneNode(true));
+                            svgClone.append(key);
+                            cont.appendChild(svgClone);
+
+                            // Add a caption below the icon using child_obj data
+                            let caption = document.createElement("div");
+                            if (child_obj[currIcon]) {
+                                caption.innerText = child_obj[currIcon].title;
+                            } else {
+                                caption.innerText = "not in wp yet, have to add";
+                            }
+                            caption.style.fontSize = "15px";
+                            cont.appendChild(caption);
+
+                            // Append this icon container to the row
+                            row_cont.appendChild(cont);
+
+                            // Adjust the <svg>'s viewBox to fit the icon neatly
+                           
+                            body.style.display = "block"; // temporarily force visible
+                            requestAnimationFrame(() => {
+                                const bbox = key.getBBox();
+                                svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+                                renderedIcons++;
+                                console.log(`Rendered icon: ${currIcon}, total rendered: ${renderedIcons}`);
+                                if (renderedIcons === iconIds.length) {
+                                    body.style.display = "none"; // only hide once ALL icons are done
+                                } 
+                            });
+
+                        }
+                    idx++; // Move to next icon
+                    }
+                }
+                // Apply margin fix for outer container and append the row
+                body.style.marginLeft = '-1.5%';
+                body.appendChild(row_cont);
+            }       
+            
+            accordionWrapper.appendChild(body);
+            outer_cont.appendChild(accordionWrapper);
+
+            header.addEventListener("click", () => {
+                const current = document.getElementById(header.getAttribute("data-target"));
+                const isVisible = current.style.display === "block";
+                current.style.display = isVisible ? "none" : "block";
+            });
+        });
+    }
+
+    /**
+     * Builds the responsive grid layout of icons using a Bootstrap-style grid.
+     * For each icon, clones the appropriate layer (standard or mobile), wraps it in a mini <svg>,
+     * and adds it to a <div> container with caption text.
+     */
     function updateLayout(numCols, numRows) {
+
+        // Select and clear the container that will hold all icon rows
         let outer_cont = document.querySelector("body > div.container-fluid");
         outer_cont.innerHTML = '';
-    
-        let idx = 0;
-        for (let i = 0; i < numRows; i++) {
-            let row_cont = document.createElement("div");
-            row_cont.classList.add("row");
-            row_cont.setAttribute("id", `row-${i}`);
-            
-            for (let j = 0; j < numCols; j++) {
-                if (idx < iconsArr.length) {
-                    let cont = document.createElement("div");
-                    cont.classList.add("col-4");
-                    cont.style.paddingBottom = '10px';
-                    cont.style.paddingTop = '5px';
-                    cont.style.fontWeight = 'bold'; 
-                    cont.style.border = '2px solid #000';
-                    cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
-                   
-                    let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                    svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-                    cont.appendChild(svgClone);
-                    let currIcon = iconsArr[idx];
 
-                    let key; // Declare key
-                    if (!has_mobile_layer(mobile_icons, currIcon)) {
-                        key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
-                    } else {
-                        const currIconMobile = currIcon + "-mobile";
-                        const mobileLayerElement = get_mobile_layer(mobile_icons, currIconMobile);
+        if (scene_toc_style === "accordion" || scene_toc_style === "sectioned_list") {
+            const groupedIcons = groupIconsBySection(iconsArr);
+            buildAccordionLayout(groupedIcons, numCols, numRows);
+            return;
+        }
 
-                        if (mobileLayerElement) {
-                            key = mobileLayerElement.cloneNode(true); // Corrected: clone the node
-                        } else {
-                            // This case implies an inconsistency if has_mobile_layer returned true.
-                            // Fallback to non-mobile version.
-                            console.warn(`Mobile layer for ${currIcon} expected but not found by get_mobile_layer. Using non-mobile version.`);
+        if (scene_toc_style === "" || scene_toc_style === "list") {
+            let idx = 0; // Index of current icon in iconsArr
+            // Create the grid rows
+            for (let i = 0; i < numRows; i++) {
+                let row_cont = document.createElement("div");
+                row_cont.classList.add("row");
+                row_cont.setAttribute("id", `row-${i}`);
+
+                // Create the columns in each row
+                for (let j = 0; j < numCols; j++) {
+                    if (idx < iconsArr.length) {
+                        // Create a Bootstrap column container for each icon
+                        let cont = document.createElement("div");
+                        cont.classList.add("col-4");
+                        cont.style.paddingBottom = '10px';
+                        cont.style.paddingTop = '5px';
+                        cont.style.fontWeight = 'bold'; 
+                        cont.style.border = '2px solid #000';
+                        cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
+
+                        // Create a blank SVG container
+                        let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                        svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+                        cont.appendChild(svgClone);
+
+                        // Identify the current icon ID
+                        let currIcon = iconsArr[idx];
+                        let key;
+
+                        // If there is no mobile layer, use the default icon layer
+                        if (!has_mobile_layer(mobile_icons, currIcon)) {
                             key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
-                        }
-                        // The original attempt to set ID via 'temp' is no longer needed
-                        // as cloning the mobileLayerElement preserves its ID.
-                    }
+                        } else {
+                            // Try to get the mobile-specific version of the icon
+                            const currIconMobile = currIcon + "-mobile";
+                            const mobileLayerElement = get_mobile_layer(mobile_icons, currIconMobile);
 
-                    // Ensure 'key' was actually assigned a node.
-                    if (!key) {
-                        console.error(`SVG element for icon '${currIcon}' or its mobile variant could not be found.`);
-                        continue; // Skip this icon if its element can't be found
+                            if (mobileLayerElement) {
+                                key = mobileLayerElement.cloneNode(true);
+                            } else {
+                                console.warn(`Mobile layer for ${currIcon} expected but not found. Using default.`);
+                                key = svgElement.querySelector(`#${currIcon}`).cloneNode(true);
+                            }
+                        }
+
+                        if (!key) {
+                            console.error(`Could not find SVG element for icon: ${currIcon}`);
+                            continue; // Skip rendering if the icon couldn't be found
+                        }
+                        // Set a unique ID for the container
+                        cont.setAttribute("id", `${currIcon}-container`);
+
+                        // Add shared <defs> and icon content to the new SVG
+                        svgClone.append(defs.cloneNode(true));
+                        svgClone.append(key);
+
+
+                        // Add a caption below the icon using child_obj data
+                        let caption = document.createElement("div");
+                        if (child_obj[currIcon]) {
+                            caption.innerText = child_obj[currIcon].title;
+                        } else {
+                            caption.innerText = "not in wp yet, have to add";
+                        }
+                        caption.style.fontSize = "15px";
+                        cont.appendChild(caption);
+
+                        // Append this icon container to the row
+                        row_cont.appendChild(cont);
+
+                        // Adjust the <svg>'s viewBox to fit the icon neatly
+                        setTimeout(() => {
+                            let bbox = key.getBBox(); 
+                            svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+                        }, 0);
+
+                        idx++; // Move to next icon
                     }
-                    cont.setAttribute("id", `${currIcon}-container`);
-                    svgClone.append(defs.cloneNode(true)); // Corrected: clone defs for each SVG
-                    svgClone.append(key);
-                    
-                    let caption = document.createElement("div");
-                    if (child_obj[currIcon]) {
-                        caption.innerText = child_obj[currIcon].title;
-                    } else {
-                        caption.innerText = "not in wp yet, have to add";
-                    }
-                    
-                    caption.setAttribute("style", "font-size: 15px")
-                    cont.appendChild(caption);
-                    row_cont.appendChild(cont);
-                    setTimeout(() => {
-                        let bbox = key.getBBox(); 
-                        svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
-                    }, 0);
-    
-                    idx += 1;
-                } else {
-                    continue;
                 }
+                // Apply margin fix for outer container and append the row
+                outer_cont.style.marginLeft = '-1.5%';
+                outer_cont.appendChild(row_cont);
             }
-            outer_cont.style.marginLeft = '-1.5%';
-            outer_cont.appendChild(row_cont);
         }
     }
 
     /**
-     * Updates the number of columns and rows for the layout based on the current window dimensions.
-     * 
-     * This function dynamically adjusts the styles of various DOM elements to accommodate
-     * either landscape or portrait orientation. It sets the number of columns (`numCols`)
-     * and calculates the number of rows (`numRows`) required for displaying icons.
-     * 
-     * - In landscape mode (width > height), it applies specific styles for a wider layout.
-     * - In portrait mode, it restores original or mobile-specific styles.
-     * 
-     * The function then updates the layout and re-initializes modal dialogs.
-     * 
-     * Side Effects:
-     * - Modifies the `style` attribute of several DOM elements:
-     *   - `#mobile-view-image`
-     *   - `#scene-fluid`
-     *   - `#title-container > div > div.col-md-2`
-     *   - `#mobileModal > div`
-     *   - `#myModal > div`
-     * - Calls `updateLayout(numCols, numRows)` to update the grid.
-     * - Calls `add_modal()` to re-initialize modals.
-     * 
-     * Assumes:
-     * - `iconsArr` is a global array containing the icons to display.
-     * - `updateLayout` and `add_modal` are globally available functions.
-     * 
-     * @function
-     * @returns {void}
+     * Dynamically sets the number of columns and rows depending on screen orientation.
+     * It also updates layout and adjusts styling for elements on landscape vs portrait.
      */
     function updateNumCols() {
-        console.log("updateNumCols fired (debounced)"); // Confirms debounced execution
+        console.log("updateNumCols fired (debounced)");
 
         let numCols;
         let numRows;
-        let ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%'
-        let sceneFluid = document.querySelector("#scene-fluid");
-        let ogSceneFluid = 'margin-top: 70%; margin-left: -1.5%;'
+
+        // Default style values for portrait
+        let ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%';
+        let ogSceneFluid = 'margin-top: 70%; margin-left: -1.5%;';
         let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
         let ogColmd2 = colmd2.getAttribute("style", "");
 
+        // === LANDSCAPE MODE ===
         if (window.innerWidth > window.innerHeight) {
-            let mobViewImage = document.querySelector("#mobile-view-image");
-            let sceneFluid = document.querySelector("#scene-fluid");
-            let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
-            let mobModalDialog = document.querySelector("#mobileModal > div");
-            let modalDialogInfo = document.querySelector("#myModal > div");
-
             numCols = 4;
-            mobViewImage.setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%")
-            sceneFluid.setAttribute("style", "margin-top: 25%;margin-left: -1.5%; display: block");
-            colmd2.setAttribute("style", "width: 100%")
-            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
-            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
 
-        } else  {
-          numCols = 3;
-            let mobViewImage = document.querySelector("#mobile-view-image");
-            let sceneFluid = document.querySelector("#scene-fluid");
-            let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
-            let mobModalDialog = document.querySelector("#mobileModal > div");
-            let modalDialogInfo = document.querySelector("#myModal > div");
+            document.querySelector("#mobile-view-image").setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%");
+            document.querySelector("#scene-fluid").setAttribute("style", "margin-top: 25%;margin-left: -1.5%; display: block");
+            document.querySelector("#title-container > div > div.col-md-2").setAttribute("style", "width: 100%");
+            document.querySelector("#mobileModal > div").setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
+            document.querySelector("#myModal > div").setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
 
-            mobViewImage.setAttribute("style", '');
+        // === PORTRAIT MODE ===
+        } else {
+            numCols = 3;
+
+            const mobViewImage = document.querySelector("#mobile-view-image");
+            mobViewImage.setAttribute("style", ''); // Clear
             mobViewImage.setAttribute("style", ogMobViewImage);
+
+            const sceneFluid = document.querySelector("#scene-fluid");
             sceneFluid.setAttribute("style", '');
             sceneFluid.setAttribute("style", ogSceneFluid);
+
             colmd2.setAttribute("style", '');
             colmd2.setAttribute("style", ogColmd2);
-            mobModalDialog.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
-            modalDialogInfo.setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
 
+            document.querySelector("#mobileModal > div").setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
+            document.querySelector("#myModal > div").setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
         }
 
-        numRows = Math.ceil((iconsArr.length/numCols));
+        // Calculate the number of rows based on icon count
+        numRows = Math.ceil(iconsArr.length / numCols);
 
+        // Apply the layout update
         updateLayout(numCols, numRows);
-        add_modal();
-
+        add_modal(); // Reattach modals (tooltip/dialog logic)
     }
-    // Call updateNumCols directly for the initial setup
-    updateNumCols();
 
-    // Create a debounced version for resize events (e.g., 250ms delay)
+    // === Initial Setup ===
+    updateNumCols(); // Build layout based on current orientation
+
+    // === Listen for window resizes (debounced) ===
     const debouncedUpdateNumCols = debounce(updateNumCols, 250);
     window.addEventListener("resize", debouncedUpdateNumCols);
 }
+
 
 
 /**
@@ -674,25 +921,34 @@ function mobile_helper(svgElement, iconsArr, mobile_icons){
  * handleIconVisibility(svgElement, associatedModals);
  * ```
  */
+//original code is documented in issue #243 https://github.com/ioos/sanctuarywatch/issues/243
 function handleIconVisibility(svgElement, visible_modals) {
-
     if (!svgElement || !Array.isArray(visible_modals)) return;
 
     const modalSet = new Set(visible_modals);
+    const mode = scene_data['scene_orphan_icon_action'];
+    const fill_color = scene_data['scene_orphan_icon_color'];
+
+    // Inkscape-compatible: detect top-level icon groups (layers or <g id> inside #icons)
+    let topLevelIcons = [];
+
     const iconGroup = svgElement.querySelector('g#icons');
-    const topLevelIcons = Array.from(iconGroup.children)
-        .filter(el => el.tagName === 'g' && el.id)
-        .map(el => el.id);
+    if (iconGroup) {
+        topLevelIcons = Array.from(iconGroup.children)
+            .filter(el => el.tagName === 'g' && el.id)
+            .map(el => el.id);
+    } else {
+        // Fallback: treat all Inkscape layers as top-level icons
+        topLevelIcons = Array.from(svgElement.querySelectorAll('g[id]'))
+            .filter(el => el.getAttribute('inkscape:groupmode') === 'layer')
+            .map(el => el.id);
+    }
 
     svgElement.querySelectorAll("g[id]").forEach(icon => {
         const iconId = icon.id;
-
-        // Only apply logic to top-level icons
         if (!topLevelIcons.includes(iconId)) return;
 
         const isAssociated = modalSet.has(iconId);
-        const mode = scene_data['scene_orphan_icon_action'];
-        const fill_color = scene_data['scene_orphan_icon_color'];
 
         // Reset styles
         icon.style.opacity = "";
@@ -702,68 +958,65 @@ function handleIconVisibility(svgElement, visible_modals) {
             el.style.fill = "";
         });
 
-        if (mode === "visible") {
-            return; // Do nothing, show all
-        }
+        if (mode === "visible" || isAssociated) return;
 
-        if (isAssociated) {
-            return; // Leave associated icons unchanged
-        }
-
-        // Apply behavior to orphaned top-level icons
+        // Apply orphan style
         switch (mode) {
             case "hide":
                 icon.style.opacity = "0";
                 icon.style.pointerEvents = "none";
                 break;
-
             case "translucent":
                 icon.style.opacity = "0.25";
                 break;
-
             case "color":
                 icon.querySelectorAll("*").forEach(el => {
                     el.style.fill = fill_color;
                 });
                 break;
-
             default:
                 console.warn("Unknown orphan icon mode:", mode);
         }
 
-        // Add tooltip for orphan icons
-        icon.addEventListener("mouseenter", function (e) {
-            const tooltip = document.createElement("div");
-            tooltip.className = "icon-tooltip";
-            tooltip.textContent = "Not currently available";
-            tooltip.style.position = "absolute";
-            tooltip.style.padding = "6px 10px";
-            tooltip.style.backgroundColor = "#333";
-            tooltip.style.color = "#fff";
-            tooltip.style.borderRadius = "4px";
-            tooltip.style.fontSize = "13px";
-            tooltip.style.pointerEvents = "none";
-            tooltip.style.zIndex = "9999";
-            tooltip.style.top = e.pageY + 10 + "px";
-            tooltip.style.left = e.pageX + 10 + "px";
-            tooltip.id = "orphanIconTooltip";
-            document.body.appendChild(tooltip);
-        });
-
-        icon.addEventListener("mousemove", function (e) {
-            const tooltip = document.getElementById("orphanIconTooltip");
-            if (tooltip) {
+        // Tooltip listeners
+        if (!icon.dataset.tooltipBound) {
+            icon.addEventListener("mouseenter", function (e) {
+                const tooltip = document.createElement("div");
+                tooltip.className = "icon-tooltip";
+                tooltip.textContent = "Not currently available";
+                tooltip.style.position = "absolute";
+                tooltip.style.padding = "6px 10px";
+                tooltip.style.backgroundColor = "#333";
+                tooltip.style.color = "#fff";
+                tooltip.style.borderRadius = "4px";
+                tooltip.style.fontSize = "13px";
+                tooltip.style.pointerEvents = "none";
+                tooltip.style.zIndex = "9999";
                 tooltip.style.top = e.pageY + 10 + "px";
                 tooltip.style.left = e.pageX + 10 + "px";
-            }
-        });
+                tooltip.id = "orphanIconTooltip";
+                document.body.appendChild(tooltip);
+            });
 
-        icon.addEventListener("mouseleave", function () {
-            const tooltip = document.getElementById("orphanIconTooltip");
-            if (tooltip) tooltip.remove();
-        });
+            icon.addEventListener("mousemove", function (e) {
+                const tooltip = document.getElementById("orphanIconTooltip");
+                if (tooltip) {
+                    tooltip.style.top = e.pageY + 10 + "px";
+                    tooltip.style.left = e.pageX + 10 + "px";
+                }
+            });
+
+            icon.addEventListener("mouseleave", function () {
+                const tooltip = document.getElementById("orphanIconTooltip");
+                if (tooltip) tooltip.remove();
+            });
+
+            // Mark as bound to avoid duplicate tooltips
+            icon.dataset.tooltipBound = "true";
+        }
     });
 }
+
 
 // Below is the function that will be used to include SVGs within each scene
 
@@ -883,8 +1136,13 @@ async function loadSVG(url, containerId) {
                     mob_icons.setAttribute("display", "none");
                 }
             });
+            try {
+                handleIconVisibility(svgElement, visible_modals);
+            }
+            catch (error) {
+                console.error('Error handling icon visibility:', error);
+            }
             
-            handleIconVisibility(svgElement, visible_modals);
             container.appendChild(svgElement);
             highlight_icons();
  
@@ -1067,6 +1325,7 @@ function is_touchscreen(){
 function is_mobile() {
     return (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) 
            && (window.innerWidth < 512 || window.innerHeight < 512);
+           //(window.innerWidth <= 512 && 'ontouchstart' in window);
 }
 
 /**
@@ -1201,6 +1460,7 @@ async function render_interactive_plots(tabContentElement, info_obj) {
     let targetId = `javascript_figure_target_${postID}`;
     let plotlyDivID = `plotlyFigure${postID}`;
     let interactive_arguments = info_obj["figure_interactive_arguments"];
+    console.log('interactive_arguments', interactive_arguments);
 
     async function waitForElementByIdPolling(id, timeout = 10000, interval = 100) {
         const start = Date.now();
