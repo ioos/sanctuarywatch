@@ -314,12 +314,18 @@ async function make_title() {
         titleh1.innerHTML = title;
         titleDom.appendChild(titleh1);
 
+        if (is_mobile()) {
+            titleh1.setAttribute("style", "margin-top: 16px; justify-content: center;; align-content: center; display: flex;");
+        } else {}
+
         let accgroup = document.createElement("div");
-        if (!is_mobile()) {
-      //      accgroup.setAttribute("style", "margin-top: 2%");
-        } else {
-            accgroup.setAttribute("style", "max-width: 85%; margin-top: 2%");
-        }
+
+    //     if (!is_mobile()) {
+    //   //      accgroup.setAttribute("style", "margin-top: 2%");
+    //     } else {
+    //         accgroup.setAttribute("style", "margin-top: 16px"); //max-width: 85%
+    //     }
+
         accgroup.classList.add("accordion");
 
         if (scene_data["scene_info_entries"]!=0){
@@ -357,6 +363,7 @@ async function make_title() {
         }
 
         if (is_mobile()){
+            col1.setAttribute("style", "max-width: 85%;");
             col2.setAttribute("style", "padding-top: 5%; align-content: center; margin-left: 7%;");
         }
 
@@ -584,6 +591,26 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
         return groupedSorted;
     }
 
+    function getSortedIconsArr(iconsArr) {
+        const sortable = iconsArr.map(iconId => {
+            return {
+                iconId,
+                modal_icon_order: parseFloat(child_obj[iconId]?.modal_icon_order) || 0,
+                modal_title: child_obj[iconId]?.title || ''
+            };
+        });
+
+        sortable.sort((a, b) => {
+            if (a.modal_icon_order !== b.modal_icon_order) {
+                return a.modal_icon_order - b.modal_icon_order;
+            }
+            return a.modal_title.localeCompare(b.modal_title);
+        });
+
+        const sortedIconArr = sortable.map(item => item.iconId);
+        return sortedIconArr;
+    }
+
     async function buildAccordionLayout(groupedIcons, numCols, numRows) {
         const outer_cont = document.querySelector("body > div.container-fluid");
         outer_cont.innerHTML = '';
@@ -605,8 +632,10 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
             header.style.fontWeight = "bold";
             header.style.color = textColor;
             //header.style.border = "1px solid #ccc";
-            header.style.borderRadius = "8px";
+            header.style.borderRadius = "10px";
             header.style.marginBottom = "16px";
+            header.style.textAlign = "center";
+            header.innerHTML = `${sectionTitle} <i class="fas fa-chevron-down" style="float: right; padding-right: 12px; padding-top: 5px;"></i>`;
             header.setAttribute("data-target", `accordion-body-${groupIndex}`);
 
             accordionWrapper.appendChild(header);
@@ -707,12 +736,13 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                     }
                 }
                 // Apply margin fix for outer container and append the row
-                body.style.marginLeft = '-1.5%';
+                //body.style.marginLeft = '-1.5%';
                 body.appendChild(row_cont);
             }       
             
             accordionWrapper.appendChild(body);
             outer_cont.appendChild(accordionWrapper);
+            outer_cont.style.maxWidth = "95%";
 
             header.addEventListener("click", () => {
                 const current = document.getElementById(header.getAttribute("data-target"));
@@ -740,16 +770,18 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
         }
 
         if (scene_toc_style === "" || scene_toc_style === "list") {
+
+            orderedIcons = getSortedIconsArr(iconsArr);
             let idx = 0; // Index of current icon in iconsArr
             // Create the grid rows
             for (let i = 0; i < numRows; i++) {
                 let row_cont = document.createElement("div");
-                row_cont.classList.add("row");
+                row_cont.classList.add("row", "flex-wrap", "justify-content-center");
                 row_cont.setAttribute("id", `row-${i}`);
 
                 // Create the columns in each row
                 for (let j = 0; j < numCols; j++) {
-                    if (idx < iconsArr.length) {
+                    if (idx < orderedIcons.length) {
                         // Create a Bootstrap column container for each icon
                         let cont = document.createElement("div");
                         cont.classList.add("col-4");
@@ -766,7 +798,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                         cont.appendChild(svgClone);
 
                         // Identify the current icon ID
-                        let currIcon = iconsArr[idx];
+                        let currIcon = orderedIcons[idx];
                         let key;
 
                         // If there is no mobile layer, use the default icon layer
@@ -820,7 +852,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                     }
                 }
                 // Apply margin fix for outer container and append the row
-                outer_cont.style.marginLeft = '-1.5%';
+                //outer_cont.style.marginLeft = '-1.5%';
                 outer_cont.appendChild(row_cont);
             }
         }
@@ -838,7 +870,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
 
         // Default style values for portrait
         let ogMobViewImage = 'transform: scale(0.3); margin-right: 65%; margin-top: -70%; margin-bottom: -70%';
-        let ogSceneFluid = 'margin-top: 70%; margin-left: -1.5%;';
+        let ogSceneFluid = 'margin-top: 70%;'; //margin-left: -1.5%;
         let colmd2 = document.querySelector("#title-container > div > div.col-md-2");
         let ogColmd2 = colmd2.getAttribute("style", "");
 
@@ -847,7 +879,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
             numCols = 4;
 
             document.querySelector("#mobile-view-image").setAttribute("style", "transform: scale(0.5); margin-right: 35%; margin-top: -23%");
-            document.querySelector("#scene-fluid").setAttribute("style", "margin-top: 25%;margin-left: -1.5%; display: block");
+            document.querySelector("#scene-fluid").setAttribute("style", "margin-top: 25%; display: block"); //margin-left: -1.5%;
             document.querySelector("#title-container > div > div.col-md-2").setAttribute("style", "width: 100%");
             document.querySelector("#mobileModal > div").setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
             document.querySelector("#myModal > div").setAttribute("style", "z-index: 9999;margin-top: 5%;max-width: 88%;");
@@ -1055,10 +1087,13 @@ async function loadSVG(url, containerId) {
                 let fullImgCont = document.querySelector("#mobile-view-image");
                 
                 let titleRowCont = document.querySelector("#title-container > div");
+                titleRowCont.style.display = "flex";
+                titleRowCont.style.justifyContent = "center";
+                titleRowCont.style.alignItems = "center";
+                
                 let sceneButton = document.createElement("button");
                 sceneButton.innerHTML = "<strong>View Full Scene</strong>";
-                sceneButton.setAttribute("style", "margin-left: -13%; max-width: 80%; border-radius: 10px; background-color: #008da8; color: white;");
-
+                sceneButton.setAttribute("style", "margin-top: 16px; max-width: 79%; border-radius: 10px; background-color: #008da8; color: white; padding: 10px");
                 sceneButton.setAttribute("class", "btn ");
                 sceneButton.setAttribute("data-toggle", "modal");
 
