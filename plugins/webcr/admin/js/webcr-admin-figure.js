@@ -298,154 +298,157 @@ function run_webcr_admin_figures() {
      * @param {HTMLElement} targetContainer - The container element where the graph configuration UI will be appended.
      */
     async function loadJson(targetContainer) {
-        const rootURL = window.location.origin;
+        const postPageType = window.location.href.includes("post-new.php")
+        if (!postPageType) {
+            const rootURL = window.location.origin;
 
-        // REST API call to get the uploaded JSON file path
-        const figureID = document.getElementsByName("post_ID")[0].value;
-        const figureRestCall = `${rootURL}/wp-json/wp/v2/figure/${figureID}?_fields=uploaded_path_json`;
-        console.log(figureRestCall);
-        const response = await fetch(figureRestCall);
-        const data = await response.json();
-        const uploaded_path_json = data.uploaded_path_json;
-        const restOfURL = "/wp-content" + uploaded_path_json.split("wp-content")[1];
-
-        // Check if the uploaded file path is empty and alert the user
-        if (uploaded_path_json == ""){
-            alert("Please upload a file before creating a graph");
-            console.error('Error loading JSON:', error);
-        }
-
-        const finalURL = rootURL + restOfURL;
-        try {
-            // Fetch the actual JSON file using the constructed URL
-            const response = await fetch(finalURL);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            // REST API call to get the uploaded JSON file path
+            const figureID = document.getElementsByName("post_ID")[0].value;
+            const figureRestCall = `${rootURL}/wp-json/wp/v2/figure/${figureID}?_fields=uploaded_path_json`;
+            console.log(figureRestCall);
+            const response = await fetch(figureRestCall);
             const data = await response.json();
+            const uploaded_path_json = data.uploaded_path_json;
+            const restOfURL = "/wp-content" + uploaded_path_json.split("wp-content")[1];
 
-
-            // Convert metadata keys into an array of key-value pairs for display
-            let metadataRows = [];
-            if (data.metadata && Object.keys(data.metadata).length > 0) {
-                metadataRows = Object.keys(data.metadata).map((key) => ({
-                    key: key,
-                    value: data.metadata[key],
-                }));
+            // Check if the uploaded file path is empty and alert the user
+            if (uploaded_path_json == ""){
+                alert("Please upload a file before creating a graph");
+                console.error('Error loading JSON:', error);
             }
 
-            if (!uploaded_path_json.includes(".geojson")) {
+            const finalURL = rootURL + restOfURL;
+            try {
+                // Fetch the actual JSON file using the constructed URL
+                const response = await fetch(finalURL);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
 
-                // Map data columns into an object with index-based keys
-                jsonColumns = Object.fromEntries(
-                    Object.keys(data.data).map((key, index) => [index, key])); 
-                    jsonColumns
-            }
-            if (uploaded_path_json.includes(".geojson")) {
 
-                function extractJsonColumnsFromGeojson(geojson) {
-                    if (!geojson || !geojson.features || geojson.features.length === 0) return {};
-
-                    const props = geojson.features[0].properties;
-                    return Object.fromEntries(
-                        Object.keys(props).map((key, index) => [index, key])
-                    );
+                // Convert metadata keys into an array of key-value pairs for display
+                let metadataRows = [];
+                if (data.metadata && Object.keys(data.metadata).length > 0) {
+                    metadataRows = Object.keys(data.metadata).map((key) => ({
+                        key: key,
+                        value: data.metadata[key],
+                    }));
                 }
 
-                jsonColumns = extractJsonColumnsFromGeojson(data);
+                if (!uploaded_path_json.includes(".geojson")) {
 
-            }
-            
-            
-            // Check the number of columns in the JSON data
-            const lengthJsonColumns = (Object.entries(jsonColumns).length);
-            if (lengthJsonColumns > 1){
-                // Remove the existing graph GUI if it exists
-                var graphGUI = document.getElementById('graphGUI');
-                if (graphGUI) {
-                    // Remove the scene window
-                    graphGUI.parentNode.removeChild(graphGUI);
+                    // Map data columns into an object with index-based keys
+                    jsonColumns = Object.fromEntries(
+                        Object.keys(data.data).map((key, index) => [index, key])); 
+                        jsonColumns
                 }
+                if (uploaded_path_json.includes(".geojson")) {
 
-                // Create a new container for the graph GUI
-                const targetElement = targetContainer
-                let newDiv = document.createElement('div');
-                newDiv.id = "graphGUI";
-                newDiv.classList.add("container", "graphGUI");
+                    function extractJsonColumnsFromGeojson(geojson) {
+                        if (!geojson || !geojson.features || geojson.features.length === 0) return {};
 
-                // If metadata exists, display it in a floating box
-                displayMetadataBox(metadataRows, newDiv);
+                        const props = geojson.features[0].properties;
+                        return Object.fromEntries(
+                            Object.keys(props).map((key, index) => [index, key])
+                        );
+                    }
 
-                // Create a label and dropdown for selecting the graph type
-                let labelGraphType = document.createElement("label");
-                labelGraphType.for = "graphType";
-                labelGraphType.innerHTML = "Graph Type";
-                let selectGraphType = document.createElement("select");
-                selectGraphType.id = "graphType";
-                selectGraphType.name = "plotFields";
+                    jsonColumns = extractJsonColumnsFromGeojson(data);
 
-                // Add options to the dropdown for different graph types
-                let graphType1 = document.createElement("option");
-                graphType1.value = "None";
-                graphType1.innerHTML = "None";
-                let graphType2 = document.createElement("option");
-                graphType2.value = "Plotly bar graph";
-                graphType2.innerHTML = "Plotly bar graph";
-                let graphType3 = document.createElement("option");
-                graphType3.value = "Plotly line graph (time series)";
-                graphType3.innerHTML = "Plotly line graph (time series)";
-                // let graphType4 = document.createElement("option");
-                // graphType4.value = "Plotly map";
-                // graphType4.innerHTML = "Plotly map"; 
-                selectGraphType.appendChild(graphType1);
-                selectGraphType.appendChild(graphType2);    
-                selectGraphType.appendChild(graphType3);
-                // selectGraphType.appendChild(graphType4);  
-
+                }
                 
-                //Admin is able to call to the interactive_arguments using document.getElementsByName("figure_interactive_arguments")[0].value;
-                //interactive_arguments is for the theme side, it is blank here because it is a place holder variable
-                let interactive_arguments = document.getElementsByName("figure_interactive_arguments")[0].value;
-                fieldValueSaved = fillFormFieldValues(selectGraphType.id);
+                
+                // Check the number of columns in the JSON data
+                const lengthJsonColumns = (Object.entries(jsonColumns).length);
+                if (lengthJsonColumns > 1){
+                    // Remove the existing graph GUI if it exists
+                    var graphGUI = document.getElementById('graphGUI');
+                    if (graphGUI) {
+                        // Remove the scene window
+                        graphGUI.parentNode.removeChild(graphGUI);
+                    }
 
-                // Add event listeners to handle changes in the dropdown selection
-                if (fieldValueSaved != undefined){
-                    selectGraphType.value = fieldValueSaved;
+                    // Create a new container for the graph GUI
+                    const targetElement = targetContainer
+                    let newDiv = document.createElement('div');
+                    newDiv.id = "graphGUI";
+                    newDiv.classList.add("container", "graphGUI");
+
+                    // If metadata exists, display it in a floating box
+                    displayMetadataBox(metadataRows, newDiv);
+
+                    // Create a label and dropdown for selecting the graph type
+                    let labelGraphType = document.createElement("label");
+                    labelGraphType.for = "graphType";
+                    labelGraphType.innerHTML = "Graph Type";
+                    let selectGraphType = document.createElement("select");
+                    selectGraphType.id = "graphType";
+                    selectGraphType.name = "plotFields";
+
+                    // Add options to the dropdown for different graph types
+                    let graphType1 = document.createElement("option");
+                    graphType1.value = "None";
+                    graphType1.innerHTML = "None";
+                    let graphType2 = document.createElement("option");
+                    graphType2.value = "Plotly bar graph";
+                    graphType2.innerHTML = "Plotly bar graph";
+                    let graphType3 = document.createElement("option");
+                    graphType3.value = "Plotly line graph (time series)";
+                    graphType3.innerHTML = "Plotly line graph (time series)";
+                    // let graphType4 = document.createElement("option");
+                    // graphType4.value = "Plotly map";
+                    // graphType4.innerHTML = "Plotly map"; 
+                    selectGraphType.appendChild(graphType1);
+                    selectGraphType.appendChild(graphType2);    
+                    selectGraphType.appendChild(graphType3);
+                    // selectGraphType.appendChild(graphType4);  
+
+                    
+                    //Admin is able to call to the interactive_arguments using document.getElementsByName("figure_interactive_arguments")[0].value;
+                    //interactive_arguments is for the theme side, it is blank here because it is a place holder variable
+                    let interactive_arguments = document.getElementsByName("figure_interactive_arguments")[0].value;
+                    fieldValueSaved = fillFormFieldValues(selectGraphType.id);
+
+                    // Add event listeners to handle changes in the dropdown selection
+                    if (fieldValueSaved != undefined){
+                        selectGraphType.value = fieldValueSaved;
+                    }
+                    selectGraphType.addEventListener('change', function() {
+                        secondaryGraphFields(this.value, interactive_arguments);
+                    });
+                    selectGraphType.addEventListener('change', function() {
+                        logFormFieldValues();
+                    });
+
+                    // Create a new row and columns for the dropdown and label
+                    let newRow = document.createElement("div");
+                    newRow.classList.add("row", "fieldPadding");
+                    let newColumn1 = document.createElement("div");
+                    newColumn1.classList.add("col-3");   
+                    let newColumn2 = document.createElement("div");
+                    newColumn2.classList.add("col");
+
+                    // Append the label and dropdown to the columns
+                    newColumn1.appendChild(labelGraphType);
+                    newColumn2.appendChild(selectGraphType);
+                    newRow.append(newColumn1, newColumn2);
+                    newDiv.append(newRow);
+
+                    // Append the row to the new graph GUI container
+                    targetElement.appendChild(newDiv);
+
+                    // Trigger secondary graph fields if a saved value exists
+                    if (fieldValueSaved != undefined){
+                        secondaryGraphFields(selectGraphType.value, interactive_arguments);
+                    }
                 }
-                selectGraphType.addEventListener('change', function() {
-                    secondaryGraphFields(this.value, interactive_arguments);
-                });
-                selectGraphType.addEventListener('change', function() {
-                    logFormFieldValues();
-                });
+            } catch (error) {
+                // Log any errors that occur during the JSON loading process
+                console.error('Error loading JSON:', error);
+                targetContainer.innerHTML = "The file formatting is incorrect. Please fix the error and reupload your file.";
 
-                // Create a new row and columns for the dropdown and label
-                let newRow = document.createElement("div");
-                newRow.classList.add("row", "fieldPadding");
-                let newColumn1 = document.createElement("div");
-                newColumn1.classList.add("col-3");   
-                let newColumn2 = document.createElement("div");
-                newColumn2.classList.add("col");
-
-                // Append the label and dropdown to the columns
-                newColumn1.appendChild(labelGraphType);
-                newColumn2.appendChild(selectGraphType);
-                newRow.append(newColumn1, newColumn2);
-                newDiv.append(newRow);
-
-                // Append the row to the new graph GUI container
-                targetElement.appendChild(newDiv);
-
-                // Trigger secondary graph fields if a saved value exists
-                if (fieldValueSaved != undefined){
-                    secondaryGraphFields(selectGraphType.value, interactive_arguments);
-                }
             }
-        } catch (error) {
-            // Log any errors that occur during the JSON loading process
-            console.error('Error loading JSON:', error);
-            targetContainer.innerHTML = "The file formatting is incorrect. Please fix the error and reupload your file.";
-
         }
     }
 
