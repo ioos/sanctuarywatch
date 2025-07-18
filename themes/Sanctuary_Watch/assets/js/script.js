@@ -644,7 +644,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
             body.classList.add("accordion-body");
             body.setAttribute("id", `accordion-body-${groupIndex}`);
             body.style.display = "none";
-            body.style.padding = "10px";
+            //body.style.padding = "10px";
             body.style.border = "";
 
             let idx = 0; // Index of current icon in iconsArr
@@ -662,10 +662,12 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                         let cont = document.createElement("div");
                         cont.classList.add("col-4");
                         cont.style.paddingBottom = '10px';
-                        cont.style.paddingTop = '5px';
+                        cont.style.paddingTop = '20px';
+                        cont.style.paddingLeft = '5px';
+                        cont.style.paddingRight = '5px';
                         cont.style.fontWeight = 'bold'; 
-                        cont.style.border = '2px solid #000';
-                        cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
+                        cont.style.border = '1px solid #000';
+                        cont.style.background = 'radial-gradient(white, #f0f0f0)';
 
                         // Identify the current icon ID
                         let currIcon = iconIds[idx];
@@ -712,7 +714,9 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                             } else {
                                 caption.innerText = "not in wp yet, have to add";
                             }
-                            caption.style.fontSize = "15px";
+                            caption.style.paddingBottom = '10px';
+                            caption.style.fontSize = "14px";
+                            //caption.style.maxHeight = '10%'; // Add some space between icon and caption
                             cont.appendChild(caption);
 
                             // Append this icon container to the row
@@ -786,9 +790,11 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                         let cont = document.createElement("div");
                         cont.classList.add("col-4");
                         cont.style.paddingBottom = '10px';
-                        cont.style.paddingTop = '5px';
+                        cont.style.paddingTop = '20px';
                         cont.style.fontWeight = 'bold'; 
-                        cont.style.border = '2px solid #000';
+                        cont.style.border = '1px solid #000';
+                        cont.style.paddingLeft = '5px';
+                        cont.style.paddingRight = '5px';
                         cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
 
                         // Create a blank SVG container
@@ -836,7 +842,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                         } else {
                             caption.innerText = "not in wp yet, have to add";
                         }
-                        caption.style.fontSize = "15px";
+                        caption.style.fontSize = "14px";
+                        caption.style.paddingBottom = '10px';
                         cont.appendChild(caption);
 
                         // Append this icon container to the row
