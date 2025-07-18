@@ -27,6 +27,38 @@ class Webcr_Figure {
         add_action('wp_ajax_custom_file_upload', [__CLASS__, 'custom_file_upload_handler']);
         // Register AJAX action for handling custom file deletions
         add_action('wp_ajax_custom_file_delete', [__CLASS__, 'custom_file_delete_handler']);
+        
+        // Register AJAX action for handling interactive graph data retrieval
+        add_action('admin_enqueue_scripts', 'enqueue_admin_interactive_graph_script');
+        function enqueue_admin_interactive_graph_script($hook) {
+            if ($hook !== 'post.php' && $hook !== 'post-new.php') return;
+
+            wp_enqueue_script(
+                'webcr-admin-figure',
+                plugin_dir_url(__FILE__) . '../admin/js/webcr-admin-figure.js',
+                [], // <-- no jquery needed
+                null,
+                true
+            );
+
+            wp_localize_script('webcr-admin-figure', 'wpApiSettings', [
+                'nonce' => wp_create_nonce('wp_rest'),
+                'root'  => esc_url_raw(rest_url()),
+            ]);
+        }
+
+        // Register the Figure custom content type
+        add_action( 'init', array( $this, 'custom_content_type_figure' ) );
+        // Register the custom fields for the Figure content type
+        add_action( 'exopite_options_framework_init', array( $this, 'create_figure_fields' ) );
+        // Add columns to the admin screen for the Figure content type
+        add_filter( 'manage_figure_posts_columns', array( $this, 'change_figure_columns' ) );
+        // Populate custom fields in the admin screen for the Figure content type
+        add_action( 'manage_figure_posts_custom_column', array( $this, 'custom_figure_column' ), 10, 2 );
+        // Add filter dropdowns to the Figure admin screen
+        add_action( 'restrict_manage_posts', array( $this, 'figure_filter_dropdowns' ) );
+        // Filter results based on selected or stored filter values
+        add_action( 'pre_get_posts', array( $this, 'figure_location_filter_results' ) );
     }
 
     /**
