@@ -124,69 +124,81 @@ class Webcr_Instance {
             }
         }
 
-        $fields[] = array(
-            'name'   => 'basic',
-            'title'  => 'Basic',
-            'icon'   => 'dashicons-admin-generic',
-            'fields' => array(
-                array(
-                    'id'          => 'instance_short_title',
-                    'type'        => 'text',
-                    'title'       => 'Short title*',
-                    'description' => 'What should the instance short title be?',
-                    'class'       => 'text-class',
-                ),
-                array(
-                    'id'          => 'instance_slug',
-                    'type'        => 'text',
-                    'title'       => 'URL component*',
-                    'description' => 'What should the URL component (or slug) of the instance be? The slug is used to determine the url of the instance. (e.g. https://yourwebsite/url-component)',
-                    'class'       => 'text-class',
-                ),
-                array(
-                    'id'             => 'instance_type',
-                    'type'           => 'select',
-                    'title'          => 'Instance Type*',
-                    'options'        => $instance_type_array, //array("Designation" => "Designation", "Issue" => "Issue", "Sanctuary" => "Sanctuary"),
-                    'description' => 'What is the instance type?',
-                ),
-                array(
-                    'id'             => 'instance_overview_scene',
-                    'type'           => 'select',
-                    'title'          => 'Overview scene',
-                    'options'        => $scene_titles,
-                    'description' => 'What is the overview scene for the Instance?',
-                ),
-                array(
-                    'id'             => 'instance_status',
-                    'type'           => 'select',
-                    'title'          => 'Status*',
-                    'options'        => array("Draft" => "Draft", "Published" => "Published"),
-                    'default' => 'Draft',
-                    'description' => 'Is the instance live?',
-                //    'class'      => 'chosen', 
-                ),
-                array(
-                    'id'    => 'instance_tile',
-                    'type'  => 'image',
-                    'title' => 'Tile image',
-                    'description' => 'What is the instance image for the front page tile? The image should be 250 pixels wide and 200 pixels tall.'
-                ),
-                array(
-                    'id'             => 'instance_legacy_content',
-                    'type'           => 'select',
-                    'title'          => 'Legacy content',
-                    'options'        => array("no" => "No", "yes" => "Yes"),
-                    'default' => 'no',
-                    'description' => 'Should the Instance tile point to legacy content?',
-                ),
-                array(
-                    'id'          => 'instance_legacy_content_url',
-                    'type'        => 'text',
-                    'title'       => 'Legacy content URL',
-                    'description' => 'What is the URL of the legacy content?',
-                    'class'       => 'text-class',
-                ),
+        $fields = array(
+            array(
+                'id'          => 'instance_short_title',
+                'type'        => 'text',
+                'title'       => 'Short title*',
+                'description' => 'What should the instance short title be?',
+                'class'       => 'text-class',
+            ),
+            array(
+                'id'          => 'instance_slug',
+                'type'        => 'text',
+                'title'       => 'URL component*',
+                'description' => 'What should the URL component (or slug) of the instance be? The slug is used to determine the url of the instance. (e.g. https://yourwebsite/url-component)',
+                'class'       => 'text-class',
+            ),
+            array(
+                'id'             => 'instance_type',
+                'type'           => 'select',
+                'title'          => 'Instance Type*',
+                'options'        => $instance_type_array, //array("Designation" => "Designation", "Issue" => "Issue", "Sanctuary" => "Sanctuary"),
+                'description' => 'What is the instance type?',
+            ),
+            array(
+                'id'             => 'instance_overview_scene',
+                'type'           => 'select',
+                'title'          => 'Overview scene',
+                'options'        => $scene_titles,
+                'description' => 'What is the overview scene for the Instance?',
+            ),
+            array(
+                'id'             => 'instance_status',
+                'type'           => 'select',
+                'title'          => 'Status*',
+                'options'        => array("Draft" => "Draft", "Published" => "Published"),
+                'default' => 'Draft',
+                'description' => 'Is the instance live?',
+            //    'class'      => 'chosen', 
+            ),
+            array(
+                'id'    => 'instance_tile',
+                'type'  => 'image',
+                'title' => 'Tile image',
+                'description' => 'What is the instance image for the front page tile? The image should be 250 pixels wide and 200 pixels tall.'
+            ),
+            array(
+                'id'             => 'instance_legacy_content',
+                'type'           => 'select',
+                'title'          => 'Legacy content',
+                'options'        => array("no" => "No", "yes" => "Yes"),
+                'default' => 'no',
+                'description' => 'Should the Instance tile point to legacy content?',
+            ),
+            array(
+                'id'          => 'instance_legacy_content_url',
+                'type'        => 'text',
+                'title'       => 'Legacy content URL',
+                'description' => 'What is the URL of the legacy content?',
+                'class'       => 'text-class',
+            ),
+            array(
+                'id'     => 'instance_mobile_tile_background_color',
+                'type'   => 'color',
+                'title'  => 'Tile background color',
+                'picker' => 'html5',
+                'default'   => '#f0f0f0',
+                'description' => 'What should the background color of each tile be in mobile view?',
+            ),
+            array(
+                'id'     => 'instance_mobile_tile_text_color',
+                'type'   => 'color',
+                'title'  => 'Tile text color',
+                'picker' => 'html5',
+                'default'   => '#000000',
+                'description' => 'What should the text color within each tile be in mobile view?',
+            ),
             array(
                 'id'      => 'instance_footer_columns',
                 'type'    => 'range',
@@ -197,76 +209,10 @@ class Webcr_Instance {
                 'step'    => 1,  
                 'default'     => $session_fields_exist ? $session_fields["instance_footer_columns"] : 0,         
             ),     
-
-                array(
-                    'type' => 'fieldset',
-                    'id' => 'instance_footer',
-                    'title'   => 'Instance footer information',
-                    'description' => 'Information appearing in the footer for all of the Scenes for this instance.',
-                    'fields' => array(
-                        array(
-                            'id'          => 'instance_footer_column_title_1',
-                            'type'        => 'text',
-                            'title'       => 'Footer Left Column Title',
-                            'description' => 'Title for the left footer column.',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'     => 'instance_footer_about',//'instance_footer_column_content_1',
-                            'type'   => 'editor',
-                            'editor' => 'trumbowyg',
-                            'title'  => 'Left Footer Column Content', 
-                            'description' => 'This is information that appears in the left column of the footer'        
-                        ),
-                        array(
-                            'id'          => 'instance_footer_column_title_2',
-                            'type'        => 'text',
-                            'title'       => 'Footer Middle Column Title',
-                            'description' => 'Title for the middle footer column.',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'     =>  'instance_footer_contact', //instance_footer_column_content_2',
-                            'type'   => 'editor',
-                            'editor' => 'trumbowyg',
-                            'title'  => 'Middle Footer Column Content', 
-                            'description' => 'This is information that appears in the middle column of the footer'        
-                        ),
-                        array(
-                            'id'          => 'instance_footer_column_title_3',
-                            'type'        => 'text',
-                            'title'       => 'Footer Right Column Title',
-                            'description' => 'Title for the right footer column.',
-                            'class'       => 'text-class',
-                        ),
-                        array(
-                            'id'     => 'instance_footer_reports', //'instance_footer_column_content_3',
-                            'type'   => 'editor',
-                            'editor' => 'trumbowyg',
-                            'title'  => 'Right Footer Column Content', 
-                            'description' => 'This is information that appears in the right column of the footer'        
-                        ),
-                    ),
-                ),
-                array(
-                    'id'          => 'instance_check',
-                    'type'        => 'button',
-                    'title'       => 'Check Instance for Errors',
-                    'class'        => 'instance_check',
-                    'description' => 'This button is not functional yet.',
-                    'options'     => array(
-                        'href'  =>  '#nowhere',
-                        'target' => '_self',
-                        'value' => 'Error Check',
-                        'btn-class' => 'exopite-sof-btn'
-                    ),
-                ),
-            )
         );
 
         // Step 1: Create an array to hold the new info sub-arrays
         $footerInstanceFields = array();
-
 
         // Step 2: Use a loop to generate the new info sub-arrays
         for ($i = 1; $i <= 3; $i++) {
@@ -293,8 +239,17 @@ class Webcr_Instance {
             );
         }
 
+        array_splice($fields, 11, 0, $footerInstanceFields);
+
+        $fieldsHolder[] = array(
+            'name'   => 'basic',
+            'title'  => 'Basic',
+            'icon'   => 'dashicons-admin-generic',
+            'fields' => $fields,
+        );
+
         // instantiate the admin page
-        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fields );
+        $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fieldsHolder );
 
         // make several of the instance custom fields available to the REST API
         $instance_rest_fields = array(
