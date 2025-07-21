@@ -24,6 +24,26 @@ function displayLegacyContentField () {
 document.querySelector('select[name="instance_legacy_content"]').addEventListener("change", displayLegacyContentField );
 
 
+// Show relevant photo and info fields for scene and modal forms
+function displayFooterEntries (entry_number){
+
+	for (let i = 3; i > entry_number; i--){
+		let target_text = string_prefix + "text" + i + "']";
+		let target_text_div = document.querySelector(target_text);
+		target_text_div.value ="";
+		let target_url = string_prefix + "url" + i + "']";
+		let target_url_div = document.querySelector(target_url);
+		target_url_div.value ="";
+		target_text_div.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="none";
+	}
+
+	for (let i = 1; i <= entry_number; i++){
+		let target_text = string_prefix + "text" + i + "']";
+		let target_text_div = document.querySelector(target_text);
+		target_text_div.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="block";
+	}
+}
+
 // This function is the last stop on a field validation path. When a user edits a instance post and hits save, the following happens:
 // 1. The instance post is validated. If there are errors, the field values are not saved to the database but they are saved to a temporary cookie.
 // 2. The user is redirected back to the edit page for the instance post and an error message is displayed.
