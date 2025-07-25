@@ -33,7 +33,6 @@ class Webcr_Instance_Type {
         );
     }
 
-    // Register settings
     function webcr_settings_init() {
         // Register a new settings group
         register_setting('theme_settings_group', 'webcr_settings');
@@ -102,6 +101,53 @@ class Webcr_Instance_Type {
             'theme_settings',
             'webcr_google_settings_section'
         );
+
+        // Register settings for REST API access (read-only)
+        register_setting('theme_settings_group', 'webcr_sitewide_footer_title', [
+            'show_in_rest' => [
+                'name' => 'sitewide_footer_title',
+                'schema' => [
+                    'type' => 'string',
+                    'description' => 'Site-wide footer title'
+                ]
+            ],
+            'type' => 'string',
+            'default' => '',
+            'sanitize_callback' => 'sanitize_text_field'
+        ]);
+
+        register_setting('theme_settings_group', 'webcr_sitewide_footer', [
+            'show_in_rest' => [
+                'name' => 'sitewide_footer',
+                'schema' => [
+                    'type' => 'string',
+                    'description' => 'Site-wide footer content'
+                ]
+            ],
+            'type' => 'string',
+            'default' => '',
+            'sanitize_callback' => 'wp_kses_post' // Allows safe HTML
+        ]);
+    }
+
+    function webcr_register_rest_settings() {
+        // Register custom REST route for read-only access
+        register_rest_route('webcr/v1', '/footer-settings', [
+            'methods' => 'GET',
+            'callback' => [$this, 'webcr_get_footer_settings'],
+        'webcr_get_footer_settings',
+            'permission_callback' => '__return_true', // Public access
+            'args' => []
+        ]);
+    }
+
+    function webcr_get_footer_settings($request) {
+        $settings = get_option('webcr_settings', []);
+        
+        return rest_ensure_response([
+            'sitewide_footer_title' => isset($settings['sitewide_footer_title']) ? $settings['sitewide_footer_title'] : '',
+            'sitewide_footer' => isset($settings['site_footer']) ? $settings['site_footer'] : ''  // Changed to 'site_footer'
+        ]);
     }
 
     /**
