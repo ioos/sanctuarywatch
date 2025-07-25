@@ -263,9 +263,16 @@ class Webcr_Instance {
             array('instance_hover_color', 'string'), 
             array('instance_full_screen_button', 'string'), 
             array('instance_overview_scene', 'integer'),
-            array('instance_text_toggle', 'string'));
+            array('instance_footer_columns', 'integer'),
+            array('instance_mobile_tile_background_color', 'string'), 
+            array('instance_mobile_tile_text_color', 'string'));
 
-            $this->register_meta_nonarray_fields($instance_rest_fields);
+
+        //register non-array fields for the REST API
+        $this->register_meta_nonarray_fields($instance_rest_fields);
+
+        // register array fields for the REST API
+        $this->register_meta_array_fields();
     }  
 
     function register_meta_nonarray_fields ($rest_fields){
@@ -283,6 +290,29 @@ class Webcr_Instance {
         }
     }
 
+    function register_meta_array_fields(){
+        for ($i = 1; $i < 4; $i++ ) {
+            $target_field = "instance_footer_column" . $i;
+            $target_description = "Instance footer column " . $i;
+            register_meta( 'post', 
+                $target_field,
+                array(
+                    'auth_callback'     => '__return_false' ,
+                    'single'            => true, // The field contains a single array
+                    'description' => $target_description, // Description of the meta key
+                    'show_in_rest'      => array(
+                        'schema' => array(
+                            'type'  => 'array', // The meta field is an array
+                            'items' => array(
+                                'type' => 'string', // Each item in the array is a string
+                            ),
+                        ),
+                    ),
+                ) 
+            );
+        }
+    }
+
     /**
 	 * Register Instance custom fields for use by REST API.
 	 *
@@ -290,7 +320,9 @@ class Webcr_Instance {
 	 */
     function register_instance_rest_fields(){
         $instance_rest_fields = array('instance_short_title', 'instance_slug',
-            'instance_type', 'instance_status', 'instance_tile', 'instance_overview_scene');
+            'instance_type', 'instance_status', 'instance_tile', 'instance_overview_scene', 'instance_footer_columns', 
+            'instance_mobile_tile_background_color', 'instance_mobile_tile_text_color', 'instance_footer_column1', 
+            'instance_footer_column2', 'instance_footer_column3');
             $function_utilities = new Webcr_Utility();
             $function_utilities -> register_custom_rest_fields("instance", $instance_rest_fields);
     }
