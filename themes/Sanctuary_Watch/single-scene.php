@@ -243,8 +243,6 @@ $instance_mobile_tile_text_color = get_post_meta($instance, 'instance_mobile_til
 $instance_color_settings = array('instance_mobile_tile_background_color' => $instance_mobile_tile_background_color, 'instance_mobile_tile_text_color' => $instance_mobile_tile_text_color);
 
 ?>
-
-?>
  </body>
 <script>
   let title_arr  = <?php echo json_encode($title_arr); ?>;

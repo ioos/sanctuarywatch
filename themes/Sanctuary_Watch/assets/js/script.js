@@ -636,7 +636,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                         cont.style.paddingTop = '5px';
                         cont.style.fontWeight = 'bold'; 
                         cont.style.border = '2px solid #000';
-                        cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
+                        cont.style.backgroundColor = 'red'; 
 
                         // Identify the current icon ID
                         let currIcon = iconIds[idx];
@@ -757,7 +757,8 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                         cont.style.paddingTop = '5px';
                         cont.style.fontWeight = 'bold'; 
                         cont.style.border = '2px solid #000';
-                        cont.style.background = 'radial-gradient(white, #f0f0f0)'; 
+                        cont.style.background = instance_color_settings['instance_mobile_tile_background_color']; 
+                        cont.style.color = instance_color_settings['instance_mobile_tile_text_color'];
 
                         // Create a blank SVG container
                         let svgClone = document.createElementNS("http://www.w3.org/2000/svg", "svg");
