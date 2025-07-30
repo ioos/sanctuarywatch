@@ -101,8 +101,8 @@ function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments, dataTo
             if (axisType === 'y') {
                 let yValue = parseFloat(figureArguments[`EventMarkersEventYValue${i}`], 10);
                 const yArray = Array(plotlyX.length).fill(yValue);
-                console.log('yValue', yValue);
-                console.log('xMin, xMax', xMin, xMax);
+                // console.log('yValue', yValue);
+                // console.log('xMin, xMax', xMin, xMax);
                 overlays.push({
                     x: plotlyX,
                     y: yArray,

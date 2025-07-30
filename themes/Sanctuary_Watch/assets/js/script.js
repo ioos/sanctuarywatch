@@ -662,12 +662,13 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                         let cont = document.createElement("div");
                         cont.classList.add("col-4");
                         cont.style.paddingBottom = '10px';
-                        cont.style.paddingTop = '20px';
+                        cont.style.paddingTop = '10px';
                         cont.style.paddingLeft = '5px';
                         cont.style.paddingRight = '5px';
                         cont.style.fontWeight = 'bold'; 
                         cont.style.border = '1px solid #000';
                         cont.style.background = 'radial-gradient(white, #f0f0f0)';
+                        cont.style.overflow = 'hidden';
 
                         // Identify the current icon ID
                         let currIcon = iconIds[idx];
@@ -715,7 +716,45 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                                 caption.innerText = "not in wp yet, have to add";
                             }
                             caption.style.paddingBottom = '10px';
-                            caption.style.fontSize = "14px";
+                            //caption.style.fontSize = "14px";
+                            //caption.style.fontSize = "3.15vw";
+                            caption.style.overflow = "hidden";
+
+                            const maxChars2 = 30;  // your character limit
+                            const maxChars3 = 40;  // your character limit
+                            const maxChars1 = 11;  // your character limit
+                        
+                            
+                            if (caption.textContent.length <= maxChars1) {
+                            // Text is longer than limit — apply a certain style or class
+                            caption.style.fontSize = '12px';     // Example: smaller font size
+                            // or
+                            caption.classList.add('small-text'); // Example: add CSS class controlling size
+                            }
+                            if (caption.textContent.length > maxChars1 && caption.textContent.length <= maxChars2) {
+                            // Text is longer than limit — apply a certain style or class
+                            caption.style.fontSize = '11px';     // Example: smaller font size
+                            // or
+                            caption.classList.add('small-text'); // Example: add CSS class controlling size
+                            } 
+                            if (caption.textContent.length > maxChars3 && caption.textContent.length <= maxChars3) {
+                            // Text is longer than limit — apply a certain style or class
+                            caption.style.fontSize = '10.5px';     // Example: smaller font size
+                            // or
+                            caption.classList.add('small-text'); // Example: add CSS class controlling size
+                            } 
+                            if (caption.textContent.length > maxChars3) {
+                            // Text is longer than limit — apply a certain style or class
+                            caption.style.fontSize = '10px';     // Example: smaller font size
+                            // or
+                            caption.classList.add('small-text'); // Example: add CSS class controlling size
+                            } else {
+                            // Reset or apply default style
+                            caption.style.fontSize = '14px';
+                            caption.classList.remove('small-text');
+                            }
+                            
+                            // Set to last fitting size
                             //caption.style.maxHeight = '10%'; // Add some space between icon and caption
                             cont.appendChild(caption);
 

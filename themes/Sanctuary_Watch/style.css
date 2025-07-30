@@ -362,7 +362,7 @@ body > h1{
   word-break: break-word;
   overflow-wrap: break-word;
   display: flex;
-  hyphens: auto;
+  /*hyphens: auto;*/
   flex-direction: column-reverse;
   align-items: center; /* Center captions horizontally */
   justify-content: flex-end;
