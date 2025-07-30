@@ -33,11 +33,14 @@ function loadPlotlyScript() {
 }
 
 
-function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments) {
+function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments, dataToBePlotted) {
     if (!plotDiv || !layout || !layout.yaxis || !layout.yaxis.range) {
         console.warn("[Overlay] Missing layout or y-axis range");
         return;
     }
+
+    const columnXHeader = figureArguments['XAxis'];
+    const plotlyX = dataToBePlotted[columnXHeader];
 
     layout.xaxis = layout.xaxis || {};
     layout.xaxis.type = 'date';
@@ -46,44 +49,42 @@ function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments) {
     layout.yaxis.type = 'linear';
 
     const [yMin, yMax] = layout.yaxis.range || [0, 1];
-    const overlays = [];
+    const [xMin, xMax] = layout.xaxis.range || [0, 1];
+    const overlays = [];  
 
-    for (let i = 1; i <= Number(figureArguments['NumberOfLines']); i++) {
-        const base = 'Line' + i;
-        const showLegend = figureArguments[base + 'Legend'] === 'on';
+    // === Evaluation Period ===
+    if (figureArguments['EvaluationPeriod'] === 'on') {
+        let start = figureArguments['EvaluationPeriodStartDate'];
+        let end = figureArguments['EvaluationPeriodEndDate'];
+        //console.log(`[Overlay] Processing evaluation period for ${base}:`, start, end);       
 
-        // === Evaluation Period ===
-        if (figureArguments[base + 'EvaluationPeriod'] === 'on') {
-            let start = figureArguments[base + 'EvaluationPeriodStartDate'];
-            let end = figureArguments[base + 'EvaluationPeriodEndDate'];
-            console.log(`[Overlay] Processing evaluation period for ${base}:`, start, end);       
+        const fillColor = (figureArguments['EvaluationPeriodFillColor'] || '#999') + '15';
 
-            const fillColor = (figureArguments[base + 'EvaluationPeriodFillColor'] || '#999') + '15';
+        overlays.push({
+            x: [start, end, end, start],
+            y: [yMax, yMax, yMin, yMin],
+            fill: 'toself',
+            fillcolor: fillColor,
+            type: 'scatter',
+            mode: 'lines',
+            line: { color: fillColor, width: 0 },
+            hoverinfo: 'skip',
+            name: `Evaluation Period`,
+            showlegend: true,
+            yaxis: 'y',
+            xaxis: 'x'
+        });
+    }
 
-            overlays.push({
-                x: [start, end, end, start],
-                y: [yMax, yMax, yMin, yMin],
-                fill: 'toself',
-                fillcolor: fillColor,
-                type: 'scatter',
-                mode: 'lines',
-                line: { color: fillColor, width: 0 },
-                hoverinfo: 'skip',
-                name: `${figureArguments[base + 'Title']} Evaluation Period`,
-                showlegend: showLegend,
-                yaxis: 'y',
-                xaxis: 'x'
-            });
-        }
-
+    for (let i = 0; i <= Number(figureArguments['EventMarkersField']); i++) {
         // === Event Markers ===
-        for (let m = 1; m <= 2; m++) {
-            if (figureArguments[base + `EventMarker${m}`] === 'on') {
-                let date = figureArguments[base + `EventMarker${m}EventDate`];
+        if (figureArguments[`EventMarkers`] === 'on') {
+            let axisType = figureArguments[`EventMarkersEventAxis${i}`];
+            const label = figureArguments[`EventMarkersEventText${i}`];
+            const color = figureArguments[`EventMarkersEventColor${i}`] || '#000';
 
-                const label = figureArguments[base + `EventMarker${m}EventText`] || `Event ${m}`;
-                const color = figureArguments[base + `EventMarker${m}EventColor`] || '#000';
-
+            if (axisType === 'x') {
+                let date = figureArguments[`EventMarkersEventDate${i}`];
                 overlays.push({
                     x: [date, date],
                     y: [yMin, yMax],
@@ -91,15 +92,32 @@ function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments) {
                     mode: 'lines',
                     line: { color, width: 2 },
                     name: label,
-                    showlegend: showLegend,
+                    showlegend: true,
                     yaxis: 'y',
                     xaxis: 'x',
                     hoverinfo: label,
                 });
-
-                console.log(`[Overlay] Added event marker ${m} for ${base}:`, date);
+            }
+            if (axisType === 'y') {
+                let yValue = parseFloat(figureArguments[`EventMarkersEventYValue${i}`], 10);
+                const yArray = Array(plotlyX.length).fill(yValue);
+                console.log('yValue', yValue);
+                console.log('xMin, xMax', xMin, xMax);
+                overlays.push({
+                    x: plotlyX,
+                    y: yArray,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { color, width: 2 },
+                    name: label,
+                    showlegend: true,
+                    yaxis: 'y',
+                    xaxis: 'x',
+                    hoverinfo: label,
+                });
             }
         }
+        
     }
     Plotly.react(plotDiv, [...mainDataTraces, ...overlays], layout);
 }
@@ -219,7 +237,15 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 const plotlyY = dataToBePlotted[columnYHeader];
 
                 const stdDev = computeStandardDeviation(plotlyY);
+
+                // Line type, marker type, and marker size
+                const lineType = figureArguments[targetLineColumn + 'LineType'];
+                if (lineType === undefined) {
+                    const lineType = 'solid';
+                } 
+                console.log('lineType', lineType);
                 const markerType = figureArguments[targetLineColumn + 'MarkerType'];
+                const markerSize = parseInt(figureArguments[targetLineColumn + 'MarkerSize'], 10);
 
                 //Shows the legend if it is set to 'on' in the figure arguments
                 const showLegend = figureArguments[targetLineColumn + 'Legend'];
@@ -274,9 +300,14 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                     type: 'scatter',
                     name: `${figureArguments[targetLineColumn + 'Title']}`,
                     showlegend: showLegendBool,
+                    line: {
+                        dash: lineType // e.g., 'dash', 'dot', etc.
+                    },
                     marker: {
                         color: figureArguments[targetLineColumn + 'Color'],
-                        symbol: markerType
+                        symbol: markerType,
+                        size: markerSize // Convert markerSize to integer
+
                     },
                     error_y: errorBarY,
                     connectgaps: connectGapsOpt, 
@@ -466,7 +497,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
             await Plotly.newPlot(plotDiv, allLinesPlotly, layout, config).then(() => {
                 // After the plot is created, inject overlays if any, this is here because you can only get overlays that span the entire yaxis after the graph has been rendered.
                 // You need the specific values for the entire yaxis
-                injectOverlays(plotDiv, layout, allLinesPlotly, figureArguments);
+                injectOverlays(plotDiv, layout, allLinesPlotly, figureArguments, dataToBePlotted);
             });
             Plotly.Plots.resize(plotDiv)
 
@@ -563,7 +594,7 @@ function plotlyLineParameterFields(jsonColumns, interactive_arguments){
           logFormFieldValues();
       });
 
-  for (let i = 1; i < 7; i++){
+  for (let i = 1; i < 11; i++){
       let selectNumberLinesOption = document.createElement("option");
       selectNumberLinesOption.value = i;
       selectNumberLinesOption.innerHTML = i; 
@@ -649,6 +680,244 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
           fieldLabels.push(["Line" + i, "Line " + i + " Column"]);
       }
 
+      //"EvaluationPeriod" & "EventMarkers"
+      const features = ["EvaluationPeriod", "EventMarkers"];
+      const featureNames = ["Evaluation Period", "Event Markers"];
+      for (let i = 0; i < features.length; i++) {
+        const feature = features[i];
+        const featureName = featureNames[i];
+
+        let newRow = document.createElement("div");
+        newRow.classList.add("row", "fieldPadding");
+
+        let newColumn1 = document.createElement("div");
+        newColumn1.classList.add("col-3");
+        let newColumn2 = document.createElement("div");
+        newColumn2.classList.add("col");
+
+        let label = document.createElement("label");
+        label.for = feature;
+        label.innerHTML = `${featureName}`;
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = feature;
+        checkbox.name = "plotFields";
+
+        let fieldValueSaved = fillFormFieldValues(checkbox.id, interactive_arguments);
+        checkbox.value = fieldValueSaved === 'on' ? 'on' : "";
+        checkbox.checked = fieldValueSaved === 'on';
+
+        newColumn1.appendChild(label);
+        newColumn2.appendChild(checkbox);
+        newRow.append(newColumn1, newColumn2);
+        newRow.style.marginTop = "20px";
+        newRow.style.marginBottom = "20px"
+        newDiv.append(newRow);
+        
+
+        // === Add dropdowns for feature-specific data ===
+        if (["EvaluationPeriod", "EventMarkers"].includes(feature)) {
+            const dropdownContainer = document.createElement("div");
+            dropdownContainer.classList.add("row", "fieldPadding");
+
+            const dropdownLabelCol = document.createElement("div");
+            dropdownLabelCol.classList.add("col-3");
+            const dropdownInputCol = document.createElement("div");
+            dropdownInputCol.classList.add("col");
+
+            function createDropdown(labelText, selectId) {
+                const label = document.createElement("label");
+                label.innerHTML = labelText;
+                const select = document.createElement("select");
+                select.id = selectId;
+                select.name = "plotFields";
+
+                if (feature === "EventMarkers") {
+
+                    for (let col of [1, 2, 3, 4, 5, 6]) {
+                        const opt = document.createElement("option");
+                        opt.value = col;
+                        opt.innerHTML = col;
+                        select.appendChild(opt);
+                    }
+
+                    const saved = fillFormFieldValues(select.id, interactive_arguments);
+                    if (saved) select.value = saved;
+
+                    select.addEventListener("change", logFormFieldValues);
+                    return { label, select };
+                }
+            }
+
+            function createDatefield(labelText, inputId) {
+                const label = document.createElement("label");
+                label.textContent = labelText;
+                label.htmlFor = inputId; // Link label to input
+
+                const input = document.createElement("input"); // Correct element
+                input.type = "date";
+                input.id = inputId;
+                input.name = "plotFields";
+
+                const saved = fillFormFieldValues(input.id, interactive_arguments);
+                if (saved) input.value = saved;
+
+                input.addEventListener("change", logFormFieldValues);
+                return { label, input };
+            }
+
+            function createTextfield(labelText, inputId) {
+                const label = document.createElement("label");
+                label.textContent = labelText;
+                label.htmlFor = inputId; // Link label to input
+
+                const input = document.createElement("input"); // Correct element
+                input.type = "text";
+                input.id = inputId;
+                input.name = "plotFields";
+                input.style.width = "200px";
+
+
+                const saved = fillFormFieldValues(input.id, interactive_arguments);
+                if (saved) input.value = saved;
+
+                input.addEventListener("change", logFormFieldValues);
+                return { label, input };
+            }
+
+            function createColorfield(labelText, inputId) {
+                const label = document.createElement("label");
+                label.textContent = labelText;
+                label.htmlFor = inputId; // Link label to input
+
+                const input = document.createElement("input"); // Correct element
+                input.type = "color";
+                input.id = inputId;
+                input.name = "plotFields";
+
+                const saved = fillFormFieldValues(input.id, interactive_arguments);
+                if (saved) input.value = saved;
+
+                input.addEventListener("change", logFormFieldValues);
+                return { label, input };
+            }
+
+            const controls = [];
+
+            if (feature === "EvaluationPeriod") {
+                const { label: labelStartDate, input: StartDateValues } = createDatefield(`Start Date`,  feature + "StartDate");
+                const { label: labelEndDate, input: EndDateValues } = createDatefield('End Date', feature + "EndDate");
+                const { label: labelColor, input: ColorValue } = createColorfield(`Fill Color`,  feature + "FillColor");
+                controls.push(labelStartDate, document.createElement('br'), StartDateValues, document.createElement('br'), labelEndDate, document.createElement('br'), EndDateValues, document.createElement('br'), labelColor, document.createElement('br'), ColorValue);
+            }
+
+            if (feature === "EventMarkers") {
+                const { label, select } = createDropdown("Number of Event Markers", feature + "Field");
+                controls.push(label, select);
+  
+
+                // A wrapper that we'll (re)fill with the N sets of fields
+                const wrapper = document.createElement("div");
+                wrapper.id = feature + "FieldsWrapper";
+                controls.push(wrapper);
+
+                const renderEventMarkerFields = (n) => {
+                wrapper.innerHTML = ""; // Clear previous
+
+                for (let i = 0; i < n; i++) {
+                    // === Axis Selector ===
+                    const axisLabel = document.createElement("label");
+                    axisLabel.textContent = `Event Marker Axis ${i + 1}`;
+                    const axisSelect = document.createElement("select");
+                    axisSelect.id = `${feature}EventAxis${i}`;
+                    axisSelect.name = "plotFields";
+
+                    ["x", "y"].forEach(axis => {
+                    const opt = document.createElement("option");
+                    opt.value = axis;
+                    opt.textContent = axis.toUpperCase() + " Axis";
+                    axisSelect.appendChild(opt);
+                    });
+                    fillFormFieldValues(axisSelect.id, interactive_arguments);
+
+                    // === Shared Inputs ===
+                    const { label: textLabel, input: textInput }   = createTextfield(`Display Text ${i + 1}`, `${feature}EventText${i}`);
+                    const { label: colorLabel, input: colorInput } = createColorfield(`Line Color ${i + 1}`,  `${feature}EventColor${i}`);
+                    fillFormFieldValues(textInput.id, interactive_arguments);
+                    fillFormFieldValues(colorInput.id, interactive_arguments);
+
+                    // === X-axis Fields ===
+                    const xWrapper = document.createElement("div");
+                    const { label: dateLabel, input: dateInput } = createDatefield(`Event Date ${i + 1} (X-Axis)`, `${feature}EventDate${i}`);
+                    fillFormFieldValues(dateInput.id, interactive_arguments);
+                    xWrapper.append(dateLabel, document.createElement("br"), dateInput, document.createElement("br"));
+
+                    // === Y-axis Fields ===
+                    const yWrapper = document.createElement("div");
+                    const { label: yLabel, input: yInput } = createTextfield(`Event Y Value ${i + 1}`, `${feature}EventYValue${i}`);
+                    fillFormFieldValues(yInput.id, interactive_arguments);
+                    yWrapper.append(yLabel, document.createElement("br"), yInput, document.createElement("br"));
+
+                    // === Container & Toggle Logic ===
+                    const block = document.createElement("div");
+                    block.append(
+                    document.createElement("hr"),
+                    axisLabel, document.createElement("br"), axisSelect, document.createElement("br"), document.createElement("br"),
+                    xWrapper, yWrapper, document.createElement("br"),
+                    textLabel, document.createElement("br"), textInput, document.createElement("br"),document.createElement("br"),
+                    colorLabel, document.createElement("br"), colorInput, document.createElement("br")
+                    );
+
+                    // Handle visibility
+                    const toggleAxisFields = (val) => {
+                    xWrapper.style.display = val === 'x' ? "block" : "none";
+                    yWrapper.style.display = val === 'y' ? "block" : "none";
+                    };
+                    toggleAxisFields(axisSelect.value); // Initial state
+                    axisSelect.addEventListener("change", (e) => {
+                    toggleAxisFields(e.target.value);
+                    logFormFieldValues();
+                    });
+
+                    wrapper.appendChild(block);
+                }
+                };
+
+                // Initial render using saved or current value
+                const initialN = parseInt(select.value, 10) || 0;
+                renderEventMarkerFields(initialN);
+
+                // Re-render on change
+                select.addEventListener("change", (e) => {
+                    const n = parseInt(e.target.value, 10) || 0;
+                    renderEventMarkerFields(n);
+                });
+            }
+
+            // Initially hide the dropdown container
+            dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
+
+            controls.forEach(control => dropdownInputCol.appendChild(control));
+            dropdownContainer.append(dropdownLabelCol, dropdownInputCol);
+            newDiv.append(dropdownContainer);
+
+            // Toggle visibility dynamically
+            checkbox.addEventListener('change', function () {
+                checkbox.value = checkbox.checked ? 'on' : "";
+                dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
+                logFormFieldValues();
+            });
+        } else {
+            checkbox.addEventListener('change', function () {
+                checkbox.value = checkbox.checked ? 'on' : "";
+                logFormFieldValues();
+            });
+        }
+        }
+        let newHR = document.createElement("hr");
+        newHR.style = "margin-top:15px";
+        newDiv.append(newHR);        
+
       fieldLabels.forEach((fieldLabel) => {
           //Select the data source from dropdown menu  
           let labelSelectColumn = document.createElement("label");
@@ -697,6 +966,8 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
           newRow.append(newColumn1, newColumn2);
           newDiv.append(newRow);
 
+          
+          // Add line label and color fields, line type, marker type, and marker size
           if (fieldLabel[0] != "XAxis"){
               // Add line label field
               newRow = document.createElement("div");
@@ -762,6 +1033,40 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
               newRow.append(newColumn1, newColumn2);
               newDiv.append(newRow);
 
+              // Add lineType type dropdown
+              const lineTypeRow = document.createElement('div');
+              lineTypeRow.classList.add('row', 'fieldPadding');
+              if (fieldLabelNumber % 2 != 0) lineTypeRow.classList.add('fieldBackgroundColor');
+
+              const lineTypeCol1 = document.createElement('div');
+              lineTypeCol1.classList.add('col-3');
+              const lineTypeCol2 = document.createElement('div');
+              lineTypeCol2.classList.add('col');
+
+              const lineTypeLabel = document.createElement('label');
+              lineTypeLabel.textContent = fieldLabel[1] + ' Line Type';
+              lineTypeLabel.htmlFor = fieldLabel[0] + 'LineType';
+              const lineTypeSelect = document.createElement('select');
+              lineTypeSelect.id = fieldLabel[0] + 'LineType';
+              lineTypeSelect.name = 'plotFields';
+
+              //line types
+              ["solid", "dash", "dot", "dashdot", "longdash", "longdashdot"].forEach(type => {
+              const opt = document.createElement('option');
+              opt.value = type;
+              opt.innerHTML = type.charAt(0).toUpperCase() + type.slice(1);
+              lineTypeSelect.appendChild(opt);
+              });
+
+              const lineTypeSaved = fillFormFieldValues(lineTypeSelect.id, interactive_arguments);
+              if (lineTypeSaved) lineTypeSelect.value = lineTypeSaved;
+
+              lineTypeSelect.addEventListener('change', logFormFieldValues);
+              lineTypeCol1.appendChild(lineTypeLabel);
+              lineTypeCol2.appendChild(lineTypeSelect);
+              lineTypeRow.append(lineTypeCol1, lineTypeCol2);
+              newDiv.append(lineTypeRow);
+
               // Add marker type dropdown
               const markerRow = document.createElement('div');
               markerRow.classList.add('row', 'fieldPadding');
@@ -779,7 +1084,7 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
               markerSelect.id = fieldLabel[0] + 'MarkerType';
               markerSelect.name = 'plotFields';
 
-              ['circle', 'square', 'diamond', 'star'].forEach(type => {
+              ["circle", "square", "diamond", "x", "triangle-up", "triangle-down", "pentagon", "hexagon", "star", "hourglass", "bowtie", "cross"].forEach(type => {
                 const opt = document.createElement('option');
                 opt.value = type;
                 opt.innerHTML = type.charAt(0).toUpperCase() + type.slice(1);
@@ -795,24 +1100,45 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
               markerRow.append(markerCol1, markerCol2);
               newDiv.append(markerRow);
 
-            //   // Create the informational text box
-            //   const infoBox = document.createElement("div");
-            //   infoBox.for = fieldLabel[0] + "Color";
-            //   infoBox.className = "info-box"; // Optional: for styling
-            //   infoBox.textContent = "Optional Settings Below";
-            //   infoBox.style.marginTop = "20px";
-            //   infoBox.style.marginTop = "20px";
-            //   infoBox.style.marginBottom = "20px";
 
-            //   // Insert the info box at the top of the container
-            //   newRow.classList.add("row", "fieldBackgroundColor");
-            //   newRow.appendChild(infoBox);
-            //   newDiv.appendChild(newRow);
+              // Add markerSize type dropdown
+              const markerSizeRow = document.createElement('div');
+              markerSizeRow.classList.add('row', 'fieldPadding');
+              if (fieldLabelNumber % 2 != 0) markerSizeRow.classList.add('fieldBackgroundColor');
+
+              const markerSizeCol1 = document.createElement('div');
+              markerSizeCol1.classList.add('col-3');
+              const markerSizeCol2 = document.createElement('div');
+              markerSizeCol2.classList.add('col');
+
+              const markerSizeLabel = document.createElement('label');
+              markerSizeLabel.textContent = fieldLabel[1] + ' Marker Size';
+              markerSizeLabel.htmlFor = fieldLabel[0] + 'MarkerSize';
+              const markerSizeSelect = document.createElement('select');
+              markerSizeSelect.id = fieldLabel[0] + 'MarkerSize';
+              markerSizeSelect.name = 'plotFields';
+
+              // Sizes 1 through 20
+              [1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20].forEach(size => {
+              const opt = document.createElement('option');
+              opt.value = size;
+              opt.innerHTML = size + ' px';
+              markerSizeSelect.appendChild(opt);
+              });
+
+              const markerSizeSaved = fillFormFieldValues(markerSizeSelect.id, interactive_arguments);
+              if (markerSizeSaved) markerSizeSelect.value = markerSizeSaved;
+
+              markerSizeSelect.addEventListener('change', logFormFieldValues);
+              markerSizeCol1.appendChild(markerSizeLabel);
+              markerSizeCol2.appendChild(markerSizeSelect);
+              markerSizeRow.append(markerSizeCol1, markerSizeCol2);
+              newDiv.append(markerSizeRow);
 
 
             //Add checkboxes for error bars, standard deviation, mean, and percentiles
-            const features = ["Legend", "ConnectGaps", "Mean", "StdDev", "ErrorBars", "Percentiles", "EvaluationPeriod", "EventMarker1", "EventMarker2"];
-            const featureNames = ["Graph Legend Visible?", "Connect Line Gaps (Missing Data)?","Mean Line Visible?", "Standard Deviation Fill Visible?", "Symmetric Error Bars Visible?", "90th & 10th Percentile Lines (Auto Calculated) Visible?", "Evaluation Period Visible?", "Event Marker 1 Visible?", "Event Marker 2 Visible?"];
+            const features = ["Legend", "ConnectGaps", "Mean", "StdDev", "ErrorBars", "Percentiles"];
+            const featureNames = ["Add Line to Legend", "Connect Missing Data Gaps","Mean Line", "+-1 Std Dev Fill ", "Symmetric Error Bars", "90th & 10th Percentile Lines"];
             for (let i = 0; i < features.length; i++) {
                 const feature = features[i];
                 const featureName = featureNames[i];
@@ -847,7 +1173,7 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
                 
 
                 // === Add dropdowns for feature-specific data ===
-                if (["Mean", "ErrorBars", "StdDev", "EvaluationPeriod", "EventMarker1", "EventMarker2"].includes(feature)) {
+                if (["Mean", "ErrorBars", "StdDev"].includes(feature)) {
                     const dropdownContainer = document.createElement("div");
                     dropdownContainer.classList.add("row", "fieldPadding");
                     if (fieldLabelNumber % 2 != 0) {
@@ -896,42 +1222,6 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
 
                     }
 
-                    function createDatefield(labelText, inputId) {
-                        const label = document.createElement("label");
-                        label.textContent = labelText;
-                        label.htmlFor = inputId; // Link label to input
-
-                        const input = document.createElement("input"); // Correct element
-                        input.type = "date";
-                        input.id = inputId;
-                        input.name = "plotFields";
-
-                        const saved = fillFormFieldValues(input.id, interactive_arguments);
-                        if (saved) input.value = saved;
-
-                        input.addEventListener("change", logFormFieldValues);
-                        return { label, input };
-                    }
-
-                    function createTextfield(labelText, inputId) {
-                        const label = document.createElement("label");
-                        label.textContent = labelText;
-                        label.htmlFor = inputId; // Link label to input
-
-                        const input = document.createElement("input"); // Correct element
-                        input.type = "text";
-                        input.id = inputId;
-                        input.name = "plotFields";
-                        input.style.width = "200px";
-
-
-                        const saved = fillFormFieldValues(input.id, interactive_arguments);
-                        if (saved) input.value = saved;
-
-                        input.addEventListener("change", logFormFieldValues);
-                        return { label, input };
-                    }
-
                     function createColorfield(labelText, inputId) {
                         const label = document.createElement("label");
                         label.textContent = labelText;
@@ -960,30 +1250,7 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
                         const { label: labelValues, select: selectValues } = createDropdown(`${featureName} Input Column Values`, fieldLabel[0] + feature + "InputValues");
                         const { label: labelColor, input: ColorValue } = createColorfield(`Color`, fieldLabel[0] + feature + "Color");
                         controls.push(labelValues, document.createElement('br'), selectValues, document.createElement('br'), labelColor, document.createElement('br'), ColorValue);
-                    }
-
-                    if (feature === "EvaluationPeriod") {
-                        const { label: labelStartDate, input: StartDateValues } = createDatefield(`Start Date`, fieldLabel[0] + feature + "StartDate");
-                        const { label: labelEndDate, input: EndDateValues } = createDatefield('End Date', fieldLabel[0] + feature + "EndDate");
-                        const { label: labelColor, input: ColorValue } = createColorfield(`Fill Color`, fieldLabel[0] + feature + "FillColor");
-                        controls.push(labelStartDate, document.createElement('br'), StartDateValues, document.createElement('br'), labelEndDate, document.createElement('br'), EndDateValues, document.createElement('br'), labelColor, document.createElement('br'), ColorValue);
-                    }
-
-                    if (feature === "EventMarker1") {
-                        const { label: labelEventDate1, input: EventDateValue1 } = createDatefield(`Event Date`, fieldLabel[0] + feature + "EventDate");
-                        const { label: labelEventText1, input: EventTextValue1 } = createTextfield(`Display Text`, fieldLabel[0] + feature + "EventText");
-                        const { label: labelEventColor1, input: EventColorValue1 } = createColorfield(`Line Color`, fieldLabel[0] + feature + "EventColor");
-                        controls.push(labelEventDate1, document.createElement('br'), EventDateValue1, document.createElement('br'), labelEventText1, document.createElement('br'), EventTextValue1, document.createElement('br'), labelEventColor1, document.createElement('br'), EventColorValue1);
-                    }
-
-                    if (feature === "EventMarker2") {
-                        const { label: labelEventDate2, input: EventDateValue2 } = createDatefield(`Event Date`, fieldLabel[0] + feature + "EventDate");
-                        const { label: labelEventText2, input: EventTextValue2 } = createTextfield(`Display Text`, fieldLabel[0] + feature + "EventText");
-                        const { label: labelEventColor2, input: EventColorValue2 } = createColorfield(`Line Color`, fieldLabel[0] + feature + "EventColor");
-                        controls.push(labelEventDate2, document.createElement('br'),EventDateValue2, document.createElement('br'), labelEventText2, document.createElement('br'), EventTextValue2,  document.createElement('br'), labelEventColor2, document.createElement('br'), EventColorValue2);
-                    }
-
-
+                    }             
 
                     // Initially hide the dropdown container
                     dropdownContainer.style.display = checkbox.checked ? "flex" : "none";
