@@ -65,9 +65,14 @@ body{
   justify-content: space-around;
 }
 
+.footer-column-title {
+  font-weight: bold;
+}
+
 .footer-column {
   display: flex; 
   justify-content: center;
+  padding-bottom: 20px;
 }
 
 /* Apply styles for mobile devices where .col-sm stacks (typically below 576px) */

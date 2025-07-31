@@ -25,8 +25,8 @@ class Webcr_Instance_Type {
     // Add menu item to WordPress admin
     function webcr_add_admin_menu() {
         add_menu_page(
-            'Site Settings', // Page title
-            'Site Settings', // Menu title
+            'Graphic Data Settings', // Page title
+            'Graphic Data Settings', // Menu title
             'manage_options', // Capability required
             'theme_settings', // Menu slug
             [$this, 'webcr_settings_page'] // Function to display the page
@@ -55,9 +55,17 @@ class Webcr_Instance_Type {
         );
 
         add_settings_field(
-            'footer_background',
-            'Footer Background Color',
-            [$this, 'footer_background_field_callback'],
+            'ioos_header',
+            'IOOS header',
+            [$this, 'ioos_header_field_callback'],
+            'theme_settings',
+            'webcr_settings_section'
+        );
+
+        add_settings_field(
+            'breadcrumb_row',
+            'Breadcrumb row',
+            [$this, 'breadcrumb_row_field_callback'],
             'theme_settings',
             'webcr_settings_section'
         );
@@ -206,21 +214,30 @@ class Webcr_Instance_Type {
         <?php
     }
    
+    function ioos_header_field_callback() {
+        $options = get_option('webcr_settings');
+        $value = isset($options['ioos_header']) ? $options['ioos_header'] : '0';
+        ?>
+        <input type="checkbox" name="webcr_settings[ioos_header]" value="1" <?php checked('1', $value); ?>>
+        <p class="description">Check this box to display the header of the  The U.S. Integrated Ocean Observing System (IOOS).</p>
+        <?php
+    }
+
+    function breadcrumb_row_field_callback() {
+        $options = get_option('webcr_settings');
+        $value = isset($options['breadcrumb_row']) ? $options['breadcrumb_row'] : '0';
+        ?>
+        <input type="checkbox" name="webcr_settings[breadcrumb_row]" value="1" <?php checked('1', $value); ?>>
+        <p class="description">Check this box to display a breadcrumb row header of the  The U.S. Integrated Ocean Observing System (IOOS).</p>
+        <?php
+    }
+
     function multiple_instances_field_callback() {
         $options = get_option('webcr_settings');
         $value = isset($options['multiple_instances']) ? $options['multiple_instances'] : '0';
         ?>
         <input type="checkbox" name="webcr_settings[multiple_instances]" value="1" <?php checked('1', $value); ?>>
         <p class="description">Check this if your site has multiple instance types.</p>
-        <?php
-    }
-
-    function footer_background_field_callback() {
-        $options = get_option('webcr_settings');
-        $value = isset($options['footer_background']) ? $options['footer_background'] : '#ffffff';
-        ?>
-        <input type="color" name="webcr_settings[footer_background]" value="<?php echo esc_attr($value); ?>">
-        <p class="description">Choose the background color for your footer.</p>
         <?php
     }
 
@@ -659,4 +676,3 @@ class Webcr_Instance_Type {
     }
 
 }
-

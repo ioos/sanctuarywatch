@@ -77,15 +77,27 @@ if ( get_header_textcolor() ) : ?>
 <?php 
 	// WordPress hook for doing actions right after the body tag opens 
 	wp_body_open(); 
-?>
-<!-- Top bar section containing a clickable logo that links to an external site -->
-<div id="top-bar">
-	<a href="https://ioos.us" target="_blank">
-		<img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">
-	</a>
-</div>
 
-<?php
+$ioos_bar = get_option('webcr_settings');
+$ioos_bar_replacement = true;
+if (isset($ioos_bar['ioos_header'])){
+	if ($ioos_bar['ioos_header'] == 1){
+		$ioos_bar_replacement = false;
+		echo '<!-- Top bar section containing a clickable logo that links to an external site -->';
+		echo '<div id="top-bar">';
+		echo '	<a href="https://ioos.us" target="_blank">';
+		echo '		<img src="' .  get_stylesheet_directory_uri() . '/assets/images/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">';
+		echo '	</a>';
+		echo '</div>';
+	}
+}
+
+if ($ioos_bar_replacement == true){
+	echo '<div style="padding-top:30px">';
+	echo '</div>';
+}
+
+
 /**
  * Implements breadcrumb navigation dynamically based on the current post's metadata.
  *
@@ -113,8 +125,10 @@ if ( get_header_textcolor() ) : ?>
 						$scene_loc_webcr = $scene_loc_webcr.$sceneArr[$i].' ';
 					}
 					// Create the breadcrumb with the default links and the 
-					echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
-					echo '<p> > </p>';
+					if ($ioos_bar['ioos_header'] == 1){
+						echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
+						echo '<p> > </p>';
+					}
 					echo '<a href="' . home_url() . '">' . get_bloginfo('name') . '</a>';
 				}
 			}

@@ -23,7 +23,7 @@ if ( ($instance_footer > 0 ) || (sitewide_footer_present == true)) {
         echo '<div class="col-sm footer-column">';
         // This wrapper will be centered in .col-sm, and its text content will be left-aligned.
         echo '  <div class="footer-content-wrapper">';
-        echo '    <h6 class="text-white">' . $sitewide_footer_title  . '</h6>';
+        echo '    <h6 class="text-white footer-column-title">' . $sitewide_footer_title  . '</h6>';
         echo '    <div class="footer_component">';
         echo $sitewide_footer;
         echo '    </div>';
@@ -43,7 +43,7 @@ if ( ($instance_footer > 0 ) || (sitewide_footer_present == true)) {
                     echo '<div class="col-sm footer-column">';
                     // This wrapper will be centered in .col-sm, and its text content will be left-aligned.
                     echo '  <div class="footer-content-wrapper">';
-                    echo '    <h6 class="text-white">' . $instance_footer['instance_footer_column_title' . $i ] . '</h6>';
+                    echo '    <h6 class="text-white footer-column-title">' . $instance_footer['instance_footer_column_title' . $i ] . '</h6>';
                     echo '    <div class="footer_component">';
                     echo $instance_footer['instance_footer_column_content' . $i ];
                     echo '    </div>';
