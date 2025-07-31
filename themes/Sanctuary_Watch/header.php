@@ -78,10 +78,10 @@ if ( get_header_textcolor() ) : ?>
 	// WordPress hook for doing actions right after the body tag opens 
 	wp_body_open(); 
 
-$ioos_bar = get_option('webcr_settings');
+$site_options = get_option('webcr_settings');
 $ioos_bar_replacement = true;
-if (isset($ioos_bar['ioos_header'])){
-	if ($ioos_bar['ioos_header'] == 1){
+if (isset($site_options['ioos_header'])){
+	if ($site_options['ioos_header'] == 1){
 		$ioos_bar_replacement = false;
 		echo '<!-- Top bar section containing a clickable logo that links to an external site -->';
 		echo '<div id="top-bar">';
@@ -105,35 +105,45 @@ if ($ioos_bar_replacement == true){
  * are dynamically generated here based on the post's scene location metadata. It enhances user navigation and 
  * SEO by structuring the site hierarchy.
  */
-?>
-<div id="ioos-breadcrumb">
-	<span id="header-margin">
-		<?php
+
+
+$breadcrumb_row_replacement = true;
+if (isset($site_options['breadcrumb_row'])){
+	if ($site_options['breadcrumb_row'] == 1){
+		$breadcrumb_row_replacement = false;
+		echo '<div id="ioos-breadcrumb">';
+		echo '	<span id="header-margin">';
 		// Breadcrumbs are dynamically generated based on the current post's metadata to facilitate navigation and enhance SEO
-			// Fetch and store the post meta data and the scene location for the current post using its ID.
-			if (get_the_ID() != false){
-				$postMeta = get_post_meta(get_the_ID());
-				//Trying to access array offset on value of type null ??
-				$sceneLocation = isset($postMeta['scene_location'][0]) ? $postMeta['scene_location'][0] : '';
+		// Fetch and store the post meta data and the scene location for the current post using its ID.
+		if (get_the_ID() != false){
+			$postMeta = get_post_meta(get_the_ID());
+			//Trying to access array offset on value of type null ??
+			$sceneLocation = isset($postMeta['scene_location'][0]) ? $postMeta['scene_location'][0] : '';
 
-				// Split the 'scene_location' string into an array based on spaces.
-				$sceneArr = explode(' ', $sceneLocation);
-				if (!empty($sceneLocation)){
-					// Loop through each word in the 'sceneLocation' array except the last one.
-					$scene_loc_webcr = '';
-					for($i = 0; $i < count($sceneArr)-1; $i++){
-						$scene_loc_webcr = $scene_loc_webcr.$sceneArr[$i].' ';
-					}
-					// Create the breadcrumb with the default links and the 
-					if ($ioos_bar['ioos_header'] == 1){
-						echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
-						echo '<p> > </p>';
-					}
-					echo '<a href="' . home_url() . '">' . get_bloginfo('name') . '</a>';
+			// Split the 'scene_location' string into an array based on spaces.
+			$sceneArr = explode(' ', $sceneLocation);
+			if (!empty($sceneLocation)){
+				// Loop through each word in the 'sceneLocation' array except the last one.
+				$scene_loc_webcr = '';
+				for($i = 0; $i < count($sceneArr)-1; $i++){
+					$scene_loc_webcr = $scene_loc_webcr.$sceneArr[$i].' ';
 				}
-			}
-		?>
-	</span>
-</div>
+				// Create the breadcrumb with the default links and the 
+				if ($site_options['ioos_header'] == 1){
+					echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
+					echo '<p> > </p>';
+				}
+				echo '<a href="' . home_url() . '">' . get_bloginfo('name') . '</a>';
+			}	
+		}
+		echo '	</span>';
+		echo '</div>';
+	}
+}
 
-<?php get_template_part( 'template-parts/navbar' ); ?>
+if ($breadcrumb_row_replacement == true){
+	echo '<div style="padding-top:20px">';
+	echo '</div>';
+}
+
+get_template_part( 'template-parts/navbar' ); 

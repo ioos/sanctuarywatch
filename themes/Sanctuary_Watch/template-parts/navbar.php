@@ -25,7 +25,7 @@
 ?>
 
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-    <div class="container-fluid">
+    <div id = "navbar-inner" class="container-fluid">
         <div class="navbar-wrapper">
             <?php
             $postMeta = get_post_meta(get_the_ID());
