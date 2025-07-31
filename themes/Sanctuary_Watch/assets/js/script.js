@@ -670,6 +670,7 @@ function mobile_helper(svgElement, iconsArr, mobile_icons) {
                         cont.style.background = 'radial-gradient(white, #f0f0f0)';
                         cont.style.overflow = 'hidden';
 
+
                         // Identify the current icon ID
                         let currIcon = iconIds[idx];
                         let key;

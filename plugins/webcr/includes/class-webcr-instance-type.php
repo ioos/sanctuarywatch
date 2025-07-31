@@ -25,15 +25,14 @@ class Webcr_Instance_Type {
     // Add menu item to WordPress admin
     function webcr_add_admin_menu() {
         add_menu_page(
-            'Site Settings', // Page title
-            'Site Settings', // Menu title
+            'Graphic Data Settings', // Page title
+            'Graphic Data Settings', // Menu title
             'manage_options', // Capability required
             'theme_settings', // Menu slug
             [$this, 'webcr_settings_page'] // Function to display the page
         );
     }
 
-    // Register settings
     function webcr_settings_init() {
         // Register a new settings group
         register_setting('theme_settings_group', 'webcr_settings');
@@ -56,9 +55,17 @@ class Webcr_Instance_Type {
         );
 
         add_settings_field(
-            'footer_background',
-            'Footer Background Color',
-            [$this, 'footer_background_field_callback'],
+            'ioos_header',
+            'IOOS header',
+            [$this, 'ioos_header_field_callback'],
+            'theme_settings',
+            'webcr_settings_section'
+        );
+
+        add_settings_field(
+            'breadcrumb_row',
+            'Breadcrumb row',
+            [$this, 'breadcrumb_row_field_callback'],
             'theme_settings',
             'webcr_settings_section'
         );
@@ -102,6 +109,53 @@ class Webcr_Instance_Type {
             'theme_settings',
             'webcr_google_settings_section'
         );
+
+        // Register settings for REST API access (read-only)
+        register_setting('theme_settings_group', 'webcr_sitewide_footer_title', [
+            'show_in_rest' => [
+                'name' => 'sitewide_footer_title',
+                'schema' => [
+                    'type' => 'string',
+                    'description' => 'Site-wide footer title'
+                ]
+            ],
+            'type' => 'string',
+            'default' => '',
+            'sanitize_callback' => 'sanitize_text_field'
+        ]);
+
+        register_setting('theme_settings_group', 'webcr_sitewide_footer', [
+            'show_in_rest' => [
+                'name' => 'sitewide_footer',
+                'schema' => [
+                    'type' => 'string',
+                    'description' => 'Site-wide footer content'
+                ]
+            ],
+            'type' => 'string',
+            'default' => '',
+            'sanitize_callback' => 'wp_kses_post' // Allows safe HTML
+        ]);
+    }
+
+    function webcr_register_rest_settings() {
+        // Register custom REST route for read-only access
+        register_rest_route('webcr/v1', '/footer-settings', [
+            'methods' => 'GET',
+            'callback' => [$this, 'webcr_get_footer_settings'],
+        'webcr_get_footer_settings',
+            'permission_callback' => '__return_true', // Public access
+            'args' => []
+        ]);
+    }
+
+    function webcr_get_footer_settings($request) {
+        $settings = get_option('webcr_settings', []);
+        
+        return rest_ensure_response([
+            'sitewide_footer_title' => isset($settings['sitewide_footer_title']) ? $settings['sitewide_footer_title'] : '',
+            'sitewide_footer' => isset($settings['site_footer']) ? $settings['site_footer'] : ''  // Changed to 'site_footer'
+        ]);
     }
 
     /**
@@ -160,21 +214,30 @@ class Webcr_Instance_Type {
         <?php
     }
    
+    function ioos_header_field_callback() {
+        $options = get_option('webcr_settings');
+        $value = isset($options['ioos_header']) ? $options['ioos_header'] : '0';
+        ?>
+        <input type="checkbox" name="webcr_settings[ioos_header]" value="1" <?php checked('1', $value); ?>>
+        <p class="description">Check this box to display the header of the  The U.S. Integrated Ocean Observing System (IOOS).</p>
+        <?php
+    }
+
+    function breadcrumb_row_field_callback() {
+        $options = get_option('webcr_settings');
+        $value = isset($options['breadcrumb_row']) ? $options['breadcrumb_row'] : '0';
+        ?>
+        <input type="checkbox" name="webcr_settings[breadcrumb_row]" value="1" <?php checked('1', $value); ?>>
+        <p class="description">Check this box to display a breadcrumb row header of the  The U.S. Integrated Ocean Observing System (IOOS).</p>
+        <?php
+    }
+
     function multiple_instances_field_callback() {
         $options = get_option('webcr_settings');
         $value = isset($options['multiple_instances']) ? $options['multiple_instances'] : '0';
         ?>
         <input type="checkbox" name="webcr_settings[multiple_instances]" value="1" <?php checked('1', $value); ?>>
         <p class="description">Check this if your site has multiple instance types.</p>
-        <?php
-    }
-
-    function footer_background_field_callback() {
-        $options = get_option('webcr_settings');
-        $value = isset($options['footer_background']) ? $options['footer_background'] : '#ffffff';
-        ?>
-        <input type="color" name="webcr_settings[footer_background]" value="<?php echo esc_attr($value); ?>">
-        <p class="description">Choose the background color for your footer.</p>
         <?php
     }
 
@@ -613,4 +676,3 @@ class Webcr_Instance_Type {
     }
 
 }
-

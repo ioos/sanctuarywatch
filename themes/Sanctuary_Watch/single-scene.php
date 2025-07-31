@@ -237,16 +237,17 @@ foreach ($results as $row) {
 
 }
 
-
+// save instance color settings for mobile background and mobile text to page
+$instance_mobile_tile_background_color = get_post_meta($instance, 'instance_mobile_tile_background_color', true);
+$instance_mobile_tile_text_color = get_post_meta($instance, 'instance_mobile_tile_text_color', true);
+$instance_color_settings = array('instance_mobile_tile_background_color' => $instance_mobile_tile_background_color, 'instance_mobile_tile_text_color' => $instance_mobile_tile_text_color);
 
 ?>
  </body>
 <script>
-
-
-let title_arr  = <?php echo json_encode($title_arr); ?>;
-let visible_modals  = <?php echo json_encode($visible_modals); ?>;
-
+  let title_arr  = <?php echo json_encode($title_arr); ?>;
+  let visible_modals  = <?php echo json_encode($visible_modals); ?>;
+  let instance_color_settings  = <?php echo json_encode($instance_color_settings); ?>;
 </script>
 
   <!-- </body> -->

@@ -33,12 +33,10 @@ body{
 }
 
 #ioos-breadcrumb {
-  background-color: #008da8;
   padding-top: 3px;
   padding-bottom: 3px;
   text-align: center;
   align-items: center;
-  color: white;
   min-height: 25.98px;
 }
 
@@ -46,7 +44,6 @@ body{
 #header-margin p {
   display: inline;
   margin: 0;
-  color:white;
   text-decoration: none;
 }
 
@@ -65,9 +62,14 @@ body{
   justify-content: space-around;
 }
 
+.footer-column-title {
+  font-weight: bold;
+}
+
 .footer-column {
   display: flex; 
   justify-content: center;
+  padding-bottom: 20px;
 }
 
 /* Apply styles for mobile devices where .col-sm stacks (typically below 576px) */
@@ -946,10 +948,6 @@ body > nav{
   z-index: 9998 !important;
 }  
 
-
-body > nav > div{
-  background-color: #03386c;
-}
 
 #modal-title{
   color:#03386c;

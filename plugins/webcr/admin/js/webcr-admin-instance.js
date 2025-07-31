@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', redText);
 
 displayLegacyContentField();
 
+displayFooterEntries ();
+document.querySelector('[data-depend-id="instance_footer_columns"]').addEventListener("change", displayFooterEntries );
+document.querySelector('[data-depend-id="instance_footer_columns"]').nextElementSibling.addEventListener("change", displayFooterEntries );
+
 // should the "legacy content url" field be shown?
 function displayLegacyContentField () {
     const legacyContent = document.getElementsByName("instance_legacy_content")[0].value;
@@ -23,6 +27,40 @@ function displayLegacyContentField () {
 
 document.querySelector('select[name="instance_legacy_content"]').addEventListener("change", displayLegacyContentField );
 
+
+// Show relevant footer entries 
+function displayFooterEntries (){
+    const footerColumnNumber = document.getElementsByName("instance_footer_columns")[0].value;
+	for (let i = 3; i > footerColumnNumber; i--){
+		let target_text_title = "instance_footer_column" + i + "[instance_footer_column_title" + i + "]";
+        let target_text_title_div = document.getElementsByName(target_text_title)[0];
+        target_text_title_div.value ="";
+		let target_text_content = "instance_footer_column" + i + "[instance_footer_column_content" + i + "]";
+        let target_text_content_div = document.getElementsByName(target_text_content)[0];
+
+        // Update the hidden textarea
+        target_text_content_div.value = '';
+
+        // Find the corresponding visual editor
+        // Look for the .trumbowyg-editor that's a sibling of this textarea
+        const trumbowygBox = target_text_content_div.closest('.trumbowyg-box');
+        const visualEditor = trumbowygBox ? trumbowygBox.querySelector('.trumbowyg-editor[contenteditable="true"]') : null;
+
+        if (visualEditor) {
+            visualEditor.innerHTML = '';
+            // Trigger events to ensure synchronization
+            visualEditor.dispatchEvent(new Event('input', { bubbles: true }));
+            visualEditor.dispatchEvent(new Event('keyup', { bubbles: true }));
+        }
+		target_text_title_div.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="none";
+	}
+
+	for (let i = 1; i <= footerColumnNumber; i++){
+		let target_text_title = "instance_footer_column" + i + "[instance_footer_column_title" + i + "]";
+        let target_text_title_div = document.getElementsByName(target_text_title)[0];
+		target_text_title_div.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.display="block";
+	}
+}
 
 // This function is the last stop on a field validation path. When a user edits a instance post and hits save, the following happens:
 // 1. The instance post is validated. If there are errors, the field values are not saved to the database but they are saved to a temporary cookie.

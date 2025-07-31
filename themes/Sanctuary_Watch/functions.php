@@ -64,6 +64,167 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
   }
   add_action('wp_enqueue_scripts', 'enqueue_api_script');
 
+/**
+ * Adds theme customizer options for the breadcrumb.
+ *
+ * @param WP_Customize_Manager $wp_customize Theme Customizer object.
+ */
+function sanctuary_watch_customize_register( $wp_customize ) {
+    // Add a new section for Breadcrumb settings
+    $wp_customize->add_section( 'breadcrumb_settings', array(
+        'title'    => __( 'Breadcrumb Colors', 'sanctuary-watch' ),
+        'priority' => 30,
+    ) );
+
+    // Add setting for breadcrumb background color
+    $wp_customize->add_setting( 'breadcrumb_background_color', array(
+        'default'   => '#008da8',
+        'transport' => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ) );
+
+    // Add control for breadcrumb background color
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'breadcrumb_background_color_control', array(
+        'label'    => __( 'Background Color', 'sanctuary-watch' ),
+        'section'  => 'breadcrumb_settings',
+        'settings' => 'breadcrumb_background_color',
+    ) ) );
+
+    // Add setting for breadcrumb text color
+    $wp_customize->add_setting( 'breadcrumb_text_color', array(
+        'default'   => '#ffffff',
+        'transport' => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ) );
+
+    // Add control for breadcrumb text color
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'breadcrumb_text_color_control', array(
+        'label'    => __( 'Text Color', 'sanctuary-watch' ),
+        'section'  => 'breadcrumb_settings',
+        'settings' => 'breadcrumb_text_color',
+    ) ) );
+
+    // Add a new section for Navigation Bar settings
+    $wp_customize->add_section( 'navbar_settings', array(
+        'title'    => __( 'Navigation Bar Colors', 'sanctuary-watch' ),
+        'priority' => 35,
+    ) );
+
+    // Add setting for Navigation Bar background color
+    $wp_customize->add_setting( 'navbar_background_color', array(
+        'default'   => '#03386c',
+        'transport' => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ) );
+
+    // Add control for Navigation Bar background color
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'navbar_background_color_control', array(
+        'label'    => __( 'Background Color', 'sanctuary-watch' ),
+        'section'  => 'navbar_settings',
+        'settings' => 'navbar_background_color',
+    ) ) );
+
+    // Add setting for Navigation Bar text color
+    $wp_customize->add_setting( 'navbar_text_color', array(
+        'default'   => '#ffffff',
+        'transport' => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ) );
+
+    // Add control for Navigation Bar text color
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'navbar_text_color_control', array(
+        'label'    => __( 'Text Color', 'sanctuary-watch' ),
+        'section'  => 'navbar_settings',
+        'settings' => 'navbar_text_color',
+    ) ) );
+
+    // Add a new section for Footer settings
+    $wp_customize->add_section( 'footer_settings', array(
+        'title'    => __( 'Footer Colors', 'sanctuary-watch' ),
+        'priority' => 40,
+    ) );
+
+    // Add setting for header background color
+    $wp_customize->add_setting( 'footer_background_color', array(
+        'default'   => '#03386c',
+        'transport' => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ) );
+
+    // Add control for header background color
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'footer_background_color_control', array(
+        'label'    => __( 'Background Color', 'sanctuary-watch' ),
+        'section'  => 'footer_settings',
+        'settings' => 'footer_background_color',
+    ) ) );
+
+    // Add setting for header text color
+    $wp_customize->add_setting( 'footer_text_color', array(
+        'default'   => '#ffffff',
+        'transport' => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ) );
+
+    // Add control for header text color
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'footer_text_color_control', array(
+        'label'    => __( 'Text Color', 'sanctuary-watch' ),
+        'section'  => 'footer_settings',
+        'settings' => 'footer_text_color',
+    ) ) );
+
+
+}
+add_action( 'customize_register', 'sanctuary_watch_customize_register' );
+
+/**
+ * Outputs custom CSS from the Theme Customizer for the breadcrumb.
+ */
+function sanctuary_watch_customizer_css() {
+    ?>
+    <style type="text/css">
+        #ioos-breadcrumb {
+            background-color: <?php echo esc_attr( get_theme_mod( 'breadcrumb_background_color', '#008da8' ) ); ?>;
+            color: <?php echo esc_attr( get_theme_mod( 'breadcrumb_text_color', '#ffffff' ) ); ?>;
+        }
+        #ioos-breadcrumb a, #ioos-breadcrumb p {
+            color: <?php echo esc_attr( get_theme_mod( 'breadcrumb_text_color', '#ffffff' ) ); ?>;
+        }
+        #navbar-inner {
+            background-color: <?php echo esc_attr( get_theme_mod( 'navbar_background_color', '#03386c' ) ); ?>;
+            color: <?php echo esc_attr( get_theme_mod( 'navbar_text_color', '#ffffff' ) ); ?>;
+        }
+
+    </style>
+    <?php
+}
+add_action( 'wp_head', 'sanctuary_watch_customizer_css' );
+
+/**
+ * Remove specific sections and panels from the WordPress Customizer.
+ *
+ * This function removes the Menus panel, Additional CSS section, and Homepage 
+ * Settings section from the WordPress Customizer interface to streamline the 
+ * customization options available to users.
+ *
+ * @since 1.0.0
+ *
+ * @param WP_Customize_Manager $wp_customize The WordPress Customizer Manager object.
+ *                                          Contains methods for adding and removing
+ *                                          customizer panels, sections, and controls.
+ *
+ * @return void
+ */
+function remove_customizer_sections( $wp_customize ) {
+    // Remove Menus panel
+    $wp_customize->remove_panel( 'nav_menus' );
+    
+    // Remove Additional CSS section
+    $wp_customize->remove_section( 'custom_css' );
+    
+    // Remove Homepage Settings section
+    $wp_customize->remove_section( 'static_front_page' );
+}
+add_action( 'customize_register', 'remove_customizer_sections', 20 );
 
     // Include the GitHub Updater class if not already included by the plugin
  //   if ( is_plugin_active( 'webcr/webcr.php' ) ) {
