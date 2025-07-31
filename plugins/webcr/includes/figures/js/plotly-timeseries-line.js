@@ -49,15 +49,14 @@ function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments, dataTo
     layout.yaxis.type = 'linear';
 
     const [yMin, yMax] = layout.yaxis.range || [0, 1];
-    const [xMin, xMax] = layout.xaxis.range || [0, 1];
     const overlays = [];  
 
     // === Evaluation Period ===
     if (figureArguments['EvaluationPeriod'] === 'on') {
         let start = figureArguments['EvaluationPeriodStartDate'];
         let end = figureArguments['EvaluationPeriodEndDate'];
-        //console.log(`[Overlay] Processing evaluation period for ${base}:`, start, end);       
-
+        const startDate = new Date(start).toLocaleDateString();
+        const endDate = new Date(end).toLocaleDateString();     
         const fillColor = (figureArguments['EvaluationPeriodFillColor'] || '#999') + '15';
 
         overlays.push({
@@ -68,12 +67,16 @@ function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments, dataTo
             type: 'scatter',
             mode: 'lines',
             line: { color: fillColor, width: 0 },
-            hoverinfo: 'skip',
+            hoverinfo: `Evaluation Period`,
+            // hovertemplate:
+            // `${startDate}<br>` +
+            // `${endDate}<extra></extra>`,
             name: `Evaluation Period`,
             showlegend: true,
             yaxis: 'y',
             xaxis: 'x'
         });
+
     }
 
     for (let i = 0; i <= Number(figureArguments['EventMarkersField']); i++) {
@@ -95,14 +98,12 @@ function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments, dataTo
                     showlegend: true,
                     yaxis: 'y',
                     xaxis: 'x',
-                    hoverinfo: label,
+                    hoverinfo: `x`,
                 });
             }
             if (axisType === 'y') {
                 let yValue = parseFloat(figureArguments[`EventMarkersEventYValue${i}`], 10);
                 const yArray = Array(plotlyX.length).fill(yValue);
-                // console.log('yValue', yValue);
-                // console.log('xMin, xMax', xMin, xMax);
                 overlays.push({
                     x: plotlyX,
                     y: yArray,
@@ -113,7 +114,7 @@ function injectOverlays(plotDiv, layout, mainDataTraces, figureArguments, dataTo
                     showlegend: true,
                     yaxis: 'y',
                     xaxis: 'x',
-                    hoverinfo: label,
+                    hoverinfo: `${label} y`,
                 });
             }
         }
@@ -335,7 +336,11 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         line: { color: 'transparent' },
                         name: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`,
                         type: 'scatter',
-                        hoverinfo: 'skip',
+                        hoverinfo: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`, //String(upperY-mean),
+                        // hovertemplate:
+                        // 'X: %{x}<br>' +
+                        // 'Y: %{y}<br>' +
+                        // '<extra></extra>',
                         showlegend: showLegendBool,
                         visible: true
                     };
@@ -357,7 +362,11 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         line: { color: 'transparent' },
                         name: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`,
                         type: 'scatter',
-                        hoverinfo: 'skip',
+                        hoverinfo: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`,//String(stdSingleValue),
+                        // hovertemplate:
+                        // 'X: %{x}<br>' +
+                        // 'Y: %{y}<br>' +
+                        // '<extra></extra>',
                         showlegend: showLegendBool,
                         visible: true
                     };
@@ -470,6 +479,7 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                 },
                 autosize: true,
                 margin: { t: 60, b: 60, l: 60, r: 60 },
+                hovermode: 'closest',
                 //width: container.clientWidth, 
                 //height: container.clientHeight,
                 cliponaxis: true
@@ -1119,7 +1129,7 @@ function displayLineFields (numLines, jsonColumns, interactive_arguments) {
               markerSizeSelect.name = 'plotFields';
 
               // Sizes 1 through 20
-              [1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20].forEach(size => {
+              [0, 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20].forEach(size => {
               const opt = document.createElement('option');
               opt.value = size;
               opt.innerHTML = size + ' px';
