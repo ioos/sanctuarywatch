@@ -23,7 +23,7 @@ if ( ($instance_footer > 0 ) || (sitewide_footer_present == true)) {
         echo '<div class="col-sm footer-column">';
         // This wrapper will be centered in .col-sm, and its text content will be left-aligned.
         echo '  <div class="footer-content-wrapper">';
-        echo '    <h6 class="text-white footer-column-title">' . $sitewide_footer_title  . '</h6>';
+        echo '    <h6 class="footer-column-title">' . $sitewide_footer_title  . '</h6>';
         echo '    <div class="footer_component">';
         echo $sitewide_footer;
         echo '    </div>';
@@ -43,7 +43,7 @@ if ( ($instance_footer > 0 ) || (sitewide_footer_present == true)) {
                     echo '<div class="col-sm footer-column">';
                     // This wrapper will be centered in .col-sm, and its text content will be left-aligned.
                     echo '  <div class="footer-content-wrapper">';
-                    echo '    <h6 class="text-white footer-column-title">' . $instance_footer['instance_footer_column_title' . $i ] . '</h6>';
+                    echo '    <h6 class="footer-column-title">' . $instance_footer['instance_footer_column_title' . $i ] . '</h6>';
                     echo '    <div class="footer_component">';
                     echo $instance_footer['instance_footer_column_content' . $i ];
                     echo '    </div>';
@@ -56,29 +56,6 @@ if ( ($instance_footer > 0 ) || (sitewide_footer_present == true)) {
 
         }   
     }
-
-//     $footer_titles= array('column_title_1','column_title_2','column_title_3');
-//     $footer_component = array('about','contact','reports');
-//     for ($i = 0; $i < 3; $i++) {
-//         $footer_array_key = 'instance_footer_' . $footer_component[$i];
-//         $footer_title_key = 'instance_footer_' . $footer_titles[$i];
-        
-//         $footer_title = $instance_footer[$footer_title_key];
-//         $footer_entry = $instance_footer[$footer_array_key];
-//         if (!empty($footer_entry)) {
-//             // Apply flex styling to .col-sm to center its direct child (the new wrapper)
-//             echo '<div class="col-sm footer-column">';
-//             // This wrapper will be centered in .col-sm, and its text content will be left-aligned.
-//             echo '  <div class="footer-content-wrapper">';
-//             echo '    <h6 class="text-white">' . ucfirst($footer_title) . '</h6>';
-//             echo '    <div class="footer_component">';
-//             echo $footer_entry;
-//             echo '    </div>';
-//             echo '  </div>'; // Closing footer-content-wrapper
-//             echo '</div>';
-//         } 
-//     }   
-
 
     echo '</div>';
     echo '</div>';

@@ -48,8 +48,6 @@ body{
 }
 
 .site-footer {
-  background-color: #03386c; 
-  color: white; 
   padding-top: 32px;
   font-size: 13px;
 }
@@ -964,7 +962,6 @@ body > nav{
 
 /* footer components */
 .footer_component { 
-  color: white; 
   padding: 6px 0;
   border: none;
   border-radius: 4px;

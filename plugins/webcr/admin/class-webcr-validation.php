@@ -12,7 +12,7 @@ class webcr_validation {
                 return true;
                 break;
             case "scene":
-                return $this->validate_scene();
+                return true;// $this->validate_scene();
                 break;
             case "modal":
                 return $this->validate_modal();
