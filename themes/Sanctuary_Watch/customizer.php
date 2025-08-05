@@ -51,22 +51,26 @@ class Customizer_Settings {
             'active_callback' => [$this, 'is_header_row_enabled'],
         )));
         
-        // Add setting for header image
+        // Modified setting for header image with enhanced validation
         $wp_customize->add_setting('header_row_image', array(
             'default'           => $this->get_header_row_default_image_id(),
             'sanitize_callback' => [$this, 'header_row_sanitize_image'],
+            'validate_callback' => [$this, 'header_row_validate_image'], // Add validation
             'transport'         => 'refresh',
         ));
         
-        // Add control for header image
+        // Modified control for header image with better description
         $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'header_row_image', array(
             'label'           => __('Header Image', 'textdomain'),
-            'description'     => __('Upload an image that is exactly 433px wide and 50px tall.', 'textdomain'),
+            'description'     => __('Upload an image that is exactly 433px wide and 50px tall. This field is required when the header row is enabled.', 'textdomain'),
             'section'         => 'header_row_section',
             'mime_type'       => 'image',
             'priority'        => 30,
             'active_callback' => [$this, 'is_header_row_enabled'],
         )));
+
+         // Add JavaScript for client-side validation (optional but recommended for better UX)
+        add_action('customize_controls_print_footer_scripts', [$this, 'header_row_validation_script']);
 
         // Add setting for header image alt text
         $wp_customize->add_setting('header_row_image_alt', array(
@@ -78,7 +82,7 @@ class Customizer_Settings {
         // Add control for header image alt text
         $wp_customize->add_control('header_row_image_alt', array(
             'label'           => __('Header Image Alt Text', 'textdomain'),
-            'description'     => __('Alternative text for the header image (required for accessibility).', 'textdomain'),
+            'description'     => __('Alternative text for the header image. This field is required when the header row is enabled.', 'textdomain'),
             'section'         => 'header_row_section',
             'type'            => 'text',
             'priority'        => 40,
@@ -95,7 +99,7 @@ class Customizer_Settings {
         // Add control for header image link
         $wp_customize->add_control('header_row_image_link', array(
             'label'           => __('Header Image Link', 'textdomain'),
-            'description'     => __('URL that the header image should link to.', 'textdomain'),
+            'description'     => __('URL that the header image should link to. This field is required when the header row is enabled.', 'textdomain'),
             'section'         => 'header_row_section',
             'type'            => 'url',
             'priority'        => 50,
@@ -222,6 +226,155 @@ class Customizer_Settings {
         ) ) );
 
     }
+
+    /**
+     * Validate header image dimensions and requirement
+     *
+     * @param WP_Error $validity
+     * @param mixed $value
+     * @param WP_Customize_Setting $setting
+     * @return WP_Error
+     */
+    function header_row_validate_image($validity, $value, $setting) {
+        // Check if header row is enabled
+        $header_row_enabled = $setting->manager->get_setting('header_row_enable')->value();
+        
+        if ($header_row_enabled) {
+            // If header row is enabled, image is required
+            if (empty($value) || $value == 0) {
+                $validity->add('required_field', __('Header image is required when header row is enabled.', 'textdomain'));
+                return $validity;
+            }
+            
+            // Validate image dimensions
+            $image_data = wp_get_attachment_image_src($value, 'full');
+            
+            if ($image_data) {
+                $width = $image_data[1];
+                $height = $image_data[2];
+                
+                if ($width != 433 || $height != 50) {
+                    $validity->add('invalid_dimensions', 
+                        sprintf(__('Header image must be exactly 433px wide and 50px tall. Your image is %dx%d pixels.', 'textdomain'), 
+                        $width, $height)
+                    );
+                }
+            } else {
+                $validity->add('invalid_image', __('Invalid image selected.', 'textdomain'));
+            }
+        }
+        
+        return $validity;
+    }
+
+    /**
+     * Sanitize header image value
+     *
+     * @param mixed $value
+     * @return int
+     */
+    function header_row_sanitize_image($value) {
+        // Ensure it's a valid attachment ID
+        $attachment_id = absint($value);
+        
+        // Verify it's actually an image attachment
+        if ($attachment_id && wp_attachment_is_image($attachment_id)) {
+            return $attachment_id;
+        }
+        
+        return 0;
+    }
+
+    /**
+     * Add JavaScript for enhanced client-side validation
+     */
+    function header_row_validation_script() {
+        ?>
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            // Monitor header row enable/disable changes
+            wp.customize('header_row_enable', function(value) {
+                value.bind(function(enabled) {
+                    if (enabled) {
+                        // When header row is enabled, validate the image
+                        var imageValue = wp.customize('header_row_image').get();
+                        if (!imageValue || imageValue == 0) {
+                            // Add visual indicator that image is required
+                            $('#customize-control-header_row_image').addClass('customize-control-required');
+                            $('#customize-control-header_row_image .description').append(
+                                '<div class="customize-control-notifications-container" style="margin-top: 4px;">' +
+                                '<div class="notice notice-error"><p>Header image is required when header row is enabled.</p></div>' +
+                                '</div>'
+                            );
+                        }
+                    } else {
+                        // Remove required indicator when disabled
+                        $('#customize-control-header_row_image').removeClass('customize-control-required');
+                        $('#customize-control-header_row_image .customize-control-notifications-container').remove();
+                    }
+                });
+            });
+
+            // Monitor image selection changes
+            wp.customize('header_row_image', function(value) {
+                value.bind(function(imageId) {
+                    var headerRowEnabled = wp.customize('header_row_enable').get();
+                    
+                    if (headerRowEnabled && (!imageId || imageId == 0)) {
+                        // Show error if header row is enabled but no image selected
+                        $('#customize-control-header_row_image .customize-control-notifications-container').remove();
+                        $('#customize-control-header_row_image .description').append(
+                            '<div class="customize-control-notifications-container" style="margin-top: 4px;">' +
+                            '<div class="notice notice-error"><p>Header image is required when header row is enabled.</p></div>' +
+                            '</div>'
+                        );
+                    } else {
+                        // Remove error messages when image is selected
+                        $('#customize-control-header_row_image .customize-control-notifications-container').remove();
+                    }
+                });
+            });
+        });
+        </script>
+        <style>
+        .customize-control-required .customize-control-title:after {
+            content: " *";
+            color: #dc3232;
+        }
+        </style>
+        <?php
+    }
+
+    /**
+     * Additional helper function to check validation on theme activation or updates
+     */
+    function validate_header_settings_on_save() {
+        $header_row_enabled = get_theme_mod('header_row_enable');
+        $header_image = get_theme_mod('header_row_image');
+        
+        if ($header_row_enabled) {
+            if (empty($header_image)) {
+                // Set a default image or show admin notice
+                add_action('admin_notices', function() {
+                    echo '<div class="notice notice-warning"><p>' . 
+                         __('Warning: Header row is enabled but no header image is set. Please configure the header image in the Customizer.', 'textdomain') . 
+                         '</p></div>';
+                });
+            } else {
+                // Validate dimensions
+                $image_data = wp_get_attachment_image_src($header_image, 'full');
+                if ($image_data && ($image_data[1] != 433 || $image_data[2] != 50)) {
+                    add_action('admin_notices', function() use ($image_data) {
+                        echo '<div class="notice notice-warning"><p>' . 
+                             sprintf(__('Warning: Header image dimensions are %dx%d pixels, but should be exactly 433x50 pixels.', 'textdomain'), 
+                                    $image_data[1], $image_data[2]) . 
+                             '</p></div>';
+                    });
+                }
+            }
+        }
+    }
+
 
     /**
      * Get the default header image attachment ID
@@ -508,43 +661,6 @@ class Customizer_Settings {
         return get_theme_mod('header_row_breadcrumb_name', 'IOOS');
     }
 
-    /**
-     * Add validation notice in customizer if fields are empty
-     */
-    function header_row_validation_notice($wp_customize) {
-        if (!$this->validate_header_row_settings() && $this->is_header_row_active()) {
-            $wp_customize->add_setting('header_row_validation_notice', array(
-                'sanitize_callback' => 'wp_kses_post',
-            ));
-            
-            $wp_customize->add_control(new WP_Customize_Control($wp_customize, 'header_row_validation_notice', array(
-                'label'           => '',
-                'description'     => '<div style="background: #dc3232; color: white; padding: 10px; border-radius: 3px; margin: 10px 0;"><strong>Warning:</strong> All header row fields must be filled when header row is enabled.</div>',
-                'section'         => 'header_row_section',
-                'type'            => 'hidden',
-                'priority'        => 5,
-                'active_callback' => 'is_header_row_enabled',
-            )));
-        }
-    }
-
-    /**
-     * Validate header row settings to ensure no fields are blank when enabled
-     */
-    function validate_header_row_settings() {
-        if ($this->is_header_row_active()) {
-            $image = $this->get_header_row_image();
-            $alt_text = $this->get_header_row_image_alt();
-            $link = $this->get_header_row_image_link();
-            $breadcrumb_name = $this->get_header_row_breadcrumb_name();
-            
-            // Check if any required field is empty
-            if (empty($image) || empty($alt_text) || empty($link) || empty($breadcrumb_name)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Remove specific sections and panels from the WordPress Customizer.
