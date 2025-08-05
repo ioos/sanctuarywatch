@@ -75,7 +75,7 @@ class Customizer_Settings {
         // Add setting for header image alt text
         $wp_customize->add_setting('header_row_image_alt', array(
             'default'           => 'IOOS',
-            'sanitize_callback' => [$this, 'header_row_sanitize_alt_text'],
+            'sanitize_callback' => 'sanitize_text_field',
             'transport'         => 'refresh',
         ));
         
@@ -116,7 +116,7 @@ class Customizer_Settings {
         // Add control for header name within breadcrumb row
         $wp_customize->add_control('header_row_breadcrumb_name', array(
             'label'           => __('Header Name Within Breadcrumb Row', 'textdomain'),
-            'description'     => __('Text to display in the breadcrumb navigation for this header.', 'textdomain'),
+            'description'     => __('Text to display in the breadcrumb navigation for this header. This field is required when the header row is enabled.', 'textdomain'),
             'section'         => 'header_row_section',
             'type'            => 'text',
             'priority'        => 60,

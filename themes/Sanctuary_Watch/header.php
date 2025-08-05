@@ -78,15 +78,32 @@ if ( get_header_textcolor() ) : ?>
 	// WordPress hook for doing actions right after the body tag opens 
 	wp_body_open(); 
 
-$site_options = get_option('webcr_settings');
-$ioos_bar_replacement = true;
-if (isset($site_options['ioos_header'])){
-	if ($site_options['ioos_header'] == 1){
+// Get the customizer value
+$header_row_enable = get_theme_mod('header_row_enable', '');
+
+$ioos_bar_replacement = true; 
+if (!empty($header_row_enable)) {
+	if ($header_row_enable == 1){
 		$ioos_bar_replacement = false;
+		$header_row_enable = get_theme_mod('header_row_enable', '');
+		$theme_header_row_image_ID = get_theme_mod('header_row_image', '');
+		if (($theme_header_row_image_ID == "" )|| (empty($theme_header_row_image_ID))){
+			$theme_header_row_image =  get_stylesheet_directory_uri() . "/assets/images/IOOS_Emblem_Tertiary_B_RGB.png";
+		} else {
+			$theme_header_row_image = wp_get_attachment_url($theme_header_row_image_ID);
+		}
+		
+		$header_row_image_alt = get_theme_mod('header_row_image_alt', '');
+		if ($header_row_image_alt = "" || empty($header_row_image_alt)){
+			$header_row_image_alt =  "IOOS emblem link";
+		}
+
 		echo '<!-- Top bar section containing a clickable logo that links to an external site -->';
 		echo '<div id="top-bar">';
 		echo '	<a href="https://ioos.us" target="_blank">';
-		echo '		<img src="' .  get_stylesheet_directory_uri() . '/assets/images/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">';
+//		echo '		<img src="' . $header_row_image . '"  alt="' . $header_row_image_alt . '">';
+
+				echo '		<img src="' .  get_stylesheet_directory_uri() . '/assets/images/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">';
 		echo '	</a>';
 		echo '</div>';
 	}

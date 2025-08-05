@@ -10,18 +10,18 @@
    */
 
   // Customizer functions - first let's load the customizer class
-  include_once get_template_directory(). '/customizer.php';
-  $customizer_settings = new Customizer_Settings();
+//  include_once get_template_directory(). '/customizer.php';
+//  $customizer_settings = new Customizer_Settings();
 
   // Now let's call the customizer functions
-  add_action( 'customize_register', array( $customizer_settings, 'sanctuary_watch_customize_register' ) );
-  add_action( 'wp_head', array( $customizer_settings, 'sanctuary_watch_customizer_css' ));
-  add_action( 'customize_register', array( $customizer_settings,'remove_customizer_sections'), 20 );
-  add_action('customize_controls_print_footer_scripts', array( $customizer_settings,'header_row_customizer_inline_script'));
-  add_action('after_setup_theme', function() {
-    $customizer_settings = new Customizer_Settings();
-    add_action('admin_init', [$customizer_settings, 'validate_header_settings_on_save']);
-  });
+ // add_action( 'customize_register', array( $customizer_settings, 'sanctuary_watch_customize_register' ) );
+ // add_action( 'wp_head', array( $customizer_settings, 'sanctuary_watch_customizer_css' ));
+ // add_action( 'customize_register', array( $customizer_settings,'remove_customizer_sections'), 20 );
+ // add_action('customize_controls_print_footer_scripts', array( $customizer_settings,'header_row_customizer_inline_script'));
+ // add_action('after_setup_theme', function() {
+ //   $customizer_settings = new Customizer_Settings();
+ //   add_action('admin_init', [$customizer_settings, 'validate_header_settings_on_save']);
+ // });
 
 function enqueue_font_awesome() {
   wp_enqueue_style(
