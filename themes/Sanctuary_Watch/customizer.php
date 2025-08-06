@@ -62,7 +62,7 @@ class Customizer_Settings {
         // Modified control for header image with better description
         $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'header_row_image', array(
             'label'           => __('Header Image', 'textdomain'),
-            'description'     => __('Upload an image that is exactly 433px wide and 50px tall. This field is required when the header row is enabled.', 'textdomain'),
+            'description'     => __('Upload an image that is exactly 433 pixels wide and 50 pixels tall. This field is required when the header row is enabled.', 'textdomain'),
             'section'         => 'header_row_section',
             'mime_type'       => 'image',
             'priority'        => 30,
@@ -76,6 +76,7 @@ class Customizer_Settings {
         $wp_customize->add_setting('header_row_image_alt', array(
             'default'           => 'IOOS',
             'sanitize_callback' => 'sanitize_text_field',
+            'validate_callback' => [$this, 'validate_required_when_header_enabled'], // Add validation
             'transport'         => 'refresh',
         ));
         
@@ -93,6 +94,7 @@ class Customizer_Settings {
         $wp_customize->add_setting('header_row_image_link', array(
             'default'           => 'https://ioos.us/',
             'sanitize_callback' => 'esc_url_raw',
+            'validate_callback' => [$this, 'validate_required_when_header_enabled'],
             'transport'         => 'refresh',
         ));
         
@@ -110,6 +112,7 @@ class Customizer_Settings {
         $wp_customize->add_setting('header_row_breadcrumb_name', array(
             'default'           => 'IOOS',
             'sanitize_callback' => 'sanitize_text_field',
+            'validate_callback' => [$this, 'validate_required_when_header_enabled'],
             'transport'         => 'refresh',
         ));
         
@@ -125,9 +128,25 @@ class Customizer_Settings {
 
         // Add a new section for Breadcrumb settings
         $wp_customize->add_section( 'breadcrumb_settings', array(
-            'title'    => __( 'Breadcrumb Colors', 'sanctuary-watch' ),
+            'title'    => __( 'Breadcrumb Row', 'sanctuary-watch' ),
             'priority' => 30,
         ) );
+
+        // Add setting for breadcrumb row enable/disable
+        $wp_customize->add_setting('breadcrumb_row_enable', array(
+            'default'           => '',
+            'sanitize_callback' => 'sanitize_text_field',
+            'transport'         => 'refresh',
+        ));
+        
+        // Add control for breadcrumb row enable/disable
+        $wp_customize->add_control('breadcrumb_row_enable', array(
+            'label'       => __('Enable Breadcrumb Row', 'textdomain'),
+            'description' => __('Check to display a breadcrumb row above the navigation bar.', 'textdomain'),
+            'section'     => 'breadcrumb_settings',
+            'type'        => 'checkbox',
+            'priority'    => 10,
+        ));
 
         // Add setting for breadcrumb background color
         $wp_customize->add_setting( 'breadcrumb_background_color', array(
@@ -255,7 +274,7 @@ class Customizer_Settings {
                 
                 if ($width != 433 || $height != 50) {
                     $validity->add('invalid_dimensions', 
-                        sprintf(__('Header image must be exactly 433px wide and 50px tall. Your image is %dx%d pixels.', 'textdomain'), 
+                        sprintf(__('Header image must be exactly 433 pixels wide and 50 pixels tall. Your image is %dx%d pixels.', 'textdomain'), 
                         $width, $height)
                     );
                 }
@@ -266,6 +285,44 @@ class Customizer_Settings {
         
         return $validity;
     }
+
+    /**
+     * Generic validation function for fields required when header row is enabled
+     *
+     * @param WP_Error $validity
+     * @param mixed $value
+     * @param WP_Customize_Setting $setting
+     * @return WP_Error
+     */
+    function validate_required_when_header_enabled($validity, $value, $setting) {
+        // Check if header row is enabled
+        $header_row_enabled = $setting->manager->get_setting('header_row_enable')->value();
+        
+        if ($header_row_enabled) {
+            // If header row is enabled, this field is required
+            if (empty($value) || $value == 0) {
+                // Create dynamic error message based on setting ID
+                $field_names = [
+                    'header_row_image_alt'  => __('Header Image Alt Text', 'textdomain'),
+                    'header_row_image_link' => __('Header Image Link', 'textdomain'),
+                    'header_row_breadcrumb_name' => __('Header Name Within Breadcrumb Row', 'textdomain'),
+                ];
+                
+                $field_name = isset($field_names[$setting->id]) ? $field_names[$setting->id] : __('This field', 'textdomain');
+                
+                $validity->add(
+                    'required_field', 
+                    sprintf(
+                        __('%s is required when header row is enabled.', 'textdomain'),
+                        $field_name
+                    )
+                );
+            }
+        }
+        
+        return $validity;
+    }
+
 
     /**
      * Sanitize header image value
@@ -620,6 +677,10 @@ class Customizer_Settings {
             .footer-column-title, .footer_component {
                 color: <?php echo esc_attr( get_theme_mod( 'footer_text_color', '#ffffff' ) ); ?>;
 
+            }
+
+            #top-bar {
+                background-color: <?php echo esc_attr( get_theme_mod( 'header_row_bg_color', '#ffffff' ) ); ?>;
             }
 
         </style>

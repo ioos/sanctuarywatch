@@ -79,31 +79,35 @@ if ( get_header_textcolor() ) : ?>
 	wp_body_open(); 
 
 // Get the customizer value
-$header_row_enable = get_theme_mod('header_row_enable', '');
+$customizer_header_row_enable = get_theme_mod('header_row_enable', '');
 
 $ioos_bar_replacement = true; 
-if (!empty($header_row_enable)) {
-	if ($header_row_enable == 1){
+if (!empty($customizer_header_row_enable)) {
+	if ($customizer_header_row_enable == 1){
 		$ioos_bar_replacement = false;
-		$header_row_enable = get_theme_mod('header_row_enable', '');
 		$theme_header_row_image_ID = get_theme_mod('header_row_image', '');
 		if (($theme_header_row_image_ID == "" )|| (empty($theme_header_row_image_ID))){
-			$theme_header_row_image =  get_stylesheet_directory_uri() . "/assets/images/IOOS_Emblem_Tertiary_B_RGB.png";
+			$customizer_header_row_image =  get_stylesheet_directory_uri() . "/assets/images/IOOS_Emblem_Tertiary_B_RGB.png";
 		} else {
-			$theme_header_row_image = wp_get_attachment_url($theme_header_row_image_ID);
+			$customizer_header_row_image = wp_get_attachment_url($theme_header_row_image_ID);
 		}
 		
-		$header_row_image_alt = get_theme_mod('header_row_image_alt', '');
-		if ($header_row_image_alt = "" || empty($header_row_image_alt)){
-			$header_row_image_alt =  "IOOS emblem link";
+		$customizer_header_row_image_alt = get_theme_mod('header_row_image_alt', '');
+		if ($customizer_header_row_image_alt == "" || empty($customizer_header_row_image_alt)){
+			$customizer_header_row_image_alt =  "IOOS emblem link";
+		}
+
+		$customizer_header_row_image_link = get_theme_mod('header_row_image_link', '');
+		if ($customizer_header_row_image_link == "" || empty($customizer_header_row_image_link)){
+			$customizer_header_row_image_link =  "https://ioos.us/";
 		}
 
 		echo '<!-- Top bar section containing a clickable logo that links to an external site -->';
 		echo '<div id="top-bar">';
-		echo '	<a href="https://ioos.us" target="_blank">';
-//		echo '		<img src="' . $header_row_image . '"  alt="' . $header_row_image_alt . '">';
+		echo '	<a href="' . $customizer_header_row_image_link . '" target="_blank">';
+		echo '		<img src="' . $customizer_header_row_image . '"  alt="' . $customizer_header_row_image_alt . '">';
 
-				echo '		<img src="' .  get_stylesheet_directory_uri() . '/assets/images/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">';
+		//		echo '		<img src="' .  get_stylesheet_directory_uri() . '/assets/images/IOOS_Emblem_Tertiary_B_RGB.png" alt="IOOS EMBLEM LINK">';
 		echo '	</a>';
 		echo '</div>';
 	}
@@ -123,10 +127,13 @@ if ($ioos_bar_replacement == true){
  * SEO by structuring the site hierarchy.
  */
 
+// Get the customizer value
+$customizer_breadcrumb_row_enable = get_theme_mod('breadcrumb_row_enable', '');
 
 $breadcrumb_row_replacement = true;
-if (isset($site_options['breadcrumb_row'])){
-	if ($site_options['breadcrumb_row'] == 1){
+
+if (!empty($customizer_breadcrumb_row_enable)) {
+	if ($customizer_breadcrumb_row_enable == 1){
 		$breadcrumb_row_replacement = false;
 		echo '<div id="ioos-breadcrumb">';
 		echo '	<span id="header-margin">';
@@ -145,10 +152,16 @@ if (isset($site_options['breadcrumb_row'])){
 				for($i = 0; $i < count($sceneArr)-1; $i++){
 					$scene_loc_webcr = $scene_loc_webcr.$sceneArr[$i].' ';
 				}
-				// Create the breadcrumb with the default links and the 
-				if ($site_options['ioos_header'] == 1){
-					echo '<a href="https://ioos.us" target="_blank">IOOS</a>';
+				// Create the breadcrumb with the default links 
+				if (!empty($customizer_header_row_enable)) {
+					if ($customizer_header_row_enable == 1){
+					$customizer_header_row_breadcrumb_name = get_theme_mod('header_row_breadcrumb_name', '');
+					if ($customizer_header_row_breadcrumb_name == "" || empty($customizer_header_row_breadcrumb_name)){
+						$customizer_header_row_breadcrumb_name =  "IOOS";
+					}
+					echo '<a href="' . $customizer_header_row_image_link . '" target="_blank">' . $customizer_header_row_breadcrumb_name . '</a>';
 					echo '<p> > </p>';
+					}
 				}
 				echo '<a href="' . home_url() . '">' . get_bloginfo('name') . '</a>';
 			}	
