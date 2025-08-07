@@ -55,22 +55,6 @@ class Webcr_Instance_Type {
         );
 
         add_settings_field(
-            'ioos_header',
-            'IOOS header',
-            [$this, 'ioos_header_field_callback'],
-            'theme_settings',
-            'webcr_settings_section'
-        );
-
-        add_settings_field(
-            'breadcrumb_row',
-            'Breadcrumb row',
-            [$this, 'breadcrumb_row_field_callback'],
-            'theme_settings',
-            'webcr_settings_section'
-        );
-
-        add_settings_field(
             'sitewide_footer_title',
             'Site-wide footer title',
             [$this, 'sitewide_footer_title_field_callback'],
@@ -214,24 +198,6 @@ class Webcr_Instance_Type {
         <?php
     }
    
-    function ioos_header_field_callback() {
-        $options = get_option('webcr_settings');
-        $value = isset($options['ioos_header']) ? $options['ioos_header'] : '0';
-        ?>
-        <input type="checkbox" name="webcr_settings[ioos_header]" value="1" <?php checked('1', $value); ?>>
-        <p class="description">Check this box to display the header of the  The U.S. Integrated Ocean Observing System (IOOS).</p>
-        <?php
-    }
-
-    function breadcrumb_row_field_callback() {
-        $options = get_option('webcr_settings');
-        $value = isset($options['breadcrumb_row']) ? $options['breadcrumb_row'] : '0';
-        ?>
-        <input type="checkbox" name="webcr_settings[breadcrumb_row]" value="1" <?php checked('1', $value); ?>>
-        <p class="description">Check this box to display a breadcrumb row header of the  The U.S. Integrated Ocean Observing System (IOOS).</p>
-        <?php
-    }
-
     function multiple_instances_field_callback() {
         $options = get_option('webcr_settings');
         $value = isset($options['multiple_instances']) ? $options['multiple_instances'] : '0';

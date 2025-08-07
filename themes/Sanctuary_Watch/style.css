@@ -968,3 +968,20 @@ body > nav{
   font-size: 1rem; 
   display: inline-block;
 }
+
+/* front page CSS */
+.instance_published_button {
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    color: white; 
+    background-color: #00467F
+}
+
+.instance_draft_button {
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    color: white; 
+    background-color: #808080
+}
