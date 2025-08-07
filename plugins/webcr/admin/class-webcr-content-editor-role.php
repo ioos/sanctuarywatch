@@ -33,8 +33,11 @@ class WEBCR_Custom_Roles {
 
         // Direct manipulation of the role dropdown output
         add_action('admin_footer-user-new.php', array($this, 'reorder_roles_js'));
-        add_action('admin_footer-user-edit.php', array($this, 'reorder_roles_js'));
         add_action('admin_footer-profile.php', array($this, 'reorder_roles_js'));
+        //The line below was commented out because it was breaking the selected user role on the user_edit
+        //It would change it to a value != to the users actual role
+        //add_action('admin_footer-user-edit.php', array($this, 'reorder_roles_js'));
+
 
         // Filter admin list queries for scenes
         add_action('pre_get_posts', array($this, 'webcr_restrict_scene_listing'));
@@ -174,7 +177,7 @@ class WEBCR_Custom_Roles {
 
                 if ($roleSelect.length) {
                     // Define the desired order
-                    var desiredOrder = ['content_editor', 'content_manager', 'administrator'];
+                    var desiredOrder = ['administrator', 'content_manager', 'content_editor',];
 
                     // Get all options
                     var $options = $roleSelect.find('option').get();
@@ -229,11 +232,20 @@ class WEBCR_Custom_Roles {
      * @param WP_User $user The user object being edited
      */
     public function add_instance_selection_fields($user) {
+        
 
         // Only show these fields if the CURRENTLY LOGGED-IN user is an Administrator.
         if (!current_user_can('administrator')) {
             return; // Exit if the current user is not an administrator
         }
+
+
+        // Get user role
+        $selected_user_roles = $user->roles; // This is an array
+        $selected_user_role  = ! empty($selected_user_roles) ? $selected_user_roles[0] : '';
+        // if ( $selected_user_role !== 'content_editor' ) {
+        //     return; // Exit if the current selected user is not a content editor. This setting only effects content editors. 
+        // }
 
         // Get all instance posts
         $instances = get_posts(array(
@@ -273,6 +285,45 @@ class WEBCR_Custom_Roles {
                     <?php else : ?>
                         <p><?php _e('No instances found.', 'webcr'); ?></p>
                     <?php endif; ?>
+                    
+
+                    <!-- Script below makes sure that this only shows if we're editing a content manager.  -->
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const roleDropdown = document.getElementById('role');
+
+                        // Find the <h3> that contains the text "Instance Assignments"
+                        const headings = document.querySelectorAll('h3');
+                        let instanceSection = null;
+
+                        headings.forEach(function (heading) {
+                            if (heading.textContent.trim() === 'Instance Assignments') {
+                                // The .form-table is usually the next sibling
+                                const table = heading.nextElementSibling;
+                                if (table && table.classList.contains('form-table')) {
+                                    instanceSection = table;
+                                }
+                            }
+                        });
+
+                        if (!instanceSection) return;
+
+                        function toggleInstanceSection() {
+                            const selectedRole = roleDropdown.value;
+                            if (selectedRole === 'content_editor') {
+                                instanceSection.style.display = '';
+                            } else {
+                                instanceSection.style.display = 'none';
+                            }
+                        }
+
+                        // Run once on page load
+                        toggleInstanceSection();
+
+                        // Re-check when role changes
+                        roleDropdown.addEventListener('change', toggleInstanceSection);
+                    });
+                    </script>
                 </td>
             </tr>
         </table>
