@@ -291,36 +291,43 @@ class WEBCR_Custom_Roles {
                     <script>
                     document.addEventListener('DOMContentLoaded', function () {
                         const roleDropdown = document.getElementById('role');
+                        if (!roleDropdown) {
+                            console.warn('Role dropdown not found. Instance visibility toggle skipped.');
+                            return;
+                        }
 
-                        // Find the <h3> that contains the text "Instance Assignments"
                         const headings = document.querySelectorAll('h3');
-                        let instanceSection = null;
+                        let instanceHeading = null;
+                        let instanceTable = null;
 
+                        // Locate the specific <h3> and its following .form-table
                         headings.forEach(function (heading) {
                             if (heading.textContent.trim() === 'Instance Assignments') {
-                                // The .form-table is usually the next sibling
                                 const table = heading.nextElementSibling;
                                 if (table && table.classList.contains('form-table')) {
-                                    instanceSection = table;
+                                    instanceHeading = heading;
+                                    instanceTable = table;
                                 }
                             }
                         });
 
-                        if (!instanceSection) return;
+                        if (!instanceHeading || !instanceTable) {
+                            console.warn('Instance Assignments section not found.');
+                            return;
+                        }
 
                         function toggleInstanceSection() {
                             const selectedRole = roleDropdown.value;
-                            if (selectedRole === 'content_editor') {
-                                instanceSection.style.display = '';
-                            } else {
-                                instanceSection.style.display = 'none';
-                            }
+                            const show = selectedRole === 'content_editor';
+
+                            instanceHeading.style.display = show ? '' : 'none';
+                            instanceTable.style.display = show ? '' : 'none';
                         }
 
-                        // Run once on page load
+                        // Initial check on load
                         toggleInstanceSection();
 
-                        // Re-check when role changes
+                        // Re-check on dropdown change
                         roleDropdown.addEventListener('change', toggleInstanceSection);
                     });
                     </script>
