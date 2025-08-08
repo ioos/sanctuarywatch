@@ -15,7 +15,6 @@ class Customizer_Settings {
         // Add Header Row Section
         $wp_customize->add_section('header_row_section', array(
             'title'       => __('Header Row', 'textdomain'),
-            'description' => __('Configure the header row settings.', 'textdomain'),
             'priority'    => 30,
         ));
         
@@ -208,6 +207,124 @@ class Customizer_Settings {
             'label'    => __( 'Text Color', 'sanctuary-watch' ),
             'section'  => 'navbar_settings',
             'settings' => 'navbar_text_color',
+        ) ) );
+
+        // Add a new section for Theme Color settings
+        $wp_customize->add_section( 'theme_color_settings', array(
+            'title'    => __( 'Theme Colors', 'sanctuary-watch' ),
+            'priority' => 43,
+        ) );
+
+        // Add setting for Theme Color 1
+        $wp_customize->add_setting( 'theme_color_1', array(
+            'default'   => '#03386c',
+            'transport' => 'refresh',
+            'sanitize_callback' => 'sanitize_hex_color',
+        ) );
+
+        // Add control for Theme Color 1
+        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'theme_color_1', array(
+            'label'    => __( 'Color 1', 'sanctuary-watch' ),
+            'description' => __('This color is used for the following:<br>
+                • Site title on front and about pages<br>
+                • Navigation bar background<br>
+                • Footer background<br>
+                • Button background within front page tiles<br>
+                • Background of Scene More Info/Images buttons<br>
+                • Background of Modal More Info/Images buttons<br>
+                • Background of "Copy tab link" above figures<br>
+                • "Gray bar" icons appearing above figures', 'textdomain'),
+            'section'  => 'theme_color_settings',
+            'settings' => 'theme_color_1',
+        ) ) );
+
+        // Add setting for Theme Color 2
+        $wp_customize->add_setting( 'theme_color_2', array(
+            'default'   => '#FFFFFF',
+            'transport' => 'refresh',
+            'sanitize_callback' => 'sanitize_hex_color',
+        ) );
+
+        // Add control for Theme Color 2
+        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'theme_color_2', array(
+            'label'    => __( 'Color 2', 'sanctuary-watch' ),
+            'description' => __('This color is used for the following:<br>
+                • Navigation bar text<br>
+                • Breadcrumb bar text<br>
+                • Footer text<br>
+                • Button text within front page tiles<br>
+                • Text of Scene More Info/Images buttons<br>
+                • Text of Modal More Info/Images buttons<br>
+                • Text of "Copy tab link" above figures', 'textdomain'),
+            'section'  => 'theme_color_settings',
+            'settings' => 'theme_color_2',
+        ) ) );
+
+        // Add setting for Theme Color 3
+        $wp_customize->add_setting( 'theme_color_3', array(
+            'default'   => '#024880',
+            'transport' => 'refresh',
+            'sanitize_callback' => 'sanitize_hex_color',
+        ) );
+
+        // Add control for Theme Color 3
+        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'theme_color_3', array(
+            'label'    => __( 'Color 3', 'sanctuary-watch' ),
+            'description' => __('This color is used for the following:<br>
+                • Front page section titles<br>
+                • Scene titles<br>
+                • Modal titles', 'textdomain'),
+            'section'  => 'theme_color_settings',
+            'settings' => 'theme_color_3',
+        ) ) );
+
+        // Add setting for Theme Color 4
+        $wp_customize->add_setting( 'theme_color_4', array(
+            'default'   => '#008da8',
+            'transport' => 'refresh',
+            'sanitize_callback' => 'sanitize_hex_color',
+        ) );
+
+        // Add control for Theme Color 4
+        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'theme_color_4', array(
+            'label'    => __( 'Color 4', 'sanctuary-watch' ),
+            'description' => __('This color is used for the following:<br>
+                • Breadcrumb background<br>
+                • Front and about pages subtitle', 'textdomain'),
+            'section'  => 'theme_color_settings',
+            'settings' => 'theme_color_4',
+        ) ) );
+
+        // Add setting for Theme Color 5
+        $wp_customize->add_setting( 'theme_color_5', array(
+            'default'   => '#024880',
+            'transport' => 'refresh',
+            'sanitize_callback' => 'sanitize_hex_color',
+        ) );
+
+        // Add control for Theme Color 5
+        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'theme_color_5', array(
+            'label'    => __( 'Color 5', 'sanctuary-watch' ),
+            'description' => __('This color is used for the following:<br>
+                • Scene text and text decoration within table of contents', 'textdomain'),
+            'section'  => 'theme_color_settings',
+            'settings' => 'theme_color_5',
+        ) ) );
+
+        // Add setting for Theme Color 6
+        $wp_customize->add_setting( 'theme_color_6', array(
+            'default'   => '#f2f2f2',
+            'transport' => 'refresh',
+            'sanitize_callback' => 'sanitize_hex_color',
+        ) );
+
+        // Add control for Theme Color 6
+        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'theme_color_6', array(
+            'label'    => __( 'Color 6', 'sanctuary-watch' ),
+            'description' => __('This color is used for the following:<br>
+                • Background of primary content area for all pages, ', 'textdomain'),
+            'section'  => 'theme_color_settings',
+            'settings' => 'theme_color_6',
         ) ) );
 
         // Add a new section for Footer settings
@@ -655,6 +772,10 @@ class Customizer_Settings {
     function sanctuary_watch_customizer_css() {
         ?>
         <style type="text/css">
+
+#site-title-main
+
+
             #ioos-breadcrumb {
                 background-color: <?php echo esc_attr( get_theme_mod( 'breadcrumb_background_color', '#008da8' ) ); ?>;
                 color: <?php echo esc_attr( get_theme_mod( 'breadcrumb_text_color', '#ffffff' ) ); ?>;
