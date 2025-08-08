@@ -346,6 +346,8 @@ async function make_title() {
         let col2 = document.createElement("div");
 
         if (!is_mobile()) {
+
+
             col1.classList.add("col-md-2");
             col2.classList.add("col-md-10");
 
@@ -1842,7 +1844,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
         let icon1 = `<i class="fa fa-clipboard-list" role="presentation" aria-label="clipboard-list icon" style=""></i> `;
         firstLink.innerHTML = icon1 + firstLink.innerHTML;
         firstLink.style.textDecoration = 'none';
-        firstLink.style.color = '#03386c';
+        firstLink.classList.add('gray-bar-links');
         leftCellDiv.appendChild(firstLink);
     }
 
@@ -1856,7 +1858,7 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
         const secondLink = document.createElement('a');
         secondLink.href = info_obj['dataLink'];
         secondLink.target = '_blank';
-        secondLink.style.color = '#03386c';
+        secondLink.classList.add('gray-bar-links');
         let icon2 = `<i class="fa fa-database" role="presentation" aria-label="database icon"></i>`;
         secondLink.appendChild(document.createTextNode(info_obj['dataText']));
         secondLink.innerHTML = icon2 + `  ` + secondLink.innerHTML;
@@ -2237,10 +2239,10 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
     let navItem = document.createElement("li");
     navItem.classList.add("nav-item");
     navItem.setAttribute("role", "presentation");
-    navItem.style.color = 'black';
     
     const button = document.createElement('button');
     button.classList.add('nav-link');
+    button.classList.add('tab-title');
     if (iter === 1) {
         button.classList.add('active');
         button.setAttribute('aria-selected', 'true');
@@ -2253,7 +2255,6 @@ function create_tabs(iter, tab_id, tab_label, title = "", modal_id) {
     button.setAttribute('type', 'button');
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', tab_controls);
-    button.style.color = 'black';
     button.textContent = tab_label;
 
     navItem.appendChild(button);
@@ -2383,6 +2384,9 @@ function render_modal(key){
             let acc = document.createElement("div");
             acc.classList.add("accordion");
 
+            let modal_info_entries = modal_data["modal_info_entries"];
+            let modal_photo_entries = modal_data["modal_photo_entries"];
+
             if (is_mobile()){
 
                 accordion_container.setAttribute("class", "");
@@ -2390,13 +2394,18 @@ function render_modal(key){
             } else{
                 tagline_container.setAttribute("class", "");
                 accordion_container.setAttribute("class", "");
-                tagline_container.classList.add("col-9");
-                accordion_container.classList.add("col-3");
-
+                
+                if (modal_info_entries != 0 || modal_photo_entries != 0) {
+                    tagline_container.classList.add("col-9");
+                    accordion_container.classList.add("col-3");
+                } else {
+                    tagline_container.classList.add("col-12");
+                    accordion_container.classList.add("d-none");
+                }
             }
 
             //for more info
-            let modal_info_entries = modal_data["modal_info_entries"];
+
             if (modal_info_entries != 0){
 
                 let collapseListHTML = '<div><ul>';
@@ -2426,7 +2435,7 @@ function render_modal(key){
             }
 
             //for photos:
-            let modal_photo_entries = modal_data["modal_photo_entries"];
+
             let modal_id = modal_data.id;
             let collapsePhotoHTML = '<div><ul>';
     

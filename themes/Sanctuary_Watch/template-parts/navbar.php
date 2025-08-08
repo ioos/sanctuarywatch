@@ -38,7 +38,7 @@
                 echo "<span class='navbar-brand'>$title</span>";
 
             }else {
-                echo '<a class="navbar-brand" href="' . home_url() . '"><img class="navbar-emblem" width="32p" src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Navbar Emblem">'. get_bloginfo('name'). '</a>';
+                echo '<a class="navbar-brand" href="' . home_url() . '"><img class="navbar-emblem" width="32p" src="' . get_site_icon_url(512, get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-512.png') . '" alt="Navbar Emblem">'. get_bloginfo('name'). '</a>';
             }
             ?>
             <button class="navbar-toggler" style="position: absolute;left: 80%;" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">

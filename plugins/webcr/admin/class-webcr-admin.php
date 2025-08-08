@@ -284,13 +284,15 @@ class Webcr_Admin {
     }
 
     /**
-	 * Change default favicon associated with site to Sanctuary Watch logo
+	 * Change default favicon associated with site to Sanctuary Watch logo, if there is no site icon set in the theme.
 	 *
 	 * @since    1.0.0
 	 */
     function add_favicon() {
-        $favicon_url = plugin_dir_url( __FILE__ ) . 'images/onms-logo-80.png';
-        echo '<link rel="shortcut icon" href="' . $favicon_url . '" />';
+		if (!has_site_icon()) {
+			$favicon_url = plugin_dir_url( __FILE__ ) . 'images/onms-logo-80.png';
+			echo '<link rel="shortcut icon" href="' . $favicon_url . '" />';
+		}
    }
 
 	/**

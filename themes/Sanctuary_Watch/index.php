@@ -77,7 +77,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="image-center">
         <span class="site-branding-logo">
             <?php 
-                echo '<img src="' . get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png" alt="Navbar Emblem">';
+                echo '<img src="' .  get_site_icon_url(512, get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-512.png').  '" alt="Navbar Emblem">';
                 ?>
         </span>
         <span class="site-branding-text-container">
@@ -137,7 +137,7 @@ foreach ($terms_array as $term){
     ?>
 
     <?php 
-    echo "<div class='container-fluid main-container'><h2 style='color: #024880; margin-right: auto;'>{$term['name']}</h2></div>";
+    echo "<div class='container-fluid main-container theme-title'><h2 style='margin-right: auto;'>{$term['name']}</h2></div>";
     echo "<div class='container-fluid main-container' style='margin-top: -30px; display: block'>{$term['description']}</div>";
     echo "<div class='container main-container'>";
 
@@ -238,25 +238,6 @@ foreach ($terms_array as $term){
 </div>
 </body>
 
-<style>
-    .instance_published_button {
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        color: white; 
-        background-color: #00467F
-    }
-
-    .instance_draft_button {
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        color: white; 
-        background-color: #808080
-    }
-
-</style>
-
 <script>
    // let post_id =  <?php echo $post_id; ?>;
     // let is_logged_in = <?php echo is_user_logged_in(); ?>;
@@ -265,5 +246,5 @@ foreach ($terms_array as $term){
 
 </script>
 <?php
-// get_footer();
+ get_footer();
 ?>

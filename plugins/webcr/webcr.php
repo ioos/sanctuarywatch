@@ -42,13 +42,13 @@ define( 'WEBCR_VERSION', '0.2.0-beta' );
 require_once plugin_dir_path(__FILE__) . 'admin/class-webcr-github-updater.php';
 
 // Initialize the GitHub Updater 
-    new GitHub_Updater(
-        __FILE__,
-        'ioos', // the GitHub username
-        'sanctuarywatch', // the repository name
-        false, // This is a plugin, not a theme
-        'plugins/webcr' // Subdirectory path in the repository
-    );
+//    new GitHub_Updater(
+//        __FILE__,
+//        'ioos', // the GitHub username
+//        'sanctuarywatch', // the repository name
+//        false, // This is a plugin, not a theme
+//        'plugins/webcr' // Subdirectory path in the repository
+//    );
 
 /**
  * The core plugin class that is used to define

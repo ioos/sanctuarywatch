@@ -9,10 +9,16 @@ class Webcr_Login {
 	 *
 	 * @since    1.0.0
 	 */
-    public function webcr_login_logo() { ?>
+    public function webcr_login_logo() { 
+        if (!has_site_icon()) {
+            $site_logo = plugin_dir_url( __FILE__ ) . 'images/onms-logo-800.png';
+        } else {
+            $site_logo = get_site_icon_url( 150 );
+        }
+        ?>
         <style type="text/css">
             #login h1 a, .login h1 a {
-                background-image: url(<?php echo plugin_dir_url( __FILE__ ); ?>images/onms-logo-800.png);
+                background-image: url(<?php echo $site_logo; ?>);
             height:150px;
             width:150px;
             background-size: 150px 150px;

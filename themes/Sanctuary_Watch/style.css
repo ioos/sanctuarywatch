@@ -11,7 +11,6 @@ Version: 0.3.0-beta
 #entire_thing { 
   max-width: 1400px !important;
   margin: 0 auto;
-  background: #f2f2f2;
   padding-bottom: 3%;
   margin-top: -20px;
   padding-top: 1%;
@@ -113,13 +112,11 @@ body{
   .site-title-main {
       font-size: 2.7vw; /* Default font size using viewport width */
       font-weight: bold;
-      color: #00467F; /* Using color from single-about.php for consistency */
   }
 
   .site-tagline-main {
     font-size: 1.5vw; /* Default font size using viewport width */
     font-style: italic;
-      color: #008da8; /* Using color from single-about.php for consistency */
       font-weight: bold; /* Added to match later rule, ensure consistency */
 
   }
@@ -210,14 +207,14 @@ body > h1{
   }
 
   /* Responsive image container */
-  .responsive-image-container {
-   /*  width: 100%;
+   /* .responsive-image-container {
+    width: 100%;
     height: auto;
      object-fit: contain; 
      display: flex;
     align-items: flex-start;
-    justify-content: center; */
-  }
+    justify-content: center; 
+  } */
 
   /* Ensure the image scales properly */
   .responsive-image-container svg {
@@ -228,13 +225,12 @@ body > h1{
   }
 
   /* Ensure the table of contents stays aligned */
-  #toc-container {
-  /*   flex: 0 0 25%;
-    /* max-width: 25%; */
- /*    position: relative; */
-    /* padding-right: 10%; */
-    
-  }
+  /*   #toc-container {
+  flex: 0 0 25%;
+     max-width: 25%; 
+    position: relative; 
+     padding-right: 10%;
+  }  */
 
   #toc1 {
     position: relative;
@@ -247,12 +243,8 @@ body > h1{
 
   /* Nav tabs styles */
   .nav-tabs .nav-link {
-    color: black;
     padding-right: 20px;
     padding-left: 20px;
-  }
-  .nav-tabs .nav-link.active {
-    color: black;
   }
   
 
@@ -274,29 +266,29 @@ body > h1{
     margin-right: 10%;
   }
 
-  #scene-row {
-   /*   display: flex;
+   /*   #scene-row {
+  display: flex;
     justify-content: center;
      margin-right: -15px;
-   margin-left: -15px;   */
-  }
+   margin-left: -15px;   
+  } */
 }
 
 /* Responsive image container for all screen sizes */
-.responsive-image-container {
-/*  width: 100%;
+/*  .responsive-image-container {
+ width: 100%;
   height: auto;
   display: flex;
   align-items: flex-start;
-  justify-content: center;  */
-}
+  justify-content: center;  
+} */
 
-.responsive-image-container img,
+/* .responsive-image-container img,
 .responsive-image-container svg {
- /* width: 100%;
+  width: 100%;
   height: auto;
-  object-fit: contain;  */
-}
+  object-fit: contain;  
+} */
 
 /* Style each row */
 
@@ -498,41 +490,15 @@ input:checked + .slider:before {
   transform: scale(0.9);
 }
 }
-.accordion-button {
-  /* background-image: linear-gradient(#2b5b89, #033c73 60%, #03386c); */
-  background: #03386c;
-  color: white;
-}
+
 #images-header-1 > button{
-  color:white;
   border-radius: 0px;
 }
 #more-info-header-1 > button{
-  color:white;
   border-radius: 0px;
 }
 
-#more-info-header-1 > button::after{
-    filter: brightness(0) invert(1) !important;
 
-}
-#images-header-1 > button::after{
-  filter: brightness(0) invert(1) !important;
-}
-.accordion-button::after {
-  /* filter: brightness(0) invert(1); */
-  filter: brightness(0) saturate(100%) invert(13%) sepia(68%) saturate(2471%) hue-rotate(195deg) brightness(94%) contrast(101%);
-  color: #03386c;
-}
-
-#accordion-header-1 > button{
-  background-color: #e3e3e354;
-  color: #03386c;
-}
-#accordion-header-2 > button{
-  background-color: #e3e3e354;
-  color: #03386c;
-}
 #heading0 > button{
   color: #03386c;
   background: #f2f2f2;
@@ -569,11 +535,6 @@ input:checked + .slider:before {
   color: #03386c;
   background: #f2f2f2;
   border-radius: 0px;
-}
-
-#title-container > h1{
-  color: #008da8;
-
 }
 
 #toc-group{
@@ -742,13 +703,11 @@ button:focus,
 }
 
 .btn-primary {
-  background: #03386c;
+  background-image: none;
 }
 
 .accordion-button {
   display: flex;
-  justify-content: center;
-  align-items: center;
   position: relative;
   font-size: large;
   
@@ -790,10 +749,6 @@ button:focus,
   background-color: #f2f2f2;
 }
 
-.accordion-button:not(.collapsed) {
-  background: #03386c;
-}
-
 #toc-group > div:nth-child(n) {
   border-radius: 0px;
   border-color: #cbcbcb;
@@ -807,17 +762,7 @@ button:focus,
 }
 
 
-#accordion-header-1 > button::after{
-  /* filter: brightness(0) invert(1) !important; */
-  filter: brightness(0) saturate(100%) invert(13%) sepia(68%) saturate(2471%) hue-rotate(195deg) brightness(94%) contrast(101%);
 
-
-}
-#accordion-header-2 > button::after{
-  /* filter: brightness(0) invert(1) !important; */
-  filter: brightness(0) saturate(100%) invert(13%) sepia(68%) saturate(2471%) hue-rotate(195deg) brightness(94%) contrast(101%);
-
-}
 
 #taglineHeaderId > button{
   margin-bottom: 4px;
@@ -888,6 +833,10 @@ button:focus,
   padding-left: 0px;
  }
 
+#accordion-item-1 ul, #accordion-item-2 ul  {
+  padding-left: 15px;
+}
+
   #title-container > div > div.col-md-2{
       padding-right: 2%;
   } 
@@ -911,20 +860,21 @@ button:focus,
     padding-left: 3.5%;
   }
 
-  #svg1{
-/*     margin-left: -4% !important; */
-  }
+/*    #svg1{
+   margin-left: -4% !important; 
+  } */
+
   #toc-container{
  /*     margin-left: -22% !important;
     padding-right: 0% !important; */
     padding-left: 3.4%;
   }
 
-  #toc-group{
- /*     max-width: 61% !important;
+ /*   #toc-group{
+    max-width: 61% !important;
     margin-left: 37% !important;
-    padding-top: 0% !important; */
-  }
+    padding-top: 0% !important; 
+  } */
 
   #accordion-container{
     padding-top: 8px;
@@ -944,11 +894,6 @@ button:focus,
 body > nav{
   z-index: 9998 !important;
 }  
-
-
-#modal-title{
-  color:#03386c;
-}
 
 #accordion-item-1{
   border-color: lightgrey;
@@ -974,8 +919,6 @@ body > nav{
     display: flex; 
     justify-content: center; 
     align-items: center; 
-    color: white; 
-    background-color: #00467F
 }
 
 .instance_draft_button {

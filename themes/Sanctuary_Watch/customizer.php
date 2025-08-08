@@ -147,68 +147,6 @@ class Customizer_Settings {
             'priority'    => 10,
         ));
 
-        // Add setting for breadcrumb background color
-        $wp_customize->add_setting( 'breadcrumb_background_color', array(
-            'default'   => '#008da8',
-            'transport' => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ) );
-
-        // Add control for breadcrumb background color
-        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'breadcrumb_background_color_control', array(
-            'label'    => __( 'Background Color', 'sanctuary-watch' ),
-            'section'  => 'breadcrumb_settings',
-            'settings' => 'breadcrumb_background_color',
-        ) ) );
-
-        // Add setting for breadcrumb text color
-        $wp_customize->add_setting( 'breadcrumb_text_color', array(
-            'default'   => '#ffffff',
-            'transport' => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ) );
-
-        // Add control for breadcrumb text color
-        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'breadcrumb_text_color_control', array(
-            'label'    => __( 'Text Color', 'sanctuary-watch' ),
-            'section'  => 'breadcrumb_settings',
-            'settings' => 'breadcrumb_text_color',
-        ) ) );
-
-        // Add a new section for Navigation Bar settings
-        $wp_customize->add_section( 'navbar_settings', array(
-            'title'    => __( 'Navigation Bar Colors', 'sanctuary-watch' ),
-            'priority' => 35,
-        ) );
-
-        // Add setting for Navigation Bar background color
-        $wp_customize->add_setting( 'navbar_background_color', array(
-            'default'   => '#03386c',
-            'transport' => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ) );
-
-        // Add control for Navigation Bar background color
-        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'navbar_background_color_control', array(
-            'label'    => __( 'Background Color', 'sanctuary-watch' ),
-            'section'  => 'navbar_settings',
-            'settings' => 'navbar_background_color',
-        ) ) );
-
-        // Add setting for Navigation Bar text color
-        $wp_customize->add_setting( 'navbar_text_color', array(
-            'default'   => '#ffffff',
-            'transport' => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ) );
-
-        // Add control for Navigation Bar text color
-        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'navbar_text_color_control', array(
-            'label'    => __( 'Text Color', 'sanctuary-watch' ),
-            'section'  => 'navbar_settings',
-            'settings' => 'navbar_text_color',
-        ) ) );
-
         // Add a new section for Theme Color settings
         $wp_customize->add_section( 'theme_color_settings', array(
             'title'    => __( 'Theme Colors', 'sanctuary-watch' ),
@@ -273,7 +211,8 @@ class Customizer_Settings {
             'description' => __('This color is used for the following:<br>
                 • Front page section titles<br>
                 • Scene titles<br>
-                • Modal titles', 'textdomain'),
+                • Modal titles<br>
+                • Modal tab titles', 'textdomain'),
             'section'  => 'theme_color_settings',
             'settings' => 'theme_color_3',
         ) ) );
@@ -306,7 +245,9 @@ class Customizer_Settings {
         $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'theme_color_5', array(
             'label'    => __( 'Color 5', 'sanctuary-watch' ),
             'description' => __('This color is used for the following:<br>
-                • Scene text and text decoration within table of contents', 'textdomain'),
+                • Scene table of contents text<br>
+                • Text contents within Scene "More Info" and "Image" buttons<br>
+                • Text contents within Modal "More Info" and "Image" buttons', 'textdomain'),
             'section'  => 'theme_color_settings',
             'settings' => 'theme_color_5',
         ) ) );
@@ -325,40 +266,6 @@ class Customizer_Settings {
                 • Background of primary content area for all pages, ', 'textdomain'),
             'section'  => 'theme_color_settings',
             'settings' => 'theme_color_6',
-        ) ) );
-
-        // Add a new section for Footer settings
-        $wp_customize->add_section( 'footer_settings', array(
-            'title'    => __( 'Footer Colors', 'sanctuary-watch' ),
-            'priority' => 40,
-        ) );
-
-        // Add setting for Footer background color
-        $wp_customize->add_setting( 'footer_background_color', array(
-            'default'   => '#03386c',
-            'transport' => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ) );
-
-        // Add control for Footer background color
-        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'footer_background_color_control', array(
-            'label'    => __( 'Background Color', 'sanctuary-watch' ),
-            'section'  => 'footer_settings',
-            'settings' => 'footer_background_color',
-        ) ) );
-
-        // Add setting for Footer text color
-        $wp_customize->add_setting( 'footer_text_color', array(
-            'default'   => '#ffffff',
-            'transport' => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ) );
-
-        // Add control for Footer text color
-        $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'footer_text_color_control', array(
-            'label'    => __( 'Text Color', 'sanctuary-watch' ),
-            'section'  => 'footer_settings',
-            'settings' => 'footer_text_color',
         ) ) );
 
     }
@@ -767,43 +674,93 @@ class Customizer_Settings {
     }
 
     /**
-     * Outputs custom CSS from the Theme Customizer for the breadcrumb.
+     * Outputs custom CSS from the Theme Customizer.
      */
     function sanctuary_watch_customizer_css() {
+        $color2 = get_theme_mod( 'theme_color_2', '#ffffff' );
+        $color2_encoded = rawurlencode( $color2 );
         ?>
         <style type="text/css">
-
-#site-title-main
-
-
-            #ioos-breadcrumb {
-                background-color: <?php echo esc_attr( get_theme_mod( 'breadcrumb_background_color', '#008da8' ) ); ?>;
-                color: <?php echo esc_attr( get_theme_mod( 'breadcrumb_text_color', '#ffffff' ) ); ?>;
-            }
-            #ioos-breadcrumb a, #ioos-breadcrumb p {
-                color: <?php echo esc_attr( get_theme_mod( 'breadcrumb_text_color', '#ffffff' ) ); ?>;
-            }
-            #navbar-inner {
-                background-color: <?php echo esc_attr( get_theme_mod( 'navbar_background_color', '#03386c' ) ); ?>;
-            }
-
-            .navbar-brand, .nav-link {
-                color: <?php echo esc_attr( get_theme_mod( 'navbar_text_color', '#ffffff' ) ); ?>;
-            }
-
-            .site-footer {
-                background-color: <?php echo esc_attr( get_theme_mod( 'footer_background_color', '#03386c' ) ); ?>;
-            }
-
-            .footer-column-title, .footer_component {
-                color: <?php echo esc_attr( get_theme_mod( 'footer_text_color', '#ffffff' ) ); ?>;
-
-            }
-
             #top-bar {
                 background-color: <?php echo esc_attr( get_theme_mod( 'header_row_bg_color', '#ffffff' ) ); ?>;
             }
 
+            /* Theme Color 1 */
+            .site-title-main, .gray-bar-links {
+                color: <?php echo esc_attr( get_theme_mod( 'theme_color_1', '#03386c' ) ); ?>;
+            }
+            #navbar-inner, 
+            .site-footer, 
+            .instance_published_button, 
+            .accordion-button, 
+            .accordion-button:not(.collapsed), 
+            .btn-primary {
+                background-color: <?php echo esc_attr( get_theme_mod( 'theme_color_1', '#03386c') ); ?>;
+            }
+
+            /* Theme Color 2 */
+            #ioos-breadcrumb, 
+            #ioos-breadcrumb a, 
+            #ioos-breadcrumb p, 
+            .navbar-brand, 
+            .nav-link, 
+            .footer-column-title, 
+            .footer_component, 
+            .footer_component a, 
+            .instance_published_button, 
+            .accordion-button, 
+            .accordion-button:not(.collapsed),
+            .btn-primary  {
+                color: <?php echo esc_attr( get_theme_mod( 'theme_color_2', "#ffffff" ) ); ?> ;
+            }
+
+            /* STILL THEME COLOR 2: Override arrow with inline SVG  */
+            .accordion-button::after {
+                content: "";
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='<?php echo $color2_encoded; ?>' d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E") !important;
+                background-repeat: no-repeat;
+                background-size: 1.25rem;
+                width: 1.25rem;
+                height: 1.25rem;
+                margin-left: auto;
+            }
+
+            .accordion-button:not(.collapsed)::after {
+                transform: rotate(-180deg);
+            }
+
+            /* Theme Color 3 */
+            .theme-title > h2, #title-container > h1, #modal-title {
+                color: <?php echo esc_attr( get_theme_mod( 'theme_color_3', '#024880' ) ); ?> ;
+            }
+
+            .tab-title {
+                color: <?php echo esc_attr( get_theme_mod( 'theme_color_3', '#024880' ) ); ?> !important;
+            }
+
+            /* Theme Color 4 */
+            #ioos-breadcrumb {
+                background-color: <?php echo esc_attr( get_theme_mod( 'theme_color_4', '#008da8' ) ); ?>;
+            }
+
+            .site-tagline-main {
+                color: <?php echo esc_attr( get_theme_mod( 'theme_color_4', '#008da8' ) ); ?>;
+            }
+
+            /* Theme Color 5 */
+
+            #toc-container a, 
+            #more-info-item-1 a, 
+            #images-item-1 a, 
+            #accordion-item-1 a, 
+            #accordion-item-2 a {
+                color: <?php echo esc_attr( get_theme_mod( 'theme_color_5', '#024880' ) ); ?>;
+            }
+
+            /* Theme Color 6 */
+            #entire_thing {
+                background-color: <?php echo esc_attr( get_theme_mod( 'theme_color_6', '#f2f2f2' ) ); ?>;
+            }
         </style>
         <?php
     }

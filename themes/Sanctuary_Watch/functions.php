@@ -79,6 +79,35 @@ add_action('wp_enqueue_scripts', 'enqueue_bootstrap_scripts');
   add_action('wp_enqueue_scripts', 'enqueue_api_script');
 
 
+function set_theme_default_site_icon() {
+    // Only set if no site icon is already configured
+    if (!has_site_icon()) {
+        $icon_url = get_stylesheet_directory_uri() . '/assets/images/onms-logo-no-text-800.png';
+        $icon_path = get_stylesheet_directory() . '/assets/images/onms-logo-no-text-800.png';
+        
+        // Check if the file exists
+        if (file_exists($icon_path)) {
+            // Upload the image to media library and set as site icon
+            $attachment_id = attachment_url_to_postid($icon_url);
+            
+            if (!$attachment_id) {
+                // If not in media library, add it
+                require_once(ABSPATH . 'wp-admin/includes/file.php');
+                require_once(ABSPATH . 'wp-admin/includes/media.php');
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+                
+                $attachment_id = media_sideload_image($icon_url, 0, 'Site Icon', 'id');
+            }
+            
+            if (!is_wp_error($attachment_id)) {
+                update_option('site_icon', $attachment_id);
+            }
+        }
+    }
+}
+add_action('after_setup_theme', 'set_theme_default_site_icon');
+
+
     // Include the GitHub Updater class if not already included by the plugin
  //   if ( is_plugin_active( 'webcr/webcr.php' ) ) {
       // Include the GitHub Updater class if not already included by the plugin

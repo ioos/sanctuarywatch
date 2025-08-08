@@ -13,7 +13,7 @@ if ($sitewide_footer_title == '' || $sitewide_footer == ''){
 }
 
 
-if ( ($instance_footer > 0 ) || (sitewide_footer_present == true)) {
+if ( ($instance_footer > 0 ) || ($sitewide_footer_present == true)) {
     echo '<footer class="site-footer" >';
     echo '<div class="container" style="margin: 0 auto; max-width: 1200px;">';
     echo '<div class="row">';

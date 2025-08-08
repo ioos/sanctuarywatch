@@ -164,7 +164,6 @@ class Webcr {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts', 10 ); 
 		$this->loader->add_action( 'login_head', $plugin_admin, 'add_favicon' ); 
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'add_favicon' ); 
-		$this->loader->add_action( 'wp_head', $plugin_admin, 'add_favicon' ); 
 		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_admin, 'remove_admin_bar_options' ); 
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'remove_elements_from_menu' ); 
 		$this->loader->add_action( 'wp_dashboard_setup', $plugin_admin, 'remove_dashboard_widgets' ); 
@@ -280,9 +279,9 @@ class Webcr {
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'login_enqueue_scripts', $plugin_admin_logo, 'webcr_login_logo' ); 
-		$this->loader->add_action( 'login_headerurl', $plugin_admin_logo, 'webcr_logo_url' ); 
-		$this->loader->add_action( 'login_headertext', $plugin_admin_logo, 'webcr_logo_url_title' ); 
-		$this->loader->add_filter( 'login_title', $plugin_admin_logo, 'custom_login_title' ); 	
+	//	$this->loader->add_action( 'login_headerurl', $plugin_admin_logo, 'webcr_logo_url' ); 
+	//	$this->loader->add_action( 'login_headertext', $plugin_admin_logo, 'webcr_logo_url_title' ); 
+	//	$this->loader->add_filter( 'login_title', $plugin_admin_logo, 'custom_login_title' ); 	
 
 		// Load class and functions connected with Export Figures Tool
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
