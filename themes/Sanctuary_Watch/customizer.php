@@ -695,6 +695,7 @@ class Customizer_Settings {
             .instance_published_button, 
             .accordion-button, 
             .accordion-button:not(.collapsed), 
+            .ViewSceneButton,
             .btn-primary {
                 background-color: <?php echo esc_attr( get_theme_mod( 'theme_color_1', '#03386c') ); ?>;
             }
@@ -712,6 +713,7 @@ class Customizer_Settings {
             .instance_published_button, 
             .accordion-button, 
             .accordion-button:not(.collapsed),
+            .ViewSceneButton,
             .btn-primary  {
                 color: <?php echo esc_attr( get_theme_mod( 'theme_color_2', "#ffffff" ) ); ?> ;
             }

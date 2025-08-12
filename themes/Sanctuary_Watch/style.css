@@ -781,9 +781,6 @@ button:focus,
   font-size: large;
   text-align: left;  */
 }
-#accordion-header-3 > button::after{
-  filter: brightness(0) invert(1) !important;
-}
 
 @media (max-width: 430px) {
   #accordion-header-1 > button {

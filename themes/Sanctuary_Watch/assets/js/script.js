@@ -1144,8 +1144,9 @@ async function loadSVG(url, containerId) {
                 
                 let sceneButton = document.createElement("button");
                 sceneButton.innerHTML = "<strong>View Full Scene</strong>";
-                sceneButton.setAttribute("style", "margin-top: 16px; max-width: 79%; border-radius: 10px; background-color: #008da8; color: white; padding: 10px");
+                sceneButton.setAttribute("style", "margin-top: 16px; max-width: 79%; border-radius: 10px; padding: 10px");
                 sceneButton.setAttribute("class", "btn ");
+                sceneButton.setAttribute("class", "ViewSceneButton");
                 sceneButton.setAttribute("data-toggle", "modal");
 
                 titleRowCont.appendChild(sceneButton);
