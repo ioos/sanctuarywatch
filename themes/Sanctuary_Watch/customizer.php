@@ -690,6 +690,7 @@ class Customizer_Settings {
                 color: <?php echo esc_attr( get_theme_mod( 'theme_color_1', '#03386c' ) ); ?>;
             }
             #navbar-inner, 
+            #taglineHeaderId > button,
             .site-footer, 
             .instance_published_button, 
             .accordion-button, 
@@ -699,6 +700,7 @@ class Customizer_Settings {
             }
 
             /* Theme Color 2 */
+            #taglineHeaderId > button,
             #ioos-breadcrumb, 
             #ioos-breadcrumb a, 
             #ioos-breadcrumb p, 

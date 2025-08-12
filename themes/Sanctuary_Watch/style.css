@@ -766,18 +766,12 @@ button:focus,
 
 #taglineHeaderId > button{
   margin-bottom: 4px;
-  background: #03386c;
-  color: white;
   border-radius: 0;
 
 }
-#taglineHeaderId > button::after{
-  filter: brightness(0) invert(1) !important;
-}
 
 #accordion-header-3 > button{
-  background: #03386c;
-  color: white;
+
   border-radius: 0;
 
   /* display: flex;
@@ -809,8 +803,7 @@ button:focus,
     text-align: left; 
   }
   #accordion-header-3 > button{
-    background: #03386c;
-    color: white;
+ 
     display: flex;
     justify-content: center; 
     align-items: center; 
