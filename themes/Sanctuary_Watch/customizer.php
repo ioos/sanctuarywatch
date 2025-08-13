@@ -125,9 +125,9 @@ class Customizer_Settings {
             'active_callback' => [$this, 'is_header_row_enabled'],
         ));
 
-        // Add a new section for Breadcrumb settings
-        $wp_customize->add_section( 'breadcrumb_settings', array(
-            'title'    => __( 'Breadcrumb Row', 'sanctuary-watch' ),
+        // Add a new section for Other settings
+        $wp_customize->add_section( 'other_settings', array(
+            'title'    => __( 'Other Settings', 'sanctuary-watch' ),
             'priority' => 30,
         ) );
 
@@ -142,7 +142,23 @@ class Customizer_Settings {
         $wp_customize->add_control('breadcrumb_row_enable', array(
             'label'       => __('Enable Breadcrumb Row', 'textdomain'),
             'description' => __('Check to display a breadcrumb row above the navigation bar.', 'textdomain'),
-            'section'     => 'breadcrumb_settings',
+            'section'     => 'other_settings',
+            'type'        => 'checkbox',
+            'priority'    => 10,
+        ));
+
+        // Add setting for single instance enable/disable
+        $wp_customize->add_setting('single_instance_enable', array(
+            'default'           => '',
+            'sanitize_callback' => 'sanitize_text_field',
+            'transport'         => 'refresh',
+        ));
+        
+        // Add control for single instance enable/disable
+        $wp_customize->add_control('single_instance_enable', array(
+            'label'       => __('Enable Single Instance View', 'textdomain'),
+            'description' => __('If Single Instance View is enabled, then the front page of the site will redirect to the overview scene of the single instance. If this site contains more than one instance, enabling this checkbox has no effect', 'textdomain'),
+            'section'     => 'other_settings',
             'type'        => 'checkbox',
             'priority'    => 10,
         ));

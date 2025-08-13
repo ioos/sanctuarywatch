@@ -23,6 +23,62 @@
     add_action('admin_init', [$customizer_settings, 'validate_header_settings_on_save']);
   });
 
+
+  // Redirect front page if single instance is enabled
+function single_instance_front_page_redirect() {
+    // Only run on the front page
+    if (!is_front_page() || is_admin()) {
+        return;
+    }
+    
+    // Get the customizer setting value
+    $single_instance_enable = get_theme_mod('single_instance_enable', '');
+    
+    // Check if the setting is enabled (checkbox returns '1' when checked)
+    if ($single_instance_enable) {
+
+      global $wpdb;
+      
+      // Use COUNT for better performance instead of SELECT *
+      $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'instance_short_title'";
+      
+      // Get the count
+      $row_count = $wpdb->get_var($sql);
+      
+      if ($row_count = 1) {
+        $secondSQL = "SELECT `post_id` FROM `wp_postmeta` WHERE `meta_key` = 'instance_short_title'";
+        $instance_ID = $wpdb->get_var($secondSQL);
+
+        $thirdSQL = "SELECT `meta_value` FROM `wp_postmeta` WHERE `post_id` = '$instance_ID' AND 
+        `meta_key` = 'instance_overview_scene' LIMIT 1";
+      
+        $overview_scene = $wpdb->get_var($thirdSQL);
+      
+        // Return the value if found, otherwise return false
+        if ($overview_scene !== null) {
+            $target_scene = $overview_scene ;
+        } else {
+            $target_scene = 23;
+        }
+
+      }
+
+        // Get the permalink for the page
+  //      $redirect_url = get_permalink($redirect_page_id);
+        
+        // Make sure the page exists and we have a valid URL
+    //    if ($redirect_url && $redirect_url !== get_permalink()) {
+            // Perform the redirect
+      //      wp_redirect($redirect_url, 301); // 301 = permanent redirect
+        //    exit;
+      //  }
+    }
+}
+
+// Hook the function to run early in the WordPress loading process
+add_action('template_redirect', 'single_instance_front_page_redirect');
+
+
 function enqueue_font_awesome() {
   wp_enqueue_style(
       'font-awesome', 
