@@ -128,7 +128,7 @@ class Customizer_Settings {
         // Add a new section for Other settings
         $wp_customize->add_section( 'other_settings', array(
             'title'    => __( 'Other Settings', 'sanctuary-watch' ),
-            'priority' => 30,
+            'priority' => 50,
         ) );
 
         // Add setting for breadcrumb row enable/disable
@@ -163,8 +163,13 @@ class Customizer_Settings {
                 than one instance or 2) the single instance contains no scenes.', 'textdomain'),
             'section'     => 'other_settings',
             'type'        => 'checkbox',
-            'priority'    => 10,
+            'priority'    => 5,
         ));
+
+
+        // Add JavaScript for conditional control behavior
+       // $wp_customize->add_panel( 'conditional_controls_js', array() );
+        add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_single_instance_scripts' ) );
 
         // Add a new section for Theme Color settings
         $wp_customize->add_section( 'theme_color_settings', array(
@@ -453,14 +458,7 @@ class Customizer_Settings {
         $header_image = get_theme_mod('header_row_image');
         
         if ($header_row_enabled) {
-            if (empty($header_image)) {
-                // Set a default image or show admin notice
-                add_action('admin_notices', function() {
-                    echo '<div class="notice notice-warning"><p>' . 
-                         __('Warning: Header row is enabled but no header image is set. Please configure the header image in the Customizer.', 'textdomain') . 
-                         '</p></div>';
-                });
-            } else {
+            if (!empty($header_image)) {
                 // Validate dimensions
                 $image_data = wp_get_attachment_image_src($header_image, 'full');
                 if ($image_data && ($image_data[1] != 433 || $image_data[2] != 50)) {
@@ -823,6 +821,54 @@ class Customizer_Settings {
         return get_theme_mod('header_row_breadcrumb_name', 'IOOS');
     }
 
+    /**
+     * Enqueue customizer control scripts
+     */
+    function enqueue_single_instance_scripts() {
+        wp_add_inline_script( 'customize-controls', '
+            wp.customize.bind("ready", function() {
+                
+                // Function to handle the conditional logic
+                function toggleBreadcrumbControl() {
+                    var singleInstanceValue = wp.customize("single_instance_enable").get();
+                    var breadcrumbControl = wp.customize.control("breadcrumb_row_enable");
+                    var breadcrumbInput = breadcrumbControl.container.find("input[type=checkbox]");
+                    
+                    if (singleInstanceValue) {
+                        // If single instance is enabled, disable and uncheck breadcrumb
+                        wp.customize("breadcrumb_row_enable").set("");
+                        breadcrumbInput.prop("disabled", true);
+                        breadcrumbControl.container.addClass("disabled-control");
+                        breadcrumbControl.container.find("label").css("opacity", "0.5");
+                        
+                        // Add explanatory text if not already added
+                        if (!breadcrumbControl.container.find(".conditional-notice").length) {
+                            breadcrumbControl.container.append(
+                                "<p class=\"conditional-notice\" style=\"font-style: italic; color: #ff0000; font-size: 12px; margin-left: 20px;\">" +
+                                "The Breadcrumb Row is disabled when Single Instance View is enabled." +
+                                "</p>"
+                            );
+                        }
+                    } else {
+                        // If single instance is disabled, enable breadcrumb control
+                        breadcrumbInput.prop("disabled", false);
+                        breadcrumbControl.container.removeClass("disabled-control");
+                        breadcrumbControl.container.find("label").css("opacity", "1");
+                        breadcrumbControl.container.find(".conditional-notice").remove();
+                    }
+                }
+                
+                // Run on initial load
+                toggleBreadcrumbControl();
+                
+                // Run when single_instance_enable changes
+                wp.customize("single_instance_enable", function(value) {
+                    value.bind(toggleBreadcrumbControl);
+                });
+            });
+        ' );
+    }
+    
 
     /**
      * Remove specific sections and panels from the WordPress Customizer.

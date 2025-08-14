@@ -32,19 +32,21 @@ class Webcr_Figure {
         add_action('admin_enqueue_scripts', 'enqueue_admin_interactive_graph_script');
         function enqueue_admin_interactive_graph_script($hook) {
             if ($hook !== 'post.php' && $hook !== 'post-new.php') return;
+            $current_post_type = get_post_type();
+            if ($current_post_type == "figure"){
+                wp_enqueue_script(
+                    'webcr-admin-figure',
+                    plugin_dir_url(__FILE__) . '../admin/js/webcr-admin-figure.js',
+                    [], // <-- no jquery needed
+                    null,
+                    true
+                );
 
-            wp_enqueue_script(
-                'webcr-admin-figure',
-                plugin_dir_url(__FILE__) . '../admin/js/webcr-admin-figure.js',
-                [], // <-- no jquery needed
-                null,
-                true
-            );
-
-            wp_localize_script('webcr-admin-figure', 'wpApiSettings', [
-                'nonce' => wp_create_nonce('wp_rest'),
-                'root'  => esc_url_raw(rest_url()),
-            ]);
+                wp_localize_script('webcr-admin-figure', 'wpApiSettings', [
+                    'nonce' => wp_create_nonce('wp_rest'),
+                    'root'  => esc_url_raw(rest_url()),
+                ]);
+            }
         }
 
         // Register the Figure custom content type

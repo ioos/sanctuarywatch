@@ -635,10 +635,10 @@ add_action('after_setup_theme', 'set_theme_default_site_icon');
     $svg_url = get_post_meta( get_the_ID(), 'scene_svg_url', true ); // Example: from post meta
   
     // Localize the script, passing the SVG URL and child_ids
-    wp_localize_script( 'script-js', 'my_script_vars', array( // Correct handle
-        'child_ids' => $child_ids,
-        'svg_url' => $svg_url,
-    ) );
+//    wp_localize_script( 'script-js', 'my_script_vars', array( // Correct handle
+//        'child_ids' => $child_ids,
+//        'svg_url' => $svg_url,
+//    ) );
 
 
 }

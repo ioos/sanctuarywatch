@@ -32,7 +32,12 @@
             $sceneLocation = isset($postMeta['scene_location'][0]) ? $postMeta['scene_location'][0] : '';
 
             $inst_overview_scene = isset($postMeta['instance_overview_scene'][0]) ? $postMeta['instance_overview_scene'][0] : '';
-
+            
+            $singleInstance = singleInstanceCheck();
+            if ($singleInstance != false) {
+                $sceneLocation = $singleInstance["instanceID"];
+            }
+            
             if(!empty($sceneLocation)){
                 $title = get_post_meta($sceneLocation, 'post_title')[0];
                 echo "<span class='navbar-brand'>$title</span>";
@@ -47,11 +52,6 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav">
                     <?php 
-
-                    $singleInstance = singleInstanceCheck();
-                    if ($singleInstance != false) {
-                        $sceneLocation = $singleInstance["instanceID"];
-                    }
 
                     $args = array(
                         'post_type' => 'scene',

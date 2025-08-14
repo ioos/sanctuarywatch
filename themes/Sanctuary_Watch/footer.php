@@ -1,6 +1,12 @@
 <?php
 defined('ABSPATH') || exit;
 $instance_num =  get_post_meta(get_the_ID(), 'scene_location', true);
+
+$singleInstance = singleInstanceCheck();
+if ($singleInstance != false) {
+    $instance_num = $singleInstance["instanceID"];
+}
+
 $instance_footer = intval(get_post_meta($instance_num, 'instance_footer_columns', true));
 $settings = get_option('webcr_settings', []);
 $sitewide_footer_title = (!empty($settings['sitewide_footer_title'] ?? '')) ? $settings['sitewide_footer_title'] : '';

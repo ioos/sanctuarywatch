@@ -249,7 +249,7 @@ class Webcr_Modal {
                 'min'     => 0,      
                 'max'     => 6,         
                 'step'    => 1,          
-                'default'     => $session_fields_exist ? $session_fields["modal_info_entries"] : '',   
+                'default'     => $session_fields_exist ? $session_fields["modal_info_entries"] : 0,   
             ),    
             array(
                 'id'      => 'modal_photo_entries',
