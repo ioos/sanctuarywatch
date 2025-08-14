@@ -157,7 +157,10 @@ class Customizer_Settings {
         // Add control for single instance enable/disable
         $wp_customize->add_control('single_instance_enable', array(
             'label'       => __('Enable Single Instance View', 'textdomain'),
-            'description' => __('If Single Instance View is enabled, then the front page of the site will redirect to the overview scene of the single instance. If this site contains more than one instance, enabling this checkbox has no effect', 'textdomain'),
+            'description' => __('If Single Instance View is enabled, then the front page of the site will redirect 
+                to the overview scene of the single instance. If no overview scene has been set, then the redirect will be to the first-created 
+                scene in the instance. Enabling this checkbox will have no effect on the site if either of the following are true: 1) there is more 
+                than one instance or 2) the single instance contains no scenes.', 'textdomain'),
             'section'     => 'other_settings',
             'type'        => 'checkbox',
             'priority'    => 10,

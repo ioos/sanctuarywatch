@@ -47,6 +47,12 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav">
                     <?php 
+
+                    $singleInstance = singleInstanceCheck();
+                    if ($singleInstance != false) {
+                        $sceneLocation = $singleInstance["instanceID"];
+                    }
+
                     $args = array(
                         'post_type' => 'scene',
                         'post_status' => 'publish',
@@ -88,6 +94,23 @@
 
                         foreach ($post_titles as $post_title){
                             echo "<li class='nav-item'><a class='nav-link' href='". esc_url(get_permalink($post_title[2])) ."'>$post_title[0]</a></li>";
+                        }
+
+                        // Add about option to the end of scene list, if this is a single instance view
+                        if ($singleInstance != false) {
+                            $args = array(
+                                    'post_type' => 'about', // Replace 'about' with your actual custom post type if it's different
+                                    'post_status' => 'publish',
+                                    'posts_per_page' => 1, // We only need to know if at least one exists
+                                );
+                            $about_query = new WP_Query($args);
+
+                            if ($about_query->have_posts()) {
+                                // At least one "about" post exists
+                                echo '<li class="nav-item ">';
+                                echo '<a class="nav-link "  href="/about" role="button" aria-haspopup="true" aria-expanded="false">About</a>';
+                                echo '</li>';
+                            }
                         }
                     }else {
                         get_template_part( 'parts/navbar-dropdown' );

@@ -23,14 +23,74 @@
     add_action('admin_init', [$customizer_settings, 'validate_header_settings_on_save']);
   });
 
-
-  // Redirect front page if single instance is enabled
+/**
+ * Redirects the front page to a specific scene if single instance mode is enabled.
+ *
+ * This function is hooked to the 'template_redirect' action. It checks if the current
+ * page is the front page and if the "Single Instance View" setting is enabled in the
+ * Customizer. If both conditions are met, it calls singleInstanceCheck() to determine
+ * the target scene. If a valid scene post ID is returned, it performs a 301 permanent
+ * redirect to that scene's permalink.
+ *
+ * @since 1.0.0
+ *
+ * @uses is_front_page() To check if the current page is the front page.
+ * @uses is_admin() To prevent execution in the admin area.
+ * @uses singleInstanceCheck() To determine if a redirect is needed and get the target post ID.
+ * @uses get_permalink() To get the URL of the target scene.
+ * @uses wp_redirect() To perform the browser redirect.
+ */
 function single_instance_front_page_redirect() {
     // Only run on the front page
     if (!is_front_page() || is_admin()) {
         return;
     }
     
+    $singleInstance = singleInstanceCheck();
+    if ($singleInstance != false) {
+        // Get the permalink for the page
+        $redirect_url = get_permalink($singleInstance["sceneID"]);
+        
+        // Make sure the page exists and we have a valid URL
+           if ($redirect_url && $redirect_url !== get_permalink()) {
+            // Perform the redirect
+            wp_redirect($redirect_url, 301); // 301 = permanent redirect
+            exit;
+        }
+    }
+}
+
+// Hook the function to run early in the WordPress loading process
+add_action('template_redirect', 'single_instance_front_page_redirect');
+
+/**
+ * Determines whether Single Instance settings should be applied to the theme and returns the target post ID.
+ * 
+ * This function checks if the single instance mode is enabled in the customizer, verifies that exactly
+ * one instance exists in the database, and returns the instance post ID and the appropriate scene post ID to display. It prioritizes
+ * the overview scene if available, otherwise returns the first scene in the instance.
+ * 
+ * @since 1.0.0
+ * 
+ * @global wpdb $wpdb WordPress database abstraction object.
+ * 
+ * @return array|false Returns, as an associative array, the post ID of the instance and the post ID of the target scene 
+ *                   if single instance mode should be applied,
+ *                   false if single instance mode is disabled, multiple instances exist, or no scenes
+ *                   are found in the instance.
+ * 
+ * @example
+ * ```php
+ * $target_scene = singleInstanceCheck();
+ * if ($target_scene !== false) {
+ *     // Single instance mode is active, redirect to scene
+ *     wp_redirect(get_permalink($target_scene));
+ * }
+ * ```
+ * 
+ */
+function singleInstanceCheck (){
+    $singleInstanceInfo = false;
     // Get the customizer setting value
     $single_instance_enable = get_theme_mod('single_instance_enable', '');
     
@@ -39,45 +99,39 @@ function single_instance_front_page_redirect() {
 
       global $wpdb;
       
-      // Use COUNT for better performance instead of SELECT *
-      $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'instance_short_title'";
+      // Get the number of instances
+      $sql_row_count = "SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'instance_short_title'";
+      $row_count = $wpdb->get_var($sql_row_count);
       
-      // Get the count
-      $row_count = $wpdb->get_var($sql);
-      
-      if ($row_count = 1) {
-        $secondSQL = "SELECT `post_id` FROM `wp_postmeta` WHERE `meta_key` = 'instance_short_title'";
-        $instance_ID = $wpdb->get_var($secondSQL);
+      if ($row_count == 1) { // we know that there is only instance
+        // get the post id of the instance
+        $SQL_instance_ID = "SELECT `post_id` FROM `wp_postmeta` WHERE `meta_key` = 'instance_short_title'";
+        $instance_ID = $wpdb->get_var($SQL_instance_ID);
 
-        $thirdSQL = "SELECT `meta_value` FROM `wp_postmeta` WHERE `post_id` = '$instance_ID' AND 
-        `meta_key` = 'instance_overview_scene' LIMIT 1";
-      
-        $overview_scene = $wpdb->get_var($thirdSQL);
-      
-        // Return the value if found, otherwise return false
-        if ($overview_scene !== null) {
-            $target_scene = $overview_scene ;
-        } else {
-            $target_scene = 23;
+        // get the number of scenes in the instance
+        $SQL_numScenesInInstance = $wpdb->prepare(
+          "SELECT COUNT(*) FROM `wp_postmeta` WHERE `meta_key` = 'scene_location' AND `meta_value` = %s",
+          $instance_ID);
+        $numScenesInInstance = $wpdb->get_var($SQL_numScenesInInstance);
+
+        if ($numScenesInInstance > 0){
+          $overview_scene = get_post_meta($instance_ID, 'instance_overview_scene', true);
+                    // Return the value if found, otherwise return false
+          if ($overview_scene == "") {
+
+            $SQL_target_scene = $wpdb->prepare(
+              "SELECT post_id FROM `wp_postmeta` WHERE `meta_key` = 'scene_location' AND `meta_value` = %s  ORDER BY post_id ASC LIMIT 1",
+              $instance_ID);
+              $target_scene = $wpdb->get_var($SQL_target_scene);
+              $singleInstanceInfo = array("instanceID"=>$instance_ID, "sceneID"=>$target_scene);
+          } else {
+              $singleInstanceInfo = array("instanceID"=>$instance_ID, "sceneID"=>$overview_scene);
+          }
         }
-
       }
-
-        // Get the permalink for the page
-  //      $redirect_url = get_permalink($redirect_page_id);
-        
-        // Make sure the page exists and we have a valid URL
-    //    if ($redirect_url && $redirect_url !== get_permalink()) {
-            // Perform the redirect
-      //      wp_redirect($redirect_url, 301); // 301 = permanent redirect
-        //    exit;
-      //  }
     }
+    return $singleInstanceInfo;
 }
-
-// Hook the function to run early in the WordPress loading process
-add_action('template_redirect', 'single_instance_front_page_redirect');
-
 
 function enqueue_font_awesome() {
   wp_enqueue_style(
