@@ -218,22 +218,22 @@ function set_theme_default_site_icon() {
 add_action('after_setup_theme', 'set_theme_default_site_icon');
 
 
-    // Include the GitHub Updater class if not already included by the plugin
- //   if ( is_plugin_active( 'webcr/webcr.php' ) ) {
+   //  Include the GitHub Updater class if not already included by the plugin
+    if ( is_plugin_active( 'graphic_data_plugin/graphic_data_plugin.php' ) ) {
       // Include the GitHub Updater class if not already included by the plugin
- //     if (!class_exists('GitHub_Updater')) {
-   //     require_once get_template_directory() . '/admin/class-webcr-github-updater.php';
-     // }
+      if (!class_exists('GitHub_Updater')) {
+        require_once get_template_directory() . '/admin/class-webcr-github-updater.php';
+      }
     
       // Initialize the theme updater (only if not in development environment)
-  //    new GitHub_Updater(
-    //      get_template_directory() . '/style.css',
-      //    'ioos', // Your GitHub username
-        //  'sanctuarywatch', // Your repository name
-          //true, // This is a theme, not a plugin
- //         'themes/Sanctuary_Watch' // Subdirectory path in the repository
-   //   );
-  //  }
+      new GitHub_Updater(
+          get_template_directory() . '/style.css',
+          'ioos', // GitHub username
+          'sanctuarywatch_graphicdata', //  repository name
+          true, // This is a theme, not a plugin
+          'themes/graphic_data_theme' // Subdirectory path in the repository
+      );
+    }
 
   /**
    * Retrieves arrays of scene information and photos for a specified post.
@@ -608,9 +608,9 @@ add_action('after_setup_theme', 'set_theme_default_site_icon');
     }
 
     // Check if the required plugin is active
-    if (!is_plugin_active('webcr/webcr.php')) {
+    if (!is_plugin_active('graphic_data_plugin/graphic_data_plugin.php')) {
         $message = sprintf(
-            __('Warning: This theme requires the <strong>Sanctuary Watch Framework</strong> plugin to function properly. Please %1$s the plugin.', 'your-theme-textdomain'),
+            __('Warning: This theme requires the <strong>Graphic Data</strong> plugin to function properly. Please %1$s the plugin.', 'your-theme-textdomain'),
             '<a href="' . admin_url('plugins.php') . '">activate</a>'
         );
         

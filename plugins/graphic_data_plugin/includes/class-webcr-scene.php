@@ -698,7 +698,8 @@ class Webcr_Scene {
             ),
             array(
                 'id'   => 'scene_tagline',
-                'type' => 'textarea',
+                'type'   => 'editor',
+                'editor' => 'trumbowyg',
                 'title'       => 'Tagline',
                 'description' => 'What is the tagline for the scene?'
             ),

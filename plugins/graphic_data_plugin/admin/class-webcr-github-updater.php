@@ -1,8 +1,9 @@
 <?php
 /**
- * GitHub Updater
+ * GitHub Updater - Optimized Version
  * 
  * Enables WordPress plugins and themes to update from GitHub, including pre-releases.
+ * Optimized to reduce API calls and prevent GitHub rate limiting.
  */
 class GitHub_Updater {
     /**
@@ -48,6 +49,18 @@ class GitHub_Updater {
     private $subdir_path;
     
     /**
+     * Cache duration in seconds (24 hours by default)
+     * @var int
+     */
+    private $cache_duration = DAY_IN_SECONDS;
+    
+    /**
+     * Flag to track if we've already checked for updates in this request
+     * @var bool
+     */
+    private $update_checked = false;
+    
+    /**
      * Constructor.
      *
      * Sets up hooks for plugin or theme updates.
@@ -60,7 +73,7 @@ class GitHub_Updater {
      */
     public function __construct($file, $github_username, $github_repo, $is_theme = false, $subdir_path = '') {
         $this->is_theme = $is_theme;
-        $this->subdir_path = $subdir_path; // Path within repository (e.g., 'plugins/webcr' or 'themes/Sanctuary_Watch')
+        $this->subdir_path = $subdir_path;
         
         if ($is_theme) {
             $this->slug = basename(dirname($file));
@@ -82,6 +95,12 @@ class GitHub_Updater {
         }
         
         add_action('admin_init', array($this, 'set_plugin_properties'));
+        
+        // Add admin notice for rate limiting issues
+        add_action('admin_notices', array($this, 'rate_limit_notice'));
+        
+        // Clear cache when plugin is updated
+        add_action('upgrader_process_complete', array($this, 'clear_update_cache'), 10, 2);
     }
     
     /**
@@ -90,7 +109,6 @@ class GitHub_Updater {
      */
     public function set_plugin_properties() {
         if (!$this->is_theme) {
-
             $this->plugin_data = get_plugin_data($this->plugin_file);
         } else {
             $theme = wp_get_theme($this->slug);
@@ -106,13 +124,21 @@ class GitHub_Updater {
     }
     
     /**
-     * Retrieves repository information from GitHub API.
+     * Retrieves repository information from GitHub API with enhanced caching.
      *
      * Fetches the latest release or, if no releases, the latest commit from the default branch.
      */
     private function get_repository_info() {
         // Define a unique transient key based on the repository and slug
         $transient_key = 'github_updater_repo_info_' . md5($this->username . '/' . $this->repository . '/' . $this->slug);
+        $error_transient_key = 'github_updater_error_' . md5($this->username . '/' . $this->repository . '/' . $this->slug);
+        
+        // Check if we recently had an API error and avoid hammering GitHub
+        $recent_error = get_transient($error_transient_key);
+        if ($recent_error) {
+            $this->github_response = null;
+            return;
+        }
 
         // Try to get cached data from the transient
         $cached_response = get_transient($transient_key);
@@ -122,6 +148,13 @@ class GitHub_Updater {
             $this->github_response = $cached_response;
             return;
         }
+        
+        // Prevent multiple API calls in the same request
+        if ($this->update_checked) {
+            return;
+        }
+        $this->update_checked = true;
+        
         if (is_null($this->github_response)) {
             // Configure API request options
             $request_options = array(
@@ -129,22 +162,46 @@ class GitHub_Updater {
                     'Accept' => 'application/vnd.github.v3+json',
                     'User-Agent' => 'WordPress/' . get_bloginfo('version') . '; ' . get_bloginfo('url')
                 ),
-                'timeout' => 10
+                'timeout' => 15 // Increased timeout
             );
             
             // Get ALL releases (including pre-releases) instead of just the latest
             $releases_uri = sprintf('https://api.github.com/repos/%s/%s/releases', $this->username, $this->repository);
             $releases_response = wp_remote_get($releases_uri, $request_options);
             
-            // Check if there are any releases
-            if (!is_wp_error($releases_response) && 200 === wp_remote_retrieve_response_code($releases_response)) {
-                $releases = json_decode(wp_remote_retrieve_body($releases_response), true);
+            // Check for rate limiting
+            if (!is_wp_error($releases_response)) {
+                $response_code = wp_remote_retrieve_response_code($releases_response);
+                $rate_limit_remaining = wp_remote_retrieve_header($releases_response, 'x-ratelimit-remaining');
                 
-                // If there are releases (including pre-releases), use the most recent one
-                if (is_array($releases) && !empty($releases)) {
-                    $this->github_response = $releases[0]; // First item is the most recent release
+                if ($response_code === 403 && $rate_limit_remaining === '0') {
+                    // We hit the rate limit
+                    $rate_limit_reset = wp_remote_retrieve_header($releases_response, 'x-ratelimit-reset');
+                    $reset_time = $rate_limit_reset ? (int)$rate_limit_reset : time() + 3600;
+                    $wait_time = max(3600, $reset_time - time()); // Wait at least 1 hour
+                    
+                    set_transient($error_transient_key, true, $wait_time);
+                    set_transient($transient_key . '_rate_limited', true, $wait_time);
+                    
+                    error_log('GitHub Updater: Rate limit exceeded for ' . $this->username . '/' . $this->repository);
                     return;
                 }
+                
+                if ($response_code === 200) {
+                    $releases = json_decode(wp_remote_retrieve_body($releases_response), true);
+                    
+                    // If there are releases (including pre-releases), use the most recent one
+                    if (is_array($releases) && !empty($releases)) {
+                        $this->github_response = $releases[0]; // First item is the most recent release
+                        set_transient($transient_key, $this->github_response, $this->cache_duration);
+                        return;
+                    }
+                }
+            } else {
+                // Log the error and set a shorter error cache
+                error_log('GitHub Updater: API error for releases - ' . $releases_response->get_error_message());
+                set_transient($error_transient_key, true, HOUR_IN_SECONDS); // 1 hour error cache
+                return;
             }
             
             // If no releases found or error occurred, try the repository's default branch
@@ -201,27 +258,34 @@ class GitHub_Updater {
                 }
             }
             
-            // Log error for debugging
+            // Cache the response (or null if failed) for the specified duration
+            set_transient($transient_key, $this->github_response, $this->cache_duration);
+            
+            // Log error for debugging if we still don't have a response
             if (is_null($this->github_response)) {
                 error_log('GitHub Updater: Failed to get repository info for ' . $this->username . '/' . $this->repository);
-            }
-
-            // Cache the response for a set duration (e.g., 12 hours)
-            if (!is_null($this->github_response)) {
-                 set_transient($transient_key, $this->github_response, HOUR_IN_SECONDS * 12); // Cache for 12 hours
+                // Set a shorter error cache to retry sooner
+                set_transient($error_transient_key, true, HOUR_IN_SECONDS);
             }
         }
     }
     
     /**
      * Checks for updates and modifies the update transient.
-     * Hooked to 'site_transient_update_plugins' or 'site_transient_update_themes'.
+     * Enhanced with better caching and rate limit handling.
      *
      * @param object $transient The WordPress update transient.
      * @return object The modified transient.
      */
     public function update_state($transient) {
         if (empty($transient->checked)) {
+            return $transient;
+        }
+        
+        // Check if we're rate limited
+        $rate_limit_key = 'github_updater_repo_info_' . md5($this->username . '/' . $this->repository . '/' . $this->slug) . '_rate_limited';
+        if (get_transient($rate_limit_key)) {
+            // We're rate limited, don't make any API calls
             return $transient;
         }
         
@@ -236,13 +300,11 @@ class GitHub_Updater {
             // For themes, $transient->checked should contain the version.
             if (is_array($transient->checked) && isset($transient->checked[$this->slug])) {
                 $current_version_val = $transient->checked[$this->slug];
-            } elseif (is_object($transient->checked) && isset($transient->checked->{$this->slug})) { // WordPress sometimes uses objects for checked
+            } elseif (is_object($transient->checked) && isset($transient->checked->{$this->slug})) {
                 $current_version_val = $transient->checked->{$this->slug};
             }
         } else {
             // For plugins, $this->plugin_data should have the version.
-            // Ensure plugin_data is initialized if it hasn't been.
-            // This is defensive, as admin_init should have run.
             if (is_null($this->plugin_data) && method_exists($this, 'set_plugin_properties')) {
                  $this->set_plugin_properties();
             }
@@ -253,9 +315,7 @@ class GitHub_Updater {
 
         // If current version could not be determined, we can't proceed with comparison.
         if (is_null($current_version_val)) {
-            // Optionally, log an error here for diagnostics
-            // error_log('GitHub Updater: Could not determine current version for ' . $this->slug . '. Aborting update check for this item.');
-            return $transient; // Cannot compare versions
+            return $transient;
         }
         
         // Clean version numbers for comparison (remove any +commit suffixes)
@@ -296,6 +356,30 @@ class GitHub_Updater {
         }
         
         return $transient;
+    }
+    
+    /**
+     * Display admin notice when rate limited
+     */
+    public function rate_limit_notice() {
+        $rate_limit_key = 'github_updater_repo_info_' . md5($this->username . '/' . $this->repository . '/' . $this->slug) . '_rate_limited';
+        if (get_transient($rate_limit_key)) {
+            echo '<div class="notice notice-warning"><p>';
+            echo '<strong>GitHub Rate Limit:</strong> Update checks for ' . esc_html($this->slug) . ' are temporarily paused due to GitHub API rate limiting. ';
+            echo 'Updates will resume automatically in about an hour.';
+            echo '</p></div>';
+        }
+    }
+    
+    /**
+     * Clear update cache when plugin/theme is updated
+     */
+    public function clear_update_cache($upgrader, $options) {
+        if (isset($options['plugins']) && in_array($this->slug, $options['plugins'])) {
+            $transient_key = 'github_updater_repo_info_' . md5($this->username . '/' . $this->repository . '/' . $this->slug);
+            delete_transient($transient_key);
+            $this->update_checked = false;
+        }
     }
     
     /**
@@ -359,7 +443,7 @@ class GitHub_Updater {
      */
     private function get_download_url() {
         // First check if there's a dedicated release asset for our component
-        $asset_name = $this->is_theme ? 'Sanctuary_Watch.zip' : 'webcr.zip';
+        $asset_name = $this->is_theme ? 'graphic_data_theme.zip' : 'graphic_data_plugin.zip';
             
         if (isset($this->github_response['assets']) && is_array($this->github_response['assets'])) {
             foreach ($this->github_response['assets'] as $asset) {

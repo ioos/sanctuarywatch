@@ -418,7 +418,7 @@ class Webcr_Admin {
 	}
 
 	/**
-	 * Checks if the required theme ("Sanctuary Watch") is active.
+	 * Checks if the required theme ("Graphic Data Theme") is active.
 	 *
 	 * If the required theme is not active, it displays an admin notice
 	 * warning the user. This function is hooked to 'admin_notices'.
@@ -427,11 +427,11 @@ class Webcr_Admin {
 	 */
 	function plugin_check_required_theme() {
 		$current_theme = wp_get_theme();
-		$required_theme = 'Sanctuary Watch'; // Replace with your theme's folder name
+		$required_theme = 'Graphic Data Theme'; // Replace with your theme's folder name
 		
 		if ($current_theme->get('Name') !== $required_theme && $current_theme->get('Template') !== $required_theme) {
 			$message = sprintf(
-				__('Warning: The <strong>Sanctuary Watch Framework</strong> plugin is designed to work only with the <strong>Sanctuary Watch</strong> theme.', 'your-plugin-textdomain'));
+				__('Warning: The <strong>Graphic Data plugin</strong> is designed to work only with the <strong>Graphic Data theme</strong>.', 'your-plugin-textdomain'));
 			
 			echo '<div class="notice notice-warning is-dismissible"><p>' . $message . '</p></div>';
 		}
