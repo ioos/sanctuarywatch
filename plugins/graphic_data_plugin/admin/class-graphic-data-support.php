@@ -33,7 +33,7 @@ class Graphic_Data_Support {
                 first time, or you are a long-time user, we want to say hello! And to make it worth your while, if you send us an email saying hello,
                 we'd love to mail you this free sticker. To get your sticker, please send Jai an email with your address at <a href="mailto:jai.ranganathan@noaa.gov">jai.ranganathan@noaa.gov</a>.</p>
             
-            <p> <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '/images/sanctuary_watch_sticker.png'); ?>" alt="Graphic Data Sticker" style="max-width: 25%; height: auto;"></p>
+            <p> <img src="<?php echo esc_url(plugin_dir_url(__FILE__) . '/images/sanctuary_watch_sticker.png'); ?>" alt="Graphic Data Sticker" style="max-width: 350px; height: auto;"></p>
             
             <p class="support_text_size">Also, maybe you have some support questions or some suggestions for us? If so, please do send us an email at the same place <a href="mailto:jai.ranganathan@noaa.gov">jai.ranganathan@noaa.gov</a>.
             Or, if you'd prefer, feel free to fill out our handy-dandy <a href="https://forms.gle/DG2fwrb2YrU2qRqJ6">Google Form</a>.</p>
