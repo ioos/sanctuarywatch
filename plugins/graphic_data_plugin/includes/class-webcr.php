@@ -146,6 +146,8 @@ class Webcr {
 		// The class that defines the validation methods used for the content editor user types
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-content-editor-role.php';
 
+		// The class that defines the support page for the plugin
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-graphic-data-support.php';
 
 		$this->loader = new Webcr_Loader();
 	}
@@ -279,13 +281,14 @@ class Webcr {
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'login_enqueue_scripts', $plugin_admin_logo, 'webcr_login_logo' ); 
-	//	$this->loader->add_action( 'login_headerurl', $plugin_admin_logo, 'webcr_logo_url' ); 
-	//	$this->loader->add_action( 'login_headertext', $plugin_admin_logo, 'webcr_logo_url_title' ); 
-	//	$this->loader->add_filter( 'login_title', $plugin_admin_logo, 'custom_login_title' ); 	
 
 		// Load class and functions connected with Export Figures Tool
 		$plugin_admin_export_figures = new Webcr_Export_Figures( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_export_figures, 'add_export_figures_menu' ); 	
+
+		// Load class and functions connected with Support page
+		$plugin_admin_support = new Graphic_Data_Support( );
+		$this->loader->add_action( 'admin_menu', $plugin_admin_support, 'add_admin_menu' ); 
 
     }
 

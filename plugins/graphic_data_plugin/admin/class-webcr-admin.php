@@ -6,8 +6,8 @@
  * @link       https://www.noaa.gov
  * @since      0.2.0-beta
  *
- * @package    Webcr
- * @subpackage Webcr/admin
+ * @package    graphic_data_plugin
+ * @subpackage graphic_data_plugin/admin
  */
 
 /**

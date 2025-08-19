@@ -247,6 +247,26 @@
  .fieldBackgroundColor {
   background-color: #F5F5F5;
  }
+
+ /* CSS for plugin support page */
+.support_text_size {
+  font-size:medium
+}
+
+.support_card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.support_card h2 {
+    margin-top: 0;
+    color: #23282d;
+}
+
  /*
  .formLabel {
   margin-top: 15px !important; 
