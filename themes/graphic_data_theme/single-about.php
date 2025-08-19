@@ -3,6 +3,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// Check if user is not logged in and metavalue for about_published is draft - redirect if so
+$post_id = get_the_ID();
+$about_published = get_post_meta($post_id, 'about_published', true);
+
+if (!is_user_logged_in() && $about_published === 'draft') {
+    wp_redirect(home_url('/'));
+    exit;
+}
+
 get_header();
 
 

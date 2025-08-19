@@ -58,16 +58,11 @@ class Webcr_About {
             'show_in_rest'       => true,
             'query_var'          => true,
             'rewrite'            => false,
-//            'rewrite'            => array( 'slug' => 'about' ),
-//            'rewrite' => array(
- //               'slug' => 'about',
-  //              'with_front' => false
-    //        ),
             'capability_type'    => 'post',
             'menu_icon'          => 'dashicons-admin-site-alt3',
             'has_archive'        => false, //true,
             'hierarchical'       => false,
-            'menu_position'      => null,
+            'menu_position'      => 20,
             'supports'           => array( 'title' ), //array( 'title', 'revisions' ), 
         );
     
@@ -99,6 +94,7 @@ class Webcr_About {
 
             // Step 1: Create an array to hold the About Box info 
             $aboutBoxArray = array();
+
             for ($i = 1; $i <= 10; $i++) {
                 $aboutBoxArray[] = array(
                     'type' => 'fieldset',
@@ -128,6 +124,14 @@ class Webcr_About {
             }
 
         $fields = [ 
+            array(
+                    'id'             => 'about_published',
+                    'type'           => 'select',
+                    'title'          => 'Status',
+                    'options'        => array("draft" => "Draft", "published" => "Published"),
+                    'default'        => 'draft',
+                    'description' => 'Should the About page be live? If set to Published, the page will be visible.',
+            ),
             array(
                     'type' => 'fieldset',
                     'id' => 'centralAbout',

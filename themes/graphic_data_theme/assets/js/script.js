@@ -102,8 +102,6 @@ function trapFocus(modalElement) {
 
 let child_obj = JSON.parse(JSON.stringify(child_ids));
 
-console.log(child_obj);
-
 let url1 =(JSON.stringify(svg_url));
 url = url1.substring(2, url1.length - 2);
 
@@ -2120,6 +2118,12 @@ async function render_tab_info(tabContentElement, tabContentContainer, info_obj,
 
             all_figure_data = data.filter(figure => Number(figure.figure_tab) === Number(tab_id));
             all_figure_data = all_figure_data.filter(figure => Number(figure.figure_modal) === Number(modal_id));
+
+            // Third filter: If user is not logged in, only show published figures
+            const isUserLoggedIn = document.body.classList.contains('logged-in');
+            if (!isUserLoggedIn) {
+                all_figure_data = all_figure_data.filter(figure => figure.figure_published === "published");
+            }
 
             // Sort with the following priority:
             // 1. figure_order == 1 → sorted by id

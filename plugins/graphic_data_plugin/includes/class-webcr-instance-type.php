@@ -423,7 +423,7 @@ class Webcr_Instance_Type {
             'manage-instance-types',
             [$this, 'render_instance_type_admin_page'],
             'dashicons-category',
-            20
+            25
         );
     }
 

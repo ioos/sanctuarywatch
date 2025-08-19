@@ -27,13 +27,19 @@
  * better user engagement and content discovery through well-structured and dynamic data presentation.
  */
 
-defined( 'ABSPATH' ) || exit; ?>
+defined( 'ABSPATH' ) || exit; 
 
-<?php
+// Check if user is not logged in and metavalue for scene_published is draft - redirect if so
+$post_id = get_the_ID();
+$scene_published = get_post_meta($post_id, 'scene_published', true);
+
+if (!is_user_logged_in() && $scene_published === 'draft') {
+    wp_redirect(home_url('/'));
+    exit;
+}
+
 get_header();
-?>
 
-<?php
 //ALL CURRENTLY ASSUME THERE IS THE CORRECT POSTMETA DATA AND THERE ALL SUFFICIENT INFORMATION EXISTS
 //IMPLEMENT ERROR CHECKS LATER
 // Retrieves the ID of the current post

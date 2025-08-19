@@ -751,7 +751,7 @@ class Customizer_Settings {
             }
 
             /* Theme Color 3 */
-            .theme-title > h2, #title-container > h1, #modal-title {
+            .theme-title > h2, #title-container > h1, #modal-title, .instance_type_title {
                 color: <?php echo esc_attr( get_theme_mod( 'theme_color_3', '#024880' ) ); ?> ;
             }
 

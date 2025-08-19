@@ -659,7 +659,7 @@ add_action('wp_enqueue_scripts', 'enqueue_info_scripts2');
 function enqueue_plotly_utility_script() {
   wp_enqueue_script(
     'utility', 
-    content_url() . '/plugins/webcr/includes/utilities/js/utility.js', 
+    content_url() . '/plugins/graphic_data_plugin/includes/utilities/js/utility.js', 
     array(), '1.0.0', 
     array('strategy'  => 'defer')
   );
@@ -671,7 +671,7 @@ add_action('wp_enqueue_scripts', 'enqueue_plotly_utility_script');
 function enqueue_plotly_script() {
   wp_enqueue_script(
     'plotly-timeseries-line', 
-    content_url() . '/plugins/webcr/includes/figures/js/plotly-timeseries-line.js', 
+    content_url() . '/plugins/graphic_data_plugin/includes/figures/js/plotly-timeseries-line.js', 
     array(), '1.0.0', 
     array('strategy'  => 'defer')
   );
@@ -682,7 +682,7 @@ add_action('wp_enqueue_scripts', 'enqueue_plotly_script');
 function enqueue_plotly_bar_script() {
   wp_enqueue_script(
     'plotly-bar', 
-    content_url() . '/plugins/webcr/includes/figures/js/plotly-bar.js', 
+    content_url() . '/plugins/graphic_data_plugin/includes/figures/js/plotly-bar.js', 
     array(), '1.0.0', 
     array('strategy'  => 'defer')
   );
@@ -693,7 +693,7 @@ add_action('wp_enqueue_scripts', 'enqueue_plotly_bar_script');
 function enqueue_plotly_map_script() {
   wp_enqueue_script(
     'plotly-map', 
-    content_url() . '/plugins/webcr/includes/figures/js/plotly-map.js', 
+    content_url() . '/plugins/graphic_data_plugin/includes/figures/js/plotly-map.js', 
     array(), '1.0.0', 
     array('strategy'  => 'defer')
   );

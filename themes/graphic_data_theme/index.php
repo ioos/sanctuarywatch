@@ -137,7 +137,7 @@ foreach ($terms_array as $term){
     ?>
 
     <?php 
-    echo "<div class='container-fluid main-container'><h2 style='color: #024880; margin-right: auto;'>{$term['name']}</h2></div>";
+    echo "<div class='container-fluid main-container'><h2 class ='instance_type_title' style='margin-right: auto;'>{$term['name']}</h2></div>";
     echo "<div class='container-fluid main-container' style='margin-top: -30px; display: block'>{$term['description']}</div>";
     echo "<div class='container main-container'>";
 
@@ -148,6 +148,11 @@ foreach ($terms_array as $term){
             array(
                 'key'   => 'instance_type',
                 'value' => $term["id"],
+            ),
+            array(
+            'key'     => 'instance_status',
+            'value'   => 'Draft',
+            'compare' => '!='
             ),
         ),
     );
@@ -199,11 +204,6 @@ foreach ($terms_array as $term){
                     $instance_post_name = get_post($instance_overview_scene)->post_name;
                     $instance_link = $instance_slug . "/" . $instance_post_name;
 
-                    // error_log('instance'.  $instance["id"]);
-                    // error_log('instance_slug'. $instance_slug);
-                    // error_log('$instance_overview_scene'.  $instance_overview_scene);
-                    // error_log('instance_post_name'.  $instance_post_name);
-                    // error_log('instance_link'.  $instance_link);
                 } else {
                     $instance_link = $instance["instance_legacy_content_url"]; 
                 }

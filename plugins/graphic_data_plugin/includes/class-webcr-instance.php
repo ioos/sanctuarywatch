@@ -157,7 +157,7 @@ class Webcr_Instance {
                 'id'             => 'instance_status',
                 'type'           => 'select',
                 'title'          => 'Status*',
-                'options'        => array("Draft" => "Draft", "Published" => "Published"),
+                'options'        => array("Draft" => "Draft", "Soon" => "Coming soon", "Published" => "Published"),
                 'default' => 'Draft',
                 'description' => 'Is the instance live?',
             //    'class'      => 'chosen', 

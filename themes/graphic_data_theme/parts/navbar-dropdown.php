@@ -72,11 +72,26 @@ foreach ($term_data as $term_element) {
     echo "</li>";
  }
 
-$args = array(
-    'post_type' => 'about', // Replace 'about' with your actual custom post type if it's different
-    'post_status' => 'publish',
-    'posts_per_page' => 1, // We only need to know if at least one exists
-);
+if (is_user_logged_in() == true) {
+    $args = array(
+        'post_type' => 'about', // custom post type 
+        'post_status' => 'publish',
+        'posts_per_page' => 1, // We only need to know if at least one exists
+    );
+} else {
+    $args = array(
+        'post_type' => 'about', // custom post type 
+        'post_status' => 'publish',
+        'posts_per_page' => 1, // We only need to know if at least one exists
+        'meta_query' => array( // only show if about_published is published
+            array(
+                'key' => 'about_published',
+                'value' => 'published',
+                'compare' => '='
+            )
+        )
+    );
+}
 $about_query = new WP_Query($args);
 
 if ($about_query->have_posts()) {

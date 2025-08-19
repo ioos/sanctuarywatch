@@ -466,7 +466,7 @@ class Webcr_Figure {
             'menu_icon'          => 'dashicons-admin-comments',
             'has_archive'        => true,
             'hierarchical'       => false,
-            'menu_position'      => null,
+            'menu_position'      => 40,
             'supports'           => array( 'title' ), //array( 'title', 'revisions' ), 
         );
     
@@ -544,6 +544,14 @@ class Webcr_Figure {
             'title'  => 'Basic',
             'icon'   => 'dashicons-admin-generic',
             'fields' => array(
+                array(
+                    'id'             => 'figure_published',
+                    'type'           => 'select',
+                    'title'          => 'Status*',
+                    'options'        => array("draft" => "Draft", "published" => "Published"),
+                    'default'        => $session_fields_exist ? $session_fields["figure_published"] : 'draft',
+                    'description' => 'Should the figure be live? If set to Published, the figure will be visible.',
+                ),
                 array(
                     'id'             => 'location',
                     'type'           => 'select',
@@ -761,6 +769,7 @@ class Webcr_Figure {
 
         // make several of the modal custom fields available to the REST API
         $fieldsToBeRegistered = array(
+            array('figure_published', 'string', 'The figure published status'),
             array('figure_modal', 'string', 'The figure modal'),
             array('figure_tab', 'string', 'The figure tab'),
             array('figure_order', 'integer', 'The figure order'),
@@ -822,13 +831,13 @@ class Webcr_Figure {
 	 * @since    1.0.0
 	 */
     function register_figure_rest_fields() {
-        $figure_rest_fields = array('figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long', 'figure_interactive_arguments','uploaded_path_json','figure_title'); //figure_temp_filepath
+        $figure_rest_fields = array('figure_published', 'figure_modal', 'figure_tab', 'figure_order', 'figure_science_info', 'figure_data_info', 'figure_path', 'figure_image', 'figure_external_url', 'figure_external_alt',  'figure_code', 'figure_upload_file','figure_caption_short', 'figure_caption_long', 'figure_interactive_arguments','uploaded_path_json','figure_title'); //figure_temp_filepath
         $function_utilities = new Webcr_Utility();
         $function_utilities -> register_custom_rest_fields("figure", $figure_rest_fields);
     }
 
     /**
-	 * Add a filter to support filtering by "figure_modal" and id in REST API queries.
+	 * Add a filter to support filtering by "figure_modal", "figure_published", and id in REST API queries.
 	 *
 	 * @since    1.0.0
 	 */
@@ -838,6 +847,16 @@ class Webcr_Figure {
                 [
                     'key'   => 'figure_modal',
                     'value' => (int) $request['figure_modal'],
+                    'compare' => '='
+                ]
+            ];
+        }
+
+        if (isset($request['figure_published'])) {
+            $args['meta_query'][] = [
+                [
+                    'key'   => 'figure_published',
+                    'value' =>  $request['figure_published'],
                     'compare' => '='
                 ]
             ];
