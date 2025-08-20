@@ -99,6 +99,75 @@ add_action('admin_notices', function () {
 
 
 /**
+ * Run the cleanup after WP moves the file into the uploads dir.
+ * This catches standard media modal uploads (what Exopite uses).
+ */
+add_filter('wp_handle_upload', 'my_svg_cleanup_on_upload', 10, 2);
+function my_svg_cleanup_on_upload(array $upload, string $context) {
+    if (!isset($upload['type'], $upload['file'])) {
+        return $upload;
+    }
+
+    // Only touch SVGs
+    if ($upload['type'] !== 'image/svg+xml' && !preg_match('/\.svg$/i', $upload['file'])) {
+        return $upload;
+    }
+
+    $path = $upload['file'];
+    $svg  = @file_get_contents($path);
+    if ($svg === false) {
+        return $upload; // couldn't read; bail without breaking the upload
+    }
+
+    $clean = my_transform_svg_inkscape($svg);
+
+    // Write back in-place
+    // You may also want to preserve permissions; WP handles that normally.
+    @file_put_contents($path, $clean);
+
+    return $upload;
+}
+
+/**
+ * Your transformation rules:
+ * - Remove only the inkscape:groupmode="layer" attribute (keep the rest of the tag).
+ * - If a start tag has id + inkscape:label:
+ *     * If equal → keep id, drop label.
+ *     * If different → set id to label value, drop label.
+ * - Drop any remaining inkscape:label attributes.
+ * - (Optional) Drop xmlns:inkscape if you’ve removed all inkscape:* attributes.
+ */
+function my_transform_svg_inkscape(string $svg): string {
+    // Safety: work only on the text; do not touch binary (SVGs are text).
+    // 1) Remove the specific layer marker, but NOT the whole tag.
+    // $svg = preg_replace('/\s+inkscape:groupmode="layer"(?=\s|>)/', '', $svg);
+
+    // 2a) If label then id → set id to label, drop label (keeps other attrs)
+    // <g inkscape:label="v2" id="v1" ...> → <g id="v2" ...>
+    //$svg = preg_replace('/inkscape:label="([^"]+)"\s+id="([^"]+)"/', 'id="$1"', $svg);
+
+    // <g inkscape:label="v2" id="v1" ...> → <g inkscape:label="v2" id="v2" ...>
+    $svg = preg_replace('/inkscape:label="([^"]+)"\s+id="([^"]+)"/', 'inkscape:label="$1" id="$1"', $svg);
+
+    // 2b) If id then label → same
+    // <g id="v1" inkscape:label="v2" ...> → <g id="v2" ...>
+    $svg = preg_replace('/id="([^"]+)"\s+inkscape:label="([^"]+)"/', 'id="$2"', $svg);
+
+    // 2c) If there’s a leftover inkscape:label (without a paired id in that same tag), drop it.
+    // (Matches only the attribute; keeps spacing/tag intact.)
+    //$svg = preg_replace('/\s+inkscape:label="[^"]*"(?=\s|>)/', '', $svg);
+
+    // (Optional) If you want to drop the namespace decl too:
+    // Only do this if you’re confident there are no remaining inkscape:* attrs.
+    // if (strpos($svg, 'inkscape:') === false) {
+    //     $svg = preg_replace('/\s+xmlns:inkscape="[^"]*"/', '', $svg);
+    // }
+
+    return $svg;
+}
+
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
