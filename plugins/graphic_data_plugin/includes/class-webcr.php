@@ -149,6 +149,10 @@ class Webcr {
 		// The class that defines the support page for the plugin
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-graphic-data-support.php';
 
+		// The class that defines the settings page for the plugin
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-graphic-data-settings-page.php';
+
+
 		$this->loader = new Webcr_Loader();
 	}
 
@@ -212,18 +216,21 @@ class Webcr {
 		$this->loader->add_filter( 'rest_api_init', $plugin_admin_instance, 'register_instance_rest_fields' ); 
 		$this->loader->add_action( 'admin_notices', $plugin_admin_instance, 'instance_admin_notice' ); 
 
+		// Load class and functions associated with the Settings Page
+		$plugin_admin_settings_page = new Graphic_Data_Settings_Page ( $this->get_plugin_name(), $this->get_version() );		
+		$this->loader->add_action( 'admin_menu', $plugin_admin_settings_page, 'webcr_add_admin_menu' ); 
+		$this->loader->add_action( 'admin_init', $plugin_admin_settings_page, 'webcr_settings_init' ); 
+        $plugin = plugin_basename(__FILE__); //Used in the next line
+        $this->loader->add_filter("plugin_action_links_$plugin", $plugin_admin_settings_page, 'add_settings_link');
+		$this->loader->add_action( 'rest_api_init', $plugin_admin_settings_page, 'webcr_register_rest_settings'); 
+
 		// Load class and functions associated with Instance Types
 		$plugin_admin_instance_type = new Webcr_Instance_Type ( $this->get_plugin_name(), $this->get_version() );		
 		$this->loader->add_action( 'admin_init', $plugin_admin_instance_type, 'instance_settings_init' ); 
-		$this->loader->add_action( 'admin_menu', $plugin_admin_instance_type, 'webcr_add_admin_menu' ); 
-		$this->loader->add_action( 'admin_init', $plugin_admin_instance_type, 'webcr_settings_init' ); 
-        $plugin = plugin_basename(__FILE__); //This might be useful? I don't think so - I think it is an errant copy-paste. Leaving this in for now in case everything breaks without it.
-        $this->loader->add_filter("plugin_action_links_$plugin", $plugin_admin_instance_type, 'add_settings_link');
 		$this->loader->add_action( 'init', $plugin_admin_instance_type, 'register_instance_type_taxonomy', 0); // Priority 0 to run early
 		$this->loader->add_action( 'init', $plugin_admin_instance_type, 'register_instance_type_order_meta'); 
 		$this->loader->add_action( 'init', $plugin_admin_instance_type, 'register_instance_type_navbar_name_meta'); 
 		$this->loader->add_action( 'admin_menu', $plugin_admin_instance_type, 'add_instance_type_admin_menu'); 
-		$this->loader->add_action( 'rest_api_init', $plugin_admin_instance_type, 'webcr_register_rest_settings'); 
 
 		// Load  class and functions associated with Scene custom content type
 		$plugin_admin_scene = new Webcr_Scene( $this->get_plugin_name(), $this->get_version() );		

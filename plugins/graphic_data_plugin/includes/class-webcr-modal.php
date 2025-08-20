@@ -236,7 +236,8 @@ class Webcr_Modal {
             ),
             array(
                 'id'          => 'modal_tagline',
-                'type'        => 'textarea',
+                'type'   => 'editor',
+                'editor' => 'trumbowyg',
                 'title'       => 'Modal Tagline',
                 'description' => 'What is the modal tagline?',
                 'default'     => $session_fields_exist ? $session_fields["modal_tagline"] : '',

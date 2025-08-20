@@ -34,6 +34,12 @@ class webcr_validation {
     public function validate_instance (){
         $save_instance_fields = true;
 
+        // Clear previous figure validation data from session
+        unset($_SESSION["instance_errors"]);
+        unset($_SESSION["instance_warnings"]);
+        unset($_SESSION["instance_post_status"]);
+        unset($_SESSION["instance_error_all_fields"]); // This is set by figure_fields_to_session
+
         // Set the error list cookie expiration time to a past date in order to delete it, if it is there
         setcookie("instance_errors", 0, time() - 3000, "/");
         setcookie("instance_warnings", 0, time() - 3000, "/");
@@ -132,7 +138,7 @@ class webcr_validation {
             $error_list_cookie_value = json_encode($instance_errors);
             setcookie("instance_errors", $error_list_cookie_value, time() + 10, "/");           
             setcookie("instance_post_status", "post_error", time() + 10, "/");
-            $this->instance_fields_to_cookie();
+            $this->instance_fields_to_session();
         } else {
             setcookie("instance_post_status", "post_good", time() + 10, "/");
         }
@@ -141,9 +147,9 @@ class webcr_validation {
     }
 
 
-    // Write all values from the fields of the instance figure post to a cookie. 
+    // Write all values from the fields of the instance figure post to a session. 
     // This is used to repopulate the fields in the instance edit form if there are errors in the submission.
-    public function instance_fields_to_cookie () {
+    public function instance_fields_to_session () {
 
         // save simple field values to the array
         $instance_field_names = ["instance_short_title", "instance_slug", "instance_type", "instance_overview_scene",
