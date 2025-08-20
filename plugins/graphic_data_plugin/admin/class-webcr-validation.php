@@ -798,11 +798,8 @@ class webcr_validation {
         // Process the fields configuration to extract field IDs and handle fieldsets
         $this->extract_field_values($fields_config, $all_fields);
         
-        // Write array to session with content type specific key
-        		if (!session_id() && !headers_sent()) {
-			session_start();
-		}
         $_SESSION[$content_type . "_error_all_fields"] = $all_fields;
+
     }
     
     /**
