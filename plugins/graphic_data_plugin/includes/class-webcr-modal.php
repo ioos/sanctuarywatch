@@ -5,8 +5,6 @@
  */
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 class Webcr_Modal {
-
-
 	/**
 	 * The ID of this plugin.
 	 *
@@ -95,9 +93,10 @@ class Webcr_Modal {
     /**
 	 * Create custom fields, using metaboxes, for Modal custom content type.
 	 *
+     * @param bool $return_fields_only If true, only return the custom fields array without registering the metabox (used for session writing as part of field validation).
 	 * @since    1.0.0
 	 */
-    function create_modal_fields() {
+    function create_modal_fields($return_fields_only = false) {
 
         $config_metabox = array(
 
@@ -376,6 +375,11 @@ class Webcr_Modal {
         array_splice($fields, 11, 0, $infoFields);
         array_splice($fields, 18, 0, $photoFields);
         array_splice($fields, 25, 0, $tabFields);
+
+        // If we're just running this function to get the custom fields for session writing, return early
+        if ($return_fields_only) {
+            return $fields;
+        }
 
         $fieldsHolder[] = array(
             'name'   => 'basic',

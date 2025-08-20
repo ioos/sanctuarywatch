@@ -666,14 +666,6 @@ class Webcr_Scene {
         $function_utilities = new Webcr_Utility();
         $instances = $function_utilities ->  returnAllInstances();
 
-        // Selection criteria for instance_overview_scene below. This would've been used if the instance_overview_scene field was used.
-        // This code gets the selected instance from the scene_location field and then gets all the scenes associated with that instance.
-        // $post_id = isset($_GET['post']) ? $_GET['post'] : get_the_ID();
-        // error_log("post_id: " . $post_id);
-        // $instance = get_post_meta($post_id, 'scene_location', true);
-        // error_log("instance: " . $instance);
-        // $scenes = $function_utilities -> returnInstanceScenes($instance);
-
         $fields = array(
             array(
                 'id'             => 'scene_published',

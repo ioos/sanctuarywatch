@@ -758,4 +758,3 @@ document.querySelector('[data-depend-id="modal_preview"]').addEventListener('cli
 
 });
 
-

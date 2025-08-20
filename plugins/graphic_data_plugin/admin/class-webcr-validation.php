@@ -6,6 +6,24 @@
 
 class webcr_validation {
 
+    /**
+	 * The unique identifier of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 */
+	protected $plugin_name = 'webcr';
+
+	/**
+	 * The current version of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string    $version    The current version of the plugin.
+	 */
+	protected $version = '1.0.0';
+
     public function master_validate($validate_content_type){
         switch ($validate_content_type) {
             case "about":
@@ -39,10 +57,6 @@ class webcr_validation {
         unset($_SESSION["instance_warnings"]);
         unset($_SESSION["instance_post_status"]);
         unset($_SESSION["instance_error_all_fields"]); // This is set by figure_fields_to_session
-
-        // Set the error list cookie expiration time to a past date in order to delete it, if it is there
-        setcookie("instance_errors", 0, time() - 3000, "/");
-        setcookie("instance_warnings", 0, time() - 3000, "/");
 
         $instance_errors = [];
         $instance_warnings = [];
@@ -534,7 +548,17 @@ class webcr_validation {
         if ($save_modal_fields == FALSE) {
             $_SESSION["modal_errors"] = $modal_errors; // Store array directly
             $_SESSION["modal_post_status"] = "post_error";
-            $this->modal_fields_to_session();
+
+        // Get the modal class instance
+            $modal_class = new Webcr_Modal( $this->$plugin_name, $this->$version ); // Assuming this is your modal class
+            
+            // Get the fields configuration
+            $fields_config = $this->get_fields_config('modal', $modal_class);
+            
+            // Use the generalized function
+            $this->fields_to_session('modal', $fields_config);
+
+      //      $this->modal_fields_to_session();
         } else {
             $_SESSION["modal_post_status"] = "post_good";
         }
@@ -565,7 +589,7 @@ class webcr_validation {
         $_SESSION["figure_error_all_fields"] = $figure_fields; // Store array directly
     }
 
-    // Write all values from the fields of the edit modal post to a cookie. 
+    // Write all values from the fields of the edit modal post to the session. 
     // This is used to repopulate the fields in the modal edit form if there are errors in the submission.
     public function modal_fields_to_session () {
 
@@ -758,6 +782,94 @@ class webcr_validation {
             return TRUE;
         } 
     }
+
+// begin AI field session writing functions
+
+    /**
+     * Generalized function to write all field values from any custom content type to session
+     * 
+     * @param string $content_type The custom content type (e.g., 'modal', 'scene', etc.)
+     * @param array $fields_config The fields configuration array from the create_*_fields() method
+     * @since 1.0.0
+     */
+    public function fields_to_session($content_type, $fields_config) {
+        $all_fields = [];
+        
+        // Process the fields configuration to extract field IDs and handle fieldsets
+        $this->extract_field_values($fields_config, $all_fields);
+        
+        // Write array to session with content type specific key
+        		if (!session_id() && !headers_sent()) {
+			session_start();
+		}
+        $_SESSION[$content_type . "_error_all_fields"] = $all_fields;
+    }
+    
+    /**
+     * Recursively extract field values from POST data based on field configuration
+     * 
+     * @param array $fields The fields configuration array
+     * @param array &$all_fields Reference to array where field values will be stored
+     */
+    private function extract_field_values($fields, &$all_fields) {
+        foreach ($fields as $field) {
+            // Skip button type fields
+            if (isset($field['type']) && $field['type'] === 'button') {
+                continue;
+            }
+            
+            // Handle fieldsets (nested fields)
+            if (isset($field['type']) && $field['type'] === 'fieldset') {
+                $fieldset_id = $field['id'];
+                
+                // Process each field within the fieldset
+                if (isset($field['fields']) && is_array($field['fields'])) {
+                    foreach ($field['fields'] as $nested_field) {
+                        if (isset($nested_field['id']) && isset($nested_field['type']) && $nested_field['type'] !== 'button') {
+                            $nested_field_id = $nested_field['id'];
+                            // For fieldsets, data is nested: $_POST[fieldset_id][field_id]
+                            if (isset($_POST[$fieldset_id][$nested_field_id])) {
+                                $all_fields[$nested_field_id] = $_POST[$fieldset_id][$nested_field_id];
+                            }
+                        }
+                    }
+                }
+            }
+            // Handle regular fields
+            elseif (isset($field['id']) && isset($field['type'])) {
+                $field_id = $field['id'];
+                // For regular fields, data is direct: $_POST[field_id]
+                if (isset($_POST[$field_id])) {
+                    $all_fields[$field_id] = $_POST[$field_id];
+                }
+            }
+            
+            // Handle nested field arrays (like your tabFields)
+            if (isset($field['fields']) && is_array($field['fields'])) {
+                $this->extract_field_values($field['fields'], $all_fields);
+            }
+        }
+    }
+    
+    /**
+     * Get fields configuration from a content type's field creation method
+     * 
+     * @param string $content_type The custom content type (e.g., 'modal', 'scene', etc.)
+     * @param object $class_instance Instance of the class containing the field creation method
+     * @return array The fields configuration array
+     */
+    public function get_fields_config($content_type, $class_instance) {
+        $method_name = 'create_' . $content_type . '_fields';
+        
+        if (method_exists($class_instance, $method_name)) {
+            // We need to modify the field creation methods to return the fields array
+            // instead of just creating the options panel
+            return $class_instance->$method_name(true); // Pass true to indicate we want fields returned
+        }
+        
+        return [];
+    }
+    
 
 
 }
