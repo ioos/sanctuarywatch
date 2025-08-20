@@ -119,6 +119,11 @@ function my_svg_cleanup_on_upload(array $upload, string $context) {
         return $upload; // couldn't read; bail without breaking the upload
     }
 
+    // Only process if it looks like an Inkscape SVG
+    if (strpos($svg, 'inkscape:') === false) {
+        return $upload; // no inkscape tags → leave untouched
+    }
+
     $clean = my_transform_svg_inkscape($svg);
 
     // Write back in-place
@@ -147,11 +152,11 @@ function my_transform_svg_inkscape(string $svg): string {
     //$svg = preg_replace('/inkscape:label="([^"]+)"\s+id="([^"]+)"/', 'id="$1"', $svg);
 
     // <g inkscape:label="v2" id="v1" ...> → <g inkscape:label="v2" id="v2" ...>
-    $svg = preg_replace('/inkscape:label="([^"]+)"\s+id="([^"]+)"/', 'inkscape:label="$1" id="$1"', $svg);
+    //$svg = preg_replace('/inkscape:label="([^"]+)"\s+id="([^"]+)"/', 'inkscape:label="$1" id="$1"', $svg);
 
     // 2b) If id then label → same
     // <g id="v1" inkscape:label="v2" ...> → <g id="v2" ...>
-    $svg = preg_replace('/id="([^"]+)"\s+inkscape:label="([^"]+)"/', 'id="$2"', $svg);
+    $svg = preg_replace('/id="([^"]+)"\s+inkscape:label="([^"]+)"/', 'id="$2" inkscape:label="$2"', $svg);
 
     // 2c) If there’s a leftover inkscape:label (without a paired id in that same tag), drop it.
     // (Matches only the attribute; keeps spacing/tag intact.)
