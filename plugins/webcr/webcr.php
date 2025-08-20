@@ -57,6 +57,48 @@ require_once plugin_dir_path(__FILE__) . 'admin/class-webcr-github-updater.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-webcr.php';
 
 /**
+ * The data directory inside of wp-content
+ */
+define('MYPLUGIN_DATA_DIR', WP_CONTENT_DIR . '/data');
+define('MYPLUGIN_DATA_URL', content_url('data'));
+
+register_activation_hook(__FILE__, 'myplugin_activate');
+function myplugin_activate() {
+    myplugin_ensure_public_data_dir();
+}
+
+add_action('admin_init', 'myplugin_ensure_public_data_dir'); // fallback after migrations
+function myplugin_ensure_public_data_dir() {
+    // Create dir if missing
+    if ( ! is_dir(MYPLUGIN_DATA_DIR) ) {
+        if ( ! wp_mkdir_p(MYPLUGIN_DATA_DIR) ) {
+            update_option('myplugin_data_dir_error', 'Could not create ' . MYPLUGIN_DATA_DIR . '. Check permissions.');
+            return;
+        }
+    }
+
+    // Ensure perms (drwxr-xr-x)
+    @chmod(MYPLUGIN_DATA_DIR, 0755);
+
+    // Create index.php to block directory access (but not file access)
+    $index = MYPLUGIN_DATA_DIR . '/index.php';
+    if ( ! file_exists($index) ) {
+        $contents = "<?php\nhttp_response_code(403); exit; // Block directory browsing\n";
+        @file_put_contents($index, $contents);
+        @chmod($index, 0644);
+    }
+
+    delete_option('myplugin_data_dir_error');
+}
+
+add_action('admin_notices', function () {
+    if ($msg = get_option('myplugin_data_dir_error')) {
+        echo '<div class=\"notice notice-error\"><p>' . esc_html($msg) . '</p></div>';
+    }
+});
+
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
