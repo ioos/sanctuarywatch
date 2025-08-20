@@ -41,6 +41,66 @@ class Webcr_Utility {
     }
 
     /**
+     * Displays admin notices for the following kind of custom content posts: about, instance, scene, modal, and figure.
+     * 
+     * Shows informational, error, or warning messages based on the status of the post.
+     * Notices are displayed only on the post type edit screen after a post has been updated.
+     *
+     * @param string $post_type The type of post for which the notice is being displayed.
+     * @return void Outputs the appropriate admin notice.
+     */
+    public function post_admin_notice() {
+        // First let's determine where we are. We only want to show admin notices in the right places. Namely in one of our custom 
+        // posts after it has been updated. The if statement is looking for three things: 1. Right post type? 2. An individual post (as opposed to the scene
+        // admin screen)? 3. A new post
+
+        if (function_exists('get_current_screen')) {
+            $current_screen = get_current_screen();
+            if ($current_screen){
+                $post_type = $screen->post_type; 
+                if ($current_screen->base == "post" && $current_screen->id == $post_type && !($current_screen->action =="add") ) { 
+                    if( isset( $_SESSION[$post_type . "_post_status"] ) ) {
+                        $selected_post_status =  $_SESSION[$post_type . "_post_status"];
+                        if ($selected_post_status == "post_good") {
+                            echo '<div class="notice notice-info is-dismissible"><p>' . ucfirst($post_type) . ' created or updated.</p></div>';
+                        } 
+                        else {
+                            if (isset($_SESSION[$post_type . "_errors"])) {
+                                $error_message = "<p>Error or errors in " . $post_type . "</p>";
+                                $error_list_array = $_SESSION[$post_type . "_errors"];
+                                $error_array_length = count($error_list_array);
+                                $error_message = $error_message . '<p><ul>';
+                                for ($i = 0; $i < $error_array_length; $i++){
+                                    $error_message = $error_message . '<li>' . $error_list_array[$i] . '</li>';
+                                }
+                                $error_message = $error_message . '</ul></p>';
+                            }
+                            echo '<div class="notice notice-error is-dismissible">' . $error_message . '</div>'; 
+                        }
+                    //   setcookie("scene_post_status", "", time() - 300, "/");
+                    }
+                    if (isset($_SESSION[$post_type . "_warnings"])){
+                        $warning_message = "<p>Warning or warnings in " . $post_type . "</p>";
+                        $warning_list_array = $_SESSION[$post_type . "_warnings"];
+                        $warning_array_length = count($warning_list_array);
+                        $warning_message = $warning_message . '<p><ul>';
+                        for ($i = 0; $i < $warning_array_length; $i++){
+                            $warning_message = $warning_message . '<li>' . $warning_list_array[$i] . '</li>';
+                        }
+                        $warning_message = $warning_message . '</ul></p>';
+                        echo '<div class="notice notice-warning is-dismissible">' . $warning_message . '</div>'; 
+                    }
+
+                    // Unset the session variables so that the notices are not shown again on page reload.
+                    unset($_SESSION[$post_type . "_errors"]);
+                    unset($_SESSION[$post_type . "_warnings"]);
+                    unset($_SESSION[$post_type . "_post_status"]);       
+                }
+            }
+        }
+    }
+
+    /**
      * Get a list of all instances, filtered for 'content_editor' role.
      *
      * @return array An associative array of instance IDs and titles.

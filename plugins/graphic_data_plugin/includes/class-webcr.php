@@ -152,6 +152,8 @@ class Webcr {
 		// The class that defines the settings page for the plugin
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-graphic-data-settings-page.php';
 
+		// The class that defines general utility functions for the plugin
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
 
 		$this->loader = new Webcr_Loader();
 	}
@@ -164,6 +166,9 @@ class Webcr {
 	 * @access   private
 	 */
 	public function define_admin_hooks() {
+		// Load class and functions of utility functions
+		$plugin_utility = new Webcr_Utility();
+
 		// Load class and functions to change overall look and function of admin screens
 		$plugin_admin = new Webcr_Admin( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles', 10 );  
@@ -255,8 +260,9 @@ class Webcr {
         $this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'display_overview_scene_notice' ); 
 
 		// Load  class and functions associated with Modal custom content type
-		$plugin_admin_modal = new Webcr_Modal ($this->get_plugin_name(), $this->get_version() );		
-		$this->loader->add_action( 'admin_notices', $plugin_admin_modal, 'modal_admin_notice' ); 
+		$plugin_admin_modal = new Webcr_Modal ($this->get_plugin_name(), $this->get_version() );	
+		$this->loader->add_action( 'admin_notices', $plugin_utility, 'post_admin_notice' ); 
+//		$this->loader->add_action( 'admin_notices', $plugin_utility, ['post_admin_notice',"modal"] ); 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); 
 		$this->loader->add_action( 'current_screen', $plugin_admin_modal, 'cleanup_expired_modal_filters' ); 
