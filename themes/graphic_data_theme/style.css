@@ -1,0 +1,920 @@
+/*
+Theme Name: Graphic Data Theme
+Theme URI: https://github.com/ioos/sanctuarywatch_graphicdata
+Author: The Sanctuary Watch Team
+Description: The Graphic Data Theme is an interactive theme used for the easy visualization of scientific data, within the Sanctuary Watch framework. 
+Version: 0.3.0-beta
+*/
+
+@import url('assets/css/bootstrap.css');
+
+#entire_thing { 
+  max-width: 1400px !important;
+  margin: 0 auto;
+  padding-bottom: 3%;
+  margin-top: -20px;
+  padding-top: 1%;
+}
+
+body{
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+#top-bar {
+  text-align: center;
+  padding: 5px;
+}
+
+#top-bar img {
+  max-width: 100%;
+  height: 35px;
+  margin: 10px;
+}
+
+#ioos-breadcrumb {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  text-align: center;
+  align-items: center;
+  min-height: 25.98px;
+}
+
+#header-margin a,
+#header-margin p {
+  display: inline;
+  margin: 0;
+  text-decoration: none;
+}
+
+.site-footer {
+  padding-top: 32px;
+  font-size: 13px;
+}
+.footer-content-wrapper{
+  text-align: left;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.footer-column-title {
+  font-weight: bold;
+}
+
+.footer-column {
+  display: flex; 
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+/* Apply styles for mobile devices where .col-sm stacks (typically below 576px) */
+@media (max-width: 575.98px) {
+  .footer-column {
+      justify-content: flex-start; /* Left-justify the .footer-content-wrapper */
+  }
+
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  margin-bottom: 20px;
+}
+
+
+.navbar-emblem {
+  size: 10%;
+}
+
+    /* Styles for the header/branding section */
+    .image-center {
+      display: flex; /* Use flexbox for alignment */
+      align-items: center; /* Vertically align items when side-by-side */
+      gap: 15px; /* Space between logo and text block */
+      justify-content: center; /* Center the whole block by default */
+      padding-bottom: 20px; /* Moved from inline style */
+  }
+
+  .image-center img {
+    width: 80px; /* Default logo size, can be adjusted */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  .site-branding-text-container {
+    display: flex;
+    flex-direction: column;
+    text-align: left; /* Text within this block will be left-aligned */
+  }
+
+  .site-title-main {
+      font-size: 2.7vw; /* Default font size using viewport width */
+      font-weight: bold;
+  }
+
+  .site-tagline-main {
+    font-size: 1.5vw; /* Default font size using viewport width */
+    font-style: italic;
+      font-weight: bold; /* Added to match later rule, ensure consistency */
+
+  }
+
+  /* Mobile specific adjustments */
+  @media (max-width: 768px) { /* Tablet and smaller */
+      .image-center {
+        flex-direction: row; /* Logo and text block side-by-side */
+        justify-content: flex-start; /* Align to the left, or use 'center' to center the group */
+      }
+
+      .image-center img {
+        width: 60px; /* Adjust logo size for side-by-side mobile view */
+        margin-bottom: 0; /* Remove bottom margin as it's not stacked */
+
+      }
+
+      .site-title-main { 
+        font-size: 2.0rem; /* Larger, fixed font size for mobile */ 
+      }
+
+      .site-tagline-main { 
+        font-size: 1.5rem; /* Larger, fixed font size for mobile */
+       }
+
+  }
+  @media (max-width: 480px) { /* Smaller mobile devices */
+    .image-center img { width: 50px; /* Further adjust logo size if needed */ }
+    .site-title-main { font-size: 1.8rem; } /* Slightly smaller for very small screens */
+    .site-tagline-main { font-size: 1.4rem; } /* Slightly smaller for very small screens, fixed typo */
+
+  }
+
+
+.nav-link:hover{
+  background-color: #a0a1a1;
+}
+
+#svg img {
+  width: 100%;
+  height: auto;
+}
+#toc ul {
+  list-style-type: none;
+  padding: 0;
+}
+#toc li {
+  margin-bottom: 10px;
+}
+.toc-link {
+  text-decoration: none;
+  color: #007bff;
+}
+.toc-link:hover {
+  text-decoration: underline;
+}
+/* #svg1 img {
+  width: 100%; 
+  height: 100%;
+  object-fit: contain;
+} */
+  
+body > h1{
+  margin-left: 10%;
+}
+
+/* Ensure the outer container takes full width */
+/* Ensure the outer container takes full width */
+.container-fluid {
+  width: 100%;
+  padding: 20px;
+}
+
+/* Apply flexbox layout only for PC/tablet views */
+/* changed from 768 to 1000, change back if it gets screwed up */
+@media (min-width: 769px) { 
+  .container-fluid {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  /* Row styling */
+  #scene-row {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-start;
+  }
+
+  /* Responsive image container */
+   /* .responsive-image-container {
+    width: 100%;
+    height: auto;
+     object-fit: contain; 
+     display: flex;
+    align-items: flex-start;
+    justify-content: center; 
+  } */
+
+  /* Ensure the image scales properly */
+  .responsive-image-container svg {
+     width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain; 
+  }
+
+  /* Ensure the table of contents stays aligned */
+  /*   #toc-container {
+  flex: 0 0 25%;
+     max-width: 25%; 
+    position: relative; 
+     padding-right: 10%;
+  }  */
+
+  #toc1 {
+    position: relative;
+    width: 75%;
+    top: 20px; 
+    max-width: 300px; 
+    /* font-size: 2rem; */
+    margin-left: -50px;
+  }
+
+  /* Nav tabs styles */
+  .nav-tabs .nav-link {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+  
+
+  /* Flicker animation */
+  @keyframes flickerAnimation {
+    0%, 100% { stroke: yellow; stroke-width: 6; opacity: 1; }
+    50% { stroke: yellow; stroke-width: 6; opacity: 0; }
+  }
+  .flicker {
+    animation: flickerAnimation 2s infinite;
+    stroke: yellow;
+    stroke-width: 6;
+  }
+
+  /* Main container centering */
+  .main-container {
+    max-width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+
+   /*   #scene-row {
+  display: flex;
+    justify-content: center;
+     margin-right: -15px;
+   margin-left: -15px;   
+  } */
+}
+
+/* Responsive image container for all screen sizes */
+/*  .responsive-image-container {
+ width: 100%;
+  height: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;  
+} */
+
+/* .responsive-image-container img,
+.responsive-image-container svg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;  
+} */
+
+/* Style each row */
+
+.container-fluid {
+  width: 100%;
+/*   padding: 20px; */
+}
+
+/* Style each row */
+.row {
+  display: flex;
+ /* justify-content: center; /* Center columns horizontally */
+ /*   margin-bottom: 20px;   */
+}
+
+/* Style each column */
+.col-4 {
+  /*display: flex;*/
+  flex-direction: column;
+  align-items: center; /* Center icons vertically */
+  justify-content: center;
+  text-align: center;
+  /* overflow: hidden; */
+  border: 0.25px solid #ccc; /* Border style */
+  border-radius: 10px; /* Rounded corners */
+  /* padding: 10px; */
+  /* margin: 0.25px; */
+  background-color: #d8dbe3;
+  transform: scale(0.9);
+  max-width: 100%; 
+  max-height: 100%; 
+  width: 110px; 
+  height: 170px;
+}
+
+/* Ensure SVG icons are a reasonable size */
+.col-4 svg {
+  width: 100px;
+  height: 100px;
+  max-width: 100%; 
+  max-height: 50%; 
+  overflow: visible;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center; /* Center captions horizontally */
+  justify-content: flex-start;
+  /* transform: scale(1.55); */
+  /* transform: scale(0.9); */
+  transform-origin: center;
+  object-fit: contain;
+  /* transform: scale(1.5); Adjust scale as needed */
+   /* Ensure scaling is centered */
+  /* overflow: hidden; */
+  /* transform: scale(0.95); */
+}
+
+/* Style the captions */
+.col-4 div {
+  font-size: 13px; /* Adjust size as needed */
+  margin-top: 10px;
+  /*transform: scale(0.95);*/
+  word-break: break-word;
+  overflow-wrap: break-word;
+  display: flex;
+  /*hyphens: auto;*/
+  flex-direction: column-reverse;
+  align-items: center; /* Center captions horizontally */
+  justify-content: flex-end;
+  overflow: visible;
+}
+
+.modal {
+  z-index: 100001 ;
+
+}
+
+/* Toggle Switch CSS */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #033c73;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #033c73;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+#switchRow{
+  padding-top: 5%;
+}
+
+#switchRow > div.col > p{
+  font-size: 20px;
+}
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+@media (min-width: 900px) {
+  .modal-dialog {
+    min-width: 60%;
+    /*min-width: 30%;
+    /* max-width: 70%; */
+    /* transform: scale(1.3);  */
+    /* thought it'd be better to scale size instead of just max width; essentially a max width of 65% */
+    transform-origin: top center;
+    margin: 0 auto; 
+  }
+
+  /* #CA_Sheephead-1-pane > div:nth-child(4){
+    width: 100% !important; 
+    height: auto; 
+    display: block; 
+    margin: 0;
+  }
+  #CA_Sheephead-1-pane > div:nth-child(4) > img{
+    width: 100% !important; 
+    height: auto; 
+    display: block;
+    margin: 0;
+  } */
+  
+  #tagline-container{
+    max-width: 100%;
+    min-width: 300px;
+    /* margin-left: 10%; */
+    
+  }
+  #accordion-container{
+    max-width: 40%;
+    /* min-width: 200px; */
+    /* margin-left: -15% */
+  }
+}
+
+@media (max-width: 430px) {
+.modal-dialog {
+  min-width: 300px;
+}
+
+#tagline-container{
+  min-width: 300px;
+  /* max-width: 85%;
+  margin-left: -20% */
+}
+#accordion-container{
+  /* max-width: 40%; */
+  min-width: 200px;
+  /* min-width: 300px;
+  min-width: 10%; 
+  max-width: 20%; */
+}
+#myModal > div > div > div.modal-body{
+  min-width: 300px;
+}
+
+#mobile-view-image{
+  transform: scale(0.9);
+}
+}
+
+#images-header-1 > button{
+  border-radius: 0px;
+}
+#more-info-header-1 > button{
+  border-radius: 0px;
+}
+
+
+#heading0 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+  /* color: white */
+}
+#heading1 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+  /* border-width: 10px; */
+}
+#heading2 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
+#heading3 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
+#heading4 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
+#heading5 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
+#heading6 > button{
+  color: #03386c;
+  background: #f2f2f2;
+  border-radius: 0px;
+}
+
+#toc-group{
+  padding-top: 4%;
+  font-size: large;
+  margin-right: -11px;
+}
+
+#header-margin > a {
+  text-decoration-line: underline;
+}
+
+/* Mobile Navbar Adjustments */
+@media (max-width: 991.98px) { /* Using Bootstrap's lg breakpoint for consistency */
+  body > nav > div > div { /* This targets .navbar-wrapper */
+    display: flex; /* Use flexbox to arrange brand and toggler */
+    justify-content: space-between; /* Pushes brand to left, toggler to right */
+    align-items: flex-start; /* Align items to the top of the flex line */
+    width: 100%; /* Ensure wrapper uses full available width in container-fluid */
+    margin-left: 0; /* Override the global 'margin-left: 7%' for mobile nav */
+    flex-wrap: wrap; /* Allow .navbar-collapse to wrap to the next line */
+
+  }
+
+  .navbar-brand {
+    white-space: normal;    /* Allows text to wrap, overriding Bootstrap's default 'nowrap'. */
+    word-break: break-word; /* Allows long words to break and wrap if they would otherwise overflow. */
+    /* max-width: 75%; Remove or adjust this as flexbox will manage space. */
+    max-width: none; /* Allow flexbox to determine width */
+    margin-right: 1rem; /* Add a little space between brand and toggler if brand text is long */
+    display: inline-block;  /* Ensures 'max-width' is respected by an <a> tag and helps with vertical alignment.
+    display: inline-block;  /* Ensures 'max-width' is respected by an <a> tag and helps with vertical alignment.
+                               Bootstrap's .navbar-brand is often inline-block or block by default. */
+    vertical-align: middle; /* Helps to vertically align the brand text with the toggler icon,
+                               especially if the brand text wraps to multiple lines. */
+    /* Bootstrap's .navbar-brand usually has some 'margin-right'. If you need specific spacing
+       to the right before the 75% max-width limit, you could add 'margin-right' here.
+       e.g., margin-right: 10px; */
+  }
+}
+
+/* Navigation bar stuff */
+@media (min-width: 1000px) {
+  .navbar-wrapper {
+      display: flex;
+      flex-direction: column; /* Stack brand and nav items vertically */
+      align-items: center;   /* Center items horizontally */
+      position: relative; /* Kept from original, in case it's used for dropdowns or other elements */
+      justify-content: center; /* Kept from original, now centers content vertically if wrapper has more height than content */
+      /* width: 100%; */
+      max-width: 1000px; 
+      margin: 0 auto; 
+  }
+
+  .nav-link {
+    text-decoration-line: underline;
+  }
+
+  .navbar-expand-lg > .container-fluid {
+    padding-top: 10px;
+    padding-bottom: 0;
+  }
+
+  .nav-link {
+    padding-top: 0;
+    padding-bottom: 8px;
+  }
+
+  .navbar-wrapper .navbar-brand {
+    /* The .navbar-brand is a direct child of .navbar-wrapper. */
+    /* It will be centered horizontally due to .navbar-wrapper's 'align-items: center'. */
+    margin-bottom: 10px; /* Adds some space between the brand and the navigation links below it */
+  }
+
+  /* Assuming .navbar-collapse is a direct child of .navbar-wrapper and contains .navbar-nav */
+  .navbar-wrapper .navbar-collapse {
+    /* This container for the main navigation links will be centered horizontally */
+    /* by .navbar-wrapper's 'align-items: center'. */
+    display: flex; /* Use flexbox to control the alignment of .navbar-nav within it. */
+    justify-content: center; /* Horizontally center .navbar-nav (the list of links). */
+    width: 100%; /* Ensure .navbar-collapse takes available width to allow centering of its content. */
+  }
+
+  .navbar-nav {
+      flex-direction: row;
+      /* The .navbar-nav items will remain in a row. */
+      /* The .navbar-nav block itself is centered by its parent, .navbar-collapse. */
+  }
+}
+
+body > nav > div > div{
+  margin-left: 7%;
+}
+
+
+/* Universal focus style */
+:focus {
+  outline: 2px solid red;
+  outline-offset: 2px; /* Optional: Adds space between the element and the outline */
+}
+
+/* Ensure the same focus style for specific elements */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus,
+nav:focus,
+div:focus,
+li:focus,
+ul:focus,
+span:focus, 
+h1:focus,
+h2:focus,
+h3:focus,
+h4:focus {
+  outline: 2px solid red;
+  outline-offset: 2px; /* Optional: Adds space between the element and the outline */
+}
+.nav-link:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem red;
+}
+.button:focus-visible {
+  outline: 0 !important;
+  box-shadow: 0 0 0 0.25rem red !important;
+}
+button:focus,
+.accordion-button:focus {
+  outline: 4px solid red;
+  outline-offset: 4px;
+}
+#top-button:focus {
+  outline: 4px solid red;
+  outline-offset: 4px;
+}
+#toggleButton:focus {
+  outline: 4px solid red;
+  outline-offset: 4px;
+}
+
+.btn-primary:focus {
+  outline: 4px solid red;
+  outline-offset: 4 px;
+}
+
+#toc-container > ul{
+  font-size: large;
+  padding-left: 0.5rem;
+}
+
+#plotly-plot {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#plotly-plot > div{
+  width: 80% !important;
+  height: 80% !important;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.btn-primary {
+  background-image: none;
+}
+
+.accordion-button {
+  display: flex;
+  position: relative;
+  font-size: large;
+  
+}
+
+.accordion-button::after {
+  position: absolute;
+  right: 20px;
+  margin-left: 0;
+}
+
+
+#more-info-collapse-1 > div{
+  background-color: #f2f2f2;
+}
+#images-collapse-1 > div{
+  background-color: #f2f2f2;
+}
+
+#toccollapse0 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse1 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse2 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse3 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse4 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse5 > div{
+  background-color: #f2f2f2;
+}
+#toccollapse6 > div{
+  background-color: #f2f2f2;
+}
+
+#toc-group > div:nth-child(n) {
+  border-radius: 0px;
+  border-color: #cbcbcb;
+  margin-bottom: 6px;
+  border-top: 1px solid #cbcbcb;
+}
+
+
+#more-info-item-1{
+  margin-bottom: 4px;
+}
+
+
+
+
+#taglineHeaderId > button{
+  margin-bottom: 4px;
+  border-radius: 0;
+
+}
+
+#accordion-header-3 > button{
+
+  border-radius: 0;
+
+  /* display: flex;
+  justify-content: flex-start; 
+  align-items: center; 
+  position: relative;
+  font-size: large;
+  text-align: left;  */
+}
+
+@media (max-width: 430px) {
+  #accordion-header-1 > button {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    position: relative;
+    font-size: large;
+    text-align: left; 
+  }
+  #accordion-header-2 > button {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    position: relative;
+    font-size: large;
+    text-align: left; 
+  }
+  #accordion-header-3 > button{
+ 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    position: relative;
+    font-size: large;
+    text-align: left; 
+  }
+
+}
+#svg-elem{
+  z-index: 999;
+}
+@media (min-width: 769px) {  /* a bunch of new stuff here for updated formatting */
+ 
+ #title-container .accordion-button {
+  justify-content: left;
+ }
+
+ #title-container .accordion-body {
+  padding-left: 0px;
+ }
+
+#accordion-item-1 ul, #accordion-item-2 ul  {
+  padding-left: 15px;
+}
+
+  #title-container > div > div.col-md-2{
+      padding-right: 2%;
+  } 
+
+  #title-container{
+     padding-left: 4%; 
+  }
+
+  #title-container > div > div.col-md-10{
+
+    padding-right:4%;
+    /* margin-left: -12%;
+    margin-bottom: -5%;
+    width: 97.333333%;*/
+
+  }
+
+  #scene-row > div.col-md-10{
+  /*  margin-left: -5.7% !important;
+    width: 97.333333% !important; */
+    padding-left: 3.5%;
+  }
+
+/*    #svg1{
+   margin-left: -4% !important; 
+  } */
+
+  #toc-container{
+ /*     margin-left: -22% !important;
+    padding-right: 0% !important; */
+    padding-left: 3.4%;
+  }
+
+ /*   #toc-group{
+    max-width: 61% !important;
+    margin-left: 37% !important;
+    padding-top: 0% !important; 
+  } */
+
+  #accordion-container{
+    padding-top: 8px;
+    transform: scale(0.85);
+    margin-top: -14px;
+    margin-right: -15px;
+
+  }
+  #accordion-collapse-1 a {
+    font-size: 1.1rem; 
+  }
+  #accordion-collapse-2 a {
+    font-size: 1.1rem; 
+  }
+
+}
+body > nav{
+  z-index: 9998 !important;
+}  
+
+#accordion-item-1{
+  border-color: lightgrey;
+  border-width: 1px;
+}
+#accordion-item-2{
+  border-color: lightgrey;
+  border-width: 1px;
+}
+
+/* footer components */
+.footer_component { 
+  padding: 6px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem; 
+  display: inline-block;
+}
+
+/* front page CSS */
+.instance_published_button {
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+.instance_draft_button {
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    color: white; 
+    background-color: #808080
+}
