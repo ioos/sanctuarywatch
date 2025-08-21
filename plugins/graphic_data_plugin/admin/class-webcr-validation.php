@@ -29,7 +29,7 @@ class webcr_validation {
     public function master_validate($validate_content_type){
         switch ($validate_content_type) {
             case "about":
-                return true;
+                return $this->validate_about();
                 break;
             case "scene":
                 $this->validate_scene();
@@ -47,6 +47,53 @@ class webcr_validation {
                 return false;
         }
     }
+
+    // The purpose of this function is to validate the fields of the About custom content type. 
+    public function validate_about (){
+        $save_about_fields = true;
+
+        // Clear previous validation data from session
+        unset($_SESSION["about_errors"]);
+        unset($_SESSION["about_post_status"]);
+
+        $about_errors = [];
+        $about_warnings = [];
+
+        if ($_POST["centralAbout"]["aboutMain"] == ""){
+            array_push($about_errors,  'The "Central content: main" field cannot be left blank.');
+            $save_about_fields = FALSE;
+        }
+
+        $numberAboutBoxes = $_POST["numberAboutBoxes"];
+        if ($numberAboutBoxes > 0) {
+            for ($i = 1; $i <= $numberAboutBoxes; $i++) {
+                if ($_POST["aboutBox". $i]["aboutBoxTitle" . $i] == "" || $_POST["aboutBox". $i]["aboutBoxMain" . $i] == "") {  
+                    array_push($about_errors,  'In About Box ' . $i . ' , the title and  "content: main" fields cannot be left blank.');
+                    $save_about_fields = FALSE;
+                }
+            }
+        }
+
+        if ($save_about_fields == FALSE) {
+            $_SESSION["about_errors"] = $about_errors; // Store array directly
+            $_SESSION["about_post_status"] = "post_error";
+
+            // Instamtiate the modal class 
+            $about_class = new Webcr_About( $this->plugin_name, $this->version ); // Assuming this is your modal class
+            
+            // Get the fields configuration
+            $fields_config = $this->get_fields_config('about', $about_class);
+            
+            // save the fields to the transient
+            $function_utilities = new Webcr_Utility();
+            $function_utilities ->  fields_to_transient('about', $fields_config, 30);
+        } else {
+            $_SESSION["about_post_status"] = "post_good";
+        }
+
+        return $save_about_fields;
+    }
+
 
     // The purpose of this function is to validate the fields of the Instance custom content type. If validation fails, it sets a cookie with the error messages and the values of the fields that were submitted. 
     // It also sets a cookie to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
@@ -567,30 +614,6 @@ class webcr_validation {
         return $save_modal_fields;
     }
 
-    // Write all values from the fields of the edit figure post to the session.
-    // This is used to repopulate the fields in the figure edit form if there are errors in the submission.
-    public function figure_fields_to_session () {
-
-        // save simple field values to the array
-        $figure_field_names = ["location", "figure_scene", "figure_modal", "figure_tab", "figure_order", "figure_path", "figure_image",
-            "figure_external_url", "figure_external_alt", "figure_code", "figure_interactive_arguments", "figure_caption_short", "figure_caption_long", "figure_title"];
-
-        $figure_fields = [];
-        foreach ($figure_field_names as $individual_figure_field_name){
-            $figure_fields[$individual_figure_field_name] = $_POST[$individual_figure_field_name];
-        }
-
-        // write complex fieldset values to the array
-        $figure_fields['figure_science_link_text'] = $_POST["figure_science_info"]["figure_science_link_text"];
-        $figure_fields['figure_science_link_url'] = $_POST["figure_science_info"]["figure_science_link_url"];
-        $figure_fields['figure_data_link_text'] = $_POST["figure_data_info"]["figure_data_link_text"];
-        $figure_fields['figure_data_link_url'] = $_POST["figure_data_info"]["figure_data_link_url"];
-
-        // write array to session
-        $_SESSION["figure_error_all_fields"] = $figure_fields; // Store array directly
-    }
-
-
     // The purpose of this function is to validate the fields of the Scene custom content type. If validation fails, it sets a cookie with the error messages and the values of the fields that were submitted. 
     // It also sets a cookie to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
     // However, the page is reloaded and an error message is displayed to the user.
@@ -758,7 +781,5 @@ class webcr_validation {
         
         return [];
     }
-    
-
 
 }

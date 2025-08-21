@@ -1,6 +1,9 @@
 
 'use strict';
 
+// the last stop in the field validation process (if needed)
+replaceFieldValuesWithTransientValues();
+
 // The following code changes the number of visible about boxes depending on the value of "Number of About Boxes"
 displayAboutBoxes();
 
