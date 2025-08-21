@@ -1012,12 +1012,14 @@ class Webcr_Figure {
 
         // Check if file exists
         if (!file_exists($file_path)) {
+            update_post_meta($post_id, 'uploaded_path_geojson', '');
+            update_post_meta($post_id, 'uploaded_path_json', '');
+            update_post_meta($post_id, 'uploaded_file', '');
             wp_send_json_error(['message' => 'File does not exist.'], 404);
         }
 
         // Delete the converted json file if it was originally a csv. file.
         if (pathinfo($file_name, PATHINFO_EXTENSION) === 'csv'){
-            unlink($file_path_json);
             update_post_meta($post_id, 'uploaded_path_csv', '');
             update_post_meta($post_id, 'uploaded_path_json', '');
             update_post_meta($post_id, 'uploaded_file', '');
