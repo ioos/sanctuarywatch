@@ -1,8 +1,9 @@
-
 // These functions only fire upon editing or creating a post of Figure custom content type
 
 'use strict';
 
+// the last stop in the field validation process (if needed)
+replaceFieldValuesWithTransientValues();
 
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
 document.addEventListener('DOMContentLoaded', redText);

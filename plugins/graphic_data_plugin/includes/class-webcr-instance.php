@@ -69,13 +69,35 @@ class Webcr_Instance {
         register_post_type( 'instance', $args );
     }
 
-
     /**
-	 * Create custom fields, using metaboxes, for Figure custom content type.
-	 *
+	 * Show admin notice on Instance edit post page that there is a problem with the Instance Type taxonomy, if the appropriate flag has been set in the session.
+     * 
 	 * @since    1.0.0
 	 */
-    function create_instance_fields() {
+    function taxonomy_problem_admin_notice() {
+
+                // Only run on edit post pages for the modal post type
+        global $pagenow, $post;
+        
+        if ($pagenow == 'post.php' || $pagenow == 'post-new.php') {
+        
+            $current_post_type = isset($post->post_type) ? $post->post_type : '';
+
+            if (!$post || $current_post_type != 'instance') { 
+                if (isset($_SESSION["instance_type_taxonomy_error"]) && $_SESSION["instance_type_taxonomy_error"] == "true") {
+                    echo '<div class="notice notice-error is-dismissible">Error! You must create at least one Instance Type first, before you can create an Instance. </div>'; 
+                    unset($_SESSION["instance_type_taxonomy_error"]); // clear the session variable so we don't show this notice again
+                }
+            }
+        }
+    }
+    /**
+	 * Create custom fields, using metaboxes, for Instance custom content type.
+     * 
+	 * @param bool $return_fields_only If true, only return the custom fields array without registering the metabox (used as part of field validation).
+	 * @since    1.0.0
+	 */
+    function create_instance_fields($return_fields_only = false) {
 
         $config_metabox = array(
 
@@ -92,12 +114,6 @@ class Webcr_Instance {
             'tabbed'            => true,
             'options'           => 'simple',                        // Only for metabox, options is stored az induvidual meta key, value pair.
         );
-
-        $session_fields_exist = false;
-        if (isset($_SESSION["instance_error_all_fields"])) {
-            $session_fields = $_SESSION["instance_error_all_fields"];
-            $session_fields_exist = true;
-        }  
 
 
         // get list of locations, which is saved as a taxonomy
@@ -122,7 +138,9 @@ class Webcr_Instance {
              foreach ($instance_type_terms as $term) {
                 $instance_type_array[$term->term_id] = ucwords($term->slug);
             }
-        }
+        } else {
+            $_SESSION["instance_type_taxonomy_error"] = "true";
+        }   
 
         $fields = array(
             array(
@@ -143,7 +161,7 @@ class Webcr_Instance {
                 'id'             => 'instance_type',
                 'type'           => 'select',
                 'title'          => 'Instance Type*',
-                'options'        => $instance_type_array, //array("Designation" => "Designation", "Issue" => "Issue", "Sanctuary" => "Sanctuary"),
+                'options'        => $instance_type_array, 
                 'description' => 'What is the instance type?',
             ),
             array(
@@ -166,7 +184,7 @@ class Webcr_Instance {
                 'id'    => 'instance_tile',
                 'type'  => 'image',
                 'title' => 'Tile image',
-                'description' => 'What is the instance image for the front page tile? The image should be 250 pixels wide and 200 pixels tall.'
+                'description' => 'What is the instance image for the front page tile? The image m be 250 pixels wide and 200 pixels tall.'
             ),
             array(
                 'id'             => 'instance_legacy_content',
@@ -207,7 +225,7 @@ class Webcr_Instance {
                 'min'     => 0,     
                 'max'     => 3,         
                 'step'    => 1,  
-                'default'     => $session_fields_exist ? $session_fields["instance_footer_columns"] : 0,         
+                'default'     =>  0,         
             ),     
         );
 
@@ -226,14 +244,12 @@ class Webcr_Instance {
                         'type'        => 'text',
                         'title'       => 'Column header',
                         'class'       => 'text-class',
-                        'default'     => $session_fields_exist ? $session_fields['instance_footer_column_title' . $i] : '',  
                     ),
                     array(
                         'id'          => 'instance_footer_column_content' . $i,
                         'type'   => 'editor',
                         'editor' => 'trumbowyg',
                         'title'  => 'Column content', 
-                        'default'     => $session_fields_exist ? $session_fields['instance_footer_column_content' . $i] : '', 
                     ),
                 ),
             );
@@ -247,6 +263,11 @@ class Webcr_Instance {
             'icon'   => 'dashicons-admin-generic',
             'fields' => $fields,
         );
+
+        // If we're just running this function to get the custom field list for field validation, return early
+        if ($return_fields_only) {
+            return $fields;
+        }
 
         // instantiate the admin page
         $options_panel = new Exopite_Simple_Options_Framework( $config_metabox, $fieldsHolder );

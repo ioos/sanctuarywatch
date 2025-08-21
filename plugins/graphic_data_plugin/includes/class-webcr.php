@@ -168,6 +168,8 @@ class Webcr {
 	public function define_admin_hooks() {
 		// Load class and functions of utility functions
 		$plugin_utility = new Webcr_Utility();
+		$this->loader->add_action( 'admin_notices', $plugin_utility, 'post_admin_notice' ); 
+		$this->loader->add_action( 'admin_footer', $plugin_utility, 'output_transient_to_js' ); 
 
 		// Load class and functions to change overall look and function of admin screens
 		$plugin_admin = new Webcr_Admin( $this->get_plugin_name(), $this->get_version() );
@@ -219,7 +221,8 @@ class Webcr {
 		$this->loader->add_filter( 'bulk_actions-edit-instance', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin_instance, 'custom_content_remove_quick_edit_link', 10, 2 ); 
 		$this->loader->add_filter( 'rest_api_init', $plugin_admin_instance, 'register_instance_rest_fields' ); 
-		$this->loader->add_action( 'admin_notices', $plugin_admin_instance, 'instance_admin_notice' ); 
+		$this->loader->add_action( 'admin_notices', $plugin_admin_instance, 'taxonomy_problem_admin_notice',10 ); 
+		$this->loader->add_action( 'admin_notices', $plugin_admin_instance, 'instance_admin_notice',20 ); 
 
 		// Load class and functions associated with the Settings Page
 		$plugin_admin_settings_page = new Graphic_Data_Settings_Page ( $this->get_plugin_name(), $this->get_version() );		
@@ -239,7 +242,6 @@ class Webcr {
 
 		// Load  class and functions associated with Scene custom content type
 		$plugin_admin_scene = new Webcr_Scene( $this->get_plugin_name(), $this->get_version() );		
-		$this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'scene_admin_notice' ); 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_scene, 'scene_filter_dropdowns' ); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_filter_results' ); 
 		$this->loader->add_action( 'current_screen', $plugin_admin_scene, 'cleanup_expired_scene_filters' ); 
@@ -261,12 +263,6 @@ class Webcr {
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ($this->get_plugin_name(), $this->get_version() );	
-		$this->loader->add_action( 'admin_notices', $plugin_utility, 'post_admin_notice' ); 
-
-        $this->loader->add_filter('get_post_metadata', $plugin_utility, 'override_metabox_value_with_session_value', 10, 4);
-
-		
-//		$this->loader->add_action( 'admin_notices', $plugin_utility, ['post_admin_notice',"modal"] ); 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); 
 		$this->loader->add_action( 'current_screen', $plugin_admin_modal, 'cleanup_expired_modal_filters' ); 

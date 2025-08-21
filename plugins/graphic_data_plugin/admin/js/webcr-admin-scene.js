@@ -2,6 +2,9 @@
 
 'use strict';
 
+// the last stop in the field validation process (if needed)
+replaceFieldValuesWithTransientValues();
+
 // In case of data entry error with scene post, let's set the scene fields values to the values in the cookie
 writeCookieValuesToSceneFields();
 

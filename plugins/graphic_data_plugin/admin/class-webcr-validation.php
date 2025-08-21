@@ -4,25 +4,27 @@
  * The class that defines the validation methods for the fields of the custom content types
  */
 
+include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
+
 class webcr_validation {
 
     /**
 	 * The unique identifier of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   protected
+	 * @access   public
 	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
-	protected $plugin_name = 'webcr';
+	public $plugin_name = 'webcr';
 
 	/**
 	 * The current version of the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   protected
+	 * @access   public
 	 * @var      string    $version    The current version of the plugin.
 	 */
-	protected $version = '1.0.0';
+	public $version = '1.0.0';
 
     public function master_validate($validate_content_type){
         switch ($validate_content_type) {
@@ -30,7 +32,7 @@ class webcr_validation {
                 return true;
                 break;
             case "scene":
-                return true;// $this->validate_scene();
+                $this->validate_scene();
                 break;
             case "modal":
                 return $this->validate_modal();
@@ -52,11 +54,10 @@ class webcr_validation {
     public function validate_instance (){
         $save_instance_fields = true;
 
-        // Clear previous figure validation data from session
+        // Clear previous validation data from session
         unset($_SESSION["instance_errors"]);
         unset($_SESSION["instance_warnings"]);
         unset($_SESSION["instance_post_status"]);
-        unset($_SESSION["instance_error_all_fields"]); // This is set by figure_fields_to_session
 
         $instance_errors = [];
         $instance_warnings = [];
@@ -144,46 +145,39 @@ class webcr_validation {
             }
         }
 
+        $instance_footer_column_number = $_POST["instance_footer_columns"];
+
+        for ($i = 1; $i <= $instance_footer_column_number; $i++) {
+            $footer_column = $_POST["instance_footer_column" . $i];
+            if ($footer_column["instance_footer_column_title" . $i] == "" || $footer_column["instance_footer_column_content" . $i] == "") {
+                $save_instance_fields = FALSE;
+                array_push($instance_errors,  "The Header and Content fields in Footer column " . $i . " cannot be blank.");
+            }
+        }   
+
         if (!empty($instance_warnings)){
-            $warning_list_cookie_value = json_encode($instance_warnings);
-            setcookie("instance_warnings", $warning_list_cookie_value, time() + 10, "/");          
+            $_SESSION["instance_warnings"] = $instance_warnings;             
         }
         if ($save_instance_fields == FALSE) {
-            $error_list_cookie_value = json_encode($instance_errors);
-            setcookie("instance_errors", $error_list_cookie_value, time() + 10, "/");           
-            setcookie("instance_post_status", "post_error", time() + 10, "/");
-            $this->instance_fields_to_session();
+            $_SESSION["instance_errors"] = $instance_errors; // Store array directly
+            $_SESSION["instance_post_status"] = "post_error";
+
+            // Instamtiate the modal class 
+            $instance_class = new Webcr_Instance( $this->plugin_name, $this->version ); // Assuming this is your modal class
+            
+            // Get the fields configuration
+            $fields_config = $this->get_fields_config('instance', $instance_class);
+            
+            // save the fields to the transient
+            $function_utilities = new Webcr_Utility();
+            $function_utilities ->  fields_to_transient('instance', $fields_config, 30);
         } else {
-            setcookie("instance_post_status", "post_good", time() + 10, "/");
+            $_SESSION["instance_post_status"] = "post_good";
         }
 
         return $save_instance_fields;
     }
 
-
-    // Write all values from the fields of the instance figure post to a session. 
-    // This is used to repopulate the fields in the instance edit form if there are errors in the submission.
-    public function instance_fields_to_session () {
-
-        // save simple field values to the array
-        $instance_field_names = ["instance_short_title", "instance_slug", "instance_type", "instance_overview_scene",
-            "instance_status", "instance_tile", "instance_legacy_content", "instance_legacy_content_url"];
-
-        $instance_fields = [];
-        foreach ($instance_field_names as $individual_instance_field_name){
-            $instance_fields[$individual_instance_field_name] = $_POST[$individual_instance_field_name];
-        }
-
-        // write complex fieldset values to the array
-        $instance_fields['instance_footer_about'] = $_POST["instance_footer"]["instance_footer_about"];
-        $instance_fields['instance_footer_contact'] = $_POST["instance_footer"]["instance_footer_contact"];
-        $instance_fields['instance_footer_reports'] = $_POST["instance_footer"]["instance_footer_reports"];
-
-        $instance_fields_cookie_value = json_encode($instance_fields);
-
-        // write array to cookie
-        setcookie("instance_error_all_fields", $instance_fields_cookie_value, time() + 10, "/"); 
-    }
 
     // The purpose of this function is to validate the fields of the Figure custom content type. If validation fails, it saves to the session the error messages and the values of the fields that were submitted. 
     // It also save to the session to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
@@ -195,7 +189,6 @@ class webcr_validation {
         unset($_SESSION["figure_errors"]);
         unset($_SESSION["figure_warnings"]);
         unset($_SESSION["figure_post_status"]);
-        unset($_SESSION["figure_error_all_fields"]); // This is set by figure_fields_to_session
 
         $figure_errors = [];
         $figure_warnings = [];
@@ -319,7 +312,16 @@ class webcr_validation {
         if ($save_figure_fields == FALSE) {
             $_SESSION["figure_errors"] = $figure_errors; // Store array directly
             $_SESSION["figure_post_status"] = "post_error";
-            $this->figure_fields_to_session(); // Call the renamed method
+
+            // Instamtiate the modal class 
+            $figure_class = new Webcr_Figure( $this->plugin_name, $this->version ); // Assuming this is your modal class
+            
+            // Get the fields configuration
+            $fields_config = $this->get_fields_config('figure', $figure_class);
+            
+            // save the fields to the transient
+            $function_utilities = new Webcr_Utility();
+            $function_utilities ->  fields_to_transient('figure', $fields_config, 30);
         } else {
             $_SESSION["figure_post_status"] = "post_good";
         }
@@ -332,11 +334,10 @@ class webcr_validation {
     public function validate_modal(){
         $save_modal_fields = true;
 
-        // Clear previous figure validation data from session
+        // Clear previous validation data from session
         unset($_SESSION["modal_errors"]);
         unset($_SESSION["modal_warnings"]);
         unset($_SESSION["modal_post_status"]);
-        unset($_SESSION["modal_error_all_fields"]); 
 
         $modal_errors = [];
         $modal_warnings = [];
@@ -543,22 +544,22 @@ class webcr_validation {
         }
 
         if (!empty($modal_warnings)){
-            $_SESSION["modal_warnings"] = $modal_warnings; // Store array directly          
+            $_SESSION["modal_warnings"] = $modal_warnings;          
         }
         if ($save_modal_fields == FALSE) {
             $_SESSION["modal_errors"] = $modal_errors; // Store array directly
             $_SESSION["modal_post_status"] = "post_error";
 
-        // Get the modal class instance
-            $modal_class = new Webcr_Modal( $this->$plugin_name, $this->$version ); // Assuming this is your modal class
+            // Instamtiate the modal class 
+            $modal_class = new Webcr_Modal( $this->plugin_name, $this->version ); // Assuming this is your modal class
             
             // Get the fields configuration
             $fields_config = $this->get_fields_config('modal', $modal_class);
             
-            // Use the generalized function
-            $this->fields_to_session('modal', $fields_config);
+            // save the fields to the transient
+            $function_utilities = new Webcr_Utility();
+            $function_utilities ->  fields_to_transient('modal', $fields_config, 30);
 
-      //      $this->modal_fields_to_session();
         } else {
             $_SESSION["modal_post_status"] = "post_good";
         }
@@ -589,31 +590,6 @@ class webcr_validation {
         $_SESSION["figure_error_all_fields"] = $figure_fields; // Store array directly
     }
 
-    // Write all values from the fields of the edit modal post to the session. 
-    // This is used to repopulate the fields in the modal edit form if there are errors in the submission.
-    public function modal_fields_to_session () {
-
-        $modal_field_names = ["modal_published", "modal_location", "modal_scene", "modal_icons", "modal_icon_order", "icon_toc_section",
-            "icon_function", "icon_external_url", "icon_scene_out", "modal_tagline", "modal_info_entries", "modal_photo_entries", "modal_tab_number"];
-
-        $modal_fields = [];
-        foreach ($modal_field_names as $individual_modal_field_name){
-            $modal_fields[$individual_modal_field_name] = $_POST[$individual_modal_field_name];
-        }
-
-        for ($i = 1; $i < 7; $i++){
-            $modal_fields['modal_info_url' . $i] = $_POST["modal_info" . $i]["modal_info_url" . $i];
-            $modal_fields['modal_info_text' . $i] = $_POST["modal_info" . $i]["modal_info_text" . $i];
-            $modal_fields['modal_photo_url' . $i] = $_POST["modal_photo" . $i]["modal_photo_url" . $i];
-            $modal_fields['modal_photo_text' . $i] = $_POST["modal_photo" . $i]["modal_photo_text" . $i];
-            $modal_fields['modal_photo_location' . $i] = $_POST["modal_photo" . $i]["modal_photo_location" . $i];
-            $modal_fields['modal_photo_internal' . $i] = $_POST["modal_photo" . $i]["modal_photo_internal" . $i];
-            $modal_fields['modal_tab_title' . $i] = $_POST['modal_tab_title' . $i];
-        }
-
-        // write array to session
-        $_SESSION["modal_error_all_fields"] = $modal_fields; 
-    }
 
     // The purpose of this function is to validate the fields of the Scene custom content type. If validation fails, it sets a cookie with the error messages and the values of the fields that were submitted. 
     // It also sets a cookie to indicate whether the post was successful or not. If the function returns false, it means that the validation failed and the post was not saved. 
@@ -621,9 +597,10 @@ class webcr_validation {
     public function validate_scene (){
         $save_scene_fields = true;
 
-        // Set the error list cookie expiration time to a past date in order to delete it, if it is there
-        setcookie("scene_errors", 0, time() - 3000, "/");
-        setcookie("scene_warnings", 0, time() - 3000, "/");
+        // Clear previous validation data from session
+        unset($_SESSION["scene_errors"]);
+        unset($_SESSION["scene_warnings"]);
+        unset($_SESSION["scene_post_status"]);
 
         $scene_errors = [];
         $scene_warnings = [];
@@ -664,7 +641,7 @@ class webcr_validation {
                     // Search for the <icons> tag
                     $iconPosition = stripos($content, 'icons');
                     if ($iconPosition == false) {
-                        array_push($scene_errors,  "The infographic does not contain an Icons layer.");
+                        array_push($scene_errors,  "The infographic is not formatted correctly as it does not contain an icons layer.");
                         $save_scene_fields = FALSE;
                     }
                 }
@@ -733,45 +710,25 @@ class webcr_validation {
             }
         }
         if (!empty($scene_warnings)){
-            $warning_list_cookie_value = json_encode($scene_warnings);
-            setcookie("scene_warnings", $warning_list_cookie_value, time() + 10, "/");          
+            $_SESSION["scene_warnings"] = $scene_warnings;       
         }
         if ($save_scene_fields == FALSE) {
-            $error_list_cookie_value = json_encode($scene_errors);
-            setcookie("scene_errors", $error_list_cookie_value, time() + 10, "/");           
-            setcookie("scene_post_status", "post_error", time() + 10, "/");
-            $this->scene_fields_to_cookie();
+            $_SESSION["scene_errors"] = $scene_errors; // Store array directly
+            $_SESSION["scene_post_status"] = "post_error";
+
+            // Instamtiate the modal class 
+            $scene_class = new Webcr_Scene( $this->plugin_name, $this->version ); // Assuming this is your modal class
+            
+            // Get the fields configuration
+            $fields_config = $this->get_fields_config('scene', $scene_class);
+            
+            // save the fields to the transient
+            $function_utilities = new Webcr_Utility();
+            $function_utilities ->  fields_to_transient('scene', $fields_config, 30);
         } else {
-            setcookie("scene_post_status", "post_good", time() + 10, "/");
+            $_SESSION["scene_post_status"] = "post_good";
         }
         return $save_scene_fields;
-    }
-
-    public function scene_fields_to_cookie () {
-
-        $scene_field_names = ["scene_published", "scene_location", "scene_infographic", "scene_tagline", "scene_info_entries", "scene_photo_entries", 
-            "scene_order", "scene_orphan_icon_action", "scene_orphan_icon_color", "scene_toc_style", "scene_same_hover_color_sections", "scene_hover_color", 
-            "scene_full_screen_button", "scene_text_toggle", "scene_section_number"];
-
-        $scene_fields = [];
-        foreach ($scene_field_names as $individual_scene_field_name){
-            $scene_fields[$individual_scene_field_name] = $_POST[$individual_scene_field_name];
-        }
-
-        for ($i = 1; $i < 7; $i++){
-            $scene_fields['scene_info_url' . $i] = $_POST["scene_info" . $i]["scene_info_url" . $i];
-            $scene_fields['scene_info_text' . $i] = $_POST["scene_info" . $i]["scene_info_text" . $i];
-            $scene_fields['scene_photo_url' . $i] = $_POST["scene_photo" . $i]["scene_photo_url" . $i];
-            $scene_fields['scene_photo_text' . $i] = $_POST["scene_photo" . $i]["scene_photo_text" . $i];
-            $scene_fields['scene_photo_location' . $i] = $_POST["scene_photo" . $i]["scene_photo_location" . $i];
-            $scene_fields['scene_photo_internal' . $i] = $_POST["scene_photo" . $i]["scene_photo_internal" . $i];
-            $scene_fields['scene_section_title' . $i] = $_POST["scene_section" . $i]["scene_section_title" . $i];
-            $scene_fields['scene_section_hover_color' . $i] = $_POST["scene_section" . $i]["scene_section_hover_color" . $i];
-        }
-
-        $scene_fields_cookie_value = json_encode($scene_fields);
-
-        setcookie("scene_error_all_fields", $scene_fields_cookie_value, time() + 10, "/"); 
     }
 
     // This function checks whether an input url has valid syntax
@@ -781,71 +738,6 @@ class webcr_validation {
         } else {
             return TRUE;
         } 
-    }
-
-// begin AI field session writing functions
-
-    /**
-     * Generalized function to write all field values from any custom content type to session
-     * 
-     * @param string $content_type The custom content type (e.g., 'modal', 'scene', etc.)
-     * @param array $fields_config The fields configuration array from the create_*_fields() method
-     * @since 1.0.0
-     */
-    public function fields_to_session($content_type, $fields_config) {
-        $all_fields = [];
-        
-        // Process the fields configuration to extract field IDs and handle fieldsets
-        $this->extract_field_values($fields_config, $all_fields);
-        
-        $_SESSION[$content_type . "_error_all_fields"] = $all_fields;
-
-    }
-    
-    /**
-     * Recursively extract field values from POST data based on field configuration
-     * 
-     * @param array $fields The fields configuration array
-     * @param array &$all_fields Reference to array where field values will be stored
-     */
-    private function extract_field_values($fields, &$all_fields) {
-        foreach ($fields as $field) {
-            // Skip button type fields
-            if (isset($field['type']) && $field['type'] === 'button') {
-                continue;
-            }
-            
-            // Handle fieldsets (nested fields)
-            if (isset($field['type']) && $field['type'] === 'fieldset') {
-                $fieldset_id = $field['id'];
-                
-                // Process each field within the fieldset
-                if (isset($field['fields']) && is_array($field['fields'])) {
-                    foreach ($field['fields'] as $nested_field) {
-                        if (isset($nested_field['id']) && isset($nested_field['type']) && $nested_field['type'] !== 'button') {
-                            $nested_field_id = $nested_field['id'];
-                            // For fieldsets, data is nested: $_POST[fieldset_id][field_id]
-                            if (isset($_POST[$fieldset_id][$nested_field_id])) {
-                                $all_fields[$nested_field_id] = $_POST[$fieldset_id][$nested_field_id];
-                            }
-                        }
-                    }
-                }
-            }
-            // Handle regular fields
-            elseif (isset($field['id']) && isset($field['type'])) {
-                $field_id = $field['id'];
-                // For regular fields, data is direct: $_POST[field_id]
-                if (isset($_POST[$field_id])) {
-                    $all_fields[$field_id] = $_POST[$field_id];
-                }
-            }
-            
-            // Handle nested field arrays (like your tabFields)
-            if (isset($field['fields']) && is_array($field['fields'])) {
-                $this->extract_field_values($field['fields'], $all_fields);
-            }
-        }
     }
     
     /**

@@ -1,5 +1,9 @@
 'use strict';
 
+// the last stop in the field validation process (if needed)
+replaceFieldValuesWithTransientValues();
+
+
 let hoverColor = "red"; // hacky solution to solving problem of hoverColor in promise. FIX
 
 // Makes title text red if it ends with an asterisk in "exopite-sof-title" elements. Also adds a line giving the meaning of red text at top of form.
@@ -558,19 +562,21 @@ function modal_icons_change() {
                     }
                 }
 
-                let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
-    
-                // Select all child elements 
-                let subElements = svgIconTarget.querySelectorAll("*");
-    
-                // Loop through each sub-element and update its stroke-width and color
-                subElements.forEach(subElement => {
-                    let svgIconHighlight = subElement.cloneNode(true);
-                    svgIconHighlight.id = "icon_highlight";
-                    svgIconHighlight.style.strokeWidth = "6";
-                    svgIconHighlight.style.stroke = hoverColor;
-                    svgIcons.prepend(svgIconHighlight);
-                });
+                if (iconValue != ""){
+                    let svgIconTarget = svgIcons.querySelector('g[id="' + iconValue + '"]');
+        
+                    // Select all child elements 
+                    let subElements = svgIconTarget.querySelectorAll("*");
+        
+                    // Loop through each sub-element and update its stroke-width and color
+                    subElements.forEach(subElement => {
+                        let svgIconHighlight = subElement.cloneNode(true);
+                        svgIconHighlight.id = "icon_highlight";
+                        svgIconHighlight.style.strokeWidth = "6";
+                        svgIconHighlight.style.stroke = hoverColor;
+                        svgIcons.prepend(svgIconHighlight);
+                    });
+                }
             })
 
 
