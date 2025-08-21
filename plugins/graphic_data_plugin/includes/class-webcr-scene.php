@@ -646,10 +646,11 @@ class Webcr_Scene {
 
     /**
 	 * Create custom fields, using metaboxes, for Scene custom content type.
-	 *
+     * 
+     * @param bool $return_fields_only If true, only return the custom fields array without registering the metabox (used for session writing as part of field validation).
 	 * @since    1.0.0
 	 */
-    public function create_scene_fields() {
+    public function create_scene_fields($return_fields_only = false) {
         $config_metabox = array(
 
             'type'              => 'metabox',                       // Required, menu or metabox
@@ -665,6 +666,12 @@ class Webcr_Scene {
 
         $function_utilities = new Webcr_Utility();
         $instances = $function_utilities ->  returnAllInstances();
+
+        $session_fields_exist = false;
+        if (isset($_SESSION["scene_error_all_fields"])) {
+            $session_fields = $_SESSION["scene_error_all_fields"];
+            $session_fields_exist = true;
+        }  
 
         $fields = array(
             array(
@@ -924,6 +931,11 @@ class Webcr_Scene {
         array_splice($fields, 5, 0, $infoFields);
         array_splice($fields, 12, 0, $photoFields);
         array_splice($fields, 28, 0, $sectionFields);
+
+        // If we're just running this function to get the custom fields for session writing, return early
+        if ($return_fields_only) {
+            return $fields;
+        }
 
         $fieldsHolder[] = array(
             'name'   => 'basic',

@@ -262,6 +262,10 @@ class Webcr {
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ($this->get_plugin_name(), $this->get_version() );	
 		$this->loader->add_action( 'admin_notices', $plugin_utility, 'post_admin_notice' ); 
+
+        $this->loader->add_filter('get_post_metadata', $plugin_utility, 'override_metabox_value_with_session_value', 10, 4);
+
+		
 //		$this->loader->add_action( 'admin_notices', $plugin_utility, ['post_admin_notice',"modal"] ); 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); 

@@ -40,6 +40,26 @@ class Webcr_Utility {
         return implode(array_slice($parts, 0, $last_part));
     }
 
+    public function override_metabox_value_with_session_value($value, $post_id, $meta_key, $single) {
+        if (!isset($_SESSION["modal_error_all_fields"])) {
+            return $value;
+        }
+        
+        $session_fields = $_SESSION["modal_error_all_fields"];
+        
+        // Check if this is one of your modal fields
+        for ($i = 1; $i <= 6; $i++) {
+            $field_key = $this->plugin_name . '[modal_tab_title' . $i . ']';
+            if ($meta_key === $field_key && isset($session_fields['modal_tab_title' . $i])) {
+                return $session_fields['modal_tab_title' . $i];
+            }
+        }
+
+        // If there are session fields, remove them
+        unset($_SESSION["modal_error_all_fields"]);
+        return $value;
+    }
+
     /**
      * Displays admin notices for the following kind of custom content posts: about, instance, scene, modal, and figure.
      * 
@@ -57,7 +77,7 @@ class Webcr_Utility {
         if (function_exists('get_current_screen')) {
             $current_screen = get_current_screen();
             if ($current_screen){
-                $post_type = $screen->post_type; 
+                $post_type = $current_screen->post_type; 
                 if ($current_screen->base == "post" && $current_screen->id == $post_type && !($current_screen->action =="add") ) { 
                     if( isset( $_SESSION[$post_type . "_post_status"] ) ) {
                         $selected_post_status =  $_SESSION[$post_type . "_post_status"];

@@ -164,7 +164,7 @@ class Webcr_Modal {
                 'type'           => 'select',
                 'title'          => 'Modal Status*',
                 'options'        => array("draft" => "Draft", "published" => "Published"),
-                'default'        => $session_fields_exist ? $session_fields["modal_published"] : 'draft',
+                'default'        => 'draft',
                 'description' => 'Should the modal be live? If set to Draft, the assigned icon for this modal will behave as set in the scene option "Icon visibility in scene, if no associated modal". If set to Published, the icon will be visible in the scene.',
             ),
             array(
@@ -173,7 +173,7 @@ class Webcr_Modal {
                 'title'          => 'Instance*',
                 'options'        => $locations,
                 'description' => 'In which instance is the modal located?',
-                'default'        => $session_fields_exist ? $session_fields["modal_location"] : '',
+                'default'        =>  '',
             ),
             array(
                 'id'             => 'modal_scene',
@@ -181,7 +181,7 @@ class Webcr_Modal {
                 'title'          => 'Scene*',
                 'options'        => $scene_titles,
                 'description' => 'In which scene is the modal located?',
-                'default'        => $session_fields_exist ? $session_fields["modal_scene"] : '',
+                'default'        =>  '',
             ),
             array(
                 'id'             => 'modal_icons',
@@ -189,7 +189,7 @@ class Webcr_Modal {
                 'title'          => 'Icons*',
                 'options'        => $modal_icons, 
                 'description' => 'Which icon from the above scene is the modal associated with?',
-                'default'        => $session_fields_exist ? $session_fields["modal_icons"] : '',
+                'default'        =>  '',
             ),
             array(
                 'id'      => 'modal_icon_order',
@@ -199,7 +199,7 @@ class Webcr_Modal {
                 'max'     => '20',
                 'step'    => '1',
                 'description' => "In the table of contents to the right of the scene, what is the order in which this icon should appear? Lower numbers will appear first. All icons with the same order number (example: all icons keep the default value of 1), will be sorted alphabetically.",
-                'default'        => $session_fields_exist ? $session_fields["modal_icon_order"] : 1,
+                'default'        => 1,
             ),
             array(
                 'id'             => 'icon_toc_section',
@@ -207,7 +207,7 @@ class Webcr_Modal {
                 'title'          => 'Icon Section*',
                 'options'        =>  $modal_section,
                 'description'    => 'Which scene section is this modal associated with?',
-                'default'        => $session_fields_exist ? $session_fields["icon_toc_section"] : '',
+                'default'        => '',
             ),
             array(
                 'id'             => 'icon_function',
@@ -215,7 +215,7 @@ class Webcr_Modal {
                 'title'          => 'Icon Action*',
                 'options'        => array("External URL" => "External URL", "Modal" => "Modal", "Scene" => "Scene"),
                 'description'    => 'What should happen when the user clicks on the icon?',
-                'default'        => $session_fields_exist ? $session_fields["icon_function"] : 'Modal',
+                'default'        =>  'Modal',
             ),
             array(
                 'id'          => 'icon_external_url',
@@ -223,7 +223,6 @@ class Webcr_Modal {
                 'title'       => 'Icon External URL*',
                 'class'       => 'text-class',   
                 'description' => 'What is the external URL that the user should be taken to when the icon is clicked?',  
-                'default'     => $session_fields_exist ? $session_fields["icon_external_url"] : '',
             ),
             array(
                 'id'             => 'icon_scene_out',
@@ -231,7 +230,7 @@ class Webcr_Modal {
                 'title'          => 'Icon Scene Out*',
                 'options'        => $icon_scene_out,  
                 'description' => 'What is the scene that the user should be taken to when the icon is clicked?',
-                'default'        => $session_fields_exist ? $session_fields["icon_scene_out"] : '',
+                'default'        => '',
             ),
             array(
                 'id'          => 'modal_tagline',
@@ -239,7 +238,6 @@ class Webcr_Modal {
                 'editor' => 'trumbowyg',
                 'title'       => 'Modal Tagline',
                 'description' => 'What is the modal tagline?',
-                'default'     => $session_fields_exist ? $session_fields["modal_tagline"] : '',
             ),
             array(
                 'id'      => 'modal_info_entries',
@@ -249,7 +247,7 @@ class Webcr_Modal {
                 'min'     => 0,      
                 'max'     => 6,         
                 'step'    => 1,          
-                'default'     => $session_fields_exist ? $session_fields["modal_info_entries"] : 0,   
+                'default'     => 0,   
             ),    
             array(
                 'id'      => 'modal_photo_entries',
@@ -259,7 +257,7 @@ class Webcr_Modal {
                 'min'     => 0,     
                 'max'     => 6,         
                 'step'    => 1,  
-                'default'     => $session_fields_exist ? $session_fields["modal_photo_entries"] : 0,         
+                'default'     =>  0,         
             ),     
             array(
                 'id'      => 'modal_tab_number',
@@ -267,7 +265,7 @@ class Webcr_Modal {
                 'title'   => 'Number of Modal Tabs*',
                 'description' => 'How many modal tabs are there?',
                 'min'     => 1,    
-                'default'     => $session_fields_exist ? $session_fields["modal_tab_number"] : 1,   
+                'default'     =>  1,   
                 'max'     => 6,         
                 'step'    => 1,             
             ), 
@@ -300,14 +298,12 @@ class Webcr_Modal {
                         'type'        => 'text',
                         'title'       => 'Text',
                         'class'       => 'text-class',
-                        'default'     => $session_fields_exist ? $session_fields['modal_info_text' . $i] : '',  
                     ),
                     array(
                         'id'          => 'modal_info_url' . $i,
                         'type'        => 'text',
                         'title'       => 'URL',
                         'class'       => 'text-class',
-                        'default'     => $session_fields_exist ? $session_fields['modal_info_url' . $i] : '', 
                     ),
                 ),
             );
@@ -327,27 +323,24 @@ class Webcr_Modal {
                         'type'           => 'select',
                         'title'          => 'Image Location',
                         'options'        => array("Internal" => "Within this site", "External" => "Outside of this site"),
-                        'default'     => $session_fields_exist ? $session_fields['modal_photo_location' . $i] : 'External', 
+                        'default'     => 'External', 
                     ),
                     array(
                         'id'          => 'modal_photo_text' . $i,
                         'type'        => 'text',
                         'title'       => 'Link Text',
                         'class'       => 'text-class',
-                        'default'     => $session_fields_exist ? $session_fields['modal_photo_text' . $i] : '',  
                     ),
                     array(
                         'id'          => 'modal_photo_url' . $i,
                         'type'        => 'text',
                         'title'       => 'URL',
                         'class'       => 'text-class',
-                        'default'     => $session_fields_exist ? $session_fields['modal_photo_url' . $i] : '',  
                     ),
                     array(
                         'id'    => 'modal_photo_internal' . $i,
                         'type'  => 'image',
                         'title' => 'Image',
-                        'default'     => $session_fields_exist ? $session_fields['modal_photo_internal' . $i] : '',  
                     ),
                 ),
             );
@@ -363,13 +356,8 @@ class Webcr_Modal {
                     'type'        => 'text',
                     'title'       => 'Modal Tab Title ' . $i. '*',
                     'class'       => 'text-class',
-                    'default'     => $session_fields_exist ? $session_fields['modal_tab_title' . $i] : '',  
-
             );
         }
-
-        // If there are session fields, remove them
-        unset($_SESSION["modal_error_all_fields"]);
 
         // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
         array_splice($fields, 11, 0, $infoFields);

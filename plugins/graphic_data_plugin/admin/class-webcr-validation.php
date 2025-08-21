@@ -336,7 +336,7 @@ class webcr_validation {
         unset($_SESSION["modal_errors"]);
         unset($_SESSION["modal_warnings"]);
         unset($_SESSION["modal_post_status"]);
-        unset($_SESSION["modal_error_all_fields"]); // This is set by figure_fields_to_session
+        unset($_SESSION["modal_error_all_fields"]); 
 
         $modal_errors = [];
         $modal_warnings = [];
