@@ -26,7 +26,7 @@ kramdown:
 # Navigation (optional - customize as needed)
 header_pages:
   - index.md
-  - getting_started.md
+  - installaion.md
 
 # Exclude files from processing
 exclude:
