@@ -11,4 +11,4 @@ Ipsum lorem
 
 ## Quick Start
 
-1. **[Getting started]({{ site.baseurl }}/getting_started)** - Ipsum lorem
+1. **[Installation]({{ site.baseurl }}/installation)** - Ipsum lorem
