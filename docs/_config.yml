@@ -30,9 +30,14 @@ header_pages:
   - code.md
 
 # Author/Organization info
-author: Jai Ranganathan and Robbie Carroll
-email: jai.ranganathan@noaa.gov
+author:
+  name: "Sanctuary Watch Team"
 
+contributors:
+  - name: "Jai Ranganathan"
+    email: "jai.ranganathan@noaa.gov"
+  - name: "Robbie Carroll"
+    email: "robbie.carroll@noaa.gov"
 
 # Exclude files from processing
 exclude:
