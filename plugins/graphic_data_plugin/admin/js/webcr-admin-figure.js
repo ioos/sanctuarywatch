@@ -173,13 +173,21 @@ function run_webcr_admin_figures() {
         let uploadFileContainer= document.querySelector('.exopite-sof-field-upload');
 
         // Select the nested container with class ".exopite-sof-btn.figure_preview"
-        //let figure_interactive_settings = document.querySelector('.exopite-sof-field.exopite-sof-field-button'); // Add an ID or a unique class
-        const figure_interactive_settings =
+        let figure_interactive_settings = document.querySelector('.exopite-sof-field.exopite-sof-field-button'); // Add an ID or a unique class
+        
+        const figure_interactive_settings2 =
         Array.from(document.querySelectorAll('.exopite-sof-field.exopite-sof-field-button'))
             .find(el => {
             const h4 = el.querySelector('h4.exopite-sof-title, .exopite-sof-title h4');
             return h4 && h4.textContent.trim().replace(/\s+/g, ' ') === 'Interactive Figure Settings';
             }) || null;
+        
+        // const figure_image_field = //document.querySelectorAll('.exopite-sof-field.exopite-sof-field-image')
+        // Array.from(document.querySelectorAll('.exopite-sof-field.exopite-sof-field-image'))
+        //     .find(el => {
+        //     const h4 = el.querySelector('h4.exopite-sof-title, .exopite-sof-title h4');
+        //     return h4 && h4.textContent.trim().replace(/\s+/g, ' ') === 'Figure image*';
+        //     }) || null;
 
          // Handle the visibility of fields based on the selected image type
         switch (imageType) {
@@ -190,7 +198,11 @@ function run_webcr_admin_figures() {
                 //Hide the fields we do not want to see
                 codeContainer.style.display = "none";
                 uploadFileContainer.style.display = "none";
-                figure_interactive_settings.style.display = "none";
+
+                if (!window.location.href.includes("post-new.php")) {
+                    figure_interactive_settings.style.display = "none";
+                }
+
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
@@ -198,14 +210,19 @@ function run_webcr_admin_figures() {
                 break;
 
             case "External":
+
                 //Show the fields we want to see
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "block";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "block";
+                
+
 
                 //Hide the fields we do not want to see
                 codeContainer.style.display = "none";
                 uploadFileContainer.style.display = "none";
-                figure_interactive_settings.style.display = "none";
+                if (!window.location.href.includes("post-new.php")) {
+                    figure_interactive_settings.style.display = "none";
+                }
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
                 break;               
@@ -221,6 +238,8 @@ function run_webcr_admin_figures() {
                 document.getElementsByName("figure_external_alt")[0].value = "";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].value = "";
+                
+                //figure_image_field.style.display = "none";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
                 break;
@@ -231,13 +250,16 @@ function run_webcr_admin_figures() {
 
                 //Hide the fields we do not want to see
                 uploadFileContainer.style.display = "none";
-                figure_interactive_settings.style.display = "none";
+                if (!window.location.href.includes("post-new.php")) {
+                    figure_interactive_settings.style.display = "none";
+                }
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
 
-                //document.querySelectorAll('.exopite-sof-field.exopite-sof-field-button').style.display = "block";
-                //document.querySelectorAll('.figure_preview').style.display = "block";
+                //figure_image_field.style.display = "none";
+                // document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
+                // document.getElementsByName("figure_image")[0].value = "";
                 break;
         } 
     }
@@ -648,6 +670,14 @@ function run_webcr_admin_figures() {
                 // Remove the scene window
                 previewWindow.parentNode.removeChild(previewWindow);
             }
+            try {
+                var codePreviewWindow = document.getElementById('code_preview_window');
+                // If the element exists
+                if (codePreviewWindow) {
+                    // Remove the scene window
+                    codePreviewWindow.parentNode.removeChild(codePreviewWindow);
+                }
+            } catch {}
         } catch {}
 
         // Find element
