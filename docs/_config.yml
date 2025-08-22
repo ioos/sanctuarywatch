@@ -23,7 +23,7 @@ kramdown:
       line_numbers: true
 
 
-# Navigation (optional - customize as needed)
+# Navigation 
 header_pages:
   - index.md
   - installaion.md
