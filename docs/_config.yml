@@ -26,7 +26,7 @@ kramdown:
 # Navigation 
 header_pages:
   - index.md
-  - installaion.md
+  - installation.md
 
 # Exclude files from processing
 exclude:
