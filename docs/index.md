@@ -17,4 +17,4 @@ This package provides tools and utilities for:
 
 ## Quick Start
 
-1. **[Usage]({{ site.baseurl }}/usage)** - Get up and running
+1. **[Code]({{ site.baseurl }}/code)** - Get up and running

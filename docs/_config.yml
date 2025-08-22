@@ -27,7 +27,7 @@ kramdown:
 # Navigation (optional - customize as needed)
 header_pages:
   - index.md
-  - usage.md
+  - code.md
 
 # Author/Organization info
 author:
