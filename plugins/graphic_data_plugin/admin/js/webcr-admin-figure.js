@@ -173,8 +173,13 @@ function run_webcr_admin_figures() {
         let uploadFileContainer= document.querySelector('.exopite-sof-field-upload');
 
         // Select the nested container with class ".exopite-sof-btn.figure_preview"
-        let figure_interactive_settings = document.querySelector('.exopite-sof-field.exopite-sof-field-button'); // Add an ID or a unique class
-        
+        //let figure_interactive_settings = document.querySelector('.exopite-sof-field.exopite-sof-field-button'); // Add an ID or a unique class
+        const figure_interactive_settings =
+        Array.from(document.querySelectorAll('.exopite-sof-field.exopite-sof-field-button'))
+            .find(el => {
+            const h4 = el.querySelector('h4.exopite-sof-title, .exopite-sof-title h4');
+            return h4 && h4.textContent.trim().replace(/\s+/g, ' ') === 'Interactive Figure Settings';
+            }) || null;
 
          // Handle the visibility of fields based on the selected image type
         switch (imageType) {
@@ -230,6 +235,9 @@ function run_webcr_admin_figures() {
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
+
+                //document.querySelectorAll('.exopite-sof-field.exopite-sof-field-button').style.display = "block";
+                //document.querySelectorAll('.figure_preview').style.display = "block";
                 break;
         } 
     }
@@ -630,13 +638,17 @@ function run_webcr_admin_figures() {
     * Supports different figure types such as "Internal", "External", "Interactive", and "Code".
     */
     document.querySelector('[data-depend-id="figure_preview"]').addEventListener('click', function() {
+
+
         // Let's remove the preview window if it already exists
-        var previewWindow = document.getElementById('preview_window');
-        // If the element exists
-        if (previewWindow) {
-            // Remove the scene window
-            previewWindow.parentNode.removeChild(previewWindow);
-        }
+        try {
+            var previewWindow = document.getElementById('preview_window');
+            // If the element exists
+            if (previewWindow) {
+                // Remove the scene window
+                previewWindow.parentNode.removeChild(previewWindow);
+            }
+        } catch {}
 
         // Find element
         const firstFigurePreview = document.querySelector('.figure_preview');
@@ -714,19 +726,21 @@ function run_webcr_admin_figures() {
             case "Internal":
                 figureSrc = document.getElementsByName("figure_image")[0].value;
                 if (figureSrc != ""){
-                figureImage.src = figureSrc;
-                } else {imageRow.textContent = "No figure image."}
+                    figureImage.src = figureSrc;
+                } else {
+                    imageRow.textContent = "No figure image."}
                 break;
             case "External":
                 figureSrc = document.getElementsByName("figure_external_url")[0].value;
                 if (figureSrc != ""){
-                figureImage.src = figureSrc;
-                } else {imageRow.textContent = "No figure image."}
+                    figureImage.src = figureSrc;
+                } else {
+                    imageRow.textContent = "No figure image."}
                 break;         
             case "Interactive":
-                    const figureID = document.getElementsByName("post_ID")[0].value;
-                    imageRow.id = `javascript_figure_target_${figureID}`
-                    interactiveImage = true;
+                const figureID = document.getElementsByName("post_ID")[0].value;
+                imageRow.id = `javascript_figure_target_${figureID}`
+                interactiveImage = true;
                 break;
             case "Code":
                 imageRow.id = "code_preview_window"
@@ -784,7 +798,7 @@ function run_webcr_admin_figures() {
                     producePlotlyBarFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
                 }
                 if (graphType === "Plotly map") {
-                    console.log(`javascript_figure_target_${figureID}`);
+                    //console.log(`javascript_figure_target_${figureID}`);
                     producePlotlyMap(`javascript_figure_target_${figureID}`, interactive_arguments, null);
                 }
                 if (graphType === "Plotly line graph (time series)") {
