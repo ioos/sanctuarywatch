@@ -1,0 +1,40 @@
+# Site settings
+title: Sanctuary Watch Graphic Data
+description: >-
+  User manual and documentation for the sanctuarywatch_graphicdata package.
+  Tools and utilities for processing and visualizing marine sanctuary data.
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed          # RSS feed for updates
+  - jekyll-sitemap       # Help search engines
+  - jekyll-seo-tag       # Better SEO
+
+# GitHub Pages settings
+baseurl: "/sanctuarywatch_graphicdata"
+url: "https://ioos.github.io"
+
+# Markdown settings
+kramdown:
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
+
+
+# Navigation (optional - customize as needed)
+header_pages:
+  - index.md
+  - usage.md
+
+# Author/Organization info
+author:
+  name: Jai Ranganathan and Robbie Carroll
+  email: jai.ranganathan@noaa.gov
+
+
+# Exclude files from processing
+exclude:
+  - training_images/
