@@ -4,8 +4,6 @@ title: Getting started
 permalink: /getting_started/
 ---
 
-# Getting started
-
 ## Requirements
 
 Ipsum lorem

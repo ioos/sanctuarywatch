@@ -3,9 +3,7 @@ layout: home
 title: Home
 ---
 
-# Sanctuary Watch Graphic Data
-
-Welcome to the user manual for **sanctuarywatch_graphicdata**, a  package for processing and visualizing marine sanctuary monitoring data.
+Welcome to the documentation for Graphic Data, a WordPress plugin and theme.
 
 ## Overview
 
