@@ -17,11 +17,11 @@ The Graphic Data platform consists of a WordPress plugin and theme that are desi
     - If you don't know how to do this, here's a [tutorial on WordPress installation](https://learn.wordpress.org/tutorial/how-to-install-wordpress/).
     - If you are just checking Graphic Data out, you probably want to first fiddle around with it on your local computer (meaning that you should install WordPress locally). In case you don't know how to do that, here are [instructions](https://developer.wordpress.org/advanced-administration/before-install/development/).
 1. Download the zipped version of the [Graphic Data plugin](https://github.com/ioos/sanctuarywatch_graphicdata/releases/download/v1.0.0/graphic_data_plugin.zip) from our GitHub repository. As of this writing, the Graphic Data plugin and theme are not yet available via the wordpress.org plugin/theme directory (we're working on it!).
-1. Install the plugin by uploading it via the WordPress Admin ((here's how to do that)[https://wordpress.org/documentation/article/manage-plugins/#upload-via-wordpress-admin]). Activate the Graphic Data plugin. 
+1. Install the plugin by uploading it via the WordPress Admin ([here's how to do that](https://wordpress.org/documentation/article/manage-plugins/#upload-via-wordpress-admin)). Activate the Graphic Data plugin. 
     - You will be prompted to install the SVG Support plugin. 
     - Upon activation, you will see a warning message that the Graphic Data theme isn't running. Don't worry about it - we're about to fix that problem.
 1. Download the zipped version of the [Graphic Data theme](https://github.com/ioos/sanctuarywatch_graphicdata/releases/download/v1.0.0/graphic_data_theme.zip) from our GitHub repository. 
-1. Install the theme by uploading it via the WordPress Admin ((here's how to do that)[https://www.wpbeginner.com/beginners-guide/how-to-install-a-wordpress-theme/]). Activate the Graphic Data theme.
+1. Install the theme by uploading it via the WordPress Admin ([here's how to do that](https://www.wpbeginner.com/beginners-guide/how-to-install-a-wordpress-theme/])). Activate the Graphic Data theme.
 1. Kick back and relax with the beverage of your choice, because you are done. Nice job!
  
 
