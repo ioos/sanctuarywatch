@@ -93,7 +93,7 @@ class Webcr_Modal {
     /**
 	 * Create custom fields, using metaboxes, for Modal custom content type.
 	 *
-     * @param bool $return_fields_only If true, only return the custom fields array without registering the metabox (used for session writing as part of field validation).
+     * @param bool $return_fields_only If true, only return the custom fields array without registering the metabox (used as part of field validation).
 	 * @since    1.0.0
 	 */
     function create_modal_fields($return_fields_only = false) {
@@ -118,11 +118,18 @@ class Webcr_Modal {
         $function_utilities = new Webcr_Utility();
         $locations = $function_utilities -> returnAllInstances();
 
-        $session_fields_exist = false;
-        if (isset($_SESSION["modal_error_all_fields"])) {
-            $session_fields = $_SESSION["modal_error_all_fields"];
-            $session_fields_exist = true;
-        }  
+        $transient_fields_exist = false;
+        
+        // Get current user ID
+        $user_id = get_current_user_id();
+                
+        // Check if transient exists for this user
+        $transient_name = "modal_error_all_fields_user_{$user_id}";
+        $transient_fields = get_transient($transient_name);
+        
+        if ($transient_fields !== false) {
+            $transient_fields_exist = true;
+        }
 
         $scene_titles =[];
         $modal_icons = [];
@@ -133,26 +140,26 @@ class Webcr_Modal {
             $modal_id = intval($_GET["post"]);
             $scene_id = intval(get_post_meta($modal_id, "modal_scene", true));
             $scene_titles = $function_utilities -> returnSceneTitles($scene_id, $modal_id);
-            if ($session_fields_exist){
-                $scene_titles = $function_utilities -> returnSceneTitles($session_fields["modal_scene"], $modal_id);
+            if ($transient_fields_exist){
+                $scene_titles = $function_utilities -> returnSceneTitles($transient_fields["modal_scene"], $modal_id);
             } else {
                 $scene_titles = $function_utilities -> returnSceneTitles($scene_id, $modal_id);
             }   
 
-            if ($session_fields_exist){
-                $modal_icons = $function_utilities -> returnIcons($session_fields["modal_scene"]);
+            if ($transient_fields_exist){
+                $modal_icons = $function_utilities -> returnIcons($transient_fields["modal_scene"]);
             } else {
                 $modal_icons = $function_utilities -> returnIcons($scene_id);
             }  
 
-            if ($session_fields_exist){
-                $icon_scene_out = $function_utilities -> returnScenesExceptCurrent($session_fields["modal_scene"]);
+            if ($transient_fields_exist){
+                $icon_scene_out = $function_utilities -> returnScenesExceptCurrent($transient_fields["modal_scene"]);
             } else {
                 $icon_scene_out = $function_utilities -> returnScenesExceptCurrent($scene_id);
             }  
 
-            if ($session_fields_exist){
-                $modal_section = $function_utilities -> returnModalSections($session_fields["modal_scene"]);
+            if ($transient_fields_exist){
+                $modal_section = $function_utilities -> returnModalSections($transient_fields["modal_scene"]);
             } else {
                 $modal_section = $function_utilities -> returnModalSections($scene_id);
             }  
@@ -364,7 +371,7 @@ class Webcr_Modal {
         array_splice($fields, 18, 0, $photoFields);
         array_splice($fields, 25, 0, $tabFields);
 
-        // If we're just running this function to get the custom fields for session writing, return early
+        // If we're just running this function to get the custom field list for field validation, return early
         if ($return_fields_only) {
             return $fields;
         }
@@ -785,7 +792,7 @@ class Webcr_Modal {
      * @param int $post_id The database id of the post.
 	 * @since    1.0.0
 	 */
-    public function custom_modal_column( $column, $post_id ) {  
+    function custom_modal_column( $column, $post_id ) {  
 
         // maybe knock this next section out
         if (isset($_GET["field_length"])) {

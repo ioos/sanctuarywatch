@@ -24,6 +24,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Fields' ) ) {
 		public $lang_current;
 		public $languages;
 		public $is_multilang;
+		public $google_fonts;
 
 		public function __construct( $field = array(), $value = null, $unique = '', $config = array() ) {
 

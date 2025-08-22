@@ -40,24 +40,150 @@ class Webcr_Utility {
         return implode(array_slice($parts, 0, $last_part));
     }
 
-    public function override_metabox_value_with_session_value($value, $post_id, $meta_key, $single) {
-        if (!isset($_SESSION["modal_error_all_fields"])) {
-            return $value;
+    // used for field validation
+    function output_transient_to_js() {
+        // Only run on edit post pages for certain custom content post types
+        global $pagenow, $post;
+        
+        if ($pagenow !== 'post.php') {
+            return;
         }
         
-        $session_fields = $_SESSION["modal_error_all_fields"];
+        $acceptable_post_types = ['modal', 'scene', 'instance', 'figure', 'about'];
+        $current_post_type = isset($post->post_type) ? $post->post_type : '';
+
+        if (!$post || !in_array($current_post_type, $acceptable_post_types)) {
+            return;
+        }
         
-        // Check if this is one of your modal fields
-        for ($i = 1; $i <= 6; $i++) {
-            $field_key = $this->plugin_name . '[modal_tab_title' . $i . ']';
-            if ($meta_key === $field_key && isset($session_fields['modal_tab_title' . $i])) {
-                return $session_fields['modal_tab_title' . $i];
+        // Get current user ID
+        $user_id = get_current_user_id();
+        
+        if (!$user_id) {
+            return;
+        }
+        
+        // Check if transient exists for this user
+        $transient_name = $current_post_type . "_error_all_fields_user_{$user_id}";
+
+        //modal_error_all_fields_user_1
+        $transient_data = get_transient($transient_name);
+        
+        if ($transient_data !== false) {
+            // Output the transient data as JavaScript
+            ?>
+            <script type="text/javascript">
+                const allCustomFields = <?php echo wp_json_encode($transient_data); ?>;
+            </script>
+            <?php
+            
+            // Delete the transient after outputting it
+            delete_transient($transient_name);
+        }
+    }
+
+
+    /**
+     * Generalized function to write all field values from any custom content type to transients
+     * 
+     * @param string $content_type The custom content type (e.g., 'modal', 'scene', etc.)
+     * @param array $fields_config The fields configuration array from the create_*_fields() method
+     * @param int $expiration Optional. Time until expiration in seconds. Default 1800 (30 minutes)
+     * @since 1.0.0
+     */
+    public function fields_to_transient($content_type, $fields_config, $expiration = 1800) {
+        delete_expired_transients(); // Ensure expired transients are cleaned up before storing new ones
+        $all_fields = [];
+        
+        // Process the fields configuration to extract field IDs and handle fieldsets
+        $this->extract_field_values($fields_config, $all_fields);
+        
+        // Create a unique transient key for this user and content type
+        $transient_key = $this->get_user_transient_key($content_type . "_error_all_fields");
+        
+        // Store in transient instead of session
+        set_transient($transient_key, $all_fields, $expiration);
+    }
+
+    /**
+     * Helper function to create a unique transient key for the current user, based on the user ID
+     * 
+     * This function is used as part of the field validation process in multiple places.
+     * 
+     * @param string $base_key The base key for the transient
+     * @return string The user-specific transient key
+     */
+    public function get_user_transient_key($base_key) {
+        $user_id = get_current_user_id();
+        return $base_key . '_user_' . $user_id;
+    }
+
+    /**
+     * Helper function to retrieve field values from transients
+     * 
+     * @param string $content_type The custom content type
+     * @return array|false The stored field values or false if not found
+     */
+    public function get_fields_from_transient($content_type) {
+        $transient_key = $this->get_user_transient_key($content_type . "_error_all_fields");
+        return get_transient($transient_key);
+    }
+
+    /**
+     * Helper function to delete field values from transients
+     * 
+     * @param string $content_type The custom content type
+     * @return bool True if successful, false otherwise
+     */
+    public function delete_fields_transient($content_type) {
+        $transient_key = $this->get_user_transient_key($content_type . "_error_all_fields");
+        return delete_transient($transient_key);
+    }
+
+    /**
+     * Recursively extract field values from POST data based on field configuration
+     * 
+     * @param array $fields The fields configuration array
+     * @param array &$all_fields Reference to array where field values will be stored
+     */
+    public function extract_field_values($fields, &$all_fields) {
+        foreach ($fields as $field) {
+            // Skip button type fields
+            if (isset($field['type']) && $field['type'] === 'button') {
+                continue;
+            }
+            
+            // Handle fieldsets (nested fields)
+            if (isset($field['type']) && $field['type'] === 'fieldset') {
+                $fieldset_id = $field['id'];
+                
+                // Process each field within the fieldset
+                if (isset($field['fields']) && is_array($field['fields'])) {
+                    foreach ($field['fields'] as $nested_field) {
+                        if (isset($nested_field['id']) && isset($nested_field['type']) && $nested_field['type'] !== 'button') {
+                            $nested_field_id = $nested_field['id'];
+                            // For fieldsets, data is nested: $_POST[fieldset_id][field_id]
+                            if (isset($_POST[$fieldset_id][$nested_field_id])) {
+                                $all_fields[$nested_field_id] = $_POST[$fieldset_id][$nested_field_id];
+                            }
+                        }
+                    }
+                }
+            }
+            // Handle regular fields
+            elseif (isset($field['id']) && isset($field['type'])) {
+                $field_id = $field['id'];
+                // For regular fields, data is direct: $_POST[field_id]
+                if (isset($_POST[$field_id])) {
+                    $all_fields[$field_id] = $_POST[$field_id];
+                }
+            }
+            
+            // Handle nested field arrays (like your tabFields)
+            if (isset($field['fields']) && is_array($field['fields'])) {
+                $this->extract_field_values($field['fields'], $all_fields);
             }
         }
-
-        // If there are session fields, remove them
-        unset($_SESSION["modal_error_all_fields"]);
-        return $value;
     }
 
     /**

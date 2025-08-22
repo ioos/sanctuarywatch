@@ -72,9 +72,10 @@ class Webcr_About {
     /**
 	 * Create custom fields, using metaboxes, for About custom content type.
 	 *
+     * @param bool $return_fields_only If true, only return the custom fields array without registering the metabox (used as part of field validation).
 	 * @since    1.0.0
 	 */
-    function create_about_fields() {
+    function create_about_fields($return_fields_only = false) {
 
         $config_metabox = array(
 
@@ -110,13 +111,13 @@ class Webcr_About {
                         array(
                             'id'          => 'aboutBoxMain' . $i,
                             'type'        => 'editor',
-                            'title'       => 'Box Content: Main',
+                            'title'       => 'Box content: main',
                             'editor' => 'trumbowyg',
                         ),
                         array(
                             'id'          => 'aboutBoxDetail' . $i,
                             'type'        => 'editor',
-                            'title'       => 'Box Content: Detail',
+                            'title'       => 'Box content: detail',
                             'editor' => 'trumbowyg',
                         ),
                     ),
@@ -140,13 +141,13 @@ class Webcr_About {
                         array(
                             'id'          => 'aboutMain',
                             'type'        => 'editor',
-                            'title'       => 'Central Content: Main',
+                            'title'       => 'Central content: main',
                             'editor' => 'trumbowyg',
                         ),
                         array(
                             'id'          => 'aboutDetail',
                             'type'        => 'editor',
-                            'title'       => 'Central Content: Detail',
+                            'title'       => 'Central content: detail',
                             'editor' => 'trumbowyg',
                         ),
                     ),
@@ -164,6 +165,11 @@ class Webcr_About {
 
         // Step 3: Insert the new sub-arrays after the second element in the original 'fields' array
         $fields = array_merge($fields, $aboutBoxArray);
+
+        // If we're just running this function to get the custom field list for field validation, return early
+        if ($return_fields_only) {
+            return $fields;
+        }
 
         $fieldsHolder[] = array(
             'name'   => 'basic',
@@ -197,7 +203,7 @@ class Webcr_About {
         return $count;
     }
     
-    // Add admin notice functionality - CLAUDE FUNCTION
+    // Add admin notice functionality 
     function display_about_limit_notice() {
         if (isset($_GET['about_limit_reached'])) {
             ?>
@@ -208,7 +214,7 @@ class Webcr_About {
         }
     }
     
-    // Modified prevention function with better handling - CLAUDE FUNCTION
+    // Modified prevention function with better handling 
     function prevent_multiple_about_posts($data, $postarr) {
         // Only run this check for About post type
         if ($data['post_type'] !== 'about') {

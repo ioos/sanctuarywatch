@@ -168,6 +168,8 @@ class Webcr {
 	public function define_admin_hooks() {
 		// Load class and functions of utility functions
 		$plugin_utility = new Webcr_Utility();
+		$this->loader->add_action( 'admin_notices', $plugin_utility, 'post_admin_notice' ); 
+		$this->loader->add_action( 'admin_footer', $plugin_utility, 'output_transient_to_js' ); 
 
 		// Load class and functions to change overall look and function of admin screens
 		$plugin_admin = new Webcr_Admin( $this->get_plugin_name(), $this->get_version() );
@@ -219,7 +221,8 @@ class Webcr {
 		$this->loader->add_filter( 'bulk_actions-edit-instance', $plugin_admin_instance, 'remove_bulk_actions' ); 
 		$this->loader->add_filter( 'post_row_actions', $plugin_admin_instance, 'custom_content_remove_quick_edit_link', 10, 2 ); 
 		$this->loader->add_filter( 'rest_api_init', $plugin_admin_instance, 'register_instance_rest_fields' ); 
-		$this->loader->add_action( 'admin_notices', $plugin_admin_instance, 'instance_admin_notice' ); 
+		$this->loader->add_action( 'admin_notices', $plugin_admin_instance, 'taxonomy_problem_admin_notice',10 ); 
+		$this->loader->add_action( 'admin_notices', $plugin_admin_instance, 'instance_admin_notice',20 ); 
 
 		// Load class and functions associated with the Settings Page
 		$plugin_admin_settings_page = new Graphic_Data_Settings_Page ( $this->get_plugin_name(), $this->get_version() );		
@@ -239,7 +242,6 @@ class Webcr {
 
 		// Load  class and functions associated with Scene custom content type
 		$plugin_admin_scene = new Webcr_Scene( $this->get_plugin_name(), $this->get_version() );		
-		$this->loader->add_action( 'admin_notices', $plugin_admin_scene, 'scene_admin_notice' ); 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_scene, 'scene_filter_dropdowns' ); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_scene, 'scene_location_filter_results' ); 
 		$this->loader->add_action( 'current_screen', $plugin_admin_scene, 'cleanup_expired_scene_filters' ); 
@@ -261,12 +263,6 @@ class Webcr {
 
 		// Load  class and functions associated with Modal custom content type
 		$plugin_admin_modal = new Webcr_Modal ($this->get_plugin_name(), $this->get_version() );	
-		$this->loader->add_action( 'admin_notices', $plugin_utility, 'post_admin_notice' ); 
-
-        $this->loader->add_filter('get_post_metadata', $plugin_utility, 'override_metabox_value_with_session_value', 10, 4);
-
-		
-//		$this->loader->add_action( 'admin_notices', $plugin_utility, ['post_admin_notice',"modal"] ); 
 		$this->loader->add_action( 'restrict_manage_posts', $plugin_admin_modal, 'modal_filter_dropdowns' ); 
 		$this->loader->add_action( 'pre_get_posts', $plugin_admin_modal, 'modal_location_filter_results' ); 
 		$this->loader->add_action( 'current_screen', $plugin_admin_modal, 'cleanup_expired_modal_filters' ); 
@@ -282,6 +278,7 @@ class Webcr {
 		// Load  class and functions associated with Figure custom content type
 		$plugin_admin_figure = new Webcr_Figure( $this->get_plugin_name());		
 		$this->loader->add_action( 'init', $plugin_admin_figure, 'custom_content_type_figure' ); 
+//		$this->loader->add_action( 'exopite_options_framework_init', $plugin_admin_figure, 'create_figure_fields', 1 ); //Robbie's version of the previous line
 		$this->loader->add_action( 'admin_menu', $plugin_admin_figure, 'create_figure_fields', 1 );
 		$this->loader->add_action( 'manage_figure_posts_columns', $plugin_admin_figure, 'change_figure_columns' ); 
 		$this->loader->add_action( 'manage_figure_posts_custom_column', $plugin_admin_figure, 'custom_figure_column', 10, 2 ); 
@@ -294,6 +291,9 @@ class Webcr {
 		$this->loader->add_filter( 'rest_figure_query', $plugin_admin_figure, 'filter_figure_by_figure_modal', 10, 2); 
 		$this->loader->add_filter( 'manage_edit-figure_sortable_columns', $plugin_admin_scene, 'register_status_as_sortable_column'); 
 		$this->loader->add_action( 'rest_api_init', $plugin_admin_figure, 'register_get_alt_text_by_url_route');
+		$this->loader->add_action( 'wp_ajax_custom_file_upload', $plugin_admin_figure, 'custom_file_upload_handler');
+		$this->loader->add_action( 'wp_ajax_custom_file_delete', $plugin_admin_figure, 'custom_file_delete_handler');
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin_figure, 'enqueue_admin_interactive_graph_script');
 
 		// Load class and functions connected to login screen customization
 		$plugin_admin_logo = new Webcr_Login( $this->get_plugin_name(), $this->get_version() );

@@ -1,0 +1,33 @@
+# Site settings
+title: Graphic Data
+description: >-
+  Documentation for the Graphic Data WordPress plugin and theme. Graphic Data is a platform for displaying graphics and data in fascinating ways.
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed          # RSS feed for updates
+  - jekyll-sitemap       # Help search engines
+  - jekyll-seo-tag       # Better SEO
+
+# GitHub Pages settings
+baseurl: "/sanctuarywatch_graphicdata"
+url: "https://ioos.github.io"
+
+# Markdown settings
+kramdown:
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
+
+
+# Navigation 
+header_pages:
+  - index.md
+  - installation.md
+
+# Exclude files from processing
+exclude:
+  - training_images/

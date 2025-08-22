@@ -7,6 +7,25 @@ function cookieExists(cookieName) {
     return document.cookie.split(';').some(cookie => cookie.trim().startsWith(cookieName + '='));
 }
 
+// As the last step in field validation of edit post pages, swap out existing field values with those stored in the allCustomFields object
+function replaceFieldValuesWithTransientValues() {
+    if (typeof allCustomFields != 'undefined'){
+        Object.entries(allCustomFields).forEach(([metaBoxName, metaValue]) => {
+            console.log(metaBoxName);
+            console.log(metaValue);
+            const element = document.querySelector(`[data-depend-id="${metaBoxName}"]`);
+            if (element) {
+                element.value = metaValue; 
+
+                // range elements need to be set differently
+                if (element.tagName === 'INPUT' && element.type === 'range')
+                    element.nextElementSibling.value = metaValue; 
+                }
+            }
+        );
+    }
+}
+
 // Get a cookie with a specified name
 function getCookie(cookieName) {
     const name = cookieName + "=";
