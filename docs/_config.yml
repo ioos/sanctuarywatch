@@ -30,9 +30,8 @@ header_pages:
   - code.md
 
 # Author/Organization info
-author:
-  name: Jai Ranganathan and Robbie Carroll
-  email: jai.ranganathan@noaa.gov
+author: Jai Ranganathan and Robbie Carroll
+email: jai.ranganathan@noaa.gov
 
 
 # Exclude files from processing
