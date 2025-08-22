@@ -23,5 +23,6 @@ The Graphic Data platform consists of a WordPress plugin and theme that are desi
 1. Download the zipped version of the [Graphic Data theme](https://github.com/ioos/sanctuarywatch_graphicdata/releases/download/v1.0.0/graphic_data_theme.zip) from our GitHub repository. 
 1. Install the theme by uploading it via the WordPress Admin ([here's how to do that](https://www.wpbeginner.com/beginners-guide/how-to-install-a-wordpress-theme/])). Activate the Graphic Data theme.
 1. Kick back and relax with the beverage of your choice, because you are done. Nice job!
+    - Well, maybe you are done. If there are other plugins that you need for your particular use case, go ahead and install them now.
  
 
