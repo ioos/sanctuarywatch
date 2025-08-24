@@ -5,6 +5,7 @@
  */
 
 include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-webcr-utility.php';
+include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-graphic-data-SVGValidator.php';
 
 class webcr_validation {
 
@@ -638,37 +639,21 @@ class webcr_validation {
         if (is_null($scene_infographic) || $scene_infographic == "" ){
             array_push($scene_errors,  "The Infographic field cannot be left blank.");
             $save_scene_fields = FALSE;
-        }
-
-        if (!(is_null($scene_infographic)) && !($scene_infographic == "") ){
+        } else {
             // Parse the URL to extract the path
             $parsed_url = parse_url($scene_infographic);
 
             // Get the path from the parsed URL
             $path_url = $parsed_url['path'];
             $content_path = rtrim(get_home_path(), '/') . $path_url;
-            $content = file_get_contents( $content_path);
-            //$content = file_get_contents( $scene_infographic );
-            if ($content == false) {
-                array_push($scene_errors,  "The infographic does not exist.");
+
+            $infographic_svg_validate = new SVG_Validator();
+            $svg_analyze =  $infographic_svg_validate->validate_svg_file($content_path);
+          
+            if ($svg_analyze['valid'] == false) {
+                array_push($scene_errors,  $svg_analyze["error"]);
                 $save_scene_fields = FALSE;
-            } else {
-                // Use finfo or getimagesize to determine the MIME type
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mime_type = finfo_buffer($finfo, $content);
-                finfo_close($finfo);
-                if ($mime_type != "image/svg+xml"){
-                    array_push($scene_errors,  "The infographic is not a svg file.");
-                    $save_scene_fields = FALSE;
-                } else {
-                    // Search for the <icons> tag
-                    $iconPosition = stripos($content, 'icons');
-                    if ($iconPosition == false) {
-                        array_push($scene_errors,  "The infographic is not formatted correctly as it does not contain an icons layer.");
-                        $save_scene_fields = FALSE;
-                    }
-                }
-            }
+            } 
         }
 
         if ($_POST["scene_toc_style"] != "list" && $_POST["scene_section_number"] == "0"){
