@@ -643,13 +643,16 @@ function run_webcr_admin_figures() {
             previewDiv.innerHTML = tempDiv.innerHTML;
     
             // Append the preview div below the button
-            document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+            //document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+            document.querySelector('.figureTitle').insertAdjacentElement("afterend", previewDiv);
+            
     
         } catch (error) {
             // Handle errors during embed code injection
             console.error("Failed to inject embed code:", error);
             previewDiv.textContent = "Failed to load embed code. Please check your input.";
-            document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+            //document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+            document.querySelector('.figureTitle').insertAdjacentElement("afterend", previewDiv);
         }
     }   
 
@@ -662,6 +665,15 @@ function run_webcr_admin_figures() {
     document.querySelector('[data-depend-id="figure_preview"]').addEventListener('click', function() {
 
 
+        // try {
+        //         var codePreviewWindow = document.getElementById('code_preview_window');
+        //         // If the element exists
+        //         if (codePreviewWindow) {
+        //             // Remove the scene window
+        //             codePreviewWindow.parentNode.removeChild(codePreviewWindow);
+        //         }
+        // } catch {}
+
         // Let's remove the preview window if it already exists
         try {
             var previewWindow = document.getElementById('preview_window');
@@ -670,15 +682,8 @@ function run_webcr_admin_figures() {
                 // Remove the scene window
                 previewWindow.parentNode.removeChild(previewWindow);
             }
-            try {
-                var codePreviewWindow = document.getElementById('code_preview_window');
-                // If the element exists
-                if (codePreviewWindow) {
-                    // Remove the scene window
-                    codePreviewWindow.parentNode.removeChild(codePreviewWindow);
-                }
-            } catch {}
         } catch {}
+
 
         // Find element
         const firstFigurePreview = document.querySelector('.figure_preview');
