@@ -32,7 +32,7 @@ class webcr_validation {
                 return $this->validate_about();
                 break;
             case "scene":
-                $this->validate_scene();
+                return $this->validate_scene();
                 break;
             case "modal":
                 return $this->validate_modal();
