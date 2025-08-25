@@ -12,3 +12,4 @@ Ipsum lorem
 ## Quick Start
 
 1. **[Installation]({{ site.baseurl }}/installation)** - Ipsum lorem
+1. **[Installation]({{ site.baseurl }}/creating_svg_files)** - Ipsum lorem
