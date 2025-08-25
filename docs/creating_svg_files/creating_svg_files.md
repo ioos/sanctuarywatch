@@ -7,9 +7,12 @@ Here we provide instructions for two vector graphics packages:
 - <a href="https://inkscape.org/" target="_blank">Inkscape (.svg)</a> (free)
 
 
-For this tutorial, you will need to download and expand the .zip file which contains the example files. This. zip file  provides a full working example that you can fiddle around with. We will be referring to this folder extensively in this guide and you can download a compressed version [here](https://github.com/ioos/sanctuarywatch/blob/main/docs/creating_svg_files/creating_svg_files.zip). Just unzip the folder after it has been downloaded.
+## Download the Example Files ##
+For this tutorial, you will need to download and expand the .zip file which contains the example files. This. zip file  provides a full working example that you can fiddle around with. We will be referring to this folder extensively in this guide and you can download a .zip file containing and example [here](https://github.com/ioos/sanctuarywatch/blob/robbiebranch/docs/creating_svg_files/creating_svg_files.zip) (click the down facing arrow on the right side of the page), Then, unzip or extract the files from the .zip file after it has been downloaded.
 
-You can see a working example in action as a finished product <a href="https://sanctuarywatch.ioos.us/american-samoa/overview/" target="_blank">here</a>
+
+## Working Example ##
+You can see a working example of a different file created using this method in action as a finished product <a href="https://sanctuarywatch.ioos.us/american-samoa/overview/" target="_blank">here</a>
 
 ## 3.1 Adobe Illustrator ##
 
@@ -192,7 +195,7 @@ To be used by Graphic Data in "Scenes", the file must be exported in svg format.
 
 This guide assumes you have a basic knowledge of using Inkscape <a href="https://inkscape.org/learn/tutorials/" target="_blank"> here is a great series of tutorials</a>. In particular, you’ll need to understand how layers work in Inkscape <a href="https://inkscape.org/~JurgenG/%E2%98%85layers-objects-and-paths" target="_blank"> and here’s a tutorial for that</a>.
 
-In the Graphic Data .zip folder containing the example files, you’ll find a file called test-image-inkscape.svg. Open this file in Inkscape and you’ll see the following:
+In the Graphic Data .zip folder containing the example files, you’ll find a file called **test-image-inkscape.svg**. Open this file in Inkscape and you’ll see the following:
 
 - You can open up the "Layers" panel by clicking on the stacked icon in the top navigation bar. It's highlighted in red. 
 
