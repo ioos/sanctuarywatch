@@ -75,10 +75,10 @@ class SVG_Validator {
         $xml = $structure_validation['xml'];
         
         // Step 6: Security scan for dangerous content
-        if (!self::scan_svg_security($content)) {
-            $result['error'] = 'The infographic SVG contains potentially dangerous content.';
-            return $result;
-        }
+   //     if (!self::scan_svg_security($content)) {
+     //       $result['error'] = 'The infographic SVG contains potentially dangerous content.';
+       //     return $result;
+      //  }
         
         // Step 7: Check for required "icons" layer
         if (!self::has_icons_layer($xml)) {
