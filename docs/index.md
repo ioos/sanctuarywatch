@@ -12,4 +12,4 @@ Ipsum lorem
 ## Quick Start
 
 1. **[Installation]({{ site.baseurl }}/installation)** - Ipsum lorem
-1. **[Installation]({{ site.baseurl }}/creating_svg_files)** - Ipsum lorem
+1. **[Installation]({{ site.baseurl }}/creating_svg_files)** - How to create the .svg files for "Scenes"
