@@ -1117,17 +1117,43 @@ async function loadSVG(url, containerId) {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        const svgText = await response.text();
+
 
         // Step 2: Parse the SVG content
+        const svgText = await response.text();
+        let svgDoc;
+        let svgElement;
+        
+        // // Check if the SVG contains Inkscape-specific attributes
+        // if (svgText.includes("inkscape:label") || svgText.includes("inkscape:groupmode")) {
+        //     console.log("Inkscape is detected");
+
+        //     // 1) Remove inkscape:groupmode only (do not consume rest of the tag)
+        //     const applyRule1 = svgText.replace(/\s+inkscape:groupmode="layer"(?=\s|>)/g, "");
+
+        //     // 2) If id==label → keep id; else set id to label. Drop the label either way.
+        //     const applyRule2 = applyRule1.replace(
+        //         /id="([^"]+)"\s+inkscape:label="([^"]+)"/g,
+        //         (_, idValue, labelValue) => (idValue === labelValue ? `id="${idValue}"` : `id="${labelValue}"`)
+        //     );
+
+        //     const parser = new DOMParser();
+        //     svgDoc = parser.parseFromString(applyRule2, "image/svg+xml");
+        // } else {
+        //     const parser = new DOMParser();
+        //     svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+        // }
+
         const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
-        const svgElement = svgDoc.documentElement;
+        svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+
+        // Assign (don’t redeclare)
+        svgElement = svgDoc.documentElement;
         svgElement.setAttribute("id", "svg-elem");
 
-        //Append the SVG to the DOM
         const container = document.getElementById(containerId);
-
+        container.appendChild(svgElement);
+      
         // checking if user device is touchscreen
         if (is_touchscreen()){
             if (is_mobile() && (deviceDetector.device != 'tablet')){ //a phone and not a tablet; screen will be its own UI here

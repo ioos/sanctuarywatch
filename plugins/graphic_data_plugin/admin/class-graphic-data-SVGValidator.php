@@ -79,6 +79,7 @@ class SVG_Validator {
      //       $result['error'] = 'The infographic SVG contains potentially dangerous content.';
        //     return $result;
       //  }
+
         
         // Step 7: Check for required "icons" layer
         if (!self::has_icons_layer($xml)) {

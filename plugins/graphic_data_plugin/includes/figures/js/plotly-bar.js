@@ -612,9 +612,16 @@ function displayBarFields (numBars, jsonColumns, interactive_arguments) {
         checkboxStackedBarColumns.id = "StackedBarColumns";
         checkboxStackedBarColumns.name = "plotFields";
         checkboxStackedBarColumns.addEventListener("change", function () {
-            checkboxStackedBarColumns.value = checkboxStackedBarColumns.checked ? 'on' : "";
-            logFormFieldValues();
+            if (numBars > 1) {
+                checkboxStackedBarColumns.value = checkboxStackedBarColumns.checked ? 'on' : "";
+                logFormFieldValues();
+            }
+            if (numBars <= 1) {
+                checkboxStackedBarColumns.value = checkboxStackedBarColumns.checked ? "" : "";
+                logFormFieldValues();
+            } else {}
         });
+  
 
         // Pre-fill value if previously saved
         fieldValueSaved = fillFormFieldValues(checkboxStackedBarColumns.id, interactive_arguments);

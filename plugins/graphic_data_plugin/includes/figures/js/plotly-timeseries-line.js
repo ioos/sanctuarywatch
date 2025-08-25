@@ -336,7 +336,8 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         line: { color: 'transparent' },
                         name: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`,
                         type: 'scatter',
-                        hoverinfo: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`, //String(upperY-mean),
+                        //hoverinfo: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`, //String(upperY-mean),
+                        hoverinfo: `skip`, //String(upperY-mean),
                         // hovertemplate:
                         // 'X: %{x}<br>' +
                         // 'Y: %{y}<br>' +
@@ -362,7 +363,8 @@ async function producePlotlyLineFigure(targetFigureElement, interactive_argument
                         line: { color: 'transparent' },
                         name: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`,
                         type: 'scatter',
-                        hoverinfo: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`,//String(stdSingleValue),
+                        hoverinfo: `skip`,
+                        //hoverinfo: `${figureArguments[targetLineColumn + 'Title']} Mean ±1 SD`,//String(stdSingleValue),
                         // hovertemplate:
                         // 'X: %{x}<br>' +
                         // 'Y: %{y}<br>' +

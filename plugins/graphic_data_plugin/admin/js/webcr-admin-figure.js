@@ -175,6 +175,19 @@ function run_webcr_admin_figures() {
         // Select the nested container with class ".exopite-sof-btn.figure_preview"
         let figure_interactive_settings = document.querySelector('.exopite-sof-field.exopite-sof-field-button'); // Add an ID or a unique class
         
+        const figure_interactive_settings2 =
+        Array.from(document.querySelectorAll('.exopite-sof-field.exopite-sof-field-button'))
+            .find(el => {
+            const h4 = el.querySelector('h4.exopite-sof-title, .exopite-sof-title h4');
+            return h4 && h4.textContent.trim().replace(/\s+/g, ' ') === 'Interactive Figure Settings';
+            }) || null;
+        
+        // const figure_image_field = //document.querySelectorAll('.exopite-sof-field.exopite-sof-field-image')
+        // Array.from(document.querySelectorAll('.exopite-sof-field.exopite-sof-field-image'))
+        //     .find(el => {
+        //     const h4 = el.querySelector('h4.exopite-sof-title, .exopite-sof-title h4');
+        //     return h4 && h4.textContent.trim().replace(/\s+/g, ' ') === 'Figure image*';
+        //     }) || null;
 
          // Handle the visibility of fields based on the selected image type
         switch (imageType) {
@@ -185,7 +198,11 @@ function run_webcr_admin_figures() {
                 //Hide the fields we do not want to see
                 codeContainer.style.display = "none";
                 uploadFileContainer.style.display = "none";
-                figure_interactive_settings.style.display = "none";
+
+                if (!window.location.href.includes("post-new.php")) {
+                    figure_interactive_settings.style.display = "none";
+                }
+
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].value = "";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
@@ -193,14 +210,19 @@ function run_webcr_admin_figures() {
                 break;
 
             case "External":
+
                 //Show the fields we want to see
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "block";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "block";
+                
+
 
                 //Hide the fields we do not want to see
                 codeContainer.style.display = "none";
                 uploadFileContainer.style.display = "none";
-                figure_interactive_settings.style.display = "none";
+                if (!window.location.href.includes("post-new.php")) {
+                    figure_interactive_settings.style.display = "none";
+                }
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
                 break;               
@@ -216,6 +238,8 @@ function run_webcr_admin_figures() {
                 document.getElementsByName("figure_external_alt")[0].value = "";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].value = "";
+                
+                //figure_image_field.style.display = "none";
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_image")[0].value = "";
                 break;
@@ -226,10 +250,16 @@ function run_webcr_admin_figures() {
 
                 //Hide the fields we do not want to see
                 uploadFileContainer.style.display = "none";
-                figure_interactive_settings.style.display = "none";
+                if (!window.location.href.includes("post-new.php")) {
+                    figure_interactive_settings.style.display = "none";
+                }
                 document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_url")[0].parentElement.parentElement.style.display = "none";
                 document.getElementsByName("figure_external_alt")[0].parentElement.parentElement.style.display = "none";
+
+                //figure_image_field.style.display = "none";
+                // document.getElementsByName("figure_image")[0].parentElement.parentElement.parentElement.style.display = "none";
+                // document.getElementsByName("figure_image")[0].value = "";
                 break;
         } 
     }
@@ -613,13 +643,16 @@ function run_webcr_admin_figures() {
             previewDiv.innerHTML = tempDiv.innerHTML;
     
             // Append the preview div below the button
-            document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+            //document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+            document.querySelector('.figureTitle').insertAdjacentElement("afterend", previewDiv);
+            
     
         } catch (error) {
             // Handle errors during embed code injection
             console.error("Failed to inject embed code:", error);
             previewDiv.textContent = "Failed to load embed code. Please check your input.";
-            document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+            //document.querySelector('[data-depend-id="figure_preview"]').insertAdjacentElement("afterend", previewDiv);
+            document.querySelector('.figureTitle').insertAdjacentElement("afterend", previewDiv);
         }
     }   
 
@@ -630,13 +663,27 @@ function run_webcr_admin_figures() {
     * Supports different figure types such as "Internal", "External", "Interactive", and "Code".
     */
     document.querySelector('[data-depend-id="figure_preview"]').addEventListener('click', function() {
+
+
+        // try {
+        //         var codePreviewWindow = document.getElementById('code_preview_window');
+        //         // If the element exists
+        //         if (codePreviewWindow) {
+        //             // Remove the scene window
+        //             codePreviewWindow.parentNode.removeChild(codePreviewWindow);
+        //         }
+        // } catch {}
+
         // Let's remove the preview window if it already exists
-        var previewWindow = document.getElementById('preview_window');
-        // If the element exists
-        if (previewWindow) {
-            // Remove the scene window
-            previewWindow.parentNode.removeChild(previewWindow);
-        }
+        try {
+            var previewWindow = document.getElementById('preview_window');
+            // If the element exists
+            if (previewWindow) {
+                // Remove the scene window
+                previewWindow.parentNode.removeChild(previewWindow);
+            }
+        } catch {}
+
 
         // Find element
         const firstFigurePreview = document.querySelector('.figure_preview');
@@ -714,19 +761,21 @@ function run_webcr_admin_figures() {
             case "Internal":
                 figureSrc = document.getElementsByName("figure_image")[0].value;
                 if (figureSrc != ""){
-                figureImage.src = figureSrc;
-                } else {imageRow.textContent = "No figure image."}
+                    figureImage.src = figureSrc;
+                } else {
+                    imageRow.textContent = "No figure image."}
                 break;
             case "External":
                 figureSrc = document.getElementsByName("figure_external_url")[0].value;
                 if (figureSrc != ""){
-                figureImage.src = figureSrc;
-                } else {imageRow.textContent = "No figure image."}
+                    figureImage.src = figureSrc;
+                } else {
+                    imageRow.textContent = "No figure image."}
                 break;         
             case "Interactive":
-                    const figureID = document.getElementsByName("post_ID")[0].value;
-                    imageRow.id = `javascript_figure_target_${figureID}`
-                    interactiveImage = true;
+                const figureID = document.getElementsByName("post_ID")[0].value;
+                imageRow.id = `javascript_figure_target_${figureID}`
+                interactiveImage = true;
                 break;
             case "Code":
                 imageRow.id = "code_preview_window"
@@ -784,7 +833,7 @@ function run_webcr_admin_figures() {
                     producePlotlyBarFigure(`javascript_figure_target_${figureID}`, interactive_arguments, null);
                 }
                 if (graphType === "Plotly map") {
-                    console.log(`javascript_figure_target_${figureID}`);
+                    //console.log(`javascript_figure_target_${figureID}`);
                     producePlotlyMap(`javascript_figure_target_${figureID}`, interactive_arguments, null);
                 }
                 if (graphType === "Plotly line graph (time series)") {

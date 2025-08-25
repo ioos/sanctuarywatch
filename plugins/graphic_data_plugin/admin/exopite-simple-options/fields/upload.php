@@ -343,7 +343,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				formData.append('file_name', fileName); // Send only the stored filename
 				formData.append('action', 'custom_file_delete'); // Match WordPress AJAX action
 
-				console.log("Sending post_id:", postId, "file_name:", fileName); // Debugging
+				//console.log("Sending post_id:", postId, "file_name:", fileName); // Debugging
 
 				fetch('<?php echo admin_url("admin-ajax.php"); ?>', { // Correct URL
 					method: 'POST',
@@ -352,17 +352,18 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 				})
 				.then(response => response.json())
 				.then(data => {
-					console.log("Server response:", data); // Debugging
+					//console.log("Server response:", data); // Debugging
 					if (data.success) {
 						alert("Success: " + (data.message || "File deleted successfully."));
 						clickUpdateButton(); // Save and reload the page to reflect deletion
 					} else {
-						alert("Error: " + (data.message || "Delete failed."));
+						alert("Error: " + (data.message || "Delete failed. Please save or refresh the page to resolve this error."));
 					}
 				})
 				.catch(error => {
-					console.error("Delete error:", error);
-					alert("Delete failed: " + error.message);
+					console.error("Delete error", error);
+					alert("Delete failed. Please save or refresh the page to resolve this error." + error.message);
+					clickUpdateButton(); // Save and reload the page to reflect deletion
 				});
 			}
 			</script>
