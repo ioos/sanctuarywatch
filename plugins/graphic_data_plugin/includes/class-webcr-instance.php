@@ -184,7 +184,7 @@ class Webcr_Instance {
                 'id'    => 'instance_tile',
                 'type'  => 'image',
                 'title' => 'Tile image',
-                'description' => 'What is the instance image for the front page tile? The image m be 250 pixels wide and 200 pixels tall.'
+                'description' => 'What is the instance image for the front page tile? The image must be 25% wider than it is tall. Our recommendation for the image is that it is 500 pixels wide and 400 pixels tall. The minumum width is 250 pixels and the maximum is 1000 pixels.'
             ),
             array(
                 'id'             => 'instance_legacy_content',
