@@ -147,9 +147,17 @@ class webcr_validation {
                         $width = $image_size[0];
                         $height = $image_size[1];
                         
-                        // Check if dimensions match exactly 250x200
-                        if ($width != 250 && $height != 200){  
-                            array_push($instance_errors,  "The image specified by the 'Tile image' field does not have the correct dimensions. The image must be 250 pixels wide and 200 pixels tall.");
+                        if (empty($width) || $width == 0 || empty($height) || $height == 0) {
+                            array_push($instance_errors,  "The image specified by the 'Tile image' field has an unreadable height or width.");
+                            $save_instance_fields = FALSE;
+                        } else if($width/$height != 1.25) {
+                            array_push($instance_errors,  "The image specified by the 'Tile image' field does not have the correct aspect ratio. The image must be exactly 25% wider than it is tall.");
+                            $save_instance_fields = FALSE;
+                        } else if ($width < 250){
+                            array_push($instance_errors,  "The image specified by the 'Tile image' field is too small. The image must be, at the minimum, 250 pixels wide by 200 pixels tall.");
+                            $save_instance_fields = FALSE;
+                        } else if ($width > 1000){
+                            array_push($instance_errors,  "The image specified by the 'Tile image' field is too big. The image must be, at the maximum, 1000 pixels wide by 800 pixels tall.");
                             $save_instance_fields = FALSE;
                         }
                     }
