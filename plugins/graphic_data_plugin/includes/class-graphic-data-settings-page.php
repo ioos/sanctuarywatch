@@ -223,7 +223,7 @@ class Graphic_Data_Settings_Page {
         $value_GTMContainer = isset($options['google_analytics_measurement_id']) ? $options['google_analytics_measurement_id'] : '';
         // Define the example JSON file name and its folder path.
         $example_container_json = 'example_google_container_tags.json';
-        $example_folder = get_site_url() . '/wp-content/plugins/webcr/example_files/';
+        $example_folder = get_site_url() . '/wp-content/plugins/graphic_data_plugin/example_files/';
         // Generate the full URL for the example JSON file.
         $filedownload =  esc_url($example_folder . $example_container_json)
 

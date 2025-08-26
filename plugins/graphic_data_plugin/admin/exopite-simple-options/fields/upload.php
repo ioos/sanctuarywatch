@@ -104,7 +104,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
 				// Output links to example files
 				// Define the folder path inside wp-content
-				$example_folder = get_site_url() . '/wp-content/plugins/webcr/example_files/';
+				$example_folder = get_site_url() . '/wp-content/plugins/graphic_data_plugin/example_files/';
 
 				// Example file names
 				$example_csv = 'example.csv';
