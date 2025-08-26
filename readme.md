@@ -7,7 +7,7 @@ Graphic Data is an open-source framework for combining artwork with data in a wa
 ## Is Graphic Data being used anywhere?
 Yes! Check out [Sanctuary Watch](https://sanctuarywatch.ioos.us/american-samoa/overview/), a website that shows the information used in the management of sanctuaries within the [National Marine Sanctuary System](https://sanctuaries.noaa.gov/).
 
-## How do I learn more about using Sanctuary Watch
+## How do I learn more about using Sanctuary Watch?
 Check out our [guide](https://ioos.github.io/sanctuarywatch_graphicdata/)!
 
 ## Earlier Work
