@@ -1,21 +1,24 @@
-# Sanctuary Watch <img align="right" width="150" height="150" src="https://github.com/user-attachments/assets/5b053a75-79e7-41d7-bc87-b906b0230771">
-In this repo, you'll find the Wordpress plugin and theme that create the customized Sanctuary Watch experience within a Wordpress environment. 
+# Graphic Data <img align="right" width="150" alt="Graphic Data logo" height="150" src="https://github.com/user-attachments/assets/c999e108-7d2c-40f8-90a5-574c0e1446cc">
+In this repository, you'll find the Wordpress plugin and theme that create the customized Graphic Data experience within a Wordpress environment. 
 
+## What is Graphic Data?
+Graphic Data is an open-source framework for combining artwork with data in a way that is: 1) easy (and attractive!) to use by web users and 2) easy to use by those tasked with entering content. This framework is intended for the small-yet-mighty organizations and people who have big website ambitions, but don't necessarily have big website capacity.
 
-## Getting Started
-The plugin, called the Sanctuary Watch Framework, is based upon the structure provided by Joe Sz's [Wordpress Plugin Boilerplate Tutorial](https://github.com/JoeSz/WordPress-Plugin-Boilerplate-Tutorial) - which is itself based upon the structure provided by Devin Vinson's [Wordpress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate). The purpose of using this template structure is to provide, in the words of Devin, "a standardized, organized, object-oriented foundation for building high-quality WordPress plugins".
+## Is Graphic Data being used anywhere?
+Yes! Check out [Sanctuary Watch](https://sanctuarywatch.ioos.us/american-samoa/overview/), a website that shows the information used in the management of sanctuaries within the [National Marine Sanctuary System](https://sanctuaries.noaa.gov/).
 
-How to get started with the code in this repo? The best way is to get a new instance of WordPress running locally on your computer and then import this repo in.
+## How do I learn more about using Sanctuary Watch
+Check out our [guide](https://ioos.github.io/sanctuarywatch_graphicdata/)!
 
-This repo is designed to reside within the wp-content directory of your Wordpress installation ([here's some info on the Wordpress directory structure](https://www.wpbeginner.com/beginners-guide/beginners-guide-to-wordpress-file-and-directory-structure/), if you're new to it). 
-
-Our recommended solution for WordPress development on your local machine is [Local](https://localwp.com/). For ease of WordPress development, we also recommend using Visual Studio Code, Local, and Xdebug in an integrated way ([and here are instructions on how to do that](https://webdevstudios.com/2022/10/06/debugging-wordpress/)).
+## Earlier Work
+The general approach taken by Graphic Data is based upon [Infographiq](https://github.com/marinebon/infographiq), created by [Ben Best](https://ecoquants.com/).
+The plugin is based upon the structure provided by Joe Sz's [Wordpress Plugin Boilerplate Tutorial](https://github.com/JoeSz/WordPress-Plugin-Boilerplate-Tutorial) - which is itself based upon the structure provided by Devin Vinson's [Wordpress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate). 
 
 ## Contributors
 We love contributors! For more information about how to have the snazziest contributor experience, check out our [Contributing](CONTRIBUTING.md) page.
 
 ## Questions?
-Please contact Jai at jai.ranganathan@noaa.gov with any questions you may have.
+Please contact Jai Ranganathan at jai.ranganathan@noaa.gov with any questions you may have.
 
 ## License
 We use the [MIT license](LICENSE.md).
