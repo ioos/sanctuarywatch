@@ -27,6 +27,15 @@ kramdown:
 header_pages:
   - index.md
   - installation.md
+  - instance-types/instance-types.md
+  - instances/instances_fields.md
+  - scenes/scene_fields.md
+  - creating_svg_files/creating_svg_files.md
+  - modals/modal_fields.md
+  - figures/figure_fields.md
+  - figures/figure_types.md
+  - figures/interactive_figures.md
+
 
 # Exclude files from processing
 exclude:
