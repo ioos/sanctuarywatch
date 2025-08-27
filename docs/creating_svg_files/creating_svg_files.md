@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Creating an .svg file for use in Graphic Data 
+title: Creating SVG files
 permalink: /creating_svg_files/
 ---
 
