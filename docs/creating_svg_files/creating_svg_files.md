@@ -1,4 +1,10 @@
-# Chapter 3 | Creating an .svg file for use in Graphic Data #
+---
+layout: page
+title: Creating an .svg file for use in Graphic Data 
+permalink: /creating_svg_files/
+---
+
+# Creating an .svg file for use in Graphic Data #
 
 Scalable Vector Graphics files (.svg files or SVG files) are vector-based images ending in .svg that will be set up specifically to allow the individual components of the SVG image to be responsive objects that are highlighted when a mouse hovers over them. This is a core feature of Graphic Data. In the context of Graphic Data, where there are Instances, Scenes, Modals, and Figures; .svg files are the "Scene" and provide access to either other Scenes (also with .svg files using the method below), or modal windows (Modals) that contain figures that are interactive, images, or code.
 
