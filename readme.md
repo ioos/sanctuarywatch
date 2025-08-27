@@ -14,9 +14,6 @@ Check out our [guide](https://ioos.github.io/sanctuarywatch_graphicdata/)!
 The general approach taken by Graphic Data is based upon [Infographiq](https://github.com/marinebon/infographiq), created by [Ben Best](https://ecoquants.com/).
 The plugin is based upon the structure provided by Joe Sz's [Wordpress Plugin Boilerplate Tutorial](https://github.com/JoeSz/WordPress-Plugin-Boilerplate-Tutorial) - which is itself based upon the structure provided by Devin Vinson's [Wordpress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate). 
 
-## Contributors
-We love contributors! For more information about how to have the snazziest contributor experience, check out our [Contributing](CONTRIBUTING.md) page.
-
 ## Questions?
 Please contact Jai Ranganathan at jai.ranganathan@noaa.gov with any questions you may have.
 
