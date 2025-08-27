@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Creating SVG files
+title: Creating SVG for Scenes
 permalink: /creating_svg_files/
 ---
 
