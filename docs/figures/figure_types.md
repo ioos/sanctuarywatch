@@ -18,6 +18,8 @@ This guide explains the three of the four available figure types (Internal Image
 
 
 &nbsp;
+---
+&nbsp;
 ## Fields Covered:
 - [Internal Image](#internal-image)
 - [External Image](#external-image)
@@ -25,6 +27,8 @@ This guide explains the three of the four available figure types (Internal Image
 
 
 
+&nbsp;
+---
 &nbsp;
 ## Internal Image
 ![Internal Image](figure_types_images/internal_image.png)
@@ -42,6 +46,8 @@ This guide explains the three of the four available figure types (Internal Image
 - Use descriptive filenames so you can find them again easily.  
 
 
+&nbsp;
+---
 &nbsp;
 ## External Image
 ![External Image URL](figure_types_images/external_url.png)  
@@ -61,6 +67,8 @@ This guide explains the three of the four available figure types (Internal Image
 ⚠️ **Note:** If the external image URL changes or disappears, your figure will break.  
 
 
+&nbsp;
+---
 &nbsp;
 ## Code
 ![Code](figure_types_images/code.png)

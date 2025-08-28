@@ -9,16 +9,20 @@ Welcome to the documentation for Graphic Data, a WordPress plugin and theme.
 
 Graphic Data is an open-source framework for combining artwork with data in a way that is: 1) easy (and attractive!) to use by web users and 2) easy to use by those tasked with entering content. This framework is intended for the small-yet-mighty organizations and people who have big website ambitions, but don’t necessarily have big website capacity.
 
-This guides is intended to be in order of the typical start to finish process of creating content on Graphic Data. 
+This guide is intended to be in order of the typical start to finish process for creating content on Graphic Data. It starts at the highest level of content organization (Instance Types) and ends at the lowest level of content organization (Figures). Please see the "Content Organization Hierarchy" bread crumb below. This is because in order to create an Instance Type, Instance, Scene, Modal, or Figure, it is required that the preceding steps are also created. 
+
+For example, let's say you want to create a figure and display it on your website. You must first create an Instance Type, Instance, Scene, and Modal before you can create a Figure. If you wanted to create a Modal, you would only need to create an Instance Type, Instance, and Scene.
+
+Content Organization Hierarchy: **Instance Type → Instances → Scenes → Modals → Figures**.
 
 ## Quick Start
 
 1. **[Installation]({{ site.baseurl }}/installation)** - How to install Graphic Data on your WordPress site.
-2. **[Installation]({{ site.baseurl }}/instance-types)** - How to create "Instance Types"
-3. **[Installation]({{ site.baseurl }}/instances)** - How to create "Instances"
-4. **[Installation]({{ site.baseurl }}/scenes)** - How to create "Scenes"
-5. **[Installation]({{ site.baseurl }}/creating_svg_files)** - How to create the .svg files for "Scenes"
-6. **[Installation]({{ site.baseurl }}/modals)** - How to create "Modals"
-7. **[Installation]({{ site.baseurl }}/figures)** - How to create "Figures"
-8. **[Installation]({{ site.baseurl }}/figures-interactive)** - How to create "Interactive Figures"
-9. **[Installation]({{ site.baseurl }}/figure-types)** - How to create figure with "Internal/External Images & Code"
+2. **[Instance_Types]({{ site.baseurl }}/instance-types)** - How to create "Instance Types"
+3. **[Instances]({{ site.baseurl }}/instances)** - How to create "Instances"
+4. **[Creating_SVG_Files]({{ site.baseurl }}/creating-svg-files)** - How to create the .svg files for "Scenes"
+5. **[Scenes]({{ site.baseurl }}/scenes)** - How to create "Scenes"
+6. **[Modals]({{ site.baseurl }}/modals)** - How to create "Modals"
+7. **[Figures]({{ site.baseurl }}/figures)** - How to create "Figures"
+8. **[Figure_Types]({{ site.baseurl }}/figure-types)** - How to create figures with "Internal/External Images" or "Code"
+9. **[Interactive_Figures]({{ site.baseurl }}/figures-interactive)** - How to create "Interactive Figures"

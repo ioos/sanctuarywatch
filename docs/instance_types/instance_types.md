@@ -15,6 +15,8 @@ Hierarchy: **<span style="color:red;">Instance Type (We are Here)</span> → Ins
 
 
 &nbsp;
+---
+&nbsp;
 ## Fields Covered:
 - [Name](#name)
 - [Slug](#slug)
@@ -24,6 +26,9 @@ Hierarchy: **<span style="color:red;">Instance Type (We are Here)</span> → Ins
 - [Existing Instance Types](#existing-instance-types)
 - [Final Checklist Before Publishing](#-final-checklist-before-publishing)
 
+
+&nbsp;
+---
 &nbsp;
 ## Name
 ![Name](instance_types_images/name.png)
@@ -37,6 +42,8 @@ Hierarchy: **<span style="color:red;">Instance Type (We are Here)</span> → Ins
 💡 Use clear, short names (e.g., *CETACEAN*).
 
 
+&nbsp;
+---
 &nbsp;
 ## Slug
 ![Slug](instance_types_images/slug.png)
@@ -53,6 +60,8 @@ Hierarchy: **<span style="color:red;">Instance Type (We are Here)</span> → Ins
 
 
 &nbsp;
+---
+&nbsp;
 ## Description
 ![Description](instance_types_images/description.png)
 
@@ -66,6 +75,8 @@ Hierarchy: **<span style="color:red;">Instance Type (We are Here)</span> → Ins
 
 
 &nbsp;
+---
+&nbsp;
 ## Order
 ![Order](instance_types_images/order.png)
 
@@ -75,6 +86,9 @@ Hierarchy: **<span style="color:red;">Instance Type (We are Here)</span> → Ins
 
 **Required?** Yes.  
 
+
+&nbsp;
+---
 &nbsp;
 ## Navbar Name
 ![Navbar Name](instance_types_images/navbar_name.png) 
@@ -87,6 +101,8 @@ Hierarchy: **<span style="color:red;">Instance Type (We are Here)</span> → Ins
 💡 Keep names short to avoid wrapping.
 
 
+&nbsp;
+---
 &nbsp;
 ## Existing Instance Types
 ![Existing Types](instance_types_images/existing_types.png) 
@@ -108,8 +124,10 @@ Hierarchy: **<span style="color:red;">Instance Type (We are Here)</span> → Ins
 
 ⚠️ **Note:** Deleting cannot be undone. 
 
-💡 Always double-check before deleting.  
+💡 Always double-check before deleting. 
 
+&nbsp;
+---
 &nbsp;
 ## ✅ Final Checklist Before Publishing
 
