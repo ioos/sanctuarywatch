@@ -14,11 +14,11 @@ This guides is intended to be in order of the typical start to finish process of
 ## Quick Start
 
 1. **[Installation]({{ site.baseurl }}/installation)** - How to install Graphic Data on your WordPress site.
-2. **[Installation]({{ site.baseurl }}/instance-types)** - How to create "Instance Types"
-3. **[Installation]({{ site.baseurl }}/instances)** - How to create "Instances"
-4. **[Installation]({{ site.baseurl }}/scenes)** - How to create "Scenes"
-5. **[Installation]({{ site.baseurl }}/creating_svg_files)** - How to create the .svg files for "Scenes"
-6. **[Installation]({{ site.baseurl }}/modals)** - How to create "Modals"
-7. **[Installation]({{ site.baseurl }}/figures)** - How to create "Figures"
-8. **[Installation]({{ site.baseurl }}/figures-interactive)** - How to create "Interactive Figures"
-9. **[Installation]({{ site.baseurl }}/figure-types)** - How to create figure with "Internal/External Images & Code"
+2. **[Instance Types]({{ site.baseurl }}/instance-types)** - How to create "Instance Types"
+3. **[Instances]({{ site.baseurl }}/instances)** - How to create "Instances"
+4. **[Scenes]({{ site.baseurl }}/scenes)** - How to create "Scenes"
+5. **[Images]({{ site.baseurl }}/creating_svg_files)** - How to create the .svg files for "Scenes"
+6. **[Modals]({{ site.baseurl }}/modals)** - How to create "Modals"
+7. **[Figures]({{ site.baseurl }}/figures)** - How to create "Figures"
+8. **[Ineractive figures]({{ site.baseurl }}/figures-interactive)** - How to create "Interactive Figures"
+9. **[Non-interactive figures]({{ site.baseurl }}/figure-types)** - How to create figure with "Internal/External Images & Code"
