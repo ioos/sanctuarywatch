@@ -23,7 +23,9 @@ Every scene must belong to an Instance and acts as the first stage for displayin
  **When Finished Making Field Selections: <span style="color:red;"> Press "SAVE" in the top right of the page.</span>**
 
 
- &nbsp;
+&nbsp;
+---
+&nbsp;
 ## Fields Covered:
 - [Scene Title](#scene-title)
 - [Scene Status](#scene-status)
@@ -41,6 +43,8 @@ Every scene must belong to an Instance and acts as the first stage for displayin
 
 
 &nbsp;
+---
+&nbsp;
 ## Scene Title
 ![Scene Status](scene_fields_images/scene_title.png)
 
@@ -53,6 +57,8 @@ Every scene must belong to an Instance and acts as the first stage for displayin
 **Required?** Yes.
 
 
+&nbsp;
+---
 &nbsp;
 ## Scene Status
 ![Scene Status](scene_fields_images/scene_status.png)
@@ -69,6 +75,8 @@ Every scene must belong to an Instance and acts as the first stage for displayin
 
 
 &nbsp;
+---
+&nbsp;
 ## Instance
 ![Scene Instance](scene_fields_images/scene_instance.png)
 
@@ -83,6 +91,8 @@ Every scene must belong to an Instance and acts as the first stage for displayin
 💡 Changing the Instance may change which Figures/Modals are available.
 
 
+&nbsp;
+---
 &nbsp;
 ## Infographic (SVG Upload)
 ![Scene Infographic](scene_fields_images/scene_infographic.png)
@@ -100,6 +110,8 @@ Please see our guide for creating an .svg file for use with Scenes in Graphic Da
 
 
 &nbsp;
+---
+&nbsp;
 ## Tagline
 ![Scene Tagline](scene_fields_images/scene_tagline.png)
 
@@ -113,6 +125,8 @@ Please see our guide for creating an .svg file for use with Scenes in Graphic Da
 
 
 &nbsp;
+---
+&nbsp;
 ## Number of Info Entries
 ![Scene Info Entries](scene_fields_images/scene_info_entries.png)
 
@@ -125,6 +139,8 @@ Please see our guide for creating an .svg file for use with Scenes in Graphic Da
 **Required?** Optional.
 
 
+&nbsp;
+---
 &nbsp;
 ## Number of Photo Entries
 ![Scene Photo Entries](scene_fields_images/scene_photo_entries.png)
@@ -149,6 +165,8 @@ Please see our guide for creating an .svg file for use with Scenes in Graphic Da
 
 
 &nbsp;
+---
+&nbsp;
 ## Order
 ![Scene Order](scene_fields_images/scene_order.png)  
 
@@ -159,6 +177,8 @@ Please see our guide for creating an .svg file for use with Scenes in Graphic Da
 **Required?** Optional.
 
 
+&nbsp;
+---
 &nbsp;
 ## Full Screen Button
 ![Full Screen Button](scene_fields_images/scene_fullscreen.png) 
@@ -173,6 +193,8 @@ Please see our guide for creating an .svg file for use with Scenes in Graphic Da
 
 
 &nbsp;
+---
+&nbsp;
 ## Text Toggle
 ![Text Toggle](scene_fields_images/scene_text_toggle.png)
 
@@ -185,6 +207,8 @@ Please see our guide for creating an .svg file for use with Scenes in Graphic Da
 **Required?** Optional.
 
 
+&nbsp;
+---
 &nbsp;
 ## Icon Visibility
 ![Icon Visibility](scene_fields_images/scene_icon_visibility.png) 
@@ -206,6 +230,8 @@ Please see our guide for creating an .svg file for use with Scenes in Graphic Da
 **Color in icons with specific color:** The icons will appear, but will have a different color on mouse hover. 
 
 
+&nbsp;
+---
 &nbsp;
 ## Table of Contents Style
 ![TOC Style](scene_fields_images/scene_toc_style.png)  
@@ -243,6 +269,8 @@ Please see our guide for creating an .svg file for use with Scenes in Graphic Da
 **Required?** Yes, you have to set the Number of Sections and the Section titles at the very least.
 
 
+&nbsp;
+---
 &nbsp;
 ## Preview Scene
 ![Preview Scene](scene_fields_images/scene_preview.png)

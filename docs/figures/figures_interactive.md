@@ -13,6 +13,8 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 
 
 &nbsp;
+---
+&nbsp;
 ## Fields Covered:
 - [Workflow Checklist](#workflow-checklist)
 - [Graph Type](#graph-type)
@@ -25,6 +27,8 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 
 
 &nbsp;
+---
+&nbsp;
 ## Workflow Checklist
 1. Save the post first.  
 2. Upload your CSV/JSON file.  
@@ -36,6 +40,9 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 
 ⚠️ **Important:** You must save the post before uploading a file.  
 
+
+&nbsp;
+---
 &nbsp;
 ## File Upload
 
@@ -56,6 +63,8 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 
 
 &nbsp;
+---
+&nbsp;
 ## Graph Type
 ![Graph Type](interactive_figures_images/graph_type.png)  
 > Screenshot: Select the type of graph you would like to create.
@@ -63,6 +72,8 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 **Bar Charts** or **Time Series**.
 
 
+&nbsp;
+---
 &nbsp;
 ## Bar Charts
 ![Bar Chart Settings](interactive_figures_images/bar_chart.png)  
@@ -94,7 +105,8 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 - If bars overlap, reduce the number of bars or adjust group spacing.  
 
 
-
+&nbsp;
+---
 &nbsp;
 ## Time Series
 ![Time Series Settings](interactive_figures_images/time_series.png)  
@@ -132,8 +144,10 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 
 
 &nbsp;
+---
+&nbsp;
 ## Best Practices
-- Keep files small (<2 MB) though you can upload (300 MB).  
+- Keep files small (<2 MB) though you can upload up to (300 MB).  
 - Use descriptive column names (`date`, `value`, `series`).  
 - Always preview before publishing to confirm layout and data correctness.  
 

@@ -15,6 +15,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 **When Finished Making Field Selections: <span style="color:red;"> Press "SAVE" in the top right of the page.</span>**
 
 
+&nbsp;
+---
  &nbsp;
 ## Fields Covered:
 - [Modal Title](#modal-title)
@@ -33,6 +35,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 
 
 &nbsp;
+---
+&nbsp;
 ## Modal Title
 ![Modal Status](modal_fields_images/modal_title.png)
 
@@ -43,6 +47,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 **Required?** Yes.
 
 
+&nbsp;
+---
 &nbsp;
 ## Modal Status
 ![Modal Status](modal_fields_images/modal_status.png)
@@ -63,6 +69,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 
 
 &nbsp;
+---
+&nbsp;
 ## Instance
 ![Instance](modal_fields_images/instance.png)
 
@@ -79,6 +87,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 - Changing the Instance changes which Scenes and Icons are available.
 
 
+&nbsp;
+---
 &nbsp;
 ## Scene
 ![Scene](modal_fields_images/scene.png)
@@ -97,6 +107,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 
 
 &nbsp;
+---
+&nbsp;
 ## Icons
 ![Icons](modal_fields_images/icons.png)
 
@@ -114,6 +126,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 
 
 &nbsp;
+---
+&nbsp;
 ## Icon Order
 ![Icon Order](modal_fields_images/icon_order.png)
 
@@ -129,6 +143,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 
 
 &nbsp;
+---
+&nbsp;
 ## Icon Action
 ![Icon Action](modal_fields_images/icon_action.png)
 
@@ -143,6 +159,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 - **Scene** — Opens this modal icon to another scene instead (a thematic scene).
 
 
+&nbsp;
+---
 &nbsp;
 ## Modal Tagline
 ![Modal Tagline](modal_fields_images/modal_tagline.png)
@@ -161,6 +179,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 
 
 &nbsp;
+---
+&nbsp;
 ## Number of Modal Info Entries
 ![Number of Modal Info Entries](modal_fields_images/modal_info_entries.png)
 
@@ -177,6 +197,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 - Start small; you can always increase later.
 
 
+&nbsp;
+---
 &nbsp;
 ## Number of Modal Photo Entries
 ![Number of Modal Photo Entries](modal_fields_images/modal_photo_entries.png)
@@ -202,6 +224,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 
 
 &nbsp;
+---
+&nbsp;
 ## Number of Modal Tabs
 ![Number of Modal Tabs](modal_fields_images/modal_tabs_number.png)
 
@@ -219,6 +243,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 
 
 &nbsp;
+---
+&nbsp;
 ## Modal Tab Title
 ![Modal Tab Title](modal_fields_images/modal_tab_title.png)
 
@@ -235,6 +261,8 @@ Every modal must belong to an Instance and a Scene. Without these, you cannot cr
 - Keep tab names concise and unique.
 
 
+&nbsp;
+---
 &nbsp;
 ## Preview Modal
 ![Preview Modal](modal_fields_images/preview_modal.png)
