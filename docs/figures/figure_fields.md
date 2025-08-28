@@ -16,6 +16,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 
 
 &nbsp;
+---
+&nbsp;
 ## Fields Covered:
 - [Figure Title (Top of Page)](#figure-title-top-of-page)
 - [Status](#status)
@@ -34,6 +36,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 
 
 &nbsp;
+---
+&nbsp;
 ## Figure Title (Top of Page)
 ![Figure Title ](figure_fields_images/figure_title_top.png)
 
@@ -44,6 +48,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 **Required?** Yes.
 
 
+&nbsp;
+---
 &nbsp;
 ## Status
 ![Status](figure_fields_images/status.png)
@@ -64,6 +70,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 
 
 &nbsp;
+---
+&nbsp;
 ## Instance
 ![Instance](figure_fields_images/instance.png)
 
@@ -80,6 +88,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 - If you don’t see the right Instance, check your permissions or verify the Instance exists.
 
 
+&nbsp;
+---
 &nbsp;
 ## Scene
 ![Scene](figure_fields_images/scene.png)
@@ -98,6 +108,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 
 
 &nbsp;
+---
+&nbsp;
 ## Icon
 ![Icon](figure_fields_images/icon.png)
 
@@ -114,6 +126,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 - Think of Icons as folders inside a Scene. Pick the one where users will expect to find your figure.
 
 
+&nbsp;
+---
 &nbsp;
 ## Tab
 ![Tab](figure_fields_images/tab.png)
@@ -132,6 +146,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 
 
 &nbsp;
+---
+&nbsp;
 ## Order
 ![Order](figure_fields_images/order.png)
 
@@ -148,6 +164,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 - Leave gaps (e.g., 10, 20, 30) so you can insert items later without renumbering everything.
 
 
+&nbsp;
+---
 &nbsp;
 ## Monitoring Program Link
 ![Monitoring Program Link](figure_fields_images/monitoring_program_link.png)
@@ -168,6 +186,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 
 
 &nbsp;
+---
+&nbsp;
 ## Data Link
 ![Data Link](figure_fields_images/data_link.png)
 **What it does:** Provides a direct link to the dataset or a downloadable file (e.g., CSV, JSON, GeoJSON).
@@ -185,6 +205,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 - If the dataset updates regularly, consider noting the refresh cadence in the caption.
 
 
+&nbsp;
+---
 &nbsp;
 ## Figure Type
 ![Figure Type](figure_fields_images/figure_type.png)
@@ -212,6 +234,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 
 
 &nbsp;
+---
+&nbsp;
 ## Figure Title
 ![Figure Title](figure_fields_images/figure_title.png)
 
@@ -229,6 +253,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 
 
 &nbsp;
+---
+&nbsp;
 ## Short Figure Caption
 ![Short Figure Caption](figure_fields_images/short_caption.png)
 
@@ -244,6 +270,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 
 
 &nbsp;
+---
+&nbsp;
 ## Extended Caption
 ![Extended Caption](figure_fields_images/extended_caption.png)
 
@@ -258,6 +286,8 @@ Every figure must belong to an Instance, Scene, and Modal. Without these, you ca
 - Use short paragraphs or bullet lists for readability.
 
 
+&nbsp;
+---
 &nbsp;
 ## Preview Figure
 ![Preview Figure](figure_fields_images/preview_figure.png)

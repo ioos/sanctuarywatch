@@ -8,10 +8,13 @@ permalink: /figures-interactive/
 
 An in-depth guide for how to create Interactive figures. Currently, there are two types of Interactive Figures offered by Graphic Data. Currently, there are two types: **Bar Charts** and **Time Series**.
 
+Hierarchy: **Instance Type → Instances → Scenes → Modals → <span style="color:red;">Figures (We are Here)</span>**.
 
 **When Finished Making Field Selections: <span style="color:red;"> Press "SAVE" in the top right of the page.</span>**
 
 
+&nbsp;
+---
 &nbsp;
 ## Fields Covered:
 - [Workflow Checklist](#workflow-checklist)
@@ -25,6 +28,8 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 
 
 &nbsp;
+---
+&nbsp;
 ## Workflow Checklist
 1. Save the post first.  
 2. Upload your CSV/JSON file.  
@@ -36,6 +41,9 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 
 ⚠️ **Important:** You must save the post before uploading a file.  
 
+
+&nbsp;
+---
 &nbsp;
 ## File Upload
 
@@ -56,6 +64,8 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 
 
 &nbsp;
+---
+&nbsp;
 ## Graph Type
 ![Graph Type](interactive_figures_images/graph_type.png)  
 > Screenshot: Select the type of graph you would like to create.
@@ -63,6 +73,8 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 **Bar Charts** or **Time Series**.
 
 
+&nbsp;
+---
 &nbsp;
 ## Bar Charts
 ![Bar Chart Settings](interactive_figures_images/bar_chart.png)  
@@ -94,7 +106,8 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 - If bars overlap, reduce the number of bars or adjust group spacing.  
 
 
-
+&nbsp;
+---
 &nbsp;
 ## Time Series
 ![Time Series Settings](interactive_figures_images/time_series.png)  
@@ -132,8 +145,10 @@ An in-depth guide for how to create Interactive figures. Currently, there are tw
 
 
 &nbsp;
+---
+&nbsp;
 ## Best Practices
-- Keep files small (<2 MB) though you can upload (300 MB).  
+- Keep files small (<2 MB) though you can upload up to (300 MB).  
 - Use descriptive column names (`date`, `value`, `series`).  
 - Always preview before publishing to confirm layout and data correctness.  
 

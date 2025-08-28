@@ -14,6 +14,9 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 
 **When Finished Making Field Selections: <span style="color:red;"> Press "SAVE" in the top right of the page.</span>**
 
+
+&nbsp;
+---
 &nbsp;
 ## Fields Covered:
 - [Instance Title](#instance-title)
@@ -30,6 +33,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 
 
 &nbsp;
+---
+&nbsp;
 ## Instance Title
 ![Short Title](instance_fields_images/instance_title.png)
 
@@ -42,6 +47,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 💡 Keep under 40 characters or a few words for best display.
 
 
+&nbsp;
+---
 &nbsp;
 ## Short Title
 ![Short Title](instance_fields_images/short_title.png)
@@ -56,6 +63,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 
 
 &nbsp;
+---
+&nbsp;
 ## URL Component
 ![URL Component](instance_fields_images/url_component.png)  
 
@@ -69,6 +78,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 
 
 &nbsp;
+---
+&nbsp;
 ## Instance Type
 ![Instance Type](instance_fields_images/instance_type.png)
 
@@ -79,6 +90,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 **Required?** Yes.
 
 
+&nbsp;
+---
 &nbsp;
 ## Overview Scene
 ![Overview Scene](instance_fields_images/overview_scene.png) 
@@ -92,6 +105,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 **Required?** Yes. You may have create the scene for this field after you create and save your instance. If the Scene doesn't already exist, this field can seem confusing. 
 
 
+&nbsp;
+---
 &nbsp;
 ## Status
 ![Status](instance_fields_images/status.png)  
@@ -107,7 +122,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 **Required?** Yes.  
 
 
-
+&nbsp;
+---
 &nbsp;
 ## Tile Image
 ![Tile Image](instance_fields_images/tile_image.png)  
@@ -124,6 +140,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 
 
 &nbsp;
+---
+&nbsp;
 ## Legacy Content
 ![Legacy Content](instance_fields_images/legacy_content.png)  
 
@@ -138,8 +156,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 ![Legacy Content](instance_fields_images/legacy_content_yes.png)  
 
 
-
-
+&nbsp;
+---
 &nbsp;
 ## Tile Background Color
 ![Tile Background Color](instance_fields_images/tile_bg_color.png)
@@ -154,6 +172,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 
 
 &nbsp;
+---
+&nbsp;
 ## Tile Text Color
 ![Tile Text Color](instance_fields_images/tile_text_color.png)
 
@@ -166,6 +186,8 @@ Instances cannot be displayed on the visitor side of the site unless they are pu
 ⚠️ Effects mobile view only! Ensure contrast for readability. Effects mobile view only!
 
 
+&nbsp;
+---
 &nbsp;
 ## Number of Footer Columns
 ![Footer Columns](instance_fields_images/footer_columns.png)
