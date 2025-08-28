@@ -51,7 +51,7 @@ This guide assumes you have a basic knowledge of using Illustrator (<a href="htt
 
 In the .zip example folder, you will find a file called **"test-image-AdobeIllustrator.ai"**. Open this file in Illustrator and you will see the following:
 
-<img src="images/image1-illustrator.png" alt="Alt Text" width="80%" height="80%">
+![Illustrator1](images/image1-illustrator.png)
 
 If you check out the "Layers" tab for the image above, you’ll see that the image is composed of four layers: mobile, text, icons, and background.
 
@@ -68,7 +68,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     4. background (optional)
     4. mobile (optional)
 
-    - <img src="images/image2-illustrator.png" alt="Alt Text" width="70%" height="70%">
+    - ![Illustrator2](images/image2-illustrator.png)
 
 
 &nbsp;
@@ -83,14 +83,14 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     **When creating text, be sure to use a <a href="https://www.w3schools.com/cssref/css_websafe_fonts.php" target="_blank">web-safe font</a> to ensure that your text displays correctly in a web browser.** 
 
     In the Layers panel, after we click ">" to expand the "text" layer, we can see that this layer contains several elements denoted by <Group>:
-     - <img src="images/image3-illustrator.png" alt="Alt Text" width="80%" height="80%">
+     - ![Illustrator3](images/image3-illustrator.png)
 
     There are three essential things here:
 
     A. All of the elements are vector-based (nothing raster-based, raster means image such as .tif, .jpg, or .png). If you happen to have raster-based elements in your image (or are not sure), we strongly recommend that you find a vector version or attempt to convert the raster item to a vector using the <a href="https://helpx.adobe.com/illustrator/using/image-trace.html" target="_blank">image trace tool</a>. Rasters will break the functionality of Graphic Data and are not meant to be used in these workflows. 
 
     B. None of the elements within this layer can be named “text”. The following (where one of the elements is named text) is not allowed:
-     - <img src="images/image4-illustrator.png" alt="Alt Text" width="80%" height="80%">
+     - ![Illustrator4](images/image4-illustrator.png)
 
     C. Double check that the font you select for the text elements displays well in a browser. The default font for Illustrator is often “Myriad Pro”, which does not display well. There are many great alternatives, with one being “Arial”.
 
@@ -99,7 +99,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
     **This layer is required** and contains all of the clickable elements in the image. This layer can be named anything, except for “text” or the name of any other clickable element in the image. We recommend the name "icons" though.
 
     If you check out the "Layers" panel for “icons”, you’ll see that it contains four sub-layers; octopus, bird, boat, & shark.
-     - <img src="images/image5-illustrator.png" alt="Alt Text" width="70%" height="70%">
+     - ![Illustrator5](images/image5-illustrator.png)
 
     Each of these sub-layers defines a single clickable component of the image.
 
@@ -112,7 +112,7 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - Each sub-layer contains all of the elements for a single clickable icon.
 
      - The elements in the sub-layer, if named, should not have the same name as the sub-layer itself. So, for example, the following won’t work :
-         - <img src="images/image6-illustrator.png" alt="Alt Text" width="60%" height="60%">
+         - ![Illustrator6](images/image6-illustrator.png)
 
      - Layer names for clickable elements cannot end with a dash followed by a number. For example, "octopus" is an acceptable name, but "octopus-1" and "octopus-4" are not.
 
@@ -121,22 +121,22 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - It might be necessary to add a transparent rectangle or ellipse to the behind complicated objects to ensure that they are able to be locked on to when the mouse hovers over them. This might apply to long slender objects or objects with multiple items, appendages, or branches. In our example, we will use an added layer called "sardines" which is located in layers under "icons > sardines". 
 
      - Step 1: In the main ArtBoard, we have selected all of the "sardines" (2). You will see the shape tool on the left-side toolbar (1), and the "sardines" layer selected on the right-side Layers panel (3). 
-         - <img src="images/image20-1-illustrator.png" alt="Alt Text" width="90%" height="90%">
+         - ![Illustrator20-1](images/image20-1-illustrator.png)
 
      - Step 2: Select the "Ellipse tool" from the left-side bar
-         - <img src="images/image20-2-illustrator.png" alt="Alt Text" width="35%" height="35%">
+         - ![Illustrator20-2](images/image20-2-illustrator.png)
      
      - Step 3: While holding right-click with your mouse, drag an ellipse from the top-left of the sardines to the bottom-right. When you first draw the ellipse it may cover your sardines, this is ok and we will fix it in a second. You can edit the size and rotation of the ellipse by hovering your mouse over the anchor points (little squares that are connected by lines) surrounding the ellipse to adjust these settings accordingly to fit completely over the sardines.
-         - <img src="images/image20-3-illustrator.png" alt="Alt Text" width="40%" height="40%">
+         - ![Illustrator20-3](images/image20-3-illustrator.png)
     
      - Step 4: The rectangle you created may cover your icon because it is filled in. If this happens, right click on the rectangle, hover over "arrange" in the expanded menu, and then click on "Send to Back". This will make it the bottom layer of your icon. Be sure to check the layers panel to ensure that you sent it to the back of the "sardines" layer. If your ellipse appears in a different layer, you can simply drag it into the sardines layer and repeat the process of sending it to the back. 
-         - <img src="images/image20-4-illustrator.png" alt="Alt Text" width="50%" height="50%">
+         - ![Illustrator20-4](images/image20-4-illustrator.png)
 
      - Step 5: To make your rectangle transparent, be sure to click on both the "fill" and "outline" portions of the color indicator on the bottom of your left side tool bar. Once you select either "fill" (#1.1) or "outline" (#1.2) in the top section, click on the white box with the red strike-through in the bottom right (#2) to make it transparent. The "fill" or "outline" will also have this red strike-through when it is applied to them as shown below. 
-         - <img src="images/image20-5-illustrator.png" alt="Alt Text" width="20%" height="20%">
+         - ![Illustrator20-5](images/image20-5-illustrator.png)
 
     - Step 6: Everything should look like this when you're complete.
-        - <img src="images/image20-6-illustrator.png" alt="Alt Text" width="90%" height="90%">
+        - ![Illustrator20-6](images/image20-6-illustrator.png)
 
 3. **background**:
 
@@ -150,24 +150,24 @@ If you don't see "Layers", use this access path: *Top Navigation Bar > Windows >
      - Within the mobile layer, all icon names should have the suffix "-mobile" added to them. For example, let's say we have an icon called "coral-reefs" within a svg that has an alternate view for mobile. Within the mobile layer, the relevant layer should be called "coral-reefs-mobile". 
 
      -  Below is an example of what your icons might look like when displayed in mobile view:
-     - <img src="images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
+     - ![Illustrator9](images/image9-illustrator.png)
      
      **How to create a mobile icon:**
 
      - For this example, we are going to show you how to create the "sardines" sublayer that is currently under the "mobile" layer (Top Navigation Bar > Window > Layers > mobile). The "sardines" sublayer under the "icons" layer, as seen below is clunky and would not make a good mobile icon. Therefore, we are going to re-imagine it in a format that would suit a mobile button by placing it inside of the "mobile" layer. To avoid confusion, you can turn off the existing "mobile > sardines" layer by clicking the right-arrow next to "mobile" to expand the layer, then clicking on the eye ball icon to the left of the sublayer named "sardines" that is nested under "mobile".
-     - <img src="images/image22-illustrator.png" alt="Alt Text" width="40%" height="40%">
+     - ![Illustrator22](images/image22-illustrator.png)
      
      - Step 1: Click on the "mobile" layer. In the top-right click the three stacked lines to access the layers menu. Then click on "New Sublayer" in the dropdown menu. You can also create the top level "mobile" layer here as needed by selecting "New Layer" instead. 
-     - <img src="images/image7-illustrator.png" alt="Alt Text" width="70%" height="70%">
+     - ![Illustrator7](images/image7-illustrator.png)
         
      - Step 2: In the dialog box that appears go ahead and give your new sublayer a name. For this example, we have just created a new "mobile" sublayer called "sardines". Click "OK" to finish.
-     - <img src="images/image8-illustrator.png" alt="Alt Text" width="40%" height="40%"> 
+     - ![Illustrator8](images/image8-illustrator.png)
 
      - Step 3: Your new sublayer names "sardines" will now appear nested inside the "mobile" layer. With "sardines" selected in the layers panel, It is then possible to paste vector items and artwork inside of it (To be sure it is a vector object, See 4.1.2 Dealing with raster-based elements below). For this example we selected the original "sardines" layer  under "icons" then copied a single sardine using "CTRL + C", then pasted it 3 times using "CTRL + V" inside of the of "sardines" layer under "mobile". We did this three times and repositioned each individual sardine to stack them vertically. The layer nesting (hierarchical structure of the layers and sublayers) should reflect how the "mobile" layer is displayed in the example below. 
-     - <img src="images/image21-illustrator.png" alt="Alt Text" width="90%" height="90%">
+     - ![Illustrator21](images/image21-illustrator.png)
     
      - Step 4: Now, when being used on your web page, the "sardines" layer will appear as shown in the "mobile" layer and not as previously as shown in the layer graphic meant for a desktop computer. The example below allows for you to see the two potential icons next to each other. The "sardines" icon in the top-left is more clear and easy to understand. The top-center "sardines" icon to the right of it could be any small fish, and is more ambiguous to interpret visually.  
-     - <img src="images/image23-illustrator.png" alt="Alt Text" width="35%" height="35%">
+     - ![Illustrator23](images/image23-illustrator.png)
 
 
 &nbsp;
@@ -191,7 +191,7 @@ One dead give-away that an image is raster-based is if the file is saved in a ra
 
 Checking the file extension isn’t a fool-proof system though. Just because an image is saved in some other format than those above doesn’t mean that it isn’t a raster-based image. So, how can you know for sure? Well, open the image up in Illustrator and take a close look at the Layer panel. If the image is raster-based, it will say <Image> under the appropriate layer (be sure to click the arrow just to the left of the layer name to see what it contains). See below for an example:
 
-<img src="images/image10-illustrator.png" alt="Alt Text" width="50%" height="50%">
+![Illustrator10](images/image10-illustrator.png)
 
 **Converting a raster to a vector**
 
@@ -199,15 +199,15 @@ If you have some raster-based elements that you’d like to include in your Grap
 
 1. Select image (from Layers; or Select All from menu).
 
- - <img src="images/image11-illustrator.png" alt="Alt Text" width="45%" height="45%">
+ - ![Illustrator11](images/image11-illustrator.png)
 
 2. From the menu, select Object > Image Trace > Make and Expand.
 
- - <img src="images/image12-illustrator.png" alt="Alt Text" width="40%" height="40%">
+ - ![Illustrator12](images/image12-illustrator.png)
 
 4. Delete (trash icon in Layers menu) or Unite/Merge (in Pathfinder menu) the selected layers until you achieve the desired simplified icon result.
 
- - <img src="images/image13-illustrator.png" alt="Alt Text" width="50%" height="50%">
+ - ![Illustrator13](images/image13-illustrator.png)
 
 
 &nbsp;
@@ -221,7 +221,7 @@ To be used by Graphic Data in "Scenes", the file must be exported in svg format.
 2. In the following screen, select svg format. Be sure to click “Use ArtBoards”.
 4. In the final screen that pops up, be sure to set Object IDs to “Layer Names”, as follows:
 
- - <img src="images/image14-illustrator.png" alt="Alt Text" width="40%" height="40%">
+ - ![Illustrator14](images/image14-illustrator.png)
 
 
 4. You can hit the little "globe" button in the bottom row to display a temp version of your .svg in a web browser.
@@ -240,11 +240,11 @@ In the Graphic Data .zip folder containing the example files, you’ll find a fi
 
 - You can open up the "Layers" panel by clicking on the stacked icon in the top navigation bar. It's highlighted in red. 
 
-<img src="images/image15-inkscape.png" alt="Alt Text" width="80%" height="80%">
+![Inkscape15](images/image15-inkscape.png)
 
 If you check out the Layers panel for the image, you’ll see the following:
 
-<img src="images/image16-inkscape.png" alt="Alt Text" width="30%" height="30%">
+![Inkscape16](images/image16-inkscape.png)
 
 
 &nbsp;
@@ -303,7 +303,7 @@ If you check out the Layers panel for the image, you’ll see the following:
      - Also, it is important to note that the layers from "icons" are automatically applied to the mobile format. Meaning you don't have to create them separately to for them to be displayed in mobile view. Only if an icon contains multiple components, or is an odd shape which is too wide or long, is it recommended to use this layer to create a "mobile" version of that specific icon. Put more simply, you only have to use this layer if you have icons that would need to be optimized for mobile view, with a different version of the icon than the one that is in the "icons" layer. 
 
      -  Below is an example of what your icons might look like when displayed in mobile view:
-     - <img src="images/image9-illustrator.png" alt="Alt Text" width="30%" height="30%">
+     - ![Inkscape9](images/image9-illustrator.png)
 
      - See this section in the Illustrator instructions above for "1.mobile > How to create a mobile icon" for a general outline of what needs to be done in Inkscape as well. The exact method will differ in Inkscape.
 
@@ -321,7 +321,7 @@ In order for the Graphic Data image to behave properly, you will need to edit th
 
 Let’s zoom in on these panels for the image inkscape_example.svg:
 
-<img src="images/image17-inkscape.png" alt="Alt Text" width="50%" height="50%">
+![Inkscape17](images/image17-inkscape.png.png)
 
 For each of your layers:
 
@@ -351,7 +351,7 @@ One dead give-away that an image is raster-based is if the file is saved in a ra
 
 Checking the file extension isn’t a fool-proof system though. Just because an image is saved in some other format than those above doesn’t mean that it isn’t a raster-based image. So, how can you know for sure? Well, open the image up in Inkscape and right click on it. If in the options you see “Image Properties…”, you’ve got a raster-based image on your hands (see image below).
 
-<img src="images/image18-inkscape.png" alt="Alt Text" width="50%" height="50%">
+![Inkscape18](images/image18-inkscape.png)
 
 Converting a raster to a vector
 
