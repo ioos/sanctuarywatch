@@ -8,6 +8,7 @@ permalink: /figures-interactive/
 
 An in-depth guide for how to create Interactive figures. Currently, there are two types of Interactive Figures offered by Graphic Data. Currently, there are two types: **Bar Charts** and **Time Series**.
 
+Hierarchy: **Instance Type → Instances → Scenes → Modals → <span style="color:red;">Figures (We are Here)</span>**.
 
 **When Finished Making Field Selections: <span style="color:red;"> Press "SAVE" in the top right of the page.</span>**
 
