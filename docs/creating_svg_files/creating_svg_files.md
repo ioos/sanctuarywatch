@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Creating SVG for Scenes
+title: Scene SVG Creation
 permalink: /creating-svg-files/
 ---
 
@@ -38,7 +38,6 @@ You can see a working example of a different file created using this method in a
     - [4.2.2 Editing The Layer's XML](#422-editing-the-layer-xml)
     - [4.2.3 Dealing with raster-based elements](#423-dealing-with-raster-based-elements)
     - [4.2.4 Saving The Image](#424-saving-the-image)
-    - [File]()
 
 
 &nbsp;
